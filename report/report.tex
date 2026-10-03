@@ -1,0 +1,344 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=25mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\hypersetup{hidelinks,
+  pdftitle={Machine Learning for Kira IBP Reduction},
+  pdfsubject={Feynman integrals, IBP reduction, and proposed machine learning roles}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\setlength{\emergencystretch}{2em}
+\title{\textbf{Machine Learning for Kira IBP Reduction}\\
+  \large Seed selection and elimination ordering}
+\author{}
+\date{October 1, 2026}
+
+\begin{document}
+\maketitle
+\vspace{-1em}
+
+\begin{abstract}
+Feynman integral calculations are an important component of multiloop amplitude calculations in quantum field theory. In Quantum Chromodynamics (QCD), multiloop amplitudes and their associated Feynman integrals arise in higher-order perturbative calculations and can become increasingly complex at higher loop orders. Recent progress has automated these calculations to some extent using the framework Kira, which organizes target integrals into integral families and sectors, generate algebraic relations among the integrals by using integration by parts (IBP) identities, and reduce the resulting system to expressions in terms of a finite set of master integrals. We aim to explore the application of System 1 machine learning models to accelerate the IBP reduction process by investigating if lightweight learned models can improve seed selection. These models can predict the most useful integrals from which to generate IBP relations while minimizing redundant calculations. We will also explore System 1 models for learning efficient reduction and elimination sequences to minimize the number of algebraic operations required to express target integrals in terms of master integrals. Because the machine learning models will serve as decision-makers while the underlying IBP reduction and verification remain exact, these models can improve computational efficiency without compromising the correctness of the resulting reductions.
+\end{abstract}
+
+\clearpage
+\input{background}
+
+\section{ML for seed selection and elimination ordering}
+\label{sec:ml-roles}
+To reduce the time and memory needed for IBP reduction, we will study
+two System 1 models: one for seed selection and one for elimination
+ordering. Here a System 1 model is a small machine learning model that
+learns from recorded reductions and makes a choice from the information
+available at a given stage. We would add the seed model before equation
+generation and the elimination model at the stage where the solver
+selects a pivot. Each model would assign scores to the available choices,
+and Kira would perform the algebra for the selected choice. Training
+these models would require target integrals with known master expansions,
+the seeds that supply their reduction equations, and the steps used to
+solve those equations.
+
+\subsection{Selecting seeds before equation generation}
+To select seeds, the first model would receive the family definition,
+the target index vectors $\boldsymbol a$, the chosen master basis and
+a set of candidate seeds within specified sectors and index bounds.
+For each candidate, it would use the seed indices and the target
+information to estimate how useful the resulting equations would be
+for the requested reduction.
+
+During training, we would pair each target with the seed sets recorded
+in its known reductions. These examples would teach the model to rank
+seeds that together provide enough equations to reduce the target.
+Different reductions can use different sufficient seed sets, so the
+training data would retain these alternatives and their equation counts.
+When applying the trained model, we would select highly ranked seeds
+and ask Kira to generate their identities. If the equations leave a
+target unresolved in the chosen master basis, we would add further
+seeds and repeat the reduction. The second model would guide the
+elimination of the resulting equations.
+
+\subsection{Choosing elimination steps within the solver}
+To limit fill-in and the growth of coefficient expressions, the second
+model would rank the allowed pivot choices using the current equations,
+their nonzero coefficients and the integral ordering. For each recorded
+reduction step, the training example would contain the equations before
+the choice, the available pivots, the selected row and integral, and the
+operations that followed. The remaining recorded steps and their
+operation counts would show how that choice contributed to a complete
+reduction.
+
+During a reduction, the model would select an allowed pivot and Kira
+would carry out the row operations in Eq.~\eqref{eq:row-update}. The
+model would then receive the updated system and select the next pivot,
+continuing until Kira can complete the reduction by back substitution.
+Each choice must respect the integral ordering and chosen master basis.
+Preparing the model inputs and obtaining its scores must take less time
+than its choices save in the algebraic calculation. Kira would use its
+existing reconstruction procedure for calculations over finite fields.
+
+\subsection{Integral data required for training and testing}
+To train and test these models, we would require examples that specify
+the family denominators, kinematic parameters, target integrals and
+master basis, together with the exact coefficients in
+Eq.~\eqref{eq:reduction}. Each example would also contain its source
+IBP equations, their seeds and derivative operators, and any symmetry
+relations used. These records would connect the seed model's choices
+to the equations available to the elimination model.
+
+We would record both the operations used to construct each target and
+the elimination and back-substitution steps used to reduce it. The
+records would include intermediate equations, pivot choices and
+operation counts, so the elimination model can learn from complete
+sequences. The stored master coefficients would supply the reference
+answer for checking that each target reduces completely in the chosen
+basis, a requirement discussed in Section~\ref{sec:ibp-reduction} and
+the Kira documentation~\cite{Kira3}. During tests, the models would
+receive the problem information available at their respective stages;
+the recorded solutions would remain separate for checking the results.
+Section~\ref{sec:integrals-generation} explains how we would construct
+the target integrals and obtain these records together.
+
+\section{Target Integral Generation for Machine Learning}
+\label{sec:integrals-generation}
+To train and test the two models described in Section~\ref{sec:ml-roles},
+we would generate target integrals and record the seeds and elimination
+steps used to reduce each target. We would start from known master
+integrals, form linear combinations and use IBP identities to obtain
+further members of the same family. Repeating this construction would
+produce targets with known master expansions and recorded relations
+back to the starting basis. We would then use these relations to obtain
+the reduction sequences required for training.
+
+\subsection{Integral families and starting master bases}
+To generate examples for different types of Feynman integrals, we would
+select families with different loop orders, propagator structures,
+masses and external kinematics, using Eq.~\eqref{eq:family} to define
+each family. For each family, we would use a master basis
+$M_1,\ldots,M_{n_M}$ established by known reduction relations or a checked
+reference reduction~\cite{KiraOriginal,Kira3}. We would keep the master
+integrals symbolic, since their numerical values are unnecessary for
+constructing algebraic relations. We would start with each master
+expressed as itself. If $\boldsymbol\mu^{(m)}$ is the index vector of
+master $M_m$, this initial record is
+\begin{equation}
+ M_m=I_{\boldsymbol\mu^{(m)}},
+ \qquad
+ C_{\boldsymbol\mu^{(m)}n}=\delta_{mn},
+ \qquad m,n=1,\ldots,n_M.
+ \label{eq:master-initialization}
+\end{equation}
+Here $\delta_{mn}$ is one when $m=n$ and zero otherwise, so each master
+has coefficient one for itself and zero for the other masters. These
+records provide the starting coefficients from which later
+constructions obtain their exact master expansions.
+
+For each family, we would store the denominators $D_i$, the kinematic
+parameters $\boldsymbol x$, the dimension $d=4-2\epsilon$, the sector
+definitions and the chosen master basis. Keeping these definitions fixed
+during each construction would ensure that every integral index vector
+refers to a specified integral. To include different loop orders or
+propagator structures, we would repeat the construction in separately
+defined families.
+
+\subsection{Linear combinations with known master expansions}
+To construct target expressions with known master expansions, we would
+combine family integrals whose reductions we have already obtained.
+The initial choices would be the masters themselves, and later choices
+would also include integrals generated through the identities described
+below.
+Let $I_{\boldsymbol a^{(1)}},\ldots,I_{\boldsymbol a^{(n_T)}}$ be the
+selected integrals, where $n_T$ is their number. Choosing weights
+$w_j(\boldsymbol x,\epsilon)$ gives a target expression $\mathcal T$
+whose master expansion follows by substitution. Suppressing the common
+arguments $\boldsymbol x,\epsilon$, we obtain
+\begin{equation}
+ \mathcal T
+ =\sum_{j=1}^{n_T}w_j I_{\boldsymbol a^{(j)}}
+ =\sum_{m=1}^{n_M}C^{\mathcal T}_m M_m,
+ \qquad
+ C^{\mathcal T}_m
+ =\sum_{j=1}^{n_T}w_j C_{\boldsymbol a^{(j)}m}.
+ \label{eq:generated-combination}
+\end{equation}
+Here $j$ identifies a selected integral, $m$ identifies a master, and
+$C^{\mathcal T}_m$ is the coefficient of that master in $\mathcal T$.
+The coefficients $C_{\boldsymbol a^{(j)}m}$ are the known reductions
+defined in Eq.~\eqref{eq:reduction}, so multiplication and addition give
+the exact answer for the new expression.
+
+The weights may be constants or rational functions of the masses,
+external momentum invariants and $\epsilon$. They remain independent of
+the loop momenta, and we would choose their mass dimensions so that the
+terms in the sum have the same mass dimension. This dependence is
+consistent with the coefficient functions in IBP
+reduction~\cite{Kira3}. Varying the selected integrals and their weights
+would produce different target expressions, including expressions with
+cancellations between master coefficients. The corresponding seed and
+elimination records would include the reductions of the selected
+integrals and the operations used to combine their results.
+
+Equation~\eqref{eq:generated-combination} defines a linear combination
+of family integrals. Identifying that expression with one integral
+$I_{\boldsymbol b}$ requires an identity involving the specific index
+vector $\boldsymbol b$. We would therefore use IBP relations to
+determine combinations that correspond to individual family members,
+as described next. This step supplies targets in their integral form
+and a separate record of their known master expansions.
+
+\subsection{Constructing individual targets through IBP identities}
+To construct a new individual target with a known reduction, we would
+use IBP identities to express that integral in terms of integrals whose
+reductions are already known. We would generate the identities in
+Eq.~\eqref{eq:ibp-linear} from a seed vector $\boldsymbol\sigma$ and
+record the differentiated loop momentum and the vector $v$ used in
+Eq.~\eqref{eq:ibp}. The pair $(k,v)$ specifies
+the IBP operator, so the seed and this pair determine the source of each
+equation~\cite{KiraOriginal}. Consider an identity that contains a new
+integral $I_{\boldsymbol b}$ and $n_R$ integrals whose reductions we
+already know:
+\begin{equation}
+ h_0 I_{\boldsymbol b}
+ +\sum_{j=1}^{n_R}h_j I_{\boldsymbol a^{(j)}}=0,
+ \qquad h_0\ne0.
+ \label{eq:generation-identity}
+\end{equation}
+Here $n_R$ is the number of known integral terms, and $h_0,h_j$ are the
+coefficients obtained from the identity, with their dependence on
+$\boldsymbol x,\epsilon$ implicit. Solving for $I_{\boldsymbol b}$ and
+substituting the known master expansions gives
+\begin{equation}
+ \begin{aligned}
+ I_{\boldsymbol b}
+ &=-\sum_{j=1}^{n_R}\frac{h_j}{h_0}
+        I_{\boldsymbol a^{(j)}},\\
+ C_{\boldsymbol b m}
+ &=-\sum_{j=1}^{n_R}\frac{h_j}{h_0}
+        C_{\boldsymbol a^{(j)}m}.
+ \end{aligned}
+ \label{eq:generated-integral-reduction}
+\end{equation}
+The identity therefore determines both the new integral and its
+coefficients in the master basis. We would add this integral to the
+collection of known reductions and use it in later constructions,
+retaining the conditions under which division by $h_0$ is valid.
+Starting with the coefficients in Eq.~\eqref{eq:master-initialization}
+and applying Eq.~\eqref{eq:generated-integral-reduction} repeatedly
+would build each target from previously known integrals. To recover
+its reduction, we would follow these recorded relations from the target
+back to the masters and substitute the corresponding expressions.
+
+Some identities contain several integrals whose reductions are still
+unknown. In that case, we would combine enough relations to solve for
+those integrals before extending the collection, retaining a target
+only when these relations determine its complete master expansion.
+This may require solving a coupled system before any of its new
+integrals can enter the collection. Changing the seeds and
+IBP operators would generate targets in different sectors and with
+different numerator and denominator powers. We would record the
+quantities $t,r,s,n_{\mathrm{dot}}$ from Eq.~\eqref{eq:complexities}
+to describe this variation. Each accepted construction must give a
+reduction entirely in the chosen master basis, with the exact
+coefficients retained as its reference answer.
+
+\subsection{Records for seed selection and elimination}
+To train the models on the choices made during reduction, we would store
+the source equations and the operations used to reduce each target.
+Each record would include the family, the target index vector or target
+expression, and its exact master coefficients. For every source IBP
+equation, we would store the seed $\boldsymbol\sigma$, the operator
+$(k,v)$ and the original equation before substitutions. If a construction
+also uses a symmetry relation, we would record that relation and its
+integral mapping. These records would identify the seeds and identities
+needed to reproduce each equation used in the construction.
+
+The seed record of a new target must include the seeds used for the
+integrals that appear in its construction. For the single-identity
+step in Eq.~\eqref{eq:generation-identity}, let
+$\mathcal S_{\boldsymbol a}$ be the stored seed set for integral
+$I_{\boldsymbol a}$. The new record is then
+\begin{equation}
+ \mathcal S_{\boldsymbol b}
+ =\{\boldsymbol\sigma\}\,\cup\!
+   \bigcup_{j=1}^{n_R}\mathcal S_{\boldsymbol a^{(j)}},
+ \qquad
+ \mathcal S_{\boldsymbol\mu^{(m)}}=\varnothing.
+ \label{eq:generated-seed-record}
+\end{equation}
+The union collects the seed of the new identity and the seeds used in
+all its earlier reductions, keeping each seed once. The empty set
+$\varnothing$ applies to a starting master because expressing it as
+itself requires no reduction equations. When a construction uses
+several new identities, we would include every seed used to generate
+them. We would also retain the individual equations and their
+dependencies, since the seed set alone does not specify the reduction
+sequence.
+
+We would also store the candidate seeds considered during construction
+and the sector and index bounds used to generate them. The collected
+seeds would provide a set known to supply enough equations for each
+accepted target. If different constructions produce the same target,
+we would retain their seed sets together with the corresponding
+reduction records. For a target expression $\mathcal T$, we would
+combine the seed records of its constituent integrals to obtain an
+initial sufficient set, which cancellations in the combined expression
+may allow us to reduce further.
+
+For the elimination model, we would replay the source equations in an
+allowed forward reduction order and record the system before each
+decision. The record would contain the available pivot choices, the
+selected equation, the integral eliminated, and the row operations and
+substitutions that follow. We would require these steps to respect the
+chosen integral ordering and master basis, using the elimination and
+back-substitution operations described in
+Section~\ref{sec:kira-procedure}~\cite{Laporta}. The target's final
+master expansion would remain the reference answer for checking the
+complete sequence. This replay would turn the construction record into
+examples of the decisions that the model will encounter inside the
+solver.
+
+We would record the operations used to construct expressions and the
+operations used to reduce the source equations separately. For each
+reduction sequence, we would state how we count additions, subtractions,
+multiplications and divisions of coefficients, and record changes in
+the number of nonzero matrix entries. Each example would therefore
+include the reduction sequence, its operation counts and its exact
+result. Constructing a target in this way gives a known reduction
+without requiring a search through every possible reduction sequence.
+We would identify a seed set or sequence as minimal only when a
+mathematical argument establishes that it uses the fewest seeds or
+operations under the stated rules.
+
+\subsection{Generated data for training and tests}
+To test the models on generated targets excluded from training, we would
+divide the constructed examples into separate training and test
+collections and keep the test solutions hidden from the models.
+Targets related by symmetry, integral relabeling or different
+construction histories would remain in the same collection, so a
+stored version of a test target cannot also become a training example.
+We would reserve complete families to measure performance on families
+absent from training, and include generated targets with larger powers
+and higher loop orders to examine performance on larger reductions.
+
+The seed model would learn from the recorded sufficient seed sets, and
+the elimination model would learn from the recorded equations and
+reduction steps. During tests, each model would receive only the
+corresponding problem information, and the exact master coefficients
+would provide the reference for checking its result. For examples with
+an established minimum, the recorded operation counts would allow a
+comparison with that minimum. The remaining examples would provide
+known reductions against which to compare the model's choices.
+
+Before including an example in either collection, we would check its
+identities and reproduce its master expansion from the stored source
+equations. Keeping the original equations and their construction
+history would make these checks possible for both individual integrals
+and linear combinations of integrals.
+
+\clearpage
+\renewcommand{\refname}{Citations}
+\bibliographystyle{unsrt}
+\bibliography{references}
+
+\end{document}

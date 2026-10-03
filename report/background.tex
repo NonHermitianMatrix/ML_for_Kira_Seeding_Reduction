@@ -1,0 +1,448 @@
+\section{Introduction}
+\label{sec:introduction}
+Feynman integrals arise in higher-order perturbative corrections to
+scattering amplitudes and particle decay amplitudes. In QCD, these
+corrections involve quark and gluon loops and contribute to predictions
+for cross sections and decay rates. Calculating a loop contribution
+requires integration over the independent internal momenta that remain
+after imposing momentum conservation~\cite{Weinzierl2010}.
+
+The scalar integrals that appear in an amplitude have the general form
+\begin{equation}
+ \mathcal J=
+ \left(\prod_{k=1}^{L}\int
+       \frac{\mathrm{d}^{d}\ell_k}{\mathrm{i}\pi^{d/2}}\right)
+ \frac{\mathcal N(\boldsymbol\ell,\boldsymbol p)}
+      {\prod_{i=1}^{n_{\mathrm{phys}}}D_i^{a_i}},
+ \qquad D_i=q_i^2-m_i^2+\mathrm{i}0.
+ \label{eq:general-integral}
+\end{equation}
+Here $L$ is the number of loops and
+$\boldsymbol\ell=(\ell_1,\ldots,\ell_L)$ is the list of independent loop
+momenta over which we integrate. The number of independent external
+momenta is $E$, and we keep these momenta,
+$\boldsymbol p=(p_1,\ldots,p_E)$, fixed during integration. The numerator
+$\mathcal N$ is a polynomial obtained from the spin and tensor algebra;
+we leave its mass dependence implicit in the notation.
+The number of physical denominators is $n_{\mathrm{phys}}$, and each
+$D_i$ corresponds to an internal particle line with momentum $q_i$ and
+mass $m_i$. The positive integer $a_i$ is the power of $D_i$ in the
+denominator, and $q_i$ is a fixed linear combination of loop and external
+momenta, with $q_i^2=q_i\cdot q_i$ denoting the Lorentz scalar product.
+
+The integration dimension is $d=4-2\epsilon$, where $\epsilon$ is the
+regulator used to define divergent integrals, so the result depends on
+$\epsilon$ as well as the external momenta and masses. The factor
+$1/(\mathrm{i}\pi^{d/2})$ is our normalization convention for each
+integration measure, with $\mathrm{i}^2=-1$. In each denominator,
+$\mathrm{i}0$ is an infinitesimal positive imaginary term that specifies
+how to integrate past a propagator pole, where $q_i^2=m_i^2$.
+
+Higher loop orders produce collections of integrals with related numerators
+and denominators and algebraic identities can be used to express them in
+terms of an independent set of master integrals. Kira automates this
+reduction~\cite{KiraOriginal}, after which the calculation requires the
+values of the master integrals.
+To explain how the reduction works and where machine learning (ML) could
+speed it up, we first define the notation used in this paper, then derive
+the identities and describe how Kira solves the resulting equations.
+
+\section{The mathematical form of Feynman integrals}
+\label{sec:integral-form}
+To label the integrals related to Eq.~\eqref{eq:general-integral}, we
+specify their momentum dependence and write the numerator and denominator
+powers as a vector of integers. This vector identifies each integral as
+an unknown in the reduction equations.
+
+\subsection{Loop momenta, propagators and regularization}
+After choosing how the loop and external momenta flow through the internal
+lines, we write each physical denominator as
+\begin{equation}
+ D_i=q_i^2-m_i^2+\mathrm{i}0,
+ \qquad
+ q_i=\sum_{k=1}^{L}\alpha_{ik}\ell_k
+       +\sum_{\beta=1}^{E}\eta_{i\beta}p_\beta .
+ \label{eq:propagator}
+\end{equation}
+The constants $\alpha_{ik}$ and $\eta_{i\beta}$ specify which loop and
+external momenta make up $q_i$, with indices $k,j$ for loop momenta and
+$\beta,\gamma$ for external momenta. Squaring $q_i$ gives the scalar
+products $\ell_k\cdot\ell_j$, $\ell_k\cdot p_\beta$ and
+$p_\beta\cdot p_\gamma$, and those containing loop momenta vary during
+integration. The vector $\boldsymbol x$ contains the independent external
+scalar products and squared masses, which are the kinematic parameters
+we keep fixed during integration.
+
+Loop integrals can diverge at large momenta or when massless momenta become
+small or parallel. Dimensional regularization defines these integrals at
+values of $d$ for which they converge and extends the result by analytic
+continuation to $d=4-2\epsilon$, using additional regulators where
+necessary. In an expansion around $\epsilon=0$, the divergences appear
+as negative powers of $\epsilon$, which
+renormalization and infrared cancellation in the observable address later
+in the calculation~\cite{Weinzierl2010}. Having specified the regulated
+measure and momentum dependence, we can now use the powers of the
+numerator and denominator factors to label individual integrals.
+
+\subsection{A common notation for an integral family}
+We add auxiliary expressions to the physical denominators so that we can
+write every required loop-momentum scalar product in terms of the list
+$D_1,\ldots,D_N$ and the fixed parameters $\boldsymbol x$. Here $N$ is
+the number of expressions in the list, and the auxiliary expressions
+allow us to represent numerator factors. Writing the numerator in terms
+of this list expresses $\mathcal J$ as a linear combination of integrals
+of the form
+\begin{equation}
+ I_{\boldsymbol a}(\boldsymbol x,\epsilon)
+ =\int_{\ell}\prod_{i=1}^{N}D_i^{-a_i},
+ \qquad
+ \int_{\ell}\equiv
+ \prod_{k=1}^{L}\int\frac{\mathrm{d}^{d}\ell_k}{\mathrm{i}\pi^{d/2}},
+ \qquad \boldsymbol a=(a_1,\ldots,a_N)\in\mathbb Z^N.
+ \label{eq:family}
+\end{equation}
+Here $\int_\ell$ is shorthand for the loop integration measure and
+$\boldsymbol a$ is the vector of $N$ integer powers, with $\mathbb Z$
+denoting the set of integers. These powers can be positive, zero or
+negative, so we can
+write numerator and denominator factors in the equivalent form
+\begin{equation}
+ I_{\boldsymbol a}(\boldsymbol x,\epsilon)
+ =\int_\ell
+ \frac{\prod_{i:a_i<0}D_i^{-a_i}}
+      {\prod_{i:a_i>0}D_i^{a_i}}.
+ \label{eq:index-signs}
+\end{equation}
+A positive index places $D_i^{a_i}$ in the denominator, a negative index
+places $D_i^{-a_i}$ in the numerator, and a zero index removes the factor,
+with an empty product equal to one. Auxiliary expressions used only as
+numerators therefore have nonpositive indices. An irreducible scalar
+product is a numerator scalar product that cannot be written as a linear
+combination of the physical denominators and terms depending only on
+$\boldsymbol x$~\cite{Weinzierl2022}.
+
+An integral family contains the integrals obtained by varying
+$\boldsymbol a$ for a fixed list $D_1,\ldots,D_N$ and fixed kinematics.
+Within this family, the target list specifies the integrals that the
+amplitude requires, and grouping family members by their positive indices
+organizes them into sectors.
+
+\subsection{Sectors and the organization of related integrals}
+A sector is a set of integrals with the same positive-index positions,
+so they contain the same denominators. We assign a label to each sector
+using
+\begin{equation}
+ \theta_i(\boldsymbol a)=
+ \begin{cases}1,&a_i>0,\\0,&a_i\leq0,\end{cases}
+ \qquad
+ S(\boldsymbol a)=\sum_{i=1}^{N}2^{i-1}\theta_i(\boldsymbol a).
+ \label{eq:sector}
+\end{equation}
+The indicator $\theta_i$ is one when denominator $i$ is present and zero
+otherwise, and $S$ is an integer that identifies this set of denominators.
+Integrals with different powers of the same denominators belong to the
+same sector because $S$ depends only on which indices are positive.
+Removing one or more denominators gives a subsector containing a proper
+subset of the original sector's denominators.
+
+Scaleless sectors contain no nonzero mass or kinematic scale and therefore
+vanish in dimensional regularization, while changes of loop integration
+variables can yield symmetry relations between integrals. Kira uses these
+zero sectors and symmetry mappings to reduce the number of
+unknowns~\cite{KiraOriginal}. We can then use the sector and index labels
+to write the identities that relate the remaining family members.
+
+\section{From integration to algebraic reduction}
+\label{sec:ibp-reduction}
+To express the targets in terms of master integrals, we generate
+relations between family members through integration by parts and solve
+the resulting equations. Evaluating the master integrals then gives
+the target integral values needed to calculate the amplitude.
+
+\subsection{How integration by parts produces relations}
+For differentiable functions $f(z)$ and $g(z)$ of a real variable $z$, the
+product rule gives the integration identity between endpoints $z_0,z_1$:
+\begin{equation}
+ \int_{z_0}^{z_1} f'(z)g(z)\,\mathrm{d}z
+ =[f(z)g(z)]_{z_0}^{z_1}
+ -\int_{z_0}^{z_1} f(z)g'(z)\,\mathrm{d}z.
+ \label{eq:ordinary-ibp}
+\end{equation}
+Primes denote derivatives with respect to $z$, and the brackets denote the
+endpoint difference $f(z_1)g(z_1)-f(z_0)g(z_0)$. To apply this product rule
+to loop-momentum derivatives, we derive the integration-by-parts (IBP)
+identity where the regulated integral has a vanishing boundary term and then
+extend it by analytic continuation~\cite{ChetyrkinTkachov,Weinzierl2022}.
+For a loop momentum $\ell_k$ and a vector
+$v\in\{\ell_1,\ldots,\ell_L,p_1,\ldots,p_E\}$, the identity is
+\begin{equation}
+ 0=\int_{\ell}\frac{\partial}{\partial\ell_k^\mu}
+       \left(v^\mu\prod_{i=1}^{N}D_i^{-a_i}\right).
+ \label{eq:ibp}
+\end{equation}
+The index $\mu$ is a spacetime index, and a repeated Lorentz index means
+that we sum over components using the spacetime metric. The derivative
+acts on both $v^\mu$ and the factors $D_i^{-a_i}$, so the product rule gives
+\begin{equation}
+ 0=\int_{\ell}\left[
+ \frac{\partial v^\mu}{\partial\ell_k^\mu}
+ -\sum_{i=1}^{N}a_i\,
+   \frac{v^\mu(\partial D_i/\partial\ell_k^\mu)}{D_i}
+ \right]\prod_{j=1}^{N}D_j^{-a_j}.
+ \label{eq:ibp-expanded}
+\end{equation}
+The first term equals $d$ for $v=\ell_k$ and vanishes when $v$ is an
+external momentum or another independent loop momentum. Differentiating
+an inverse propagator produces scalar products, which we express through
+the family basis to convert each term into an integral with shifted indices:
+\begin{equation}
+ \sum_{j=1}^{n_\lambda}
+ c_{\lambda j}(\boldsymbol a;\boldsymbol x,\epsilon)
+ I_{\boldsymbol a+\boldsymbol\Delta_{\lambda j}}
+ (\boldsymbol x,\epsilon)=0.
+ \label{eq:ibp-linear}
+\end{equation}
+Here $\lambda$ identifies the chosen pair $(k,v)$, $n_\lambda$ is the number of
+terms, and $\boldsymbol\Delta_{\lambda j}$ is the integer change in the
+index vector for term $j$. Differentiation gives the coefficient
+$c_{\lambda j}$, which depends on the integral indices and the parameters
+$\boldsymbol x,\epsilon$~\cite{ChetyrkinTkachov}.
+
+The $L$ choices of differentiated momentum and $L+E$ choices of $v$ give
+$L(L+E)$ basic identities at each index vector, some of which may depend
+linearly on the others. Further relations follow from Lorentz invariance
+because a common rotation or Lorentz boost of all external momenta
+preserves a scalar integral, giving the infinitesimal identity
+\begin{equation}
+ \sum_{\beta=1}^{E}\left(
+ p_\beta^\nu\frac{\partial}{\partial p_{\beta\mu}}
+ -p_\beta^\mu\frac{\partial}{\partial p_{\beta\nu}}
+ \right) I_{\boldsymbol a}=0.
+ \label{eq:li}
+\end{equation}
+Here $\mu,\nu$ are free spacetime indices, meaning that the identity holds
+for each pair of components, and the derivatives act on the
+external-momentum dependence of the integral. Contracting these indices
+with external momenta gives scalar relations~\cite{GehrmannRemiddi}
+that join the IBP and symmetry identities to form the reduction system.
+
+\subsection{From relations to master integrals}
+Let $n_I$ be the number of distinct integrals in the generated equations
+and $n_{\mathrm{eq}}$ the number of equations. We arrange these integrals
+in a column vector so that the system takes the matrix form
+\begin{equation}
+ A(\boldsymbol x,\epsilon)\,\boldsymbol I=0,
+ \qquad
+ \boldsymbol I=(I_{\boldsymbol a^{(1)}},\ldots,
+ I_{\boldsymbol a^{(n_I)}})^{\mathsf T}.
+ \label{eq:matrix}
+\end{equation}
+The superscript $\mathsf T$ denotes transpose, so $\boldsymbol I$ is a
+column vector of integrals whose dependence on $\boldsymbol x,\epsilon$
+we leave implicit here. The matrix $A$ has $n_{\mathrm{eq}}$ rows and
+$n_I$ columns, with each entry $A_{ij}$ giving the coefficient of integral
+$j$ in equation $i$. Solving this system expresses dependent integrals in
+terms of an independent set. This set is a master basis if the reduction
+relations express every required integral as a linear combination of its
+members. For the standard class of Feynman integrals at fixed graph,
+this basis contains a finite number
+of masters~\cite{SmirnovPetukhov}. We write them as
+$M_1,\ldots,M_{n_M}$, where $n_M$ is the number of master integrals, so
+the reduction formula is
+\begin{equation}
+ I_{\boldsymbol a}(\boldsymbol x,\epsilon)
+ =\sum_{m=1}^{n_M}C_{\boldsymbol a m}(\boldsymbol x,\epsilon)
+ M_m(\boldsymbol x,\epsilon).
+ \label{eq:reduction}
+\end{equation}
+Here $C_{\boldsymbol a m}$ is the coefficient of master $M_m$ in the
+reduction of target $I_{\boldsymbol a}$. The solver obtains it by adding,
+multiplying and dividing the identity coefficients, so it is a rational
+function, meaning a ratio of polynomials in $\boldsymbol x,\epsilon$. Different
+independent sets can define different master bases, and an insufficient
+equation set can leave additional integrals unresolved. Establishing the
+master basis therefore requires checking that the generated equations
+are enough to reduce the required integrals.
+
+Equation~\eqref{eq:reduction} gives the coefficients multiplying the
+masters, whose evaluation requires a further calculation, for example by
+solving differential equations with known values or limits as boundary
+conditions~\cite{GehrmannRemiddi}. Kira provides the reduction rules
+needed for this calculation by generating and processing the identities
+through the procedure described next.
+
+\section{How Kira performs the reduction}
+\label{sec:kira-procedure}
+Kira implements the Laporta approach by generating a finite set of
+identities and eliminating integrals according to an
+ordering~\cite{Laporta}. To obtain the coefficients in
+Eq.~\eqref{eq:reduction}, Kira selects seeds, removes redundant
+equations and solves the retained system. We examine how Kira performs
+these steps to specify the seed and elimination choices that the
+proposed models would make.
+
+\subsection{Kira's input and seed generation}
+The user supplies the families in Eq.~\eqref{eq:family}, relations among
+the parameters $\boldsymbol x$, the target list, and bounds on equation
+generation so that Kira can initialize the families and sectors. During
+this initialization, Kira detects scaleless sectors and identifies symmetry
+relations and mappings between compatible families~\cite{KiraOriginal}.
+
+A seed specifies the index vector $\boldsymbol a$ at which Kira evaluates
+Eq.~\eqref{eq:ibp-linear} to generate several derivative identities, and
+the seed set may include integrals beyond the target list. The shifts
+$\boldsymbol\Delta_{\lambda j}$ in these identities can introduce further
+integrals outside the seed set, so the resulting system depends on both
+the chosen seeds and the terms generated from them. To set limits on the
+indices of the seeds, Kira uses the quantities
+\begin{align}
+ t(\boldsymbol a)&=\sum_{i=1}^{N}\theta_i(\boldsymbol a),
+ &r(\boldsymbol a)&=\sum_{a_i>0}a_i,\\
+ s(\boldsymbol a)&=-\sum_{a_i<0}a_i,
+ &n_{\mathrm{dot}}(\boldsymbol a)&=r(\boldsymbol a)-t(\boldsymbol a).
+ \label{eq:complexities}
+\end{align}
+Here $t$ is the number of distinct denominators, $r$ is the sum of their
+powers, and $s$ is the sum of the numerator powers. The quantity
+$n_{\mathrm{dot}}$ is the sum of the extra denominator powers beyond
+one for each denominator. We use this symbol to keep $d$ reserved for the
+integration dimension, and we restrict equation generation by specifying
+the allowed sectors and limits
+\begin{equation}
+ r\leq r_{\max},\qquad s\leq s_{\max},\qquad
+ n_{\mathrm{dot}}\leq n_{\mathrm{dot},\max},
+ \label{eq:seed-bounds}
+\end{equation}
+where $r_{\max}$, $s_{\max}$ and $n_{\mathrm{dot},\max}$ are the upper
+limits on the corresponding quantities. The user sets $r_{\max}$ and
+$s_{\max}$ and may also set $n_{\mathrm{dot},\max}$. Because these choices determine which seeds
+contribute equations, a reduction run must establish whether the bounds
+supply enough relations for the targets~\cite{Kira12}.
+
+Kira 3 changes seeding in symmetry-related sectors and provides the optional
+\texttt{truncate\_sp} setting to restrict numerator seeding in subsectors,
+with parameter choices that require checks against the expected master
+basis~\cite{Kira3}. The generated system can still contain redundant
+equations, which elimination identifies as it processes the relations
+into reduction rules.
+
+\subsection{Integral ordering, sector order and forward elimination}
+Elimination solves an identity for one integral and substitutes the result
+into other identities, using an integral ordering to select which unknown
+to eliminate from each equation. Kira defines these orderings through
+sector labels and the powers of the numerator and denominator factors,
+with choices that prioritize numerator powers or repeated denominators
+and thereby affect the master basis and
+runtime~\cite{Kira12}.
+
+To describe this procedure, write $I_j=I_{\boldsymbol a^{(j)}}$ for the
+integrals in Eq.~\eqref{eq:matrix} and choose the ordering
+$I_1\succ I_2\succ\cdots\succ I_{n_I}$, where $\succ$ gives priority
+for elimination. In a row whose first nonzero term contains $I_k$, let
+$b_j$ denote the coefficient of $I_j$, so choosing the nonzero coefficient
+$b_k$ as the pivot gives
+\begin{equation}
+ b_k I_k+\sum_{j>k}b_j I_j=0
+ \quad\Longrightarrow\quad
+ I_k=-\sum_{j>k}\frac{b_j}{b_k}I_j.
+ \label{eq:pivot}
+\end{equation}
+The coefficients $b_j$ depend on $\boldsymbol x,\epsilon$, and substituting
+this expression into the other rows removes their dependence on $I_k$.
+Repeating this step gives forward elimination, which builds a triangular
+system in which each pivot integral depends on integrals later in the
+ordering. Back substitution then replaces the remaining pivot integrals
+using their own rules, completing the Laporta solution~\cite{Laporta}.
+
+Sector scheduling sets the order in which the solver processes groups of
+integrals or equations, taking into account which other integrals their
+equations contain. Ordinary IBP identities for a sector involve that
+sector and its subsectors because nonpositive indices remain nonpositive
+when applying the derivative. Equations for one sector can therefore
+depend on integrals from its subsectors. The Kira 3 description starts
+equation generation with sectors earlier in its ordering and inserts
+previously obtained pivot relations into new equations~\cite{Kira3},
+with the order of processing depending on the stage of the reduction.
+
+When several rows share the same first integral, the choice of pivot row
+changes the substitutions that follow. Choosing row $\rho$ to eliminate
+column $k$, for example, updates row $i$ by
+\begin{equation}
+ A_{ij}\ \longleftarrow\ A_{ij}
+ -\frac{A_{ik}}{A_{\rho k}}A_{\rho j},
+ \qquad A_{\rho k}\ne0.
+ \label{eq:row-update}
+\end{equation}
+Here $i$ is the index of a row other than the pivot row, so $i\ne\rho$,
+and $j$ is the column index.
+Subtracting the stated multiple of row $\rho$ sets the coefficient in
+column $k$ to zero and can create nonzero entries in other columns,
+a change called fill-in when a previously zero entry becomes nonzero.
+These substitutions also make the coefficient expressions longer by
+combining their numerators and denominators, so elimination can require
+more time and memory as it proceeds. Redundant equations add to this
+work~\cite{Kant}, so Kira uses modular elimination to
+select equations before processing their full symbolic coefficients.
+
+\subsection{Removing redundant equations and selecting target dependencies}
+To reduce the number of equations it must solve, Kira identifies rows
+that follow from other equations. Elimination reduces every coefficient
+in such a row to zero, allowing the solver to omit that row. Kira
+tests these dependencies with modular arithmetic~\cite{KiraOriginal}
+by substituting sample values $\boldsymbol x_0,\epsilon_0$ and mapping
+the coefficients to a finite field $\mathbb F_P$ for a prime integer $P$:
+\begin{equation}
+ A(\boldsymbol x,\epsilon)
+ \longmapsto A(\boldsymbol x_0,\epsilon_0)\bmod P.
+ \label{eq:modular-selection}
+\end{equation}
+Integers from $0$ to $P-1$ represent the elements of $\mathbb F_P$, and
+addition and multiplication keep results in this range by taking the
+remainder upon division by $P$. Division uses the modular inverse of a
+nonzero element, which multiplies that element to one modulo $P$, so the
+sampling procedure excludes points where a required denominator vanishes.
+This arithmetic keeps field elements bounded in size while allowing the
+solver to identify independent rows and retain their original symbolic
+identities.
+
+The matrix rank is the largest number of independent rows, where no row
+is a linear combination of the others in the chosen set. Some sample
+values can make otherwise independent rows dependent, giving a rank
+smaller than that of the symbolic matrix. Checks must account for this
+possibility when using the probabilistic equation-selection method
+developed by Kant~\cite{Kant}.
+
+Kira also tracks which independent equations contribute to the target
+reductions, using the dependencies of the forward-eliminated system for
+this selection in Kira 3~\cite{Kira3}. Seed selection therefore supplies
+the integrals from which Kira generates equations, and equation selection
+then retains the relations needed for the targets so that the solver can
+perform the full reduction on this smaller system.
+
+\subsection{Back substitution and the final symbolic result}
+To obtain $C_{\boldsymbol a m}$ from the retained equations, Kira applies
+back substitution to the pivot rules produced by forward elimination.
+Since these rules can contain other pivot integrals, back substitution
+inserts their expressions recursively until the right-hand sides contain
+only masters, giving Eq.~\eqref{eq:reduction}. Kira's original symbolic
+solver carries out this calculation using rational-function arithmetic
+through the computer algebra system Fermat~\cite{KiraOriginal}.
+
+Kira also solves systems at finite-field sample points and reconstructs the
+rational coefficients with FireFly, the reconstruction library introduced
+into the solver in Kira 2.0~\cite{Kira2}. In this procedure, each sampled
+coefficient has the form
+\begin{equation}
+ C_{\boldsymbol a m}(\boldsymbol x_0,\epsilon_0)\bmod P.
+ \label{eq:sampled-coefficient}
+\end{equation}
+The modular operations use exact arithmetic, and reconstruction recovers
+$C_{\boldsymbol a m}(\boldsymbol x,\epsilon)$ from sufficient samples
+before checking the result at additional points. Reconstruction therefore
+forms part of the calculation of the symbolic reduction coefficients,
+after which the master integrals still require evaluation~\cite{Kira2}.
+
+Because seed selection determines the equations that enter this procedure
+and elimination decisions determine the substitutions and intermediate
+expressions, the proposed ML models would guide these two operations to
+reduce the time and memory needed for the reduction.
