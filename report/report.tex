@@ -103,25 +103,296 @@ the target integrals and obtain these records together.
 \section{Target Integral Generation for Machine Learning}
 \label{sec:integrals-generation}
 To train and test the two models described in Section~\ref{sec:ml-roles},
-we would generate target integrals and record the seeds and elimination
-steps used to reduce each target. We would start from known master
-integrals, form linear combinations and use IBP identities to obtain
-further members of the same family. Repeating this construction would
-produce targets with known master expansions and recorded relations
-back to the starting basis. We would then use these relations to obtain
-the reduction sequences required for training.
+we will construct target integrals from master integrals and retain the
+identities, seeds and algebraic steps used in each construction. We have
+completed the first stage by identifying master bases for 16 one-loop
+and two-loop families with Kira 3.1. These bases contain 49 entries when
+counted separately for each family. The following subsections define
+the families and explain how we obtained and checked their bases,
+before describing the planned construction of targets from these
+masters. The completed calculation determines symbolic integral
+representatives; target construction and the calculation of their
+symbolic reduction coefficients remain subsequent stages.
 
-\subsection{Integral families and starting master bases}
-To generate examples for different types of Feynman integrals, we would
-select families with different loop orders, propagator structures,
-masses and external kinematics, using Eq.~\eqref{eq:family} to define
-each family. For each family, we would use a master basis
-$M_1,\ldots,M_{n_M}$ established by known reduction relations or a checked
-reference reduction~\cite{KiraOriginal,Kira3}. We would keep the master
-integrals symbolic, since their numerical values are unnecessary for
-constructing algebraic relations. We would start with each master
-expressed as itself. If $\boldsymbol\mu^{(m)}$ is the index vector of
-master $M_m$, this initial record is
+\subsection{One-loop families and their kinematics}
+We use the integral definition and normalization in
+Eq.~\eqref{eq:family}, with $d=4-2\epsilon$ and inverse propagators
+$D_i=q_i^2-m_i^2+\mathrm{i}0$. For each family, we specify the internal
+momenta $q_i$, the masses $m_i$ and the scalar products of the external
+momenta, so every index vector defines a particular integral. In the
+equations below we suppress the common $\mathrm{i}0$ prescription.
+We write $\mu=m^2$ for a common nonzero squared mass and
+$\mu_1=m_1^2$, $\mu_2=m_2^2$ for two independent nonzero squared masses.
+The symbols $x_s$ and $x_t$ denote momentum invariants and remain
+distinct from the index sums $s$ and $t$ in
+Eq.~\eqref{eq:complexities}.
+
+The one-loop collection begins with a massive tadpole, whose single
+inverse propagator is $D_1=\ell_1^2-\mu$ and which has no external
+momentum. We then include four bubble families with external momentum
+$p$ and inverse propagators
+\begin{equation}
+ D_1=\ell_1^2-m_1^2,\qquad
+ D_2=(\ell_1-p)^2-m_2^2,\qquad p^2=x_s.
+ \label{eq:generated-bubble-family}
+\end{equation}
+The squared-mass pairs are $(0,0)$, $(\mu,0)$, $(\mu,\mu)$ and
+$(\mu_1,\mu_2)$, corresponding to a massless bubble, a bubble with one
+massive line, an equal-mass bubble and an unequal-mass bubble.
+We keep $x_s$ as an independent nonzero scale, with the massive
+families defined at generic values of their independent parameters.
+
+To include three-point integrals, we define triangle families by
+\begin{equation}
+ \begin{aligned}
+ D_1&=\ell_1^2-m_1^2,&
+ D_2&=(\ell_1-p_1)^2-m_2^2,&
+ D_3&=(\ell_1-p_1-p_2)^2-m_3^2,\\
+ p_1^2&=u_1,&p_2^2&=u_2,&(p_1+p_2)^2&=u_3.
+ \end{aligned}
+ \label{eq:generated-triangle-family}
+\end{equation}
+Here $u_1,u_2,u_3$ are the squared external momenta, also called
+external virtualities, and
+$p_1\cdot p_2=(u_3-u_1-u_2)/2$ fixes the remaining external scalar
+product. We use three massless families with
+$(u_1,u_2,u_3)=(0,0,x_s)$, $(0,x_2,x_3)$ and $(x_1,x_2,x_3)$.
+The parameters $x_1,x_2,x_3$ denote independent nonzero virtualities.
+We also use two families with $m_1^2=m_2^2=m_3^2=\mu$ and
+virtualities $(0,0,x_s)$ and $(x_1,x_2,x_3)$. Thus the five triangle
+families vary both the internal masses and the number of nonzero
+external virtualities.
+
+For four-point integrals, we use three massless box families with
+$p_4=-p_1-p_2-p_3$ and
+\begin{equation}
+ \begin{aligned}
+ D_1&=\ell_1^2,&D_2&=(\ell_1-p_1)^2,\\
+ D_3&=(\ell_1-p_1-p_2)^2,&
+ D_4&=(\ell_1-p_1-p_2-p_3)^2,\\
+ x_s&=(p_1+p_2)^2,&x_t&=(p_2+p_3)^2.
+ \end{aligned}
+ \label{eq:generated-box-family}
+\end{equation}
+Writing $u_i=p_i^2$ for $i=1,\ldots,4$, we fix the independent
+external scalar products through
+\begin{equation}
+ p_1\cdot p_2=\frac{x_s-u_1-u_2}{2},\qquad
+ p_2\cdot p_3=\frac{x_t-u_2-u_3}{2},\qquad
+ p_1\cdot p_3=\frac{u_4+u_2-x_s-x_t}{2}.
+ \label{eq:generated-box-kinematics}
+\end{equation}
+The virtuality choices are $(0,0,0,0)$, $(0,0,0,x_4)$ and
+$(x_1,x_2,x_3,x_4)$, where $x_4$ is the fourth nonzero virtuality
+parameter. These choices give boxes with zero, one and four off-shell
+legs; in this classification an on-shell external leg has $p_i^2=0$.
+We treat the remaining invariants as independent subject to the stated
+relations. These definitions give 13 one-loop families, which we
+extend with the following three two-loop families.
+
+\subsection{Two-loop families and auxiliary expressions}
+The two-loop families use loop momenta $\ell_1,\ell_2$. For a massless
+two-point integral with external momentum $p$ and $p^2=x_s$, we take
+\begin{equation}
+ (D_1,D_2,D_3,D_4,D_5)
+ =\bigl(\ell_1^2,\ell_2^2,(\ell_1-\ell_2)^2,
+        (\ell_1-p)^2,(\ell_2-p)^2\bigr).
+ \label{eq:generated-two-loop-propagator}
+\end{equation}
+These five expressions determine the five loop-dependent scalar
+products $\ell_1^2,\ell_2^2,\ell_1\cdot\ell_2,\ell_1\cdot p$ and
+$\ell_2\cdot p$. Varying their indices therefore includes numerator
+insertions as well as repeated propagators.
+
+For the equal-mass sunrise with the same external invariant, we use
+\begin{equation}
+ \begin{aligned}
+ D_1&=\ell_1^2-\mu,&D_2&=\ell_2^2-\mu,&
+ D_3&=(p-\ell_1-\ell_2)^2-\mu,\\
+ D_4&=(p-\ell_1)^2,&D_5&=(p-\ell_2)^2,&
+ a_4,a_5&\leq0.
+ \end{aligned}
+ \label{eq:generated-sunrise-family}
+\end{equation}
+The first three expressions are the physical inverse propagators.
+The auxiliary expressions $D_4,D_5$ complete the five scalar products
+needed to express the derivatives in the IBP identities. Their
+nonpositive indices restrict them to numerator factors or their
+absence, so the top sector contains only $D_1,D_2,D_3$ as
+denominators. We keep $x_s$ and $\mu$ independent.
+
+The final family is the equal-mass two-loop vacuum sunset, which has
+no external momentum and uses
+\begin{equation}
+ D_1=\ell_1^2-\mu,\qquad D_2=\ell_2^2-\mu,\qquad
+ D_3=(\ell_1-\ell_2)^2-\mu.
+ \label{eq:generated-vacuum-family}
+\end{equation}
+These three expressions determine all loop scalar products for this
+vacuum family. For every family, we include the sector containing all
+physical propagators and all its subsectors, so the resulting basis
+also accounts for integrals with removed propagators. The number of
+physical propagators in this top sector is denoted by $t_{\rm top}$.
+It is one, two, three and four for the tadpole, bubble, triangle and
+box families, respectively, five for the massless two-loop propagator,
+and three for the sunrise and vacuum families. This number sets the
+initial range of identities used to identify the masters.
+
+\subsection{Identification and checks of the master bases}
+For each family, we used Kira 3.1 to generate IBP relations together
+with the applicable Lorentz-invariance and symmetry relations.
+Kira removes scaleless sectors and uses finite-field elimination
+to identify the integrals that remain independent in the equations
+needed for a selected integral range~\cite{KiraOriginal,Kira3}.
+We used Kira's integral ordering~1 throughout, which orders sectors
+by their labels and prefers numerator insertions over extra
+denominator powers when selecting representatives within a
+sector~\cite{Kira12}. Keeping this ordering fixed gives a specified
+basis against which to compare later calculations.
+
+We first generated identities from seeds satisfying
+\begin{equation}
+ r\leq t_{\rm top}+2,\qquad s\leq2,\qquad
+ n_{\rm dot}\leq2,
+ \label{eq:master-discovery-seeds}
+\end{equation}
+and selected integrals to probe the basis within
+\begin{equation}
+ r\leq t_{\rm top}+1,\qquad s\leq1,\qquad
+ n_{\rm dot}\leq1.
+ \label{eq:master-discovery-probes}
+\end{equation}
+Here $r$ is the sum of positive indices, $s$ is minus the sum of
+negative indices and $n_{\rm dot}=r-t$ is the number of extra
+denominator powers, as defined in Eq.~\eqref{eq:complexities}.
+Both sets of limits apply to the top sector and its subsectors.
+The probe integrals specify the range for which Kira must identify
+the required masters, while the wider seed range supplies relations
+that can eliminate the additional integrals introduced by index
+shifts. These probes serve the basis calculation; the ML examples
+will come from the subsequent reverse construction.
+
+Kira evaluated the coefficients of these relations over a finite
+field using the substitution in Eq.~\eqref{eq:modular-selection}.
+For the first calculation we used the prime $P_1=2147483647$ and
+dimension value $d_1=37$. To specify the kinematic substitutions,
+define the ordered parameter list
+\begin{equation}
+ \boldsymbol z=(x_s,x_t,x_1,x_2,x_3,x_4,\mu,\mu_1,\mu_2).
+ \label{eq:master-sample-parameters}
+\end{equation}
+The first sample was
+\begin{equation}
+ \boldsymbol z^{(1)}=(-13,-19,-11,-17,-29,-43,7,7,23),
+ \label{eq:master-first-sample}
+\end{equation}
+using only the entries present in each family and retaining all
+zeros and equal-mass conditions in its definition. We interpret
+these assignments modulo $P_1$ when evaluating the identity
+coefficients. The dimension sample corresponds to
+$\epsilon_1=(4-d_1)/2$ in the same field. These substitutions
+test algebraic relations; the master labels continue to refer to
+integrals at symbolic $\boldsymbol x,\epsilon$.
+
+We then enlarged the seed and probe ranges to check whether the
+initial basis remained sufficient:
+\begin{equation}
+ \begin{aligned}
+ \text{seeds:}\quad&
+ r\leq t_{\rm top}+3,\qquad s\leq3,\qquad n_{\rm dot}\leq3,\\
+ \text{probes:}\quad&
+ r\leq t_{\rm top}+2,\qquad s\leq2,\qquad n_{\rm dot}\leq2.
+ \end{aligned}
+ \label{eq:master-expanded-bounds}
+\end{equation}
+We repeated the calculation first at the original sample and then
+at a second sample with prime $P_2=1000000007$, dimension $d_2=41$
+and
+\begin{equation}
+ \boldsymbol z^{(2)}=(-31,-47,-23,-37,-53,-71,11,11,29).
+ \label{eq:master-second-sample}
+\end{equation}
+Changing the prime, the dimension and the independent kinematic
+parameters provides a second check of the linear dependencies,
+since particular substitutions can lower the rank of the
+symbolic coefficient matrix~\cite{Kant}.
+
+In both enlarged calculations, we supplied the original masters as
+the preferred basis and enabled Kira's check for additional or
+unused masters~\cite{Kira3}. We required the complete list of
+master index vectors to agree in all three calculations, and
+also checked each vector against its family definition and sector
+label. All 16 families satisfied these requirements, giving
+48 completed master-identification calculations. The agreement
+provides evidence for basis stability over the tested index ranges
+and sample points. Completeness for arbitrary integer indices
+would require further relations or an independent argument, and
+special kinematic limits can change the basis.
+
+We stopped each calculation after master identification. This stage
+determines which symbolic integrals form the starting basis within
+the checked domains; obtaining the rational reduction coefficients
+for new targets will require the algebraic construction described
+below. The numerical values and $\epsilon$ expansions of the
+master integrals remain separate from this basis determination.
+
+\subsection{Resulting bases and the starting coefficients}
+The massive tadpole gave one master. The massless, one-mass,
+equal-mass and unequal-mass bubbles gave one, two, two and three
+masters, respectively. The massive bubble bases include the
+necessary tadpole subsectors, with two distinct tadpoles when
+the internal masses differ.
+
+The massless triangles with one, two and three nonzero external
+virtualities gave one, two and four masters, respectively.
+For the first two families, Kira chose bubble integrals in
+subsectors as the masters. The three-virtuality family also
+retained a triangle integral. The equal-mass triangles with
+one and three nonzero virtualities gave three and five masters.
+The massless boxes with zero, one and four off-shell legs gave
+three, four and eleven masters, respectively, including the
+required lower sectors in each count.
+
+The massless two-loop propagator gave two masters, the equal-mass
+sunrise gave three, and the equal-mass vacuum sunset gave two.
+For the denominator order in
+Eq.~\eqref{eq:generated-sunrise-family}, the sunrise basis is
+\begin{equation}
+ M_1=I_{(1,1,0,0,0)},\qquad
+ M_2=I_{(1,1,1,0,0)},\qquad
+ M_3=I_{(1,1,1,-2,0)}.
+ \label{eq:generated-sunrise-basis}
+\end{equation}
+The first integral factorizes into a product of two massive
+tadpoles because removing $D_3$ separates the loop integrations.
+The other two integrals retain all three sunrise propagators,
+and $M_3$ contains the numerator factor $D_4^2$. This example
+shows how the chosen ordering can retain a numerator integral
+as a master.
+
+The counts sum to 49 master entries across the 16 families.
+We count each basis within its own family, so shared tadpole
+and bubble subsectors can appear in more than one family.
+The complete family definitions and master index vectors are
+available with the accompanying data~\cite{MasterIntegralData}.
+Each entry specifies the denominators, kinematics, index vector,
+sector and mass dimension. With the normalization in
+Eq.~\eqref{eq:family}, the latter is
+\begin{equation}
+ [I_{\boldsymbol a}]_{\rm mass}
+ =L d-2\sum_{i=1}^{N}a_i,
+ \label{eq:generated-mass-dimension}
+\end{equation}
+where $[I_{\boldsymbol a}]_{\rm mass}$ is the power of mass
+carried by the integral. Each loop measure contributes $d$
+powers and each factor $D_i^{-a_i}$ contributes $-2a_i$.
+This dimension will constrain the coefficients used to combine
+integrals in the next stage.
+
+For that construction, we will keep the identified masters
+symbolic and initialize each master as itself. If
+$\boldsymbol\mu^{(m)}$ is the index vector of master $M_m$,
+the starting coefficients are
 \begin{equation}
  M_m=I_{\boldsymbol\mu^{(m)}},
  \qquad
@@ -129,18 +400,14 @@ master $M_m$, this initial record is
  \qquad m,n=1,\ldots,n_M.
  \label{eq:master-initialization}
 \end{equation}
-Here $\delta_{mn}$ is one when $m=n$ and zero otherwise, so each master
-has coefficient one for itself and zero for the other masters. These
-records provide the starting coefficients from which later
-constructions obtain their exact master expansions.
-
-For each family, we would store the denominators $D_i$, the kinematic
-parameters $\boldsymbol x$, the dimension $d=4-2\epsilon$, the sector
-definitions and the chosen master basis. Keeping these definitions fixed
-during each construction would ensure that every integral index vector
-refers to a specified integral. To include different loop orders or
-propagator structures, we would repeat the construction in separately
-defined families.
+Here $n_M$ is the number of masters in the selected family,
+and $\delta_{mn}$ is one when $m=n$ and zero otherwise.
+Thus each master has coefficient one for itself and zero
+for the others. We will hold the family definition and basis
+fixed while constructing its targets, starting with subsets
+of these masters and extending the collection through the
+identities below. This gives each subsequent target a specified
+reference basis and an exact master expansion.
 
 \subsection{Linear combinations with known master expansions}
 To construct target expressions with known master expansions, we would

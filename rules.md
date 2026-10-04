@@ -37,8 +37,9 @@
 
 - Maintain the project report in LaTeX in the `report/` directory.
 - Keep a rendered PDF of the report alongside its LaTeX source, and rebuild the PDF when the report changes.
+- Describe completed work as a physics and mathematics report or paper, with connected explanations of the method and results. Keep code organization, commands, job identifiers and execution logs out of the scientific narrative. Distinguish completed calculations from proposed later stages.
 - Preserve text verbatim when the user explicitly requests exact wording, including the supplied abstract.
-- Write explanations in clear, coherent paragraphs using simple language, consistent notation, and equations where useful. Keep the requested theoretical discussion general rather than tied to a specific integral family or numerical coefficients.
+- Write explanations in clear, coherent paragraphs using simple language, consistent notation, and equations where useful. Keep the theoretical background general. When documenting completed calculations, specify the actual families, kinematics, mathematical procedure, checks and results needed to explain and reproduce them.
 - Organize the report as a concise, connected narrative: introduce where Feynman integrals arise and why they matter, then their mathematical form, then reduction methods and Kira. Give each section and subsection a clear purpose and connect it naturally to the preceding and following discussion; avoid disconnected lists and repeated explanations.
 - Make the report accessible to readers who do not routinely work with Feynman integrals. Put equations beside the concepts they explain, define every new symbol and technical term at first use, and introduce prerequisites before relying on them. Audit the whole report for missing or delayed definitions rather than only fixing the passage identified by the user.
 - Cite studies where their results or methods are used. Maintain a `.bib` bibliography and a citations section at the end of the report.
