@@ -2,47 +2,14 @@
 
 This project studies System 1 models for seed selection and elimination ordering in Kira IBP reduction.
 
-The primary working copy is on Hoffman:
+The validated collection contains 1,000 families, 9,678 master-integral entries and 240,088 targets. The targets comprise 55,384 individual integrals and 184,704 integral expressions.
 
-```text
-rushil@hoffman2.idre.ucla.edu:/u/home/r/rushil/ML_for_Kira_Seeding_Reduction
-```
+The added 984 families have distinct mass and kinematic conditions for one-loop four-propagator integrals. Together with the original collection, the data cover 997 one-loop and three two-loop families. Master counts are per family; related lower-sector integrals can occur in several bases.
 
-The complete local project was copied to this folder, including the hidden `.tools/` directory. The directory contains:
+[Expanded collection and methods](Expanded_Integrals/README.md) describes the data, exact checks and limits. The [combined catalog](Expanded_Integrals/catalog.json) gives every family's master and target counts, and [splits.json](Expanded_Integrals/splits.json) defines the training, validation and test targets.
 
-```text
-ML_for_Kira_Seeding_Reduction/
-├── .gitignore
-├── README.md
-├── rules.md
-├── Master_Integrals/
-│   ├── README.md
-│   ├── s00_prepare_tools.sh
-│   ├── s01_build_kira.sh
-│   ├── s02_generate_masters.py
-│   ├── s03_validate_catalog.py
-│   ├── s04_run_masters.sh
-│   ├── families.json
-│   ├── catalog.json
-│   └── families/
-├── report/
-│   ├── Makefile
-│   ├── background.tex
-│   ├── references.bib
-│   ├── report.tex
-│   ├── report.pdf
-│   ├── report.log
-│   └── report.blg
-└── .tools/
-    ├── tectonic/
-    ├── cache/
-    ├── kira/
-    ├── Ferl7/
-    └── ... (build dependencies)
-```
+The initial master bases remain in [Master_Integrals](Master_Integrals/README.md), and the initial target records remain in [master_to_target](master_to_target/README.md). Each added family has a compressed archive under Expanded_Integrals/families containing its full master and target data, source equations, seed records, reduction steps and validation records. The archive reader streams these files directly on Hoffman.
 
-The report source, bibliography, rendered PDF and project rules are versioned here. The tool binaries, TeX cache and build logs remain on Hoffman and are excluded from Git history.
+Read the [report PDF](report/report.pdf), [LaTeX source](report/report.tex), [bibliography](report/references.bib) and [project rules](rules.md). Model training and performance measurements remain subsequent stages. The recorded reductions are valid reference paths; minimum seed sets and operation counts have not been established.
 
-Read the [report PDF](report/report.pdf), [LaTeX source](report/report.tex) and [project rules](rules.md). The [master-integral folder](Master_Integrals/README.md) contains the numbered generation scripts, family definitions and basis records. Target-integral construction and model training have not started.
-
-Project changes will be made in the Hoffman working copy and committed and pushed here so the file structure and report remain visible on GitHub. The project storage limit remains 10 GB, including tools, caches, outputs and copies.
+The primary working directory is /u/home/r/rushil/ML_for_Kira_Seeding_Reduction on Hoffman. Generated data stay on Hoffman and GitHub, with no local dataset copies. Tool binaries, caches, temporary engine state and scheduler logs stay outside Git. The total project storage ceiling is 10 GB.

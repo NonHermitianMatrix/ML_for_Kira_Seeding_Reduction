@@ -24,10 +24,10 @@
 ## Working directory
 
 - Perform project work on Hoffman in `/u/home/r/rushil/ML_for_Kira_Seeding_Reduction`, accessed as `rushil@hoffman2.idre.ucla.edu`.
-- The original local folder is `/home/physics/projects/ML_for_Kira_SeedReduction`. The Hoffman copy is the primary working directory; use the local environment only to connect, transfer files or inspect results as needed.
+- The original local folder is /home/physics/projects/ML_for_Kira_SeedReduction. The Hoffman copy is the primary working directory. Keep all newly generated data on Hoffman and GitHub only; do not download generated datasets or their temporary copies to the local machine. Use the local environment to connect and inspect tool output.
 - Keep the Hoffman working copy linked to `git@github.com:NonHermitianMatrix/ML_for_Kira_Seeding_Reduction.git` so the user can monitor committed project files and their structure.
 - Preserve the complete local project copy on Hoffman, including hidden tool and cache files. Keep tool binaries, caches and build logs outside Git history, and never store credentials in project files or commits.
-- Master-basis identification in `Master_Integrals/` is complete. The current authorized stage is to create `master_to_target/` on Hoffman, construct target integrals and integral expressions from the identified masters through IBP identities, save the data required for seed-selection and elimination training, validate the generated examples, write a README and update GitHub. Retain symbolic identities and use finite-field numerical coefficients for sampled reductions. Model training requires a separate instruction.
+- The initial 16-family master and target collection is complete. The authorized stage is to expand to 1,000 distinct families, identify more masters, construct and validate more targets with seed and elimination records, update the report PDF, and publish all generated data to GitHub. Complete this stage before stopping. Keep symbolic identities and finite-field samples. Model training requires a separate instruction.
 
 ## Code organization
 
