@@ -8,7 +8,9 @@ All integral data are organized under [integrals](integrals/README.md). The coll
 
 The collection covers 997 one-loop families and three two-loop families. The added 984 families use different exact mass and kinematic conditions for one-loop four-propagator integrals. Master counts are per family, so related lower-sector integrals can occur in several bases. The recorded paths give valid reductions; minimum seed sets and operation counts remain unproved.
 
-The [combined catalog](integrals/catalog.json) gives the family counts and file locations. The [split file](integrals/splits.json) defines 198,527 training targets, 19,600 validation targets and 22,345 test targets. Model training remains a later stage.
+The [combined catalog](integrals/catalog.json) gives the family counts and file locations. The collection's original [split file](integrals/splits.json) defines 198,527 training targets, 19,600 validation targets and 22,345 test targets. Model training remains a later stage.
+
+The [seed-selection model](ML_model_seed_selection/README.md) is implemented and untrained. Its separate grouped 70:30 split contains 168,330 training targets and 72,142 test targets. The model scores each candidate seed using the target terms, their symbolic coefficients and ordered term pairs. Training, prediction and comparison scripts are ready; no training has started. Section 7 of the report explains the model.
 
 Read the [report PDF](report/report.pdf), [LaTeX source](report/report.tex), [bibliography](report/references.bib) and [project rules](rules.md). The report's dataset citations identify preserved Git commits, so the documented calculations remain accessible after this directory change.
 

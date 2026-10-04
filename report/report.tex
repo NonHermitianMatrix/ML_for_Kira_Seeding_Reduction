@@ -38,7 +38,8 @@ selects a pivot. Each model would assign scores to the available choices,
 and Kira would perform the algebra for the selected choice. Training
 these models would require target integrals with known master expansions,
 the seeds that supply their reduction equations, and the steps used to
-solve those equations.
+solve those equations. Section~\ref{sec:seed-model} describes the implemented
+seed model and its prepared data division; training remains a later step.
 
 \subsection{Selecting seeds before equation generation}
 To select seeds, the first model would receive the family definition,
@@ -864,6 +865,8 @@ and the correspondence between every saved target and its records.
 The accompanying collection provides the family definitions, bases,
 targets and complete reduction data~\cite{ExpandedIntegralData}.
 
+
+\input{seed_model}
 
 \clearpage
 \renewcommand{\refname}{Citations}
