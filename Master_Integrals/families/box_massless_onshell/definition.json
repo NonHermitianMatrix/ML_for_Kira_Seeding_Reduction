@@ -1,0 +1,87 @@
+{
+  "assumptions": [
+    "Generic kinematics subject to the listed scalar-product rules; avoid exceptional thresholds and vanishing Gram determinants."
+  ],
+  "dimension": "d = 4 - 2*epsilon",
+  "external_momenta": [
+    "p1",
+    "p2",
+    "p3"
+  ],
+  "id": "box_massless_onshell",
+  "invariants": [
+    "s",
+    "t"
+  ],
+  "loop_momenta": [
+    "k"
+  ],
+  "normalization": "product over loops of d^d k/(i*pi^(d/2))",
+  "prescription": "+i0",
+  "propagators": [
+    {
+      "mass_squared": "0",
+      "momentum": "k"
+    },
+    {
+      "mass_squared": "0",
+      "momentum": "k-p1"
+    },
+    {
+      "mass_squared": "0",
+      "momentum": "k-p1-p2"
+    },
+    {
+      "mass_squared": "0",
+      "momentum": "k-p1-p2-p3"
+    }
+  ],
+  "scalarproduct_rules": [
+    [
+      [
+        "p1",
+        "p1"
+      ],
+      "0"
+    ],
+    [
+      [
+        "p2",
+        "p2"
+      ],
+      "0"
+    ],
+    [
+      [
+        "p3",
+        "p3"
+      ],
+      "0"
+    ],
+    [
+      [
+        "p1",
+        "p2"
+      ],
+      "(s-0-0)/2"
+    ],
+    [
+      [
+        "p2",
+        "p3"
+      ],
+      "(t-0-0)/2"
+    ],
+    [
+      [
+        "p1",
+        "p3"
+      ],
+      "(0+0-s-t)/2"
+    ]
+  ],
+  "title": "One-loop massless box with four on-shell legs",
+  "top_level_sectors": [
+    15
+  ]
+}

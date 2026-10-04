@@ -27,7 +27,11 @@
 - The original local folder is `/home/physics/projects/ML_for_Kira_SeedReduction`. The Hoffman copy is the primary working directory; use the local environment only to connect, transfer files or inspect results as needed.
 - Keep the Hoffman working copy linked to `git@github.com:NonHermitianMatrix/ML_for_Kira_Seeding_Reduction.git` so the user can monitor committed project files and their structure.
 - Preserve the complete local project copy on Hoffman, including hidden tool and cache files. Keep tool binaries, caches and build logs outside Git history, and never store credentials in project files or commits.
-- Creating and linking the cluster folder does not authorize starting integral generation, training or benchmarks. Explain the plan before starting further project work when requested.
+- The current authorized implementation stage is to identify and organize master-integral bases for many defined families in `Master_Integrals/`, run the code on Hoffman, document it and update GitHub. Target construction will follow the reverse method described in the report and must wait for a separate instruction; do not start target-data generation or model training now.
+
+## Code organization
+
+- Name project scripts in their documented sequence using `s00_{codename}`, `s01_{codename}`, and so on, retaining the appropriate file extension. Explain each script and its execution order in the folder README, including scheduler wrappers.
 
 ## Project report
 

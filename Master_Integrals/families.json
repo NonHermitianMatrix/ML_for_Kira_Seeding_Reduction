@@ -1,0 +1,919 @@
+{
+  "schema_version": 1,
+  "families": [
+    {
+      "id": "tadpole_massive",
+      "title": "One-loop massive tadpole",
+      "loop_momenta": [
+        "k"
+      ],
+      "external_momenta": [],
+      "propagators": [
+        {
+          "momentum": "k",
+          "mass_squared": "m2"
+        }
+      ],
+      "invariants": [
+        "m2"
+      ],
+      "scalarproduct_rules": [],
+      "top_level_sectors": [
+        1
+      ],
+      "assumptions": [
+        "m2 != 0."
+      ],
+      "dimension": "d = 4 - 2*epsilon",
+      "prescription": "+i0",
+      "normalization": "product over loops of d^d k/(i*pi^(d/2))"
+    },
+    {
+      "id": "bubble_massless",
+      "title": "One-loop massless bubble",
+      "loop_momenta": [
+        "k"
+      ],
+      "external_momenta": [
+        "p"
+      ],
+      "propagators": [
+        {
+          "momentum": "k",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k-p",
+          "mass_squared": "0"
+        }
+      ],
+      "invariants": [
+        "s"
+      ],
+      "scalarproduct_rules": [
+        [
+          [
+            "p",
+            "p"
+          ],
+          "s"
+        ]
+      ],
+      "top_level_sectors": [
+        3
+      ],
+      "assumptions": [
+        "Generic kinematics subject to the listed scalar-product rules; avoid exceptional thresholds and vanishing Gram determinants."
+      ],
+      "dimension": "d = 4 - 2*epsilon",
+      "prescription": "+i0",
+      "normalization": "product over loops of d^d k/(i*pi^(d/2))"
+    },
+    {
+      "id": "bubble_one_mass",
+      "title": "One-loop bubble with one massive line",
+      "loop_momenta": [
+        "k"
+      ],
+      "external_momenta": [
+        "p"
+      ],
+      "propagators": [
+        {
+          "momentum": "k",
+          "mass_squared": "m2"
+        },
+        {
+          "momentum": "k-p",
+          "mass_squared": "0"
+        }
+      ],
+      "invariants": [
+        "s",
+        "m2"
+      ],
+      "scalarproduct_rules": [
+        [
+          [
+            "p",
+            "p"
+          ],
+          "s"
+        ]
+      ],
+      "top_level_sectors": [
+        3
+      ],
+      "assumptions": [
+        "Generic kinematics subject to the listed scalar-product rules; avoid exceptional thresholds and vanishing Gram determinants."
+      ],
+      "dimension": "d = 4 - 2*epsilon",
+      "prescription": "+i0",
+      "normalization": "product over loops of d^d k/(i*pi^(d/2))"
+    },
+    {
+      "id": "bubble_equal_mass",
+      "title": "One-loop equal-mass bubble",
+      "loop_momenta": [
+        "k"
+      ],
+      "external_momenta": [
+        "p"
+      ],
+      "propagators": [
+        {
+          "momentum": "k",
+          "mass_squared": "m2"
+        },
+        {
+          "momentum": "k-p",
+          "mass_squared": "m2"
+        }
+      ],
+      "invariants": [
+        "s",
+        "m2"
+      ],
+      "scalarproduct_rules": [
+        [
+          [
+            "p",
+            "p"
+          ],
+          "s"
+        ]
+      ],
+      "top_level_sectors": [
+        3
+      ],
+      "assumptions": [
+        "Generic kinematics subject to the listed scalar-product rules; avoid exceptional thresholds and vanishing Gram determinants."
+      ],
+      "dimension": "d = 4 - 2*epsilon",
+      "prescription": "+i0",
+      "normalization": "product over loops of d^d k/(i*pi^(d/2))"
+    },
+    {
+      "id": "bubble_two_mass",
+      "title": "One-loop unequal-mass bubble",
+      "loop_momenta": [
+        "k"
+      ],
+      "external_momenta": [
+        "p"
+      ],
+      "propagators": [
+        {
+          "momentum": "k",
+          "mass_squared": "m12"
+        },
+        {
+          "momentum": "k-p",
+          "mass_squared": "m22"
+        }
+      ],
+      "invariants": [
+        "s",
+        "m12",
+        "m22"
+      ],
+      "scalarproduct_rules": [
+        [
+          [
+            "p",
+            "p"
+          ],
+          "s"
+        ]
+      ],
+      "top_level_sectors": [
+        3
+      ],
+      "assumptions": [
+        "Generic kinematics subject to the listed scalar-product rules; avoid exceptional thresholds and vanishing Gram determinants."
+      ],
+      "dimension": "d = 4 - 2*epsilon",
+      "prescription": "+i0",
+      "normalization": "product over loops of d^d k/(i*pi^(d/2))"
+    },
+    {
+      "id": "triangle_massless_one_offshell",
+      "title": "One-loop massless triangle with one off-shell leg",
+      "loop_momenta": [
+        "k"
+      ],
+      "external_momenta": [
+        "p1",
+        "p2"
+      ],
+      "propagators": [
+        {
+          "momentum": "k",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k-p1",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k-p1-p2",
+          "mass_squared": "0"
+        }
+      ],
+      "invariants": [
+        "s"
+      ],
+      "scalarproduct_rules": [
+        [
+          [
+            "p1",
+            "p1"
+          ],
+          "0"
+        ],
+        [
+          [
+            "p2",
+            "p2"
+          ],
+          "0"
+        ],
+        [
+          [
+            "p1",
+            "p2"
+          ],
+          "(s-0-0)/2"
+        ]
+      ],
+      "top_level_sectors": [
+        7
+      ],
+      "assumptions": [
+        "Generic kinematics subject to the listed scalar-product rules; avoid exceptional thresholds and vanishing Gram determinants."
+      ],
+      "dimension": "d = 4 - 2*epsilon",
+      "prescription": "+i0",
+      "normalization": "product over loops of d^d k/(i*pi^(d/2))"
+    },
+    {
+      "id": "triangle_massless_two_offshell",
+      "title": "One-loop massless triangle with two off-shell legs",
+      "loop_momenta": [
+        "k"
+      ],
+      "external_momenta": [
+        "p1",
+        "p2"
+      ],
+      "propagators": [
+        {
+          "momentum": "k",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k-p1",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k-p1-p2",
+          "mass_squared": "0"
+        }
+      ],
+      "invariants": [
+        "s2",
+        "s3"
+      ],
+      "scalarproduct_rules": [
+        [
+          [
+            "p1",
+            "p1"
+          ],
+          "0"
+        ],
+        [
+          [
+            "p2",
+            "p2"
+          ],
+          "s2"
+        ],
+        [
+          [
+            "p1",
+            "p2"
+          ],
+          "(s3-0-s2)/2"
+        ]
+      ],
+      "top_level_sectors": [
+        7
+      ],
+      "assumptions": [
+        "Generic kinematics subject to the listed scalar-product rules; avoid exceptional thresholds and vanishing Gram determinants."
+      ],
+      "dimension": "d = 4 - 2*epsilon",
+      "prescription": "+i0",
+      "normalization": "product over loops of d^d k/(i*pi^(d/2))"
+    },
+    {
+      "id": "triangle_massless_three_offshell",
+      "title": "One-loop massless triangle with three off-shell legs",
+      "loop_momenta": [
+        "k"
+      ],
+      "external_momenta": [
+        "p1",
+        "p2"
+      ],
+      "propagators": [
+        {
+          "momentum": "k",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k-p1",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k-p1-p2",
+          "mass_squared": "0"
+        }
+      ],
+      "invariants": [
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "scalarproduct_rules": [
+        [
+          [
+            "p1",
+            "p1"
+          ],
+          "s1"
+        ],
+        [
+          [
+            "p2",
+            "p2"
+          ],
+          "s2"
+        ],
+        [
+          [
+            "p1",
+            "p2"
+          ],
+          "(s3-s1-s2)/2"
+        ]
+      ],
+      "top_level_sectors": [
+        7
+      ],
+      "assumptions": [
+        "Generic kinematics subject to the listed scalar-product rules; avoid exceptional thresholds and vanishing Gram determinants."
+      ],
+      "dimension": "d = 4 - 2*epsilon",
+      "prescription": "+i0",
+      "normalization": "product over loops of d^d k/(i*pi^(d/2))"
+    },
+    {
+      "id": "triangle_equal_mass_one_offshell",
+      "title": "One-loop equal-mass triangle with one off-shell leg",
+      "loop_momenta": [
+        "k"
+      ],
+      "external_momenta": [
+        "p1",
+        "p2"
+      ],
+      "propagators": [
+        {
+          "momentum": "k",
+          "mass_squared": "m2"
+        },
+        {
+          "momentum": "k-p1",
+          "mass_squared": "m2"
+        },
+        {
+          "momentum": "k-p1-p2",
+          "mass_squared": "m2"
+        }
+      ],
+      "invariants": [
+        "s",
+        "m2"
+      ],
+      "scalarproduct_rules": [
+        [
+          [
+            "p1",
+            "p1"
+          ],
+          "0"
+        ],
+        [
+          [
+            "p2",
+            "p2"
+          ],
+          "0"
+        ],
+        [
+          [
+            "p1",
+            "p2"
+          ],
+          "(s-0-0)/2"
+        ]
+      ],
+      "top_level_sectors": [
+        7
+      ],
+      "assumptions": [
+        "Generic kinematics subject to the listed scalar-product rules; avoid exceptional thresholds and vanishing Gram determinants."
+      ],
+      "dimension": "d = 4 - 2*epsilon",
+      "prescription": "+i0",
+      "normalization": "product over loops of d^d k/(i*pi^(d/2))"
+    },
+    {
+      "id": "triangle_equal_mass_three_offshell",
+      "title": "One-loop equal-mass triangle with three off-shell legs",
+      "loop_momenta": [
+        "k"
+      ],
+      "external_momenta": [
+        "p1",
+        "p2"
+      ],
+      "propagators": [
+        {
+          "momentum": "k",
+          "mass_squared": "m2"
+        },
+        {
+          "momentum": "k-p1",
+          "mass_squared": "m2"
+        },
+        {
+          "momentum": "k-p1-p2",
+          "mass_squared": "m2"
+        }
+      ],
+      "invariants": [
+        "s1",
+        "s2",
+        "s3",
+        "m2"
+      ],
+      "scalarproduct_rules": [
+        [
+          [
+            "p1",
+            "p1"
+          ],
+          "s1"
+        ],
+        [
+          [
+            "p2",
+            "p2"
+          ],
+          "s2"
+        ],
+        [
+          [
+            "p1",
+            "p2"
+          ],
+          "(s3-s1-s2)/2"
+        ]
+      ],
+      "top_level_sectors": [
+        7
+      ],
+      "assumptions": [
+        "Generic kinematics subject to the listed scalar-product rules; avoid exceptional thresholds and vanishing Gram determinants."
+      ],
+      "dimension": "d = 4 - 2*epsilon",
+      "prescription": "+i0",
+      "normalization": "product over loops of d^d k/(i*pi^(d/2))"
+    },
+    {
+      "id": "box_massless_onshell",
+      "title": "One-loop massless box with four on-shell legs",
+      "loop_momenta": [
+        "k"
+      ],
+      "external_momenta": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "propagators": [
+        {
+          "momentum": "k",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k-p1",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k-p1-p2",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k-p1-p2-p3",
+          "mass_squared": "0"
+        }
+      ],
+      "invariants": [
+        "s",
+        "t"
+      ],
+      "scalarproduct_rules": [
+        [
+          [
+            "p1",
+            "p1"
+          ],
+          "0"
+        ],
+        [
+          [
+            "p2",
+            "p2"
+          ],
+          "0"
+        ],
+        [
+          [
+            "p3",
+            "p3"
+          ],
+          "0"
+        ],
+        [
+          [
+            "p1",
+            "p2"
+          ],
+          "(s-0-0)/2"
+        ],
+        [
+          [
+            "p2",
+            "p3"
+          ],
+          "(t-0-0)/2"
+        ],
+        [
+          [
+            "p1",
+            "p3"
+          ],
+          "(0+0-s-t)/2"
+        ]
+      ],
+      "top_level_sectors": [
+        15
+      ],
+      "assumptions": [
+        "Generic kinematics subject to the listed scalar-product rules; avoid exceptional thresholds and vanishing Gram determinants."
+      ],
+      "dimension": "d = 4 - 2*epsilon",
+      "prescription": "+i0",
+      "normalization": "product over loops of d^d k/(i*pi^(d/2))"
+    },
+    {
+      "id": "box_massless_one_offshell",
+      "title": "One-loop massless box with one off-shell leg",
+      "loop_momenta": [
+        "k"
+      ],
+      "external_momenta": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "propagators": [
+        {
+          "momentum": "k",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k-p1",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k-p1-p2",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k-p1-p2-p3",
+          "mass_squared": "0"
+        }
+      ],
+      "invariants": [
+        "s",
+        "t",
+        "s4"
+      ],
+      "scalarproduct_rules": [
+        [
+          [
+            "p1",
+            "p1"
+          ],
+          "0"
+        ],
+        [
+          [
+            "p2",
+            "p2"
+          ],
+          "0"
+        ],
+        [
+          [
+            "p3",
+            "p3"
+          ],
+          "0"
+        ],
+        [
+          [
+            "p1",
+            "p2"
+          ],
+          "(s-0-0)/2"
+        ],
+        [
+          [
+            "p2",
+            "p3"
+          ],
+          "(t-0-0)/2"
+        ],
+        [
+          [
+            "p1",
+            "p3"
+          ],
+          "(s4+0-s-t)/2"
+        ]
+      ],
+      "top_level_sectors": [
+        15
+      ],
+      "assumptions": [
+        "Generic kinematics subject to the listed scalar-product rules; avoid exceptional thresholds and vanishing Gram determinants."
+      ],
+      "dimension": "d = 4 - 2*epsilon",
+      "prescription": "+i0",
+      "normalization": "product over loops of d^d k/(i*pi^(d/2))"
+    },
+    {
+      "id": "box_massless_four_offshell",
+      "title": "One-loop massless box with four off-shell legs",
+      "loop_momenta": [
+        "k"
+      ],
+      "external_momenta": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "propagators": [
+        {
+          "momentum": "k",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k-p1",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k-p1-p2",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k-p1-p2-p3",
+          "mass_squared": "0"
+        }
+      ],
+      "invariants": [
+        "s",
+        "t",
+        "s1",
+        "s2",
+        "s3",
+        "s4"
+      ],
+      "scalarproduct_rules": [
+        [
+          [
+            "p1",
+            "p1"
+          ],
+          "s1"
+        ],
+        [
+          [
+            "p2",
+            "p2"
+          ],
+          "s2"
+        ],
+        [
+          [
+            "p3",
+            "p3"
+          ],
+          "s3"
+        ],
+        [
+          [
+            "p1",
+            "p2"
+          ],
+          "(s-s1-s2)/2"
+        ],
+        [
+          [
+            "p2",
+            "p3"
+          ],
+          "(t-s2-s3)/2"
+        ],
+        [
+          [
+            "p1",
+            "p3"
+          ],
+          "(s4+s2-s-t)/2"
+        ]
+      ],
+      "top_level_sectors": [
+        15
+      ],
+      "assumptions": [
+        "Generic kinematics subject to the listed scalar-product rules; avoid exceptional thresholds and vanishing Gram determinants."
+      ],
+      "dimension": "d = 4 - 2*epsilon",
+      "prescription": "+i0",
+      "normalization": "product over loops of d^d k/(i*pi^(d/2))"
+    },
+    {
+      "id": "propagator_two_loop_massless",
+      "title": "Two-loop massless propagator",
+      "loop_momenta": [
+        "k1",
+        "k2"
+      ],
+      "external_momenta": [
+        "p"
+      ],
+      "propagators": [
+        {
+          "momentum": "k1",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k2",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k1-k2",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k1-p",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k2-p",
+          "mass_squared": "0"
+        }
+      ],
+      "invariants": [
+        "s"
+      ],
+      "scalarproduct_rules": [
+        [
+          [
+            "p",
+            "p"
+          ],
+          "s"
+        ]
+      ],
+      "top_level_sectors": [
+        31
+      ],
+      "assumptions": [
+        "Generic kinematics subject to the listed scalar-product rules; avoid exceptional thresholds and vanishing Gram determinants."
+      ],
+      "dimension": "d = 4 - 2*epsilon",
+      "prescription": "+i0",
+      "normalization": "product over loops of d^d k/(i*pi^(d/2))"
+    },
+    {
+      "id": "sunrise_two_loop_equal_mass",
+      "title": "Two-loop equal-mass sunrise",
+      "loop_momenta": [
+        "k1",
+        "k2"
+      ],
+      "external_momenta": [
+        "p"
+      ],
+      "propagators": [
+        {
+          "momentum": "k1",
+          "mass_squared": "m2"
+        },
+        {
+          "momentum": "k2",
+          "mass_squared": "m2"
+        },
+        {
+          "momentum": "p-k1-k2",
+          "mass_squared": "m2"
+        },
+        {
+          "momentum": "p-k1",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "p-k2",
+          "mass_squared": "0"
+        }
+      ],
+      "invariants": [
+        "s",
+        "m2"
+      ],
+      "scalarproduct_rules": [
+        [
+          [
+            "p",
+            "p"
+          ],
+          "s"
+        ]
+      ],
+      "top_level_sectors": [
+        7
+      ],
+      "assumptions": [
+        "Generic s and nonzero m2 away from thresholds.",
+        "D4 and D5 are auxiliary expressions; their indices are nonpositive."
+      ],
+      "dimension": "d = 4 - 2*epsilon",
+      "prescription": "+i0",
+      "normalization": "product over loops of d^d k/(i*pi^(d/2))"
+    },
+    {
+      "id": "vacuum_two_loop_equal_mass",
+      "title": "Two-loop equal-mass vacuum sunset",
+      "loop_momenta": [
+        "k1",
+        "k2"
+      ],
+      "external_momenta": [],
+      "propagators": [
+        {
+          "momentum": "k1",
+          "mass_squared": "m2"
+        },
+        {
+          "momentum": "k2",
+          "mass_squared": "m2"
+        },
+        {
+          "momentum": "k1-k2",
+          "mass_squared": "m2"
+        }
+      ],
+      "invariants": [
+        "m2"
+      ],
+      "scalarproduct_rules": [],
+      "top_level_sectors": [
+        7
+      ],
+      "assumptions": [
+        "m2 != 0."
+      ],
+      "dimension": "d = 4 - 2*epsilon",
+      "prescription": "+i0",
+      "normalization": "product over loops of d^d k/(i*pi^(d/2))"
+    }
+  ]
+}
