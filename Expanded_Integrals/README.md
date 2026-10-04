@@ -2,7 +2,7 @@
 
 This collection extends the initial 16 families to 1,000 families. The added 984 families use one-loop integrals with four propagators and different exact mass and kinematic conditions. The original three two-loop families remain included. The family count describes parameter-defined integral families; it does not count different graph topologies.
 
-The validated collection contains 1,000 families, 9,678 master-integral entries and 240,088 targets. The targets comprise 55,384 individual integrals and 184,704 integral expressions. The split contains 198,527 training targets, 19,417 validation targets and 22,144 test targets. catalog.json gives the family and target-type counts. Each family has a master basis checked by Kira and targets checked from their source identities. No model has been trained, and the recorded reductions do not establish minimum seed sets or operation counts.
+The validated collection contains 1,000 families, 9,678 master-integral entries and 240,472 targets. The targets comprise 55,768 individual integrals and 184,704 integral expressions. The split contains 198,527 training targets, 19,600 validation targets and 22,345 test targets. catalog.json gives the family and target-type counts. Each family has a master basis checked by Kira and targets checked from their source identities. No model has been trained, and the recorded reductions do not establish minimum seed sets or operation counts.
 
 ## Family definitions
 
@@ -50,7 +50,7 @@ Operation counts include one finite-field division per step and one multiplicati
 
 The added families keep each complete kinematic equality and zero pattern in one split across all mass assignments. This prevents the same kinematic profile appearing under different masses in separate splits. The grouping respects the original training box profiles. The combined split moves the original unequal-mass bubble and massless three-off-shell triangle from validation to training because these occur as lower sectors of expanded training families. The original files retain their initial split labels. The combined catalog and splits.json define the current assignments, and the reader applies these overrides while retaining the stored label. split_overlap_witnesses.json identifies the training-family sectors that motivate these changes.
 
-Validation and test targets contain their full physical sector. Related lower-sector masters remain shared problem information. The catalog reports individual-integral and integral-expression counts separately for each split. These counts must guide studies of individual-integral generalization. Collection size alone does not establish model accuracy or high-loop performance.
+The initial reverse sequences require validation and test expressions to contain their full physical sector. We also retained additional individual integrals from the checked construction proofs when all four family expressions have nonzero powers and at least one power is negative. Negative powers put these expressions in the numerator. These individual targets lie in lower physical sectors, and related lower-sector masters remain shared problem information. Holding out the complete family profile therefore does not make every lower-sector reduction new. The catalog reports individual-integral and integral-expression counts separately for each split. These counts must guide studies of individual-integral generalization. Collection size alone does not establish model accuracy or high-loop performance.
 
 Keep reference coefficients, construction histories and recorded choices out of model inputs. Use inputs and family definitions for the seed model, and the current target row, source equations and available pivots for the elimination model.
 
@@ -59,6 +59,8 @@ Keep reference coefficients, construction histories and recorded choices out of 
 families.json gives all 984 added definitions, their canonical profiles, grouping and sample points.
 
 families/ contains one small JSON summary and one compressed archive per added family. Each archive contains the complete master and target records, Kira inputs and basis-check output, and a manifest with file sizes and SHA-256 hashes. Archives preserve the Master_Integrals/families/ and master_to_target/families/ paths, so they can be extracted into a separate directory on Hoffman if needed.
+
+individual_targets/ contains one compressed JSON document for each added validation or test family. These documents hold the additional individual-integral inputs, exact reference expansions, sufficient seeds, reduction traces and validation results. They link to the original archive for source identities and construction proofs. The catalog gives their hashes and counts, and the reader appends these records when reading inputs, references or traces.
 
 catalog.json combines the new and original collections. splits.json contains the target identifiers in each split. validation_summary.json records the archive, profile and mathematical-check totals.
 
@@ -91,6 +93,12 @@ s05_check_collection.sh runs the final audit through the scheduler:
 
     qsub Expanded_Integrals/s05_check_collection.sh
 
-Run the collection audit after every expected family has completed. A completed family is reused only when its archive hash agrees with its metadata.
+s07_add_individual_targets.py selects the additional numerator integrals from the checked proof library, reconstructs their source rows and verifies every exact and finite-field elimination step. s08_run_individual_targets.sh supplies its scheduler wrapper. Run these after the family generation, then run the final audit:
+
+    qsub -t 1-227 -tc 32 Expanded_Integrals/s08_run_individual_targets.sh
+
+The individual-target array requests one CPU and 2 GB per task, with at most 32 concurrent tasks and a ten-minute limit.
+
+Run the collection audit after every expected family and individual-target document has completed. A completed family is reused only when its archive hash agrees with its metadata.
 
 The source identities follow the IBP method of Chetyrkin and Tkachov (doi:10.1016/0550-3213(81)90199-1). The basis identification uses Kira (arXiv:1705.05610; arXiv:2505.20197). The report gives the equations, results, scope and citations.

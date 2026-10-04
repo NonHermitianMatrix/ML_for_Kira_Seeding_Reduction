@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Stream generated records on Hoffman without extracting family archives."""
-import argparse,json,tarfile
+import argparse,gzip,json,tarfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parent
 FILES={'inputs':'inputs.jsonl','references':'references.jsonl',
@@ -11,7 +11,8 @@ def records(family,kind='inputs'):
     if kind not in FILES: raise ValueError('Unknown record kind')
     if not family.replace('_','').isalnum(): raise ValueError('Invalid family identifier')
     combined=ROOT/'catalog.json'
-    overrides=json.loads(combined.read_text()).get('initial_split_overrides',{}) if combined.exists() else {}
+    catalog=json.loads(combined.read_text()) if combined.exists() else {}
+    overrides=catalog.get('initial_split_overrides',{})
     def projected(row):
         if family in overrides and 'split' in row:
             row=dict(row);row['stored_split']=row['split'];row['split']=overrides[family]
@@ -33,6 +34,12 @@ def records(family,kind='inputs'):
                 for line in stream:
                     if line.strip(): yield projected(json.loads(line))
             else: yield projected(json.load(stream))
+    supplement=catalog.get('individual_supplements',{}).get(family)
+    supplement_keys={'inputs':'inputs','references':'references','traces':'elimination_traces'}
+    if supplement and kind in supplement_keys:
+        with gzip.open(str(ROOT/supplement['path']),'rt',encoding='utf-8') as stream:
+            document=json.load(stream)
+        for row in document[supplement_keys[kind]]:yield projected(row)
 def main():
     p=argparse.ArgumentParser()
     p.add_argument('--family',required=True);p.add_argument('--kind',choices=list(FILES),default='inputs')

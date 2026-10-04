@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Audit every compressed family and build the combined 1,000-family catalog."""
-import collections, hashlib, json, os, tarfile
+import collections, gzip, hashlib, json, os, tarfile
 from pathlib import Path, PurePosixPath
 ROOT=Path(__file__).resolve().parent
 PROJECT=ROOT.parent
@@ -52,7 +52,33 @@ def archive_check(path,status):
                                 ('identities.jsonl',status['target_summary']['equations'])]:
             with tf.extractfile(root+filename) as stream:
                 assert sum(1 for line in stream if line.strip())==number
-    return len(manifest['files'])
+        supplement=None
+        if status['split']!='train':
+            supplement_path=ROOT/'individual_targets'/(status['family']+'.json.gz')
+            with gzip.open(str(supplement_path),'rt',encoding='utf-8') as stream:
+                supplement=json.load(stream)
+            assert supplement['status']=='validated' and supplement['validation']['status']=='passed'
+            assert supplement['source_archive_sha256']==status['archive_sha256']
+            assert supplement['source_sha256']==sha(ROOT/'s07_add_individual_targets.py')
+            assert supplement['split']==status['split'] and supplement['family']==status['family']
+            proofs={tuple(p['indices']):p for p in
+                (json.loads(line) for line in tf.extractfile(root+'construction_proofs.jsonl') if line.strip())}
+            inputs=supplement['inputs'];references=supplement['references'];traces=supplement['elimination_traces']
+            assert len(inputs)==len(references)==len(traces)==supplement['validation']['targets']
+            for inp,ref,trace in zip(inputs,references,traces):
+                assert inp['id']==ref['id']==trace['id']
+                assert inp['split']==ref['split']==status['split']
+                assert inp['kind']=='single_integral' and len(inp['terms'])==1
+                a=tuple(inp['terms'][0]['indices'])
+                assert len(a)==4 and all(x!=0 for x in a) and any(x<0 for x in a)
+                assert inp['terms'][0]['coefficient']=='1'
+                assert ref['master_coefficients']==proofs[a]['master_coefficients']
+                assert ref['construction']['root_indices']==list(a)
+                assert ref['reduction_steps']==len(trace['steps'])
+            assert sum(len(t['steps']) for t in traces)==supplement['validation']['symbolic_elimination_steps_checked']
+            supplement['archive']='individual_targets/'+supplement_path.name
+            supplement['archive_sha256']=sha(supplement_path)
+    return len(manifest['files']),supplement
 
 def main():
     expected=read(ROOT/'families.json')
@@ -68,7 +94,7 @@ def main():
     moved=[identifier for identifier in ids['validation'] if identifier.split(':')[0] in reassigned]
     ids['validation']=[identifier for identifier in ids['validation'] if identifier not in set(moved)]
     ids['train'].extend(moved)
-    rows=[];checks=[]; signatures=set(); group_split={}
+    rows=[];checks=[]; signatures=set(); group_split={};supplements={};supplement_checks=[]
     for old in original['families']:
         name=old['family']
         basis=read(PROJECT/'Master_Integrals/families'/name/'masters.json')
@@ -92,7 +118,7 @@ def main():
         assert tuple(map(tuple,signature))==(tuple(profile['mass_labels']),tuple(profile['distance_labels']))
         group=tuple(profile['kinematic_group'])
         assert group_split.setdefault(group,status['split'])==status['split']
-        files=archive_check(ROOT/'families'/status['archive'],status)
+        files,supplement=archive_check(ROOT/'families'/status['archive'],status)
         summary=status['target_summary'];validation=status['validation']
         assert summary['status']=='validated' and validation['status']=='passed'
         assert len(status['target_ids'])==summary['targets']
@@ -104,6 +130,13 @@ def main():
               archive_sha256=status['archive_sha256'],archive_bytes=status['archive_bytes'],
               independent_squared_scales=len(definition['invariants']),kinematic_group=list(group),
               generation_mode=status.get('generation_mode','current_seed')))
+        if supplement is not None:
+            count=supplement['validation']['targets']
+            rows[-1]['targets']+=count;rows[-1]['single_integral']+=count
+            rows[-1]['individual_supplement']=supplement['archive']
+            ids[status['split']].extend(x['id'] for x in supplement['inputs'])
+            supplements[name]=dict(path=supplement['archive'],sha256=supplement['archive_sha256'],targets=count)
+            supplement_checks.append(dict(family=name,**supplement['validation']))
         checks.append(dict(family=name,archive_files_checked=files,**{k:v for k,v in validation.items() if k!='family'}))
         if number%50==0: print('Checked %d/%d expanded archives'%(number,len(expected['families'])),flush=True)
     assert len(rows)==1000
@@ -121,6 +154,11 @@ def main():
     countkeys=['symbolic_constructions_checked','symbolic_elimination_steps_checked','equation_rows_rederived',
                'source_ibp_rows_checked_by_independent_differentiation','closure_proofs_checked']
     validation_totals={key:sum(x[key] for x in allchecks) for key in countkeys}
+    for key in ['symbolic_constructions_checked','symbolic_elimination_steps_checked']:
+        validation_totals[key]+=sum(x[key] for x in supplement_checks)
+    assert len(supplements)==227
+    denominator_counts=collections.Counter()
+    for check in supplement_checks:denominator_counts.update(check['denominator_counts'])
     metadata=dict(status='validated',**totals,split_counts=split_counts,
         topology_coverage=dict(one_loop_families=997,two_loop_families=3,
            additional_profiles='984 inequivalent mass and squared-distance assignments for one-loop four-propagator integrals.'),
@@ -130,12 +168,13 @@ def main():
         split_overlap_witnesses=read(ROOT/'split_overlap_witnesses.json'),
         optimality='Recorded valid reductions; minimum seed and operation counts are not established.',
         limits='Bounded one-loop and two-loop constructions. Dataset size does not establish model accuracy or high-loop generalization.',
+        individual_supplements=supplements,individual_supplement_denominator_counts=dict(denominator_counts),
         families=rows)
     write(ROOT/'catalog.json',metadata)
     write(ROOT/'splits.json',dict(policy=metadata['split_policy'],initial_split_overrides=metadata['initial_split_overrides'],**ids))
     write(ROOT/'validation_summary.json',dict(status='passed',family_count=1000,archive_count=len(checks),
         canonical_profiles_checked=len(signatures),kinematic_groups=len(group_split),
-        totals=validation_totals,expanded_families=checks,
+        totals=validation_totals,expanded_families=checks,individual_supplements=supplement_checks,
         initial_validation_path='../master_to_target/validation_summary.json'))
     print(json.dumps(dict(totals=totals,split_counts=split_counts,validation=validation_totals),sort_keys=True),flush=True)
 if __name__=='__main__': main()
