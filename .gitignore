@@ -1,7 +1,7 @@
-# Local tools and TeX cache are present on Hoffman but not versioned.
+# Tools, caches, scheduler output and temporary work stay on Hoffman.
 .tools/
 
-# Generated LaTeX build files; retain the rendered PDF in Git.
+# Keep the rendered report; ignore LaTeX build intermediates.
 report/*.aux
 report/*.bbl
 report/*.blg
@@ -9,19 +9,10 @@ report/*.log
 report/*.out
 report/*.toc
 
-# Disposable Kira databases and scheduler logs. Validation records are versioned.
-Master_Integrals/.work/
-Master_Integrals/logs/
-Master_Integrals/**/__pycache__/
-Master_Integrals/**/*.part
-
-# Kira writes a version log in the current directory.
+# Kira version output.
 /kira.log
 
-Expanded_Integrals/.work/
-Expanded_Integrals/logs/
-Expanded_Integrals/__pycache__/
-
-Expanded_Integrals/families/*.part
-
-Expanded_Integrals/individual_targets/*.part
+# Keep all completed integral data.
+integrals/**/__pycache__/
+integrals/__pycache__/
+integrals/**/*.part

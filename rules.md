@@ -27,9 +27,11 @@
 - The original local folder is /home/physics/projects/ML_for_Kira_SeedReduction. The Hoffman copy is the primary working directory. Keep all newly generated data on Hoffman and GitHub only; do not download generated datasets or their temporary copies to the local machine. Use the local environment to connect and inspect tool output.
 - Keep the Hoffman working copy linked to `git@github.com:NonHermitianMatrix/ML_for_Kira_Seeding_Reduction.git` so the user can monitor committed project files and their structure.
 - Preserve the complete local project copy on Hoffman, including hidden tool and cache files. Keep tool binaries, caches and build logs outside Git history, and never store credentials in project files or commits.
-- The initial 16-family master and target collection is complete. The authorized stage is to expand to 1,000 distinct families, identify more masters, construct and validate more targets with seed and elimination records, update the report PDF, and publish all generated data to GitHub. Complete this stage before stopping. Keep symbolic identities and finite-field samples. Model training requires a separate instruction.
+- The 1,000-family master and target collection is complete. Reorganize the existing data under integrals/ and publish the same structure on Hoffman and GitHub. Preserve the master definitions, targets, symbolic identities, finite-field samples, seeds, construction and elimination steps, operation counts and validation evidence. Model training and further integral generation require a separate instruction.
 
 ## Code organization
+
+- Keep the current integral collection in one integrals/ folder with master_integrals/, target_integrals/ and master_to_target/ subfolders. Store all master bases in master_integrals/, all targets in target_integrals/, and their coefficients, seeds, identities, elimination records and operation counts in master_to_target/. Use matching family and target IDs, maintain the corresponding READMEs, and keep Hoffman and GitHub in the same layout. These replace the former three top-level integral-data folders.
 
 - Name project scripts in their documented sequence using `s00_{codename}`, `s01_{codename}`, and so on, retaining the appropriate file extension. Explain each script and its execution order in the folder README, including scheduler wrappers.
 

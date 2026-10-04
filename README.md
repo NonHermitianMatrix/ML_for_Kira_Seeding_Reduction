@@ -2,14 +2,14 @@
 
 This project studies System 1 models for seed selection and elimination ordering in Kira IBP reduction.
 
-The validated collection contains 1,000 families, 9,678 master-integral entries and 240,472 targets. The targets comprise 55,768 individual integrals and 184,704 integral expressions.
+All integral data are organized under [integrals](integrals/README.md). The collection contains 1,000 families, 9,678 master entries and 240,472 targets. The targets comprise 55,768 individual integrals and 184,704 integral expressions.
 
-The added 984 families have distinct mass and kinematic conditions for one-loop four-propagator integrals. Together with the original collection, the data cover 997 one-loop and three two-loop families. Master counts are per family; related lower-sector integrals can occur in several bases.
+[master_integrals](integrals/master_integrals/README.md) contains every stored master basis and its family definition. [target_integrals](integrals/target_integrals/README.md) contains every target. [master_to_target](integrals/master_to_target/README.md) links the targets to their exact master expansions, seeds, identities, construction steps, elimination steps and operation counts.
 
-[Expanded collection and methods](Expanded_Integrals/README.md) describes the data, exact checks and limits. The [combined catalog](Expanded_Integrals/catalog.json) gives every family's master and target counts, and [splits.json](Expanded_Integrals/splits.json) defines the training, validation and test targets.
+The collection covers 997 one-loop families and three two-loop families. The added 984 families use different exact mass and kinematic conditions for one-loop four-propagator integrals. Master counts are per family, so related lower-sector integrals can occur in several bases. The recorded paths give valid reductions; minimum seed sets and operation counts remain unproved.
 
-The initial master bases remain in [Master_Integrals](Master_Integrals/README.md), and the initial target records remain in [master_to_target](master_to_target/README.md). Each added family has a compressed archive under Expanded_Integrals/families containing its full master and target data, source equations, seed records, reduction steps and validation records. Additional individual targets in validation and test are stored under Expanded_Integrals/individual_targets and reuse the checked source identities in the family archives. The archive reader streams the complete records directly on Hoffman.
+The [combined catalog](integrals/catalog.json) gives the family counts and file locations. The [split file](integrals/splits.json) defines 198,527 training targets, 19,600 validation targets and 22,345 test targets. Model training remains a later stage.
 
-Read the [report PDF](report/report.pdf), [LaTeX source](report/report.tex), [bibliography](report/references.bib) and [project rules](rules.md). Model training and performance measurements remain subsequent stages. The recorded reductions are valid reference paths; minimum seed sets and operation counts have not been established.
+Read the [report PDF](report/report.pdf), [LaTeX source](report/report.tex), [bibliography](report/references.bib) and [project rules](rules.md). The report's dataset citations identify preserved Git commits, so the documented calculations remain accessible after this directory change.
 
-The primary working directory is /u/home/r/rushil/ML_for_Kira_Seeding_Reduction on Hoffman. Generated data stay on Hoffman and GitHub, with no local dataset copies. Tool binaries, caches, temporary engine state and scheduler logs stay outside Git. The total project storage ceiling is 10 GB.
+The primary working directory is /u/home/r/rushil/ML_for_Kira_Seeding_Reduction on Hoffman. Generated datasets stay on Hoffman and GitHub. The total project storage ceiling is 10 GB, including tools, caches, temporary files and Git history.
