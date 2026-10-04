@@ -27,3 +27,5 @@ Use the unified reader on Hoffman:
       --target box_profile_0001:T00001
 
 Target construction started from master combinations and used exact IBP and symmetry identities to introduce other integrals while retaining a known master expansion. The full construction and reduction evidence belongs to the corresponding relation records. A recorded reduction supplies a verified reference sequence; minimum seed sets and operation counts remain unproved.
+
+The current seed-model division is available through [training](../training/README.md) and [testing](../testing/README.md). Their family links point to the files stored here; they do not duplicate integral data. The present run uses only the training view.

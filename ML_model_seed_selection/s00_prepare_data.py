@@ -1,5 +1,5 @@
 """Audit seed supervision and prepare a reproducible grouped 70:30 split; no fitting."""
-import argparse, collections, gzip, hashlib, itertools, json, pathlib, random, subprocess
+import argparse, collections, gzip, hashlib, itertools, json, pathlib, random, subprocess, sys
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 DATA = ROOT / "integrals"
@@ -151,5 +151,6 @@ def main():
     for name, content in [("split_manifest.json",dict(schema_version=1,seed=cfg["split_seed"],families=stats)),
                           ("data_audit.json",summary),("source_hashes.json",hashes)]:
         (HERE/name).write_text(json.dumps(content,indent=2,sort_keys=True)+"\n",encoding="utf-8")
+    subprocess.check_call([sys.executable,str(DATA/"s05_prepare_model_splits.py")])
     print(json.dumps(summary,sort_keys=True),flush=True)
 if __name__ == "__main__": main()

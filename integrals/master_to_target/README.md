@@ -63,3 +63,5 @@ The seed model can use the target, family definition, basis and candidate seeds 
 generation_source.tar.gz contains the original generation programs, original README files, catalogs and validation summaries. generation_source_manifest.json records their hashes and the source commit. The archived programs retain their original paths and source bytes so their recorded hashes remain verifiable. They describe the completed generation runs; the current collection is read and checked through the programs in integrals/.
 
 The source remains viewable in the [preserved Git commit](https://github.com/NonHermitianMatrix/ML_for_Kira_Seeding_Reduction/tree/82ebe3c870d8382f2f72f4f1598092f102a6fdc2). The [project report](../../report/report.pdf) explains the physics, mathematical construction and scope. The data provide known valid reductions, while minimum seed and operation counts remain unproved.
+
+The current seed-model division is available through [training](../training/README.md) and [testing](../testing/README.md). Their family links point to the files stored here; they do not duplicate integral data. The present run uses only the training view.

@@ -51,33 +51,38 @@ def public_family(definition, master_basis):
                 scalarproduct_rules=definition["scalarproduct_rules"],
                 master_indices=[m["indices"] for m in master_basis["masters"]])
 
-def encode(target, family, seeds, cfg):
-    terms = target["terms"]
-    n = len(family["propagators"])
-    if not terms or len(terms)>cfg["max_terms"]:
-        raise ValueError("Target term count exceeds the configured capacity")
+def encode_shared(family,seeds,cfg):
+    """Encode immutable family, master and candidate inputs once per family pass."""
+    n=len(family["propagators"])
     if not seeds or len(seeds)>cfg["max_candidates"]:
         raise ValueError("Candidate count exceeds the configured capacity")
     if len({tuple(s) for s in seeds})!=len(seeds):
         raise ValueError("Duplicate candidate seed")
     if any(len(s)!=n for s in seeds):
         raise ValueError("Candidate index length does not match the family")
-    feature_rows = []
+    structure={k:v for k,v in family.items() if k!="master_indices"}
+    family_vec=list(text_features(json.dumps(structure,sort_keys=True,separators=(",",":")),cfg["hash_bins"]))
+    family_vec += [math.log1p(v) for v in (len(family["loop_momenta"]),n,
+                   len(family["external_momenta"]),len(family["invariants"]))]
+    return dict(family=torch.tensor(family_vec,dtype=torch.float32),
+                masters=torch.tensor([index_features(a,cfg) for a in family["master_indices"]],dtype=torch.float32),
+                seeds=torch.tensor([index_features(s,cfg) for s in seeds],dtype=torch.float32))
+
+def encode(target,family,seeds,cfg,shared=None):
+    terms=target["terms"]
+    n=len(family["propagators"])
+    if not terms or len(terms)>cfg["max_terms"]:
+        raise ValueError("Target term count exceeds the configured capacity")
+    if shared is None: shared=encode_shared(family,seeds,cfg)
+    feature_rows=[]
     for j,term in enumerate(terms):
         if len(term["indices"])!=n: raise ValueError("Term index length does not match family")
-        c = term["coefficient"]
+        c=term["coefficient"]
         if len(c)>cfg["max_coefficient_chars"]:
             raise ValueError("Coefficient text exceeds the configured capacity")
         feature_rows.append(index_features(term["indices"],cfg)+list(text_features(c,cfg["hash_bins"]))+
                             [j/max(1,len(terms)-1),1/len(terms)])
-    structure = {k:v for k,v in family.items() if k!="master_indices"}
-    family_vec = list(text_features(json.dumps(structure,sort_keys=True,separators=(",",":")),cfg["hash_bins"]))
-    family_vec += [math.log1p(v) for v in (len(family["loop_momenta"]),n,
-                   len(family["external_momenta"]),len(family["invariants"]))]
-    return dict(terms=torch.tensor(feature_rows,dtype=torch.float32),
-                family=torch.tensor(family_vec,dtype=torch.float32),
-                masters=torch.tensor([index_features(a,cfg) for a in family["master_indices"]],dtype=torch.float32),
-                seeds=torch.tensor([index_features(s,cfg) for s in seeds],dtype=torch.float32))
+    return dict(shared,terms=torch.tensor(feature_rows,dtype=torch.float32))
 
 def labels(reference, seeds):
     wanted = {tuple(s) for s in reference["sufficient_seeds"]}
@@ -106,17 +111,23 @@ def family_records(meta, cfg, shuffle_seed=None):
             raise ValueError("Target/reference records do not align")
         yield target, family, seeds, labels(reference,seeds)
 
-def examples(split, cfg, epoch=None):
+def examples(split, cfg, epoch=None, start=0):
     manifest = read(HERE/"split_manifest.json")
     selected = [f for f in manifest["families"] if f["split"]==split]
     if split not in ("train","test"): raise ValueError("Unknown split")
     if epoch is not None:
         if split!="train": raise ValueError("Only training order may be shuffled")
         random.Random(cfg["split_seed"]+epoch).shuffle(selected)
+    passed=0
     for i,meta in enumerate(selected):
         seed = None if epoch is None else cfg["split_seed"]+epoch*1009+i
+        shared=None
         for target,family,seeds,y in family_records(meta,cfg,seed):
-            yield target,encode(target,family,seeds,cfg),y
+            if passed<start:
+                passed+=1
+                continue
+            if shared is None: shared=encode_shared(family,seeds,cfg)
+            yield target,encode(target,family,seeds,cfg,shared=shared),y
 
 def find_input(identifier):
     family_id = identifier.split(":")[0]
@@ -131,8 +142,14 @@ def find_input(identifier):
             return target,family,seeds
     raise KeyError(identifier)
 
-def verify_sources():
+def verify_sources(split=None):
     expected = read(HERE/"source_hashes.json")
+    if split is not None:
+        if split not in ("train","test"):raise ValueError("Unknown split")
+        selected=[m for m in read(HERE/"split_manifest.json")["families"] if m["split"]==split]
+        paths={m[k] for m in selected for k in ("definition","masters","inputs","references","seeds")}
+        expected={path:digest for path,digest in expected.items() if path in paths}
+        if len(expected)!=len(paths):raise ValueError("Missing source hashes for split")
     for path,digest in expected.items():
         h = hashlib.sha256()
         with (DATA/path).open("rb") as f:

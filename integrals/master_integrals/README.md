@@ -23,3 +23,5 @@ The first seed bounds were r <= t_top+2, s <= 2 and n_dot <= 2. The expanded che
 The collection contains 997 one-loop and three two-loop families. Counts are per family, and related lower-sector integrals can occur in several bases. The stored basis has the stated finite-domain validation; completeness for arbitrary integer indices requires further relations or an independent argument.
 
 The bases use [Kira](https://arxiv.org/abs/1705.05610) and the settings described in the [project report](../../report/report.pdf). The original master-generation programs and toolchain records are preserved in ../master_to_target/generation_source.tar.gz under the historical Master_Integrals prefix.
+
+The current seed-model division is available through [training](../training/README.md) and [testing](../testing/README.md). Their family links point to the files stored here; they do not duplicate integral data. The present run uses only the training view.

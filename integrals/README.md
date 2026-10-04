@@ -24,9 +24,19 @@ All active data paths are relative to integrals/. JSONL files contain one record
 
 [catalog.json](catalog.json) gives all file locations and counts. [families.json](families.json) lists all 1,000 definitions, and [splits.json](splits.json) retains the established training, validation and test assignments. Each category also has a catalog. [validation_summary.json](validation_summary.json) records the mathematical checks already completed and the checks of this reorganization.
 
-The total of 240,472 targets comprises 55,768 individual integrals and 184,704 integral expressions. There are 198,527 training targets, 19,600 validation targets and 22,345 test targets. The validation and test sets contain 183 and 202 individual integrals, respectively. The 384 additional individual targets contain numerator factors and lie in one-propagator sectors.
+The total of 240,472 targets comprises 55,768 individual integrals and 184,704 integral expressions. The historical collection split has 198,527 training targets, 19,600 validation targets and 22,345 test targets. The validation and test sets contain 183 and 202 individual integrals, respectively. The 384 additional individual targets contain numerator factors and lie in one-propagator sectors.
 
 The collection covers 997 one-loop and three two-loop families. The 984 added families vary exact mass and kinematic conditions within the one-loop box topology. Full kinematic profiles stay in one split across mass assignments; some lower-sector reduction structure remains shared. The basis checks cover stated finite index ranges and sample points. The data provide verified reference reductions and do not establish minimum reduction costs or high-loop model performance.
+
+## Current seed-model training and testing data
+
+[training](training/README.md) contains 168,330 targets from 693 families, and [testing](testing/README.md) contains 72,142 targets from 307 families. These directories implement the model's reviewed 70:30 division. Each contains master_integrals/, target_integrals/ and master_to_target/ directories with relative links to its complete families. The links preserve one stored copy of every original file. No family or complete box kinematic profile occurs in both model splits.
+
+Each split has a manifest.json. Its paths are relative to integrals/ and start with training/ or testing/. The model loader uses these paths, and its training run reads only training examples. Stored canonical records and splits.json preserve the earlier collection split as provenance. Model testing is deferred.
+
+s05_prepare_model_splits.py constructs the two directory views from the model's fixed split manifest, verifies all 5,000 model source-file hashes, checks group separation, and writes model_split_summary.json. It generates no new integrals and performs no model predictions. Run it after any deliberate regeneration of the model split:
+
+    python3 integrals/s05_prepare_model_splits.py
 
 ## Reading a family or a target
 
