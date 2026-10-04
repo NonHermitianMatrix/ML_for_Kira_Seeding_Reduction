@@ -1,7 +1,7 @@
 # Seed-selection model
 
 <!-- training-status:start -->
-Training is configured for ten epochs on 168,330 training targets from 693 families. Live progress is stored in [runs/training_status.json](runs/training_status.json). The run saves [runs/latest.pt](runs/latest.pt) for resumption and trained_model.pt after the final epoch. The testing data remain unused for model evaluation.
+Hoffman job 15036272 is running ten training epochs on 168,330 targets from 693 families. The first checkpoint confirms 1,000 targets and 125 optimizer updates. Live progress is stored in [runs/training_status.json](runs/training_status.json) on Hoffman; GitHub shows the last published snapshot. The run saves [runs/latest.pt](runs/latest.pt) for resumption and trained_model.pt after the final epoch. The launcher will publish the completed model and update this status. Testing remains deferred.
 <!-- training-status:end -->
 
 This folder contains the System 1 seed model and its data preparation, training, prediction and comparison code. The user has authorized training; held-out model testing remains a later step. The integral collection remains in ../integrals; this folder stores manifests and checks rather than duplicate integral data.
@@ -28,7 +28,7 @@ s01_data.py provides bounded streaming, fixed feature construction, strict publi
 
 s02_model.py defines the network and unweighted binary cross-entropy objective. The loss averages over candidates within a target, then over targets during gradient accumulation. Labels absent from the recorded set are membership negatives, not proofs of seed invalidity.
 
-s03_train.py is the future CPU training entry point. It shuffles training families and uses a 32-target shuffle buffer within each family. The default is ten epochs, AdamW with learning rate 0.001 and weight decay 0.0001, gradients averaged over eight targets, and gradient norm capped at 1. It never iterates over test examples and verifies source hashes only for the training split. runs/latest.pt retains the latest resumable checkpoint, capped at 8 MiB. Checkpoints are saved after the first 1,000 targets, each subsequent 5,000-target boundary and every completed epoch. --resume continues the saved target order and optimizer state. A completed run writes trained_model.pt in this folder. The current run status appears below.
+s03_train.py is the CPU training entry point. It shuffles training families and uses a 32-target shuffle buffer within each family. The default is ten epochs, AdamW with learning rate 0.001 and weight decay 0.0001, gradients averaged over eight targets, and gradient norm capped at 1. It never iterates over test examples and verifies source hashes only for the training split. runs/latest.pt retains the latest resumable checkpoint, capped at 8 MiB. Checkpoints are saved after the first 1,000 targets, each subsequent 5,000-target boundary and every completed epoch. --resume continues the saved target order and optimizer state. A completed run writes trained_model.pt in this folder. The current run status appears at the start of this README.
 
 s04_predict.py requires a trained checkpoint and returns a 0/1 prediction, both class probabilities and confidence for every supplied candidate, ranked by probability_1. It accepts --target FAMILY:ID and optional --seeds FILE containing {"indices": [...]}. It does not read the target's reference answer. Only load trusted checkpoints created by this project.
 

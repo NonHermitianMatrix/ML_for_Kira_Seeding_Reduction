@@ -17,5 +17,5 @@ Read the [report PDF](report/report.pdf), [LaTeX source](report/report.tex), [bi
 The primary working directory is /u/home/r/rushil/ML_for_Kira_Seeding_Reduction on Hoffman. Generated datasets stay on Hoffman and GitHub. The total project storage ceiling is 10 GB, including tools, caches, temporary files and Git history.
 
 <!-- seed-training-status:start -->
-Seed-model training is configured for ten epochs. [Training data](integrals/training/README.md) and [testing data](integrals/testing/README.md) have separate family views. Live status and checkpoints are stored in [ML_model_seed_selection/runs](ML_model_seed_selection/runs/README.md). The final model will be stored in the model folder.
+Hoffman job 15036272 has started seed-model training. The [model folder](ML_model_seed_selection/README.md) contains the code, training progress and resumable checkpoint. The [training](integrals/training/README.md) and [testing](integrals/testing/README.md) views separate the existing family groups. The job will save and publish final weights after ten epochs; held-out model testing remains deferred.
 <!-- seed-training-status:end -->
