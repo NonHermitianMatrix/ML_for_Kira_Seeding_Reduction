@@ -79,3 +79,5 @@ s10_finalize_training.py verifies the final checkpoint, all ten epoch counts, fi
 s11_run_training.sh runs the training-input checks, starts or resumes training, saves the final model, and publishes the completed artifacts to GitHub. It uses one CPU, 4 GiB requested memory and a 3 GiB address-space limit. Source-code fingerprints and split fingerprints are saved with the checkpoints. Training output stays in runs/scheduler.log. No testing command is included.
 
 The source folders for this run are [training](../integrals/training/README.md) and [testing](../integrals/testing/README.md). Only training is supplied to the optimizer.
+
+A [CPU resource check](runs/resource_check/README.md) compared one, two and four threads during training. The warm two-thread timing differed by about 2.4%, and four threads were slower in the short check. The existing one-thread training job continues unchanged. These checks used training data only and did not update the production model.
