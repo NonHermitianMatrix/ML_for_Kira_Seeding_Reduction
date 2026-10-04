@@ -1,0 +1,63 @@
+{
+  "assumptions": [
+    "Generic kinematics subject to the listed scalar-product rules; avoid exceptional thresholds and vanishing Gram determinants."
+  ],
+  "dimension": "d = 4 - 2*epsilon",
+  "external_momenta": [
+    "p1",
+    "p2"
+  ],
+  "id": "triangle_equal_mass_three_offshell",
+  "invariants": [
+    "s1",
+    "s2",
+    "s3",
+    "m2"
+  ],
+  "loop_momenta": [
+    "k"
+  ],
+  "normalization": "product over loops of d^d k/(i*pi^(d/2))",
+  "prescription": "+i0",
+  "propagators": [
+    {
+      "mass_squared": "m2",
+      "momentum": "k"
+    },
+    {
+      "mass_squared": "m2",
+      "momentum": "k-p1"
+    },
+    {
+      "mass_squared": "m2",
+      "momentum": "k-p1-p2"
+    }
+  ],
+  "scalarproduct_rules": [
+    [
+      [
+        "p1",
+        "p1"
+      ],
+      "s1"
+    ],
+    [
+      [
+        "p2",
+        "p2"
+      ],
+      "s2"
+    ],
+    [
+      [
+        "p1",
+        "p2"
+      ],
+      "(s3-s1-s2)/2"
+    ]
+  ],
+  "title": "One-loop equal-mass triangle with three off-shell legs",
+  "top_level_sectors": [
+    7
+  ]
+}

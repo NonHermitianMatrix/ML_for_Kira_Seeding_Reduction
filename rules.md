@@ -27,7 +27,7 @@
 - The original local folder is `/home/physics/projects/ML_for_Kira_SeedReduction`. The Hoffman copy is the primary working directory; use the local environment only to connect, transfer files or inspect results as needed.
 - Keep the Hoffman working copy linked to `git@github.com:NonHermitianMatrix/ML_for_Kira_Seeding_Reduction.git` so the user can monitor committed project files and their structure.
 - Preserve the complete local project copy on Hoffman, including hidden tool and cache files. Keep tool binaries, caches and build logs outside Git history, and never store credentials in project files or commits.
-- The current authorized implementation stage is to identify and organize master-integral bases for many defined families in `Master_Integrals/`, run the code on Hoffman, document it and update GitHub. Target construction will follow the reverse method described in the report and must wait for a separate instruction; do not start target-data generation or model training now.
+- Master-basis identification in `Master_Integrals/` is complete. The current authorized stage is to create `master_to_target/` on Hoffman, construct target integrals and integral expressions from the identified masters through IBP identities, save the data required for seed-selection and elimination training, validate the generated examples, write a README and update GitHub. Retain symbolic identities and use finite-field numerical coefficients for sampled reductions. Model training requires a separate instruction.
 
 ## Code organization
 
