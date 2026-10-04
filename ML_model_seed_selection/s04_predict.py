@@ -2,7 +2,7 @@
 import argparse, hashlib, json, pathlib
 import torch
 from s01_data import HERE, encode, find_input, read
-from s02_model import SeedSelector
+from s02_model import SeedSelector, binary_decisions
 
 def load_model(path):
     # Only load checkpoints produced by this project from a trusted location.
@@ -27,8 +27,18 @@ def main():
     model,cfg,_=load_model(args.checkpoint)
     target,family,seeds=find_input(args.target)
     if args.seeds: seeds=read(args.seeds)["indices"]
-    with torch.no_grad(): probs=model.probabilities(encode(target,family,seeds,cfg)).tolist()
-    ranked=sorted(zip(seeds,probs),key=lambda t:(-t[1],tuple(t[0])))
-    print(json.dumps(dict(target=args.target,meaning="probability of membership in the recorded reference seed set",
-                          candidates=[dict(indices=s,probability=v) for s,v in ranked]),indent=2))
+    with torch.no_grad():
+        probabilities=model.probabilities(encode(target,family,seeds,cfg))
+        decisions=binary_decisions(probabilities)
+    candidates=[dict(indices=s,predicted_label=int(decisions["predicted_label"][i]),
+                     probability_1=float(decisions["probability_1"][i]),
+                     probability_0=float(decisions["probability_0"][i]),
+                     confidence=float(decisions["confidence"][i])) for i,s in enumerate(seeds)]
+    candidates.sort(key=lambda row:(-row["probability_1"],tuple(row["indices"])))
+    print(json.dumps(dict(target=args.target,
+                          meaning="Binary membership in the recorded reference seed set",
+                          decision_threshold=0.5,
+                          confidence_meaning="Model-estimated probability of the returned label; empirical calibration unmeasured",
+                          ranking="descending probability_1",
+                          candidates=candidates),indent=2))
 if __name__=="__main__": main()

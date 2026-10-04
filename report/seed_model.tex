@@ -2,13 +2,22 @@
 \label{sec:seed-model}
 To train and test the seed-selection model, we use the target expressions
 and sufficient seed sets constructed in Section~\ref{sec:integrals-generation}.
-We have implemented a small neural network that assigns a separate score
+We have implemented a small neural network that assigns a binary decision and its estimated confidence
 to each supplied candidate seed. The implementation and data division are
 complete, while fitting the model parameters and measuring its prediction
 quality remain subsequent steps.
 
 \subsection{Model inputs and seed probabilities}
 \label{sec:seed-model-architecture}
+A seed specifies an integral index vector at which the solver generates
+IBP identities. The resulting equations can contain other integrals whose
+elimination uses identities from additional seed vectors~\cite{KiraOriginal}.
+A target can therefore use several seeds in a sufficient reduction set.
+Some targets admit a reduction from one seed, while a target already
+expressed in the chosen masters needs no IBP seed. We formulate the
+prediction as a separate binary decision for every candidate, so the
+model can select several seeds for the same target.
+
 For a fixed family and chosen master basis, write a target as
 \begin{equation}
  \mathcal T=\sum_{j=1}^{n_T}c_j(\boldsymbol x,d)
@@ -90,7 +99,8 @@ later inputs.
 
 The family information includes the propagator expressions, masses,
 external scalar products, invariant names, and the numbers of loops,
-propagators external momenta and invariant parameters. We encode its symbolic structure
+propagators, external momenta and invariant parameters. We encode its
+symbolic structure
 with the same fixed 64-component rule and map it to a 32-component
 family vector $\boldsymbol h_F$. A further shared map acts on the
 index vectors of the chosen masters, and their mean gives the
@@ -150,6 +160,52 @@ they do not establish the probability that a seed belongs to a
 globally minimal reduction. Exact reduction remains the criterion
 for deciding whether the selected seeds supply enough equations.
 
+For each candidate we report probabilities for both possible labels:
+\begin{equation}
+ \begin{aligned}
+ P_\theta(y_b=1\mid\mathcal T,F,\mathcal M,\boldsymbol\sigma_b)&=p_b,\\
+ P_\theta(y_b=0\mid\mathcal T,F,\mathcal M,\boldsymbol\sigma_b)&=1-p_b.
+ \end{aligned}
+ \label{eq:seed-class-probabilities}
+\end{equation}
+Here $y_b$ is the reference label, $F$ is the family definition and
+$\mathcal M$ is the chosen master basis. Label 1 means membership in the recorded sufficient seed set.
+Label 0 means absence from that set. The two class probabilities for
+one seed sum to one, while probabilities for different seeds remain
+separate.
+
+The binary prediction uses a fixed threshold of one half:
+\begin{equation}
+ \widehat y_b=
+ \begin{cases}
+  1,&p_b\geq\tfrac12,\\
+  0,&p_b<\tfrac12.
+ \end{cases}
+ \qquad
+ q_b=\widehat y_b p_b+(1-\widehat y_b)(1-p_b).
+ \label{eq:seed-binary-confidence}
+\end{equation}
+The value $\widehat y_b$ is the returned label, and $q_b$ is the model's
+estimated probability that this label agrees with the reference label.
+For example, $p_b=0.90$ gives label 1 with confidence $q_b=0.90$,
+while $p_b=0.08$ gives label 0 with confidence $q_b=0.92$.
+These values illustrate the output rule; they are not trained results.
+Candidate selection uses $p_b$, while $q_b$ describes confidence in
+the returned binary decision.
+
+The predicted seed set is
+\begin{equation}
+ \widehat{\mathcal S}(\mathcal T)
+   =\{\boldsymbol\sigma_b\in\mathcal C:\widehat y_b=1\}.
+ \label{eq:seed-predicted-set}
+\end{equation}
+Its size can vary between targets. Exact reduction must establish
+whether the identities from this set suffice to reduce the target.
+The probability $q_b$ concerns one reference-membership decision;
+it is not a probability that the complete selected set gives a valid
+or minimum-cost reduction. Test comparisons must also establish how
+well the numerical confidence values agree with observed decisions.
+
 \subsection{Training labels and the 70:30 data division}
 \label{sec:seed-model-split}
 For each target, let $\mathcal S_{\mathcal T}\subseteq\mathcal C$
@@ -207,10 +263,49 @@ rate of $10^{-3}$, weight decay of $10^{-4}$ and ten passes through the
 training data. These settings specify the initial procedure and have
 not been selected using the test set. Training has not started.
 
+For example, suppose five candidate seeds accompany a target and its
+recorded sufficient set contains the first and third seeds. The label
+vector is then
+\begin{equation}
+ \boldsymbol y(\mathcal T)=(1,0,1,0,0).
+ \label{eq:seed-label-example}
+\end{equation}
+The model receives the target, public family information, chosen basis
+and all five candidate seeds. Their labels enter the comparison with
+the predictions after the forward calculation; the labels and the
+target's master expansion remain outside the model input.
+
+Starting from randomly initialized parameters, the model produces a
+probability for every candidate in a training example. A reference
+label of 1 contributes $-\log p_b$ to the loss, while a label of 0
+contributes $-\log(1-p_b)$. The loss uses these continuous probabilities
+during parameter updates. The threshold in
+Eq.~\eqref{eq:seed-binary-confidence} applies when reporting decisions.
+
+We differentiate the loss with respect to the model parameters and
+average the gradients from eight targets before each update. A gradient
+describes how a change in a parameter changes the loss. The training
+procedure limits the combined gradient norm to one and uses AdamW to
+update the 28,097 parameters. The last group in a pass uses its actual
+number of targets when fewer than eight remain. The training examples
+change order between passes. Ten passes use each training target ten
+times, and the saved parameters after the final pass define the model
+for the test comparison. The held-out targets do not enter parameter
+updates or threshold selection.
+
 \subsection{Prepared comparisons and present implementation}
 For a test target, the trained model will receive only the target,
 public family information, chosen basis and candidate seeds.
 The saved labels will enter the subsequent comparison.
+We will compare the returned binary vector with the reference vector and
+record both missed reference seeds and selected seeds absent from that
+reference. We will also group decisions with similar confidence values,
+separately for returned labels 0 and 1, and compare their mean confidence
+with the fraction of matching reference labels. This checks whether, for
+example, decisions assigned confidence near 0.9 agree with the recorded
+labels about 90 percent of the time. The test set supplies a final
+assessment; it does not set the threshold or change the parameters.
+
 If $\widehat{\mathcal S}_k(\mathcal T)$ contains the $k$ highest-scoring
 candidates, the fraction of recorded seeds recovered is
 \begin{equation}
@@ -231,7 +326,8 @@ A distance from the optimal seed set would require independently
 established optimal labels.
 
 The preparation checked every target-label correspondence and verified
-that every recorded seed appears in its candidate pool. Code checks
+that every recorded seed appears in its candidate pool. Code checks verified the binary labels, both class probabilities,
+and confidence values at the threshold and its boundaries. They also
 confirmed that the model handles the current family sizes, retains the
 coefficient and term-order inputs, and gives the same seed scores when
 the candidate list is reordered. Additional checks verified the

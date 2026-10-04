@@ -60,3 +60,14 @@ def reference_loss(logits,y):
     # Unweighted BCE preserves the interpretation as reference-membership probability.
     # Both stored positives and absent memberships enter; the latter do not mean invalid seeds.
     return F.binary_cross_entropy_with_logits(logits,y,reduction="mean")
+
+def binary_decisions(probabilities):
+    """Binary reference-membership decisions and the estimated probability of that class."""
+    p = probabilities
+    if not p.is_floating_point() or not torch.isfinite(p).all():
+        raise ValueError("Probabilities must be finite floating-point values")
+    if ((p < 0) | (p > 1)).any():
+        raise ValueError("Probabilities must lie between zero and one")
+    predicted = (p >= 0.5).long()
+    return dict(predicted_label=predicted, probability_1=p, probability_0=1-p,
+                confidence=torch.where(predicted.bool(),p,1-p))

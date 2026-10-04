@@ -3,8 +3,8 @@ import copy, json, resource, unittest
 import torch
 from s00_prepare_data import group_for
 from s01_data import HERE, DATA, config, read, encode, find_input, labels, family_records, storage_guard
-from s02_model import SeedSelector, reference_loss
-from s05_evaluate import seed_metrics
+from s02_model import SeedSelector, reference_loss, binary_decisions
+from s05_evaluate import seed_metrics, confidence_bins
 
 class ModelChecks(unittest.TestCase):
     @classmethod
@@ -81,6 +81,30 @@ class ModelChecks(unittest.TestCase):
         self.assertTrue(all(float(g.abs().sum())>0 for g in gradients))
         for key,value in self.model.state_dict().items():
             self.assertTrue(torch.equal(value,self.before[key]))
+
+    def test_binary_labels_and_confidence(self):
+        p=torch.tensor([0.08,0.49,0.5,0.9,0.0,1.0])
+        result=binary_decisions(p)
+        self.assertEqual(result["predicted_label"].tolist(),[0,0,1,1,0,1])
+        torch.testing.assert_close(result["probability_1"]+result["probability_0"],torch.ones_like(p))
+        torch.testing.assert_close(result["confidence"],torch.tensor([0.92,0.51,0.5,0.9,1.0,1.0]))
+        # A confident zero remains a low-ranked seed when sorting by membership probability.
+        order=torch.argsort(result["probability_1"],descending=True)
+        self.assertEqual(result["predicted_label"][order].tolist(),[1,1,1,0,0,0])
+        for bad in (torch.tensor([-0.1]),torch.tensor([1.1]),torch.tensor([float("nan")])):
+            with self.assertRaises(ValueError): binary_decisions(bad)
+
+    def test_loss_follows_reference_labels(self):
+        y=torch.tensor([1.,0.,1.])
+        good=torch.tensor([3.,-3.,3.])
+        self.assertLess(float(reference_loss(good,y)),float(reference_loss(-good,y)))
+
+    def test_confidence_comparison(self):
+        c,q,h=confidence_bins(torch.tensor([0.1,0.9,0.51]),torch.tensor([0.,0.,1.]))
+        self.assertEqual(int(c.sum()),3)
+        self.assertEqual(int(h.sum()),2)
+        self.assertAlmostEqual(float(q.sum()),2.31,places=6)
+        self.assertEqual(int(c[10:].sum()),2)
 
     def test_known_metric_values(self):
         result=seed_metrics(torch.tensor([0.9,0.1,0.8]),torch.tensor([1.,0.,1.]))
