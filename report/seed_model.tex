@@ -3,9 +3,10 @@
 To train and test the seed-selection model, we use the target expressions
 and sufficient seed sets constructed in Section~\ref{sec:integrals-generation}.
 We have implemented a small neural network that assigns a binary decision and its estimated confidence
-to each supplied candidate seed. The implementation and data division are
-complete, while fitting the model parameters and measuring its prediction
-quality remain subsequent steps.
+to each supplied candidate seed. We trained the model on the fixed training division and then
+evaluated it on the held-out targets. This section defines the inputs,
+probabilities and training procedure, and
+Section~\ref{sec:seed-test-results} gives the resulting seed predictions.
 
 \subsection{Model inputs and seed probabilities}
 \label{sec:seed-model-architecture}
@@ -154,7 +155,7 @@ The quantity $p_b$ represents the model's probability that
 $\boldsymbol\sigma_b$ belongs to the recorded sufficient seed set.
 Several seeds can contribute to the same reduction, so these
 probabilities are separate and need not sum to one.
-A high score will rank a seed for selection after training.
+A high score ranks a seed for selection.
 The current data establish a valid reference set for each target;
 they do not establish the probability that a seed belongs to a
 globally minimal reduction. Exact reduction remains the criterion
@@ -203,8 +204,8 @@ Its size can vary between targets. Exact reduction must establish
 whether the identities from this set suffice to reduce the target.
 The probability $q_b$ concerns one reference-membership decision;
 it is not a probability that the complete selected set gives a valid
-or minimum-cost reduction. Test comparisons must also establish how
-well the numerical confidence values agree with observed decisions.
+or minimum-cost reduction. Section~\ref{sec:seed-test-results} compares these confidence values
+with their observed agreement with the reference labels.
 
 \subsection{Training labels and the 70:30 data division}
 \label{sec:seed-model-split}
@@ -257,11 +258,12 @@ The training objective is the average binary cross-entropy,
 Here $\mathcal D_{\rm train}$ is the training target set and
 $n_C(\mathcal T)$ is the candidate count for that target.
 Each target has equal weight in this objective. We retain all candidate
-labels and use no additional positive-class weighting. The implemented
-training procedure uses AdamW~\cite{AdamW}, with an initial learning
+labels and use no additional positive-class weighting. We trained the model with AdamW~\cite{AdamW}, with an initial learning
 rate of $10^{-3}$, weight decay of $10^{-4}$ and ten passes through the
-training data. These settings specify the initial procedure and have
-not been selected using the test set. Training has not started.
+training data. We fixed these settings before using the test set.
+Training completed all ten passes and made 210,420 parameter updates
+from 1,683,300 target presentations. The final saved parameters define
+the model used throughout the test.
 
 For example, suppose five candidate seeds accompany a target and its
 recorded sufficient set contains the first and third seeds. The label
@@ -293,56 +295,39 @@ times, and the saved parameters after the final pass define the model
 for the test comparison. The held-out targets do not enter parameter
 updates or threshold selection.
 
-\subsection{Prepared comparisons and present implementation}
-For a test target, the trained model will receive only the target,
-public family information, chosen basis and candidate seeds.
-The saved labels will enter the subsequent comparison.
-We will compare the returned binary vector with the reference vector and
-record both missed reference seeds and selected seeds absent from that
-reference. We will also group decisions with similar confidence values,
-separately for returned labels 0 and 1, and compare their mean confidence
-with the fraction of matching reference labels. This checks whether, for
-example, decisions assigned confidence near 0.9 agree with the recorded
-labels about 90 percent of the time. The test set supplies a final
-assessment; it does not set the threshold or change the parameters.
+\subsection{Completed training and implementation checks}
+Training began from randomly initialized parameters and completed
+the fixed ten-pass schedule. The mean loss recorded during the first
+pass was 0.0111521, and the mean during the last pass was 0.00148954.
+Figure~\ref{fig:training-loss} shows the recorded loss for each pass.
+These values average the losses encountered as the parameters changed
+within that pass. They describe the training history and do not measure
+performance on unseen targets.
 
-If $\widehat{\mathcal S}_k(\mathcal T)$ contains the $k$ highest-scoring
-candidates, the fraction of recorded seeds recovered is
-\begin{equation}
- \operatorname{recall}_k(\mathcal T)
- =\frac{|\widehat{\mathcal S}_k(\mathcal T)
-                 \cap\mathcal S_{\mathcal T}|}
-        {|\mathcal S_{\mathcal T}|},
- \qquad |\mathcal S_{\mathcal T}|>0 .
- \label{eq:seed-recall}
-\end{equation}
-We will also record how often these candidates contain the complete
-reference set, the ranking of each recorded seed, and the squared
-difference between each probability and its membership label.
-Separate averages for individual integrals, integral expressions and
-complete families will identify which examples determine the result.
-These comparisons measure agreement with the recorded reductions.
-A distance from the optimal seed set would require independently
-established optimal labels.
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=0.80\linewidth]{figures/training_loss.pdf}
+ \caption{Mean training binary cross-entropy during each of the ten
+ passes. Each training target contributes equal weight to the mean.
+ The vertical axis uses a logarithmic scale. The curve records losses
+ during parameter updates; it is not a validation curve.}
+ \label{fig:training-loss}
+\end{figure}
 
-The preparation checked every target-label correspondence and verified
-that every recorded seed appears in its candidate pool. Code checks verified the binary labels, both class probabilities,
-and confidence values at the threshold and its boundaries. They also
-confirmed that the model handles the current family sizes, retains the
-coefficient and term-order inputs, and gives the same seed scores when
-the candidate list is reordered. Additional checks verified the
-derivatives needed for training without changing any model parameter.
-No fitting, trained prediction test or Kira timing comparison has
-been performed.
+Before training, the preparation checked every target-label
+correspondence and verified that every recorded seed appears in its
+candidate pool. Implementation checks verified the binary labels, both
+class probabilities, the confidence values and the parameter derivatives.
+They also confirmed that the input retains coefficient and term-order
+information and that a reordering of candidates only reorders their
+scores. During training, the held-out targets supplied no parameter
+updates, threshold choices or stopping decisions.
 
 The implementation reads examples in bounded groups and scores
-candidate seeds in blocks. It also forms the ordered term pairs in
-blocks, while retaining every pair in Eq.~\eqref{eq:seed-pair-embedding}.
-The number of pairs grows as $n_T(n_T-1)$, which limits this initial
-representation for large target expressions. The current limits are
-512 terms, 10,000 candidates and 16 indices per integral; inputs beyond
-these limits are rejected explicitly. These bounds and the small
-parameter count control the implementation cost, while a measured
-reduction speedup remains a question for the subsequent training and
-solver studies.
-
+candidate seeds and ordered term pairs in blocks. It retains every
+ordered pair in Eq.~\eqref{eq:seed-pair-embedding}, so the pair count
+grows as $n_T(n_T-1)$. The current bounds are 512 terms, 10,000 candidates
+and 16 indices per integral. Inputs beyond these bounds are rejected.
+The trained model now permits a direct comparison of its predicted
+seed sets with the recorded sets in the separate test collection.
+\FloatBarrier

@@ -7,3 +7,5 @@ The master_integrals/, target_integrals/ and master_to_target/ folders contain r
 manifest.json lists the family records and paths, relative to integrals/. Stored records retain their original canonical file links and historical split labels. This manifest and the model's split_manifest.json define the current 70:30 model division.
 
 These targets are reserved for later testing. The current training run does not read these examples or update parameters from them.
+
+The authorized held-out model test is now complete for all 72,142 targets. Predictions, metrics and graphs are in ../../ML_model_seed_selection/model_test/. Testing used the saved model and kept the 0.5 threshold fixed; it did not update the weights or change this split.

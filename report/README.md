@@ -15,3 +15,5 @@ The local Git connection uses the existing Hoffman SSH authentication and Hoffma
 Preserve local edits before pulling, and resolve any differences before declaring the report synchronized. Compare the report file hashes when checking the three copies. Git synchronization runs when requested or when the report is updated; no background synchronization service is installed.
 
 The earlier local report and rules are retained in .tools/report-sync/before-link/ on the local machine.
+
+The report now includes the completed ten-pass seed-model training and held-out results for 72,142 targets. seed_model_test.tex contains the test section, and figures/ contains the six PDF figures. Raw predictions and metric data remain in ML_model_seed_selection/model_test/ on Hoffman and GitHub. The local report copy contains these report figures but no raw model-test records.

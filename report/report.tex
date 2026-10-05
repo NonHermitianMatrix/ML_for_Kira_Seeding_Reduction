@@ -3,10 +3,12 @@
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{placeins}
 \usepackage{hyperref}
 \hypersetup{hidelinks,
   pdftitle={Machine Learning for Kira IBP Reduction},
-  pdfsubject={Feynman integrals, IBP reduction, and proposed machine learning roles}}
+  pdfsubject={Feynman integrals, IBP reduction, and seed-selection test results}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
 \setlength{\emergencystretch}{2em}
@@ -39,7 +41,7 @@ and Kira would perform the algebra for the selected choice. Training
 these models would require target integrals with known master expansions,
 the seeds that supply their reduction equations, and the steps used to
 solve those equations. Section~\ref{sec:seed-model} describes the implemented
-seed model and its prepared data division; training remains a later step.
+seed model and its completed training, while Section~\ref{sec:seed-test-results} gives the held-out test results.
 
 \subsection{Selecting seeds before equation generation}
 To select seeds, the first model would receive the family definition,
@@ -666,8 +668,10 @@ expressions, and the test set contains one individual integral and 186
 expressions. These initial counts motivate the additional held-out
 individual constructions described below.
 This initial collection covers the specified one-loop and two-loop
-families and the stated construction bounds. Training the models and
-measuring their performance on larger reductions remain later stages.
+families and the stated construction bounds. The following sections
+describe seed-model training and its held-out comparison on the
+expanded collection. The elimination model and measurements of
+complete reduction time remain later stages.
 
 Before accepting the collection, we rederived all 55,654 stored source
 equations from their family definitions and checked the recorded
@@ -867,6 +871,7 @@ targets and complete reduction data~\cite{ExpandedIntegralData}.
 
 
 \input{seed_model}
+\input{seed_model_test}
 
 \clearpage
 \renewcommand{\refname}{Citations}

@@ -10,12 +10,12 @@ The collection covers 997 one-loop families and three two-loop families. The add
 
 The [combined catalog](integrals/catalog.json) gives the family counts and file locations. The collection's original [split file](integrals/splits.json) defines 198,527 training targets, 19,600 validation targets and 22,345 test targets. The seed model uses its own grouped 70:30 split for the authorized training run.
 
-The [seed-selection model](ML_model_seed_selection/README.md) is implemented and training is authorized. Its separate grouped 70:30 split contains 168,330 training targets and 72,142 test targets. The model scores each candidate seed using the target terms, their symbolic coefficients and ordered term pairs. Training reads the separate training view. Held-out model testing remains deferred. Section 7 of the report explains the model.
+The [seed-selection model](ML_model_seed_selection/README.md) has completed training and held-out testing. Its separate grouped 70:30 split contains 168,330 training targets and 72,142 test targets. The model scores each candidate seed using the target terms, their symbolic coefficients and ordered term pairs. Training reads the separate training view. The held-out test results and six figures are in ML_model_seed_selection/model_test/. Sections 7 and 8 of the report explain the model and its test results.
 
 Read the [report PDF](report/report.pdf), [LaTeX source](report/report.tex), [bibliography](report/references.bib) and [project rules](rules.md). The report's dataset citations identify preserved Git commits, so the documented calculations remain accessible after this directory change.
 
 The primary working directory is /u/home/r/rushil/ML_for_Kira_Seeding_Reduction on Hoffman. Generated datasets stay on Hoffman and GitHub. The total project storage ceiling is 10 GB, including tools, caches, temporary files and Git history.
 
 <!-- seed-training-status:start -->
-The seed-selection model completed ten training epochs. Its [trained weights](ML_model_seed_selection/trained_model.pt) and [training metadata](ML_model_seed_selection/trained_model.json) are stored in the model folder. The held-out test set remains unused for model evaluation.
+The seed-selection model completed ten training passes and the held-out test on 72,142 targets. Its [test results and graphs](ML_model_seed_selection/model_test/README.md) report 95.734% seed precision, 94.112% recall and 81.916% exact reference-set agreement. The [report](report/report.pdf) includes the results and the lower performance of the single held-out two-loop family.
 <!-- seed-training-status:end -->
