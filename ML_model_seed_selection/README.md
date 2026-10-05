@@ -1,7 +1,7 @@
 # Seed-selection model
 
 <!-- training-status:start -->
-Hoffman job 15036272 is running ten training epochs on 168,330 targets from 693 families. The first checkpoint confirms 1,000 targets and 125 optimizer updates. Live progress is stored in [runs/training_status.json](runs/training_status.json) on Hoffman; GitHub shows the last published snapshot. The run saves [runs/latest.pt](runs/latest.pt) for resumption and trained_model.pt after the final epoch. The launcher will publish the completed model and update this status. Testing remains deferred.
+Training completed ten epochs on 168,330 training targets from 693 families. The final model is [trained_model.pt](trained_model.pt), with metadata in [trained_model.json](trained_model.json). The resume checkpoint and training history are in [runs](runs/README.md). No test examples were used in training or evaluated. Testing awaits the user's instruction.
 <!-- training-status:end -->
 
 This folder contains the System 1 seed model and its data preparation, training, prediction and comparison code. The user has authorized training; held-out model testing remains a later step. The integral collection remains in ../integrals; this folder stores manifests and checks rather than duplicate integral data.
