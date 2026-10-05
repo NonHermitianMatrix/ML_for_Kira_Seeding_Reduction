@@ -26,7 +26,7 @@ data/training/<family>.npz holds derived float32 features, state offsets, refere
 
 Every selected reference action is replayed in exact modular arithmetic during preparation. The replay checks the next sampled row, the multiplier, recorded operation counts, trace continuity and final master support. It recomputes fill-in and cancellations from the sampled matrix. The original support counts describe symbolic rows and can differ when a coefficient vanishes at the sample; the preparation records these differences. No future rows, selected equation IDs, final master coefficients, construction histories or future operation counts enter predictive features. All supplied candidate identities contribute in the same way.
 
-Training minimizes mean next-choice cross-entropy over states with at least two actions. Forced states remain in the audit and have zero loss. AdamW uses learning rate 0.001, weight decay 0.0001, batches of up to 256 states, a gradient norm cap of one, and ten passes. Sixteen families form each bounded shuffle group. The final pass defines the saved model. Testing, probability calibration, complete learned rollouts and Kira timing comparisons remain separate tasks.
+Training minimizes mean next-choice cross-entropy over states with at least two actions. Forced states remain in the audit and have zero loss. AdamW uses learning rate 0.001, weight decay 0.0001, batches of up to 256 states, a gradient norm cap of one, and ten passes. Sixteen families form each bounded shuffle group. The final pass defines the saved model. The fixed model has now been tested through complete target-row sequences and confidence reliability measurements in model_test/. Fitting a calibration map and full Kira timing comparisons remain separate tasks.
 
 runs/status.json gives the current stage. runs/history.json records pass losses and reference-choice agreement during updates. These are training measurements, not held-out accuracy. runs/latest.pt contains resumable model and optimizer state. trained_model.pt contains the final model, feature definition and configuration. trained_model.json gives the final counts, provenance, resource use and model hash.
 
@@ -81,5 +81,11 @@ Store this folder and its generated artifacts on Hoffman and GitHub only. Keep r
 <!-- completed-training:start -->
 Training completed all ten passes on 455,341 choice states from 693 families, giving 4,553,410 state presentations and 18,006 updates. The preparation checked 585,502 total states, including 130,161 forced states. The final model has 10,529 parameters and occupies 49,122 bytes.
 
-Final-pass mean cross-entropy during updates was 0.11509920 and reference-choice agreement was 99.7387%. These are training measurements; held-out testing and calibration remain deferred. Peak training RAM was 245.71 MiB, and the training stage took 408.33 seconds after preparation.
+Final-pass mean cross-entropy during updates was 0.11509920 and reference-choice agreement was 99.7387%. These are training measurements. The completed held-out comparison is recorded below; no calibration map has been fitted. Peak training RAM was 245.71 MiB, and the training stage took 408.33 seconds after preparation.
 <!-- completed-training:end -->
+
+<!-- completed-testing:start -->
+The frozen reduction model was tested on 72,142 targets in 307 held-out families. It matched 95.469% of recorded choices on 194,347 states with at least two actions. Complete learned paths matched all three sampled master expansions for 72,026 targets; the fixed local rule passed 71,463. Mean attempted reduction times were 8.4426 ms and 0.4262 ms, respectively. Reference paths are valid without a proof of minimality. These are target-row tests; no full Kira speedup was measured.
+
+See [model_test/README.md](model_test/README.md) for saved predictions, complete paths, metric definitions, six figures and reproduction commands. The model weights and training records are unchanged. Historical training status files describe the state at training completion. After regenerating training-only report text, run the test report updater to restore the current cross-references.
+<!-- completed-testing:end -->

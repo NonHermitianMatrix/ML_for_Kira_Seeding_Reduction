@@ -19,8 +19,8 @@ The mean cross-entropy recorded during parameter updates changed from
 0.186664 in the first pass to 0.115099 in the tenth pass.
 The corresponding fraction of choices matching the recorded action
 changed from 97.983\% to 99.739\%. These values describe
-the training history; the final parameters have not been evaluated
-on the reserved families.
+the training history. Section~\ref{sec:reduction-test} evaluates the
+final parameters on the reserved families.
 
 Implementation checks verified exact row cancellation, unchanged
 predictions when the candidate list or matrix rows are reordered,
@@ -34,8 +34,9 @@ provenance~\cite{ReductionModelData}.
 
 These records cover one changing target row with fixed source
 identities, predominantly in one-loop families. The model can now
-rank the supplied steps at a current state. Tests of full learned
-reduction sequences, confidence calibration, unseen families and
-integration into Kira remain subsequent stages. In particular, the
-present training measurements establish neither a minimum operation
-count nor an end-to-end reduction speedup.
+rank the supplied steps at a current state. Section~\ref{sec:reduction-test}
+tests complete learned target-row sequences on reserved families and
+compares confidence with recorded-action agreement. The training
+measurements above describe fitting on the training data. Minimum
+operation counts and performance in complete Kira jobs require
+separate studies.

@@ -9,3 +9,7 @@ manifest.json lists the family records and paths, relative to integrals/. Stored
 These targets are reserved for later testing. The current training run does not read these examples or update parameters from them.
 
 The authorized held-out model test is now complete for all 72,142 targets. Predictions, metrics and graphs are in ../../ML_model_seed_selection/model_test/. Testing used the saved model and kept the 0.5 threshold fixed; it did not update the weights or change this split.
+
+<!-- reduction-test:start -->
+The trained reduction-propagation model has now used this reserved view for frozen evaluation. No records from this view were added to training, and no parameters, confidence map or data split were adjusted. The resulting probabilities, paths, comparisons and figures are in ../../ML_model_reduction/model_test/.
+<!-- reduction-test:end -->

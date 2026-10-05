@@ -8,7 +8,7 @@
 \usepackage{hyperref}
 \hypersetup{hidelinks,
   pdftitle={Machine Learning for Kira IBP Reduction},
-  pdfsubject={Feynman integrals, IBP reduction, seed-selection test results, and reduction-model training}}
+  pdfsubject={Feynman integrals, IBP reduction, seed-selection and reduction-model test results}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
 \setlength{\emergencystretch}{2em}
@@ -42,7 +42,8 @@ these models would require target integrals with known master expansions,
 the seeds that supply their reduction equations, and the steps used to
 solve those equations. Section~\ref{sec:seed-model} describes the implemented
 seed model and its completed training, while Section~\ref{sec:seed-test-results} gives the held-out test results. Section~\ref{sec:reduction-model}
-describes the implemented next-step model for reduction propagation.
+describes the implemented next-step model for reduction propagation,
+and Section~\ref{sec:reduction-test} gives its held-out results.
 
 \subsection{Selecting seeds before equation generation}
 To select seeds, the first model would receive the family definition,
@@ -672,7 +673,8 @@ This initial collection covers the specified one-loop and two-loop
 families and the stated construction bounds. The following sections
 describe seed-model training and its held-out comparison on the
 expanded collection. Section~\ref{sec:reduction-model} describes the reduction model.
-Measurements of complete reduction time remain a later stage.
+Section~\ref{sec:reduction-test} measures complete target-row sequences
+and their selection costs. Measurements of full Kira jobs remain a later stage.
 
 Before accepting the collection, we rederived all 55,654 stored source
 equations from their family definitions and checked the recorded
@@ -856,8 +858,8 @@ individual integrals and 22,143 expressions. These counts specify
 the available tests for each target type. The added individual targets
 supply tests of numerator integrals in one-propagator sectors.
 Individual targets with more positive denominator indices and
-additional high-loop families require further constructions. We will
-measure model accuracy and performance in subsequent studies.
+additional high-loop families require further constructions. Sections~\ref{sec:seed-test-results} and \ref{sec:reduction-test}
+measure the two models on the current grouped split.
 
 We rederived 3,299,902 source equations and checked 227,330
 used IBP equations by independent differentiation across the complete
@@ -874,6 +876,7 @@ targets and complete reduction data~\cite{ExpandedIntegralData}.
 \input{seed_model}
 \input{seed_model_test}
 \input{reduction_model}
+\input{reduction_test}
 
 \clearpage
 \renewcommand{\refname}{Citations}
