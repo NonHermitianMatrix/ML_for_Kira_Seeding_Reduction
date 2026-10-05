@@ -8,14 +8,14 @@
 \usepackage{hyperref}
 \hypersetup{hidelinks,
   pdftitle={Machine Learning for Kira IBP Reduction},
-  pdfsubject={Feynman integrals, IBP reduction, and seed-selection test results}}
+  pdfsubject={Feynman integrals, IBP reduction, seed-selection test results, and reduction-model training}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
 \setlength{\emergencystretch}{2em}
 \title{\textbf{Machine Learning for Kira IBP Reduction}\\
   \large Seed selection and elimination ordering}
 \author{}
-\date{October 4, 2026}
+\date{October 5, 2026}
 
 \begin{document}
 \maketitle
@@ -41,7 +41,8 @@ and Kira would perform the algebra for the selected choice. Training
 these models would require target integrals with known master expansions,
 the seeds that supply their reduction equations, and the steps used to
 solve those equations. Section~\ref{sec:seed-model} describes the implemented
-seed model and its completed training, while Section~\ref{sec:seed-test-results} gives the held-out test results.
+seed model and its completed training, while Section~\ref{sec:seed-test-results} gives the held-out test results. Section~\ref{sec:reduction-model}
+describes the implemented next-step model for reduction propagation.
 
 \subsection{Selecting seeds before equation generation}
 To select seeds, the first model would receive the family definition,
@@ -670,8 +671,8 @@ individual constructions described below.
 This initial collection covers the specified one-loop and two-loop
 families and the stated construction bounds. The following sections
 describe seed-model training and its held-out comparison on the
-expanded collection. The elimination model and measurements of
-complete reduction time remain later stages.
+expanded collection. Section~\ref{sec:reduction-model} describes the reduction model.
+Measurements of complete reduction time remain a later stage.
 
 Before accepting the collection, we rederived all 55,654 stored source
 equations from their family definitions and checked the recorded
@@ -872,6 +873,7 @@ targets and complete reduction data~\cite{ExpandedIntegralData}.
 
 \input{seed_model}
 \input{seed_model_test}
+\input{reduction_model}
 
 \clearpage
 \renewcommand{\refname}{Citations}

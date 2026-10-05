@@ -19,3 +19,5 @@ The primary working directory is /u/home/r/rushil/ML_for_Kira_Seeding_Reduction 
 <!-- seed-training-status:start -->
 The seed-selection model completed ten training passes and the held-out test on 72,142 targets. Its [test results and graphs](ML_model_seed_selection/model_test/README.md) report 95.734% seed precision, 94.112% recall and 81.916% exact reference-set agreement. The [report](report/report.pdf) includes the results and the lower performance of the single held-out two-loop family.
 <!-- seed-training-status:end -->
+
+The [reduction-propagation model](ML_model_reduction/README.md) ranks the next exact row operation from a supplied list and returns its estimated confidence. It completed ten passes on 455,341 choice states from 693 families, using the same grouped training families as the seed model. Section 9 of the report defines the matrix input, action probabilities and reference-choice training. Completed training details are recorded in ML_model_reduction/trained_model.json; held-out testing remains separate.

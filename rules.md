@@ -75,3 +75,9 @@
 - Do not apply visual chunking, icons, emojis, tables, marketing-style headers, or explanatory padding. Honor the original user prompt format.
 - Return terse, minimally formatted plaintext or Markdown responses unless otherwise requested.
 - Keep prose concise while preserving sentence flow, explicit connections, and explanations needed for clarity. Brevity must not turn a paragraph into disconnected statements.
+
+## Reduction-propagation model
+
+- Implement and train the next-step reduction model in ML_model_reduction/ on Hoffman. Given a current coefficient matrix and the supplied allowed reduction steps, return a probability for each step, select one step and return its model-estimated confidence. Keep exact row operations separate from learned scores.
+- Use the existing grouped training families and preserve the held-out families. This instruction authorizes model construction and training; held-out testing remains a later task. Describe the actual scope of the training records and do not claim optimal paths, calibrated confidence or Kira speedups without evidence.
+- Explain this model and its completed training in the report, rebuild the PDF and synchronize the report locally and to GitHub. Keep the model, derived training data, logs and checkpoints on Hoffman and GitHub only.

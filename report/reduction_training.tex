@@ -1,0 +1,41 @@
+\subsection{Completed training and present scope}
+Training used 585,502 recorded states from the 168,330 targets in
+693 training families. Of these states, 455,341 supplied at least
+two allowed actions and 130,161 supplied one action. The prepared
+collection contains 2,085,062 candidate appearances, with at most
+16 actions in one state. The model uses 132 features per
+candidate and has 10,529 adjustable parameters.
+
+All selected reference operations reproduced their saved sampled next
+rows, and the replay checks verified trace continuity and the final
+master support. The audit recorded 108 states in which the
+stored symbolic support counts differed from counts in the sampled
+matrix. Coefficients can vanish at the chosen kinematic point, so these
+states use their exact sampled counts as described above.
+
+The fixed schedule completed ten passes with 4,553,410
+presentations of choice states and 18,006 parameter updates.
+The mean cross-entropy recorded during parameter updates changed from
+0.186664 in the first pass to 0.115099 in the tenth pass.
+The corresponding fraction of choices matching the recorded action
+changed from 97.983\% to 99.739\%. These values describe
+the training history; the final parameters have not been evaluated
+on the reserved families.
+
+Implementation checks verified exact row cancellation, unchanged
+predictions when the candidate list or matrix rows are reordered,
+invariance of the structural features under nonzero row rescaling,
+and the exclusion of future labels from the inputs. The saved model
+also reproduced the feature encoding of a recorded training state
+and returned probabilities summing to one. A selected operation
+passed an independent exact row-update check. The accompanying
+implementation retains the trained parameters and the data
+provenance~\cite{ReductionModelData}.
+
+These records cover one changing target row with fixed source
+identities, predominantly in one-loop families. The model can now
+rank the supplied steps at a current state. Tests of full learned
+reduction sequences, confidence calibration, unseen families and
+integration into Kira remain subsequent stages. In particular, the
+present training measurements establish neither a minimum operation
+count nor an end-to-end reduction speedup.

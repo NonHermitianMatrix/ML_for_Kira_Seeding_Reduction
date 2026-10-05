@@ -1,0 +1,172 @@
+\section{Machine Learning Model for Reduction Propagation}
+\label{sec:reduction-model}
+The seed model selects identities from which a reduction can proceed.
+Once these equations are available, the reduction model selects the next
+row operation from a supplied list of allowed steps. We use the current
+coefficient matrix and its integral labels to describe each choice, and
+the model returns a probability for every listed step. The step with the
+largest probability gives the proposed next operation. Exact arithmetic
+then updates the matrix, which supplies the input for the next choice.
+This section describes the model and its training on the reductions
+constructed in Section~\ref{sec:integrals-generation}.
+
+\subsection{Current equations and allowed reduction steps}
+Let $A^{(n)}$ be the coefficient matrix after $n$ reduction steps. A column
+$j$ corresponds to an integral $I_{\boldsymbol a^{(j)}}$, and a row contains
+its coefficients in an identity or in the target expression currently
+being reduced. The chosen master basis specifies the columns protected
+from elimination. An action $a=(q,r,k)$ uses source row $q$ to eliminate
+column $k$ from destination row $r$:
+\begin{equation}
+ A^{(n+1)}_{rj}
+ =A^{(n)}_{rj}
+  -\frac{A^{(n)}_{rk}}{A^{(n)}_{qk}}A^{(n)}_{qj},
+ \qquad q\ne r,\quad A^{(n)}_{qk}\ne0,\quad A^{(n)}_{rk}\ne0.
+ \label{eq:reduction-action}
+\end{equation}
+All other rows remain unchanged during this elementary step. If both
+rows are identities, this is an elementary row operation. If row $r$
+represents a target, row $q$ must be a zero identity so that the target
+retains its value. The solver supplies the allowed action set
+$\mathcal A_n$, enforcing its integral ordering, master basis and row
+roles. The model ranks this finite list; completeness of the list remains
+the responsibility of the solver.
+
+The stored examples describe a particular instance of this matrix.
+They contain one changing target row and the source identities available
+for eliminating its largest remaining nonmaster integral under
+Eq.~\eqref{eq:target-reference-order}. Each candidate specifies one of
+these identities, the target row and that integral. After a choice, the
+source identities remain fixed and the target row changes. The prediction
+interface also accepts several changing rows, while the present training
+data cover the stored target-row procedure. Performance on Kira's full
+evolving system will require a separate study with its admissible actions
+and ordering~\cite{Kira3}.
+
+\subsection{Information supplied to the model}
+For each allowed action, we construct a vector $\boldsymbol f_a$ from
+the current matrix, the pivot integral and the family definition.
+The pivot description includes its indices, sector membership, and
+the values of $r,s,t,n_{\rm dot}$ in Eq.~\eqref{eq:complexities}.
+Descriptions of the source and destination rows give their nonzero
+counts, master content and the mean and largest integral complexities.
+A matrix summary gives its number of rows, columns and nonzero entries.
+The public family definition supplies the numbers of loops and
+kinematic parameters together with the propagators and scalar-product
+relations. We encode their written form through the same fixed signed
+token counts described in Section~\ref{sec:seed-model-architecture},
+using 32 components here. This encoding admits collisions between
+different groups of symbols. We transform nonnegative counts with
+$\log(1+v)$, where $v$ is the count, and each signed index $a_i$ with
+$\operatorname{sgn}(a_i)\log(1+|a_i|)$. The representation allows up to
+16 indices and records which positions belong to the family.
+These definitions give 132 features for each candidate.
+
+The current records supply coefficients in $\mathbb F_P$, the field
+of integers modulo a prime $P$. We use these coefficients to calculate
+the overlap of each source row with its destination, the number of
+terms that the proposed operation would cancel or introduce, and its
+immediate arithmetic count. For a source with $n_q$ nonzero entries,
+this count is $1+2n_q$: one division and $n_q$ multiplications and
+subtractions, using the convention in
+Section~\ref{sec:integrals-generation}. These quantities require one
+sparse trial row update per action. They use only the current matrix
+and do not inspect later reduction steps or reference master
+coefficients.
+A symbolic coefficient can vanish at the chosen sample, so the model
+uses counts recomputed from the sampled rows. The data audit retains
+the distinction from the original symbolic support counts. Structural
+counts and integral descriptions carry this information into the model.
+The numerical size of a modular residue does not represent the
+magnitude of a real coefficient.
+
+The representation compresses the supplied matrix into these features,
+so different states can have the same description. It includes local
+cancellation information and a summary of the candidate set. These
+quantities describe the current choices without enumerating complete
+reduction paths. Forming these features and evaluating the model
+contribute to the eventual runtime
+and must be included when measuring a reduction speedup.
+
+\subsection{Action probabilities and confidence}
+A shared map $\phi_\theta$ converts each candidate vector into a
+32-component vector,
+\begin{equation}
+ \boldsymbol h_a=\tanh(W_1\boldsymbol f_a+\boldsymbol b_1),\qquad
+ \boldsymbol u=\frac{1}{|\mathcal A_n|}
+                    \sum_{a\in\mathcal A_n}\boldsymbol h_a,\qquad
+ \boldsymbol v=\max_{a\in\mathcal A_n}\boldsymbol h_a .
+ \label{eq:reduction-encoding}
+\end{equation}
+Here $\theta$ denotes the adjustable parameters, $W_1$ is a learned
+matrix, $\boldsymbol b_1$ is a learned offset, and the maximum acts
+on each component separately. Sharing the map and combining candidates
+through averages and maxima makes the scores independent of their
+position in the supplied list~\cite{DeepSets}. The model joins
+$\boldsymbol h_a,\boldsymbol u,\boldsymbol v$ and applies a second
+map with 64 hidden components to obtain a scalar score $g_\theta(a)$.
+For a fixed family, master basis and finite-field sample, it returns
+\begin{equation}
+ \begin{aligned}
+ p_\theta(a\mid A^{(n)},\mathcal A_n)
+ &=\frac{\exp g_\theta(a)}
+        {\sum_{b\in\mathcal A_n}\exp g_\theta(b)},\\
+ \widehat a_n&=\mathop{\rm arg\,max}_{a\in\mathcal A_n}p_\theta(a),
+ \qquad q_n=p_\theta(\widehat a_n).
+ \end{aligned}
+ \label{eq:reduction-choice}
+\end{equation}
+Thus the probabilities sum to one over the supplied alternatives,
+and $q_n$ is the reported confidence for the selected step.
+With one allowed step the probability is one by construction, which
+provides no evidence of learned discrimination. An empty candidate
+list returns no proposed operation; the solver must determine whether
+the reduction is complete or further identities are required.
+
+Training gives these probabilities an interpretation as agreement
+with the recorded next choice, conditional on the supplied state and
+actions. Several choices can give valid reductions, and an alternative
+choice may even lead to a shorter sequence. The reference paths establish
+valid reductions and their recorded costs; they do not establish global
+minima. The reported confidence therefore requires a later calibration
+check against held-out choices and does not certify exactness, minimal
+cost or the success of a complete reduction. Equation~\eqref{eq:reduction-action}
+and the solver's checks retain responsibility for the algebra.
+
+\subsection{Training examples and separation from testing}
+We retain the same grouped family division used for the seed model:
+693 families with 168,330 targets supply training records, while
+307 families with 72,142 targets remain reserved for testing.
+Every state from one target stays with that target's family.
+We read the row before each recorded step and its complete stored list
+of admissible source equations. The chosen equation supplies the
+reference action $a_n^\star$. The row after the step and the stored
+operation counts check the data preparation but remain outside
+the predictive inputs. The target's construction history, final master
+coefficients and future choices also remain outside those inputs.
+
+For the set $\mathcal D_{\rm choice}$ of training states with at least
+two allowed actions, the objective is
+\begin{equation}
+ \mathcal L_{\rm red}(\theta)
+ =-\frac{1}{|\mathcal D_{\rm choice}|}
+   \sum_{(A,\mathcal A,a^\star)\in\mathcal D_{\rm choice}}
+           \log p_\theta(a^\star\mid A,\mathcal A).
+ \label{eq:reduction-loss}
+\end{equation}
+Each such state has equal weight. States with one admissible action
+have zero loss and remain in the data audit. The recorded reference
+choice is the training label; absence of a label on another action does
+not establish that its reduction is invalid.
+
+We use AdamW~\cite{AdamW} with a learning rate of $10^{-3}$, weight decay
+$10^{-4}$, batches of 256 states and a gradient norm limit of one.
+The fixed schedule uses ten passes through the training choice states.
+The data preparation replays the selected row operations with exact
+modular arithmetic and verifies the final recorded master rows.
+Training uses shuffled states from bounded groups of families and
+retains resumable model and optimizer parameters. The held-out
+families do not enter parameter updates, stopping decisions or
+confidence adjustment.
+
+\input{reduction_training}

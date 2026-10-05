@@ -17,3 +17,5 @@ Preserve local edits before pulling, and resolve any differences before declarin
 The earlier local report and rules are retained in .tools/report-sync/before-link/ on the local machine.
 
 The report now includes the completed ten-pass seed-model training and held-out results for 72,142 targets. seed_model_test.tex contains the test section, and figures/ contains the six PDF figures. Raw predictions and metric data remain in ML_model_seed_selection/model_test/ on Hoffman and GitHub. The local report copy contains these report figures but no raw model-test records.
+
+reduction_model.tex describes the reduction-propagation model, matrix inputs, allowed elementary row operations and next-step confidence. reduction_training.tex gives the completed training measurements after finalization. The corresponding model code, derived training states, checkpoints and logs remain in ML_model_reduction/ on Hoffman and GitHub.
