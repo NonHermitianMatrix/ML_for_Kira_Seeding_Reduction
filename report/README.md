@@ -8,7 +8,7 @@ The local project is a shallow, partial Git checkout. Its sparse file selection 
 
 After report changes on Hoffman, rebuild the PDF and publish the sources and PDF together. From the local project root, update the local copy with:
 
-    git pull --ff-only
+    git -c merge.stat=false pull --ff-only --no-stat
 
 The local Git connection uses the existing Hoffman SSH authentication and Hoffman's existing GitHub access. Its helper is .tools/report-sync/s00_git_via_hoffman.py, configured through core.sshCommand. No credentials are stored in this repository. The helper relays Git's SSH arguments through Hoffman. The connection requires network access to Hoffman.
 
@@ -18,8 +18,8 @@ The earlier local report and rules are retained in .tools/report-sync/before-lin
 
 The report now includes the completed ten-pass seed-model training and held-out results for 72,142 targets. seed_model_test.tex contains the test section, and figures/ contains the six PDF figures. Raw predictions and metric data remain in ML_model_seed_selection/model_test/ on Hoffman and GitHub. The local report copy contains these report figures but no raw model-test records.
 
-reduction_model.tex describes the reduction-propagation model, matrix inputs, allowed elementary row operations and next-step confidence. reduction_training.tex gives the completed training measurements after finalization. The corresponding model code, derived training states, checkpoints and logs remain in ML_model_reduction/ on Hoffman and GitHub.
+reduction_model.tex describes the reduction-propagation model, matrix inputs, allowed elementary row operations and next-step confidence. reduction_training.tex gives the completed thirty-pass training measurements, including the twenty-pass continuation. The corresponding model code, derived training states, checkpoints and logs remain in ML_model_reduction/ on Hoffman and GitHub.
 
 <!-- reduction-test:start -->
-reduction_test.tex contains the frozen reduction-model test and six new PDF figures in figures/. The report covers recorded-choice agreement, confidence, complete sampled reductions, operation counts and timing. Raw probability archives and exact trajectories stay in ML_model_reduction/model_test/ on Hoffman and GitHub. The sources, bibliography, figures and rendered PDF are also synchronized locally.
+reduction_test.tex contains the thirty-epoch reduction-model test and six replacement PDF figures in figures/. The report covers recorded-choice agreement, confidence, complete sampled reductions, operation counts and timing. Raw probability archives and exact trajectories stay in ML_model_reduction/model_test/ on Hoffman and GitHub. The sources, bibliography, figures and rendered PDF are also synchronized locally.
 <!-- reduction-test:end -->

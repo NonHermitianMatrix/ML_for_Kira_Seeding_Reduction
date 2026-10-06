@@ -98,7 +98,9 @@ def main():
         model_fewer_than_greedy=sum(r["model"]["operations"]<r["greedy"]["operations"] for r in common),
         model_more_than_greedy=sum(r["model"]["operations"]>r["greedy"]["operations"] for r in common))
     write_json(TEST/"paired_comparison.json",paired)
-    manifest=dict(figures=saved,formats=["pdf","png"],matplotlib_version=matplotlib.__version__,
+    manifest=dict(model_sha256=sha(MODEL/"trained_model.pt"),epochs_completed=30,
+                  test_results_sha256=sha(TEST/"test_results.json"),
+                  figures=saved,formats=["pdf","png"],matplotlib_version=matplotlib.__version__,
                   hashes={str(p.relative_to(TEST)):sha(p) for p in figures.iterdir() if p.suffix in (".pdf",".png")})
     write_json(TEST/"figure_manifest.json",manifest);print(json.dumps(dict(figures=saved,comparison=paired)),flush=True)
 if __name__=="__main__":main()

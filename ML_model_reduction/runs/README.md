@@ -1,9 +1,7 @@
-# Reduction-model run records
+# Reduction-model training run
 
-status.json gives preparation/training progress. history.json contains losses and reference-choice agreement recorded during parameter updates, not held-out accuracy. latest.pt resumes model and optimizer state at a completed group boundary.
+Training completed thirty epochs on the existing training states. The additional twenty epochs continued both weights and optimizer from epochs_10_snapshot/. latest.pt retains the current optimizer, history.json contains all thirty epochs, and status.json records training completion. extra_20_epochs/ records the continuation, and ../model_test/ evaluates the resulting frozen model.
 
-scheduler.log records the completed preparation and training job. preparation_support_check.log records the initial audit that identified differences between symbolic and sampled support counts. The preparation code now retains this distinction while requiring exact sampled row replay.
+The current test and report replace the ten-epoch evaluation. Original weights and optimizer checkpoints remain in epochs_10_snapshot/, while commit c2ba11c579c8851a22c69132e36a03f9ba4aa8b7 retains the previous tests and report. Training metadata with testing-deferred or published-false fields describe the state when training ended; the current evaluation and publication records document later steps.
 
-example_state.json and example_prediction.json demonstrate inference on one training state. report_values.json supplies the counts used in the report, and report_build.log records the final artifact checks and PDF build. The final model is stored one directory above as trained_model.pt.
-
-All run data stay on Hoffman and GitHub. Do not use these training measurements as test results.
+The scheduler.log and report_build.log files in this directory record the initial training stage. Current evaluation and report-build logs are in ../model_test/.

@@ -81,3 +81,11 @@
 - Implement and train the next-step reduction model in ML_model_reduction/ on Hoffman. Given a current coefficient matrix and the supplied allowed reduction steps, return a probability for each step, select one step and return its model-estimated confidence. Keep exact row operations separate from learned scores.
 - Use the existing grouped training families and preserve the held-out families. The user has authorized held-out testing of the frozen trained model. Store predictions, complete reduction checks, metrics and plots in ML_model_reduction/model_test/. Keep the saved model and training division fixed; this test does not authorize retraining or fitting confidence adjustments. Describe the actual scope of the training records and do not claim optimal paths, calibrated confidence or Kira speedups without evidence.
 - Explain this model and its completed training in the report, rebuild the PDF and synchronize the report locally and to GitHub. Keep the model, derived training data, logs and checkpoints on Hoffman and GitHub only.
+
+## Additional training and current reduction publication
+
+- Continue both saved models from ten epochs for twenty additional epochs, reaching thirty total. Preserve their training families, architecture, optimizer state, learning rate and other settings.
+- Keep the seed-model continuation and its outputs on Hoffman. Do not publish that continuation, test its new weights, or change its report results until the user requests those steps.
+- The user has now authorized testing the completed thirty-epoch reduction model, replacing the ten-epoch reduction results and plots in the report, and publishing the reduction code, model, training records, tests and report to GitHub. Synchronize the updated report locally.
+- Preserve the original ten-epoch weights and optimizer checkpoints. The earlier test results remain available in Git history, and an archived copy stays on Hoffman.
+- Keep generated training and test records on Hoffman and GitHub only. Follow the memory and combined 10 GB storage limits and complete the authorized work without permission questions.

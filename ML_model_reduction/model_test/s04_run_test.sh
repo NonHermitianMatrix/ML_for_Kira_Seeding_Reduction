@@ -2,7 +2,7 @@
 #$ -cwd
 #$ -S /bin/bash
 #$ -N KiraReductionTest
-#$ -l h_rt=12:00:00,h_data=4G
+#$ -l h_rt=02:00:00,h_data=4G
 #$ -j y
 #$ -o ML_model_reduction/model_test/scheduler.log
 set -euo pipefail

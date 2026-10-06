@@ -1,11 +1,16 @@
 \section{Tests of the Reduction-Propagation Model}
 \label{sec:reduction-test}
-To test the model in Section~\ref{sec:reduction-model}, we used its saved
-parameters on the 72,142 targets in the 307 reserved families. We tested
+To test the model in Section~\ref{sec:reduction-model}, we used the
+parameters saved after thirty training passes and evaluated them on
+the 72,142 targets in the 307 reserved families. We tested
 the next choice at a recorded matrix and the complete sequence obtained
 when the model receives the matrix produced by its own preceding choice.
 We used the saved parameters and raw output probabilities throughout
-this evaluation.
+this evaluation. The same reserved set previously measured the
+ten-pass model, so these results give a repeated evaluation after the
+specified twenty-pass continuation. The reserved records remained
+outside gradient updates, and the new evaluation changed no parameters,
+training settings or confidence map.
 The accompanying records retain the predictions, chosen identities
 and resulting coefficients~\cite{ReductionModelTestData}.
 
@@ -33,11 +38,11 @@ and zero otherwise. Forced steps have probability one without a learned
 choice, so the primary metrics exclude them. We also check equality of
 the sampled next rows, since different equations can give the same update.
 
-The model matched 95.469\% of recorded choices, placed the recorded
-choice among its three highest scores in 99.990\% of states, and
-produced the same next sampled row in 95.476\% of states.
-Mean agreement per target with a choice was 96.189\%, and the
-mean across families with choices was 96.019\%.
+The model matched 94.716\% of recorded choices, placed the recorded
+choice among its three highest scores in 99.993\% of states, and
+produced the same next sampled row in 94.727\% of states.
+Mean agreement per target with a choice was 95.937\%, and the
+mean across families with choices was 95.357\%.
 Figure~\ref{fig:reduction-action-accuracy} compares these state-level
 results with a uniform random choice and the fixed local rule defined
 below. The random-choice value averages $1/|\mathcal A_i|$ over the same
@@ -85,17 +90,17 @@ score are
  \label{eq:reduction-test-probability-scores}
 \end{equation}
 The probability floor defines the logarithm if a returned probability
-rounds to zero. Mean confidence was 91.760\%, compared with
-95.469\% agreement, while $E_{\rm cal}=0.0371$,
-$L_{\rm test}=0.1180$ and $B_{\rm test}=0.0815$.
+rounds to zero. Mean confidence was 92.199\%, compared with
+94.716\% agreement, while $E_{\rm cal}=0.0252$,
+$L_{\rm test}=0.1105$ and $B_{\rm test}=0.0783$.
 Figure~\ref{fig:reduction-confidence} shows agreement and state counts
 within each interval. These probabilities concern the recorded next
 choice and do not give a probability that the whole reduction succeeds.
 
-Exact ties in the largest returned probability occurred in 5.656\%
+Exact ties in the largest returned probability occurred in 5.618\%
 of choice states. The implemented rule resolves them by equation
 identifier. Choosing uniformly among tied maxima would give
-92.681\% next-step agreement. We retain the implemented rule
+91.920\% next-step agreement. We retain the implemented rule
 in all predictions and paths; the additional count separates score
 discrimination from tie resolution.
 
@@ -108,9 +113,9 @@ discrimination from tie resolution.
  \label{fig:reduction-confidence}
 \end{figure}
 
-One-loop choice agreement was 95.482\%. The two-loop family gave
-90.213\% across 470 choice states and reproduced the
-recorded next sampled row in 92.553\% of those states.
+One-loop choice agreement was 94.719\%. The two-loop family gave
+93.404\% across 470 choice states and reproduced the
+recorded next sampled row in 96.383\% of those states.
 Figure~\ref{fig:reduction-families} displays the family distribution
 and loop-order comparison. The training set also
 contains the equal-mass two-loop sunrise and vacuum families. The
@@ -166,9 +171,9 @@ these numerical reductions; a symbolic result at generic parameters
 would require additional reconstruction or symbolic verification.
 
 The learned policy passed all three coefficient comparisons for
-72,026 of 72,142 targets (99.839\%), while the local rule
+72,088 of 72,142 targets (99.925\%), while the local rule
 passed for 71,463 targets (99.059\%).
-The remaining 116 learned paths stopped at a row with
+The remaining 54 learned paths stopped at a row with
 no allowed next action. Every completed learned path matched all three
 samples, and all attempts stayed within the prescribed size and step bounds. The local rule stopped with no
 allowed action for 664 targets. It matched the first
@@ -181,7 +186,7 @@ smaller nonmaster integral for which the stored pool has no usable
 source equation. The row update remains valid, while the supplied
 equations cannot continue that selected sequence. In the two-loop
 family, the learned
-policy passed 142 of 144 targets and the local rule
+policy passed 144 of 144 targets and the local rule
 passed 144. Figure~\ref{fig:reduction-rollout-success}
 separates the loop orders and compares the first-sample results with
 the three-sample results.
@@ -222,12 +227,12 @@ The recorded construction gives a valid reference count $C_{\rm ref}$
 under the same arithmetic convention. Its minimality has not been
 established, so a ratio $C_{\rm path}/C_{\rm ref}$ measures cost relative
 to this recorded path. Among successful learned paths with
-$C_{\rm ref}>0$, 155 used fewer committed operations,
-71,553 used the same number, and 318 used more.
-For the 71,448 targets that both policies completed and that
+$C_{\rm ref}>0$, 72 used fewer committed operations,
+71,793 used the same number, and 223 used more.
+For the 71,440 targets that both policies completed and that
 have $C_{\rm ref}>0$, the learned policy used fewer operations than
-the local rule in 217 cases, the same number in
-64,701 cases, and more in 6,530 cases.
+the local rule in 233 cases, the same number in
+64,708 cases, and more in 6,499 cases.
 
 Figure~\ref{fig:reduction-operations} uses this common set so that both
 curves describe the same targets. It shows how the trial updates
@@ -251,14 +256,16 @@ per-step row checks. The measurement excludes file access, building
 the shared source-equation pool and the subsequent replays at the
 stored samples. We alternated the order in which the two policies
 ran from one target to the next. The mean times over all targets,
-including unsuccessful attempts, were 8.4426\,ms for the
-learned policy and 0.4262\,ms for the local rule, giving
-a ratio of 19.81. The corresponding medians were
-7.2665\,ms and 0.3488\,ms.
+including unsuccessful attempts, were 10.0639\,ms for the
+learned policy and 0.4643\,ms for the local rule, giving
+a ratio of 21.68. The corresponding medians were
+8.2534\,ms and 0.3625\,ms.
 Figure~\ref{fig:reduction-runtime} shows the distribution and its
 summary values. These measurements include the current model's
 feature construction and scoring cost and describe this target-row
-implementation.
+implementation. The elapsed times come from a single cluster run and
+include variation in node load; repeated runs would be needed to
+estimate timing uncertainty.
 
 \begin{figure}[htbp]
  \centering
@@ -276,6 +283,15 @@ and had a higher mean measured reduction time. The present implementation theref
 The operation-count comparison above measures the cost of the completed
 paths, while the failure counts identify targets whose supplied equations
 did not support the sequence selected by the policy.
+The earlier ten-pass model, evaluated on the same reserved set, matched
+95.469\% of recorded choices and completed 72,026 targets with agreement
+at all three samples~\cite{ReductionModelTenEpochTestData}. After
+thirty passes, the corresponding results are 94.716\% and
+72,088 targets. The additional training therefore increased the
+number of completed reductions while lowering agreement with recorded
+next choices. These measures describe different aspects of the reduction:
+a different valid next choice can still lead to the required masters.
+
 The confidence comparison concerns agreement with a recorded action.
 A valid alternative can have a different equation identifier or
 intermediate row, which is why the complete coefficient checks

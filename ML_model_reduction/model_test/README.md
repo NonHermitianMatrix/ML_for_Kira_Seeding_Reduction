@@ -1,6 +1,8 @@
 # Reduction-model test
 
-This folder tests the saved reduction-propagation model on the existing reserved families. It preserves the trained parameters, grouped split, feature definition, action rule and returned probabilities. The test performs zero optimizer updates and fits no confidence map.
+This folder tests the saved thirty-epoch reduction-propagation model on the existing reserved families. It preserves the trained parameters, grouped split, feature definition, action rule and returned probabilities. The test performs zero optimizer updates and fits no confidence map.
+
+The same reserved set previously evaluated the ten-epoch model. This is a repeated evaluation after a user-specified twenty-epoch continuation with unchanged training settings. The test records remain excluded from gradient updates. The previous evaluation is preserved at commit c2ba11c579c8851a22c69132e36a03f9ba4aa8b7; active results and figures refer to the thirty-epoch weights.
 
 The inputs comprise 307 families and 72,142 targets from integrals/testing/. The current split_manifest.json in ML_model_seed_selection/ is authoritative; original split labels in older target records describe earlier dataset divisions. The held-out set has 306 one-loop families and one massless two-loop propagator family. Shared lower-sector structure and repeated box topology limit the scope of the family-transfer claim.
 
@@ -23,6 +25,8 @@ Runtime includes current-state construction, candidate selection, exact updates 
 ## Files
 
 - test_config.json: fixed weights hash, test definitions, confidence bins and bounds.
+- evaluation_request.json: checkpoint epoch, earlier commit and repeated-test provenance.
+- checkpoint_validation.json: current model, optimizer checkpoint and training-history consistency checks.
 - families/<family>/predictions.npz: every recorded-state probability and metric.
 - families/<family>/trajectories.jsonl.gz: chosen equations, confidence, exact final rows, three-point checks and costs for every complete or unsuccessful attempt.
 - families/<family>/summary.json: family counts, metrics and source/artifact hashes.
@@ -39,7 +43,6 @@ Runtime includes current-state construction, candidate selection, exact updates 
 - report_validation.json: report and figure hashes and build checks.
 - status.json, scheduler.log and finalize.log: progress and scheduler output.
 - pilot.json: two-family bounded trial under the unchanged full-test protocol.
-- pilot_output_format_check.log: the initial pilot's JSON scalar-format failure, fixed before any complete family output was accepted.
 
 The NPZ probability arrays use offsets to delimit one action list per state. action_ids and probabilities share this flattened order. reference and predicted index that state's action list. target_number indexes target_ids, and step_number identifies the recorded step. same_row compares the selected result with the recorded next sampled row. probabilities are float32; IDs are Unicode arrays. Open archives with allow_pickle=False.
 
@@ -56,6 +59,7 @@ Every trajectory record contains model and greedy results. Each path step retain
 7. s06_plot_results.py: create the six figures and paired comparison.
 8. s07_update_report.py: insert validated measurements into the report and READMEs; --validate-build checks the rendered report.
 9. s08_finalize_report.sh: scheduler wrapper for validation, plots, report generation and PDF build.
+10. s09_validate_checkpoint.py: verify the thirty-epoch model against its saved optimizer checkpoint and training provenance.
 
 From the project root:
 
@@ -67,5 +71,5 @@ The finalizer requires complete evaluation and fails if required outputs are abs
 Both jobs request one CPU and 4 GiB. They cap virtual memory at 3 GiB and a single output file at 128 MiB. A family output has an additional 64 MiB limit. Reduction paths have at most 4,096 steps and 4,096 current-row nonzeros. The existing model and combined project storage guards remain active. Keep these records on Hoffman and GitHub only; synchronize only the report and its figures to the local report folder.
 
 <!-- test-results:start -->
-The frozen reduction model was tested on 72,142 targets in 307 held-out families. It matched 95.469% of recorded choices on 194,347 states with at least two actions. Complete learned paths matched all three sampled master expansions for 72,026 targets; the fixed local rule passed 71,463. Mean attempted reduction times were 8.4426 ms and 0.4262 ms, respectively. Reference paths are valid without a proof of minimality. These are target-row tests; no full Kira speedup was measured.
+The frozen thirty-epoch reduction model was tested on 72,142 targets in 307 held-out families. It matched 94.716% of recorded choices on 194,347 states with at least two actions. Complete learned paths matched all three sampled master expansions for 72,088 targets; the fixed local rule passed 71,463. Mean attempted reduction times were 10.0639 ms and 0.4643 ms, respectively. Reference paths are valid without a proof of minimality. These are target-row tests; no full Kira speedup was measured.
 <!-- test-results:end -->

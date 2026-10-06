@@ -14,6 +14,7 @@ ulimit -v 3145728
 ulimit -f 131072
 ulimit -c 0
 TEST_PYTHON=.tools/seed-model/venv/bin/python
+"$TEST_PYTHON" ML_model_reduction/model_test/s09_validate_checkpoint.py
 "$TEST_PYTHON" ML_model_reduction/model_test/s05_validate_outputs.py
 "$TEST_PYTHON" ML_model_reduction/model_test/s06_plot_results.py
 "$TEST_PYTHON" ML_model_reduction/model_test/s07_update_report.py

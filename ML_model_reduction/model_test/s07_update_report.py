@@ -25,7 +25,9 @@ def main():
         write_json(TEST/"report_validation.json",dict(status="passed",model_sha256=sha(MODEL/"trained_model.pt"),
             report_hashes=artifacts,report_pdf_bytes=(ROOT/"report/report.pdf").stat().st_size,
             undefined_references=False,undefined_citations=False,overfull_boxes=False))
+        write_json(MODEL/"report_validation.json",read(TEST/"report_validation.json"))
         print("Report build and hashes checked",flush=True);return
+    assert read(MODEL/"trained_model.json")["epochs_completed"]==30
     s=r["overall"];m=r["model"];g=r["greedy"];two=r["groups"]["2"]
     ties=read(TEST/"tie_metrics.json")["overall"];pair=read(TEST/"paired_comparison.json")
     targets=list(rows(TEST/"target_metrics.jsonl.gz"));kind=collections.Counter(t["kind"] for t in targets)
@@ -131,7 +133,7 @@ def main():
 """
     content=bib.read_text(encoding="utf-8")
     if "{ReductionModelTestData," not in content:bib.write_text(content.rstrip()+"\n"+entries,encoding="utf-8")
-    summary=(f"The frozen reduction model was tested on {r['targets']:,} targets in {r['families']} held-out families. "
+    summary=(f"The frozen thirty-epoch reduction model was tested on {r['targets']:,} targets in {r['families']} held-out families. "
              f"It matched {100*s['top1']:.3f}% of recorded choices on {s['choice_states']:,} states with at least two actions. "
              f"Complete learned paths matched all three sampled master expansions for {m['success_all_samples']:,} targets; "
              f"the fixed local rule passed {g['success_all_samples']:,}. "
@@ -139,25 +141,23 @@ def main():
              "Reference paths are valid without a proof of minimality. These are target-row tests; no full Kira speedup was measured.")
     marker(MODEL/"README.md","completed-testing",summary+"\n\n"
         "See [model_test/README.md](model_test/README.md) for saved predictions, complete paths, metric definitions, six figures and reproduction commands. "
-        "The model weights and training records are unchanged. Historical training status files describe the state at training completion. "
-        "After regenerating training-only report text, run the test report updater to restore the current cross-references.")
+        "The model weights and training records were unchanged during this evaluation. Historical training status files describe the state at training completion. "
+        "The same reserved set previously evaluated the ten-epoch model; no records entered gradient updates or confidence fitting.")
     replace_text(MODEL/"README.md",
         "Testing, probability calibration, complete learned rollouts and Kira timing comparisons remain separate tasks.",
         "The fixed model has now been tested through complete target-row sequences and confidence reliability measurements in model_test/. "
         "Fitting a calibration map and full Kira timing comparisons remain separate tasks.")
-    replace_text(MODEL/"README.md","These are training measurements; held-out testing and calibration remain deferred.",
-        "These are training measurements. The completed held-out comparison is recorded below; no calibration map has been fitted.")
     replace_text(ROOT/"README.md","held-out testing remains separate.",
         "completed held-out results appear in [model_test/](ML_model_reduction/model_test/README.md) and Section 10 of the report.")
     marker(ROOT/"README.md","reduction-test",summary)
     marker(ROOT/"report/README.md","reduction-test",
-        "reduction_test.tex contains the frozen reduction-model test and six new PDF figures in figures/. "
+        "reduction_test.tex contains the thirty-epoch reduction-model test and six replacement PDF figures in figures/. "
         "The report covers recorded-choice agreement, confidence, complete sampled reductions, operation counts and timing. "
         "Raw probability archives and exact trajectories stay in ML_model_reduction/model_test/ on Hoffman and GitHub. "
         "The sources, bibliography, figures and rendered PDF are also synchronized locally.")
     marker(ROOT/"integrals/testing/README.md","reduction-test",
         "The trained reduction-propagation model has now used this reserved view for frozen evaluation. "
-        "No records from this view were added to training, and no parameters, confidence map or data split were adjusted. "
+        "The same set evaluated the ten-epoch and thirty-epoch reduction models. No records from this view entered training, and the test changed no parameters, confidence map or data split. "
         "The resulting probabilities, paths, comparisons and figures are in ../../ML_model_reduction/model_test/.")
     marker(TEST/"README.md","test-results",summary)
     print(json.dumps(dict(report="report/reduction_test.tex",values=values)),flush=True)

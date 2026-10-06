@@ -128,8 +128,8 @@ with the recorded next choice, conditional on the supplied state and
 actions. Several choices can give valid reductions, and an alternative
 choice may even lead to a shorter sequence. The reference paths establish
 valid reductions and their recorded costs; they do not establish global
-minima. The reported confidence therefore requires a later calibration
-check against held-out choices and does not certify exactness, minimal
+minima. Section~\ref{sec:reduction-test} compares this confidence with agreement
+on reserved choices. Confidence does not certify exactness, minimal
 cost or the success of a complete reduction. Equation~\eqref{eq:reduction-action}
 and the solver's checks retain responsibility for the algebra.
 
@@ -161,12 +161,17 @@ not establish that its reduction is invalid.
 
 We use AdamW~\cite{AdamW} with a learning rate of $10^{-3}$, weight decay
 $10^{-4}$, batches of 256 states and a gradient norm limit of one.
-The fixed schedule uses ten passes through the training choice states.
+Training first completed ten passes through the training choice states
+and then continued for twenty further passes, giving thirty passes in
+total. The continuation retained the saved model and optimizer state
+and used the same training data and settings.
 The data preparation replays the selected row operations with exact
 modular arithmetic and verifies the final recorded master rows.
 Training uses shuffled states from bounded groups of families and
-retains resumable model and optimizer parameters. The held-out
-families do not enter parameter updates, stopping decisions or
-confidence adjustment.
+retains resumable model and optimizer parameters. The reserved families remain outside parameter updates and confidence
+adjustment. We evaluated the ten-pass model before the requested
+twenty-pass continuation and evaluate the thirty-pass model on the same
+reserved set. The continuation used a specified number of passes and
+retained the original training settings.
 
 \input{reduction_training}

@@ -1,11 +1,16 @@
 \section{Tests of the Reduction-Propagation Model}
 \label{sec:reduction-test}
-To test the model in Section~\ref{sec:reduction-model}, we used its saved
-parameters on the 72,142 targets in the 307 reserved families. We tested
+To test the model in Section~\ref{sec:reduction-model}, we used the
+parameters saved after thirty training passes and evaluated them on
+the 72,142 targets in the 307 reserved families. We tested
 the next choice at a recorded matrix and the complete sequence obtained
 when the model receives the matrix produced by its own preceding choice.
 We used the saved parameters and raw output probabilities throughout
-this evaluation.
+this evaluation. The same reserved set previously measured the
+ten-pass model, so these results give a repeated evaluation after the
+specified twenty-pass continuation. The reserved records remained
+outside gradient updates, and the new evaluation changed no parameters,
+training settings or confidence map.
 The accompanying records retain the predictions, chosen identities
 and resulting coefficients~\cite{ReductionModelTestData}.
 
@@ -256,7 +261,9 @@ a ratio of @@TIMERATIO@@. The corresponding medians were
 Figure~\ref{fig:reduction-runtime} shows the distribution and its
 summary values. These measurements include the current model's
 feature construction and scoring cost and describe this target-row
-implementation.
+implementation. The elapsed times come from a single cluster run and
+include variation in node load; repeated runs would be needed to
+estimate timing uncertainty.
 
 \begin{figure}[htbp]
  \centering
@@ -270,6 +277,15 @@ implementation.
 
 \subsection{Scope of the test results}
 @@INTERPRETATION@@
+The earlier ten-pass model, evaluated on the same reserved set, matched
+95.469\% of recorded choices and completed 72,026 targets with agreement
+at all three samples~\cite{ReductionModelTenEpochTestData}. After
+thirty passes, the corresponding results are @@TOP1@@\% and
+@@SUCCESS@@ targets. The additional training therefore increased the
+number of completed reductions while lowering agreement with recorded
+next choices. These measures describe different aspects of the reduction:
+a different valid next choice can still lead to the required masters.
+
 The confidence comparison concerns agreement with a recorded action.
 A valid alternative can have a different equation identifier or
 intermediate row, which is why the complete coefficient checks

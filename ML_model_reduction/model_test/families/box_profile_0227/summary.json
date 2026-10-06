@@ -1,7 +1,7 @@
 {
   "artifacts": {
-    "predictions.npz": "46514db82a690c6b4e8945810029be7b1a6e464247a03cb174c782e39032f5fb",
-    "trajectories.jsonl.gz": "4c21d02363dddab4bc73de18d1c1ed068a3efc74dce543e923542c57b1a7f6d4"
+    "predictions.npz": "3178b699c99baed0bbccaca634386e861a98a4de6112b44538724319e9b0c288",
+    "trajectories.jsonl.gz": "c5652846cdc7869ec16091f45dea31d03789d3e69878730d0fa0271ed3234cbe"
   },
   "family": "box_profile_0227",
   "greedy": {
@@ -9,9 +9,9 @@
     "equal": 185,
     "higher": 0,
     "lower": 1,
-    "mean_runtime_ms": 0.525304066237583,
+    "mean_runtime_ms": 0.5252879633698412,
     "median_operation_ratio": 1.0,
-    "median_runtime_ms": 0.41140615940093994,
+    "median_runtime_ms": 0.45719463378190994,
     "statuses": {
       "complete": 186
     },
@@ -28,9 +28,9 @@
     "equal": 186,
     "higher": 0,
     "lower": 0,
-    "mean_runtime_ms": 9.926424872490667,
+    "mean_runtime_ms": 10.724771287172072,
     "median_operation_ratio": 1.0,
-    "median_runtime_ms": 8.861187845468521,
+    "median_runtime_ms": 9.34954360127449,
     "statuses": {
       "complete": 186
     },
@@ -42,9 +42,9 @@
   },
   "reference_replays": 484,
   "signature": {
-    "config_sha256": "fc03461163f53a1a6fc5d7c56548bcf64aa3c0555c82fc5a732efa5d07063fc4",
+    "config_sha256": "890243763ad8a34f138ecfa8d53172bcd6e6a2ab09764ad6aa40c10a65c34722",
     "encoder_sha256": "05f8b3c118ee6acad2505525698cce65923e62b9e89e23e49376076817e4ab94",
-    "model_sha256": "424eb1618891a1f8648772158cf249d6d2c16a02c3b7cbb4bb3921ceb505b9a3",
+    "model_sha256": "bab3f08db047841085fcdb16b6ee3a162189a0946278867e2ed1fde47bce37be",
     "predictor_sha256": "64ace889f124ce5484753c3da77c782878ffe213d0d0e9e6573da99f07601265",
     "scripts": {
       "s00_test_common.py": "e93898f8c660db9c88b5d235903ecf549015ddcb670eaed73ea6733c3565c698",
@@ -63,64 +63,48 @@
   },
   "state_metrics": {
     "all_state_top1": 0.9979338842975206,
-    "brier": 0.016161292399372352,
+    "brier": 0.014689549172905466,
     "candidate_actions": 2843,
     "choice_states": 472,
-    "ece": 0.016250397062907783,
+    "ece": 0.012804884589829696,
     "equivalent_next_row": 0.9978813559322034,
     "forced_states": 12,
     "greedy_top1": 0.9978813559322034,
-    "mean_confidence": 0.9827446130625273,
-    "mean_prediction_ms": 3.6891889719923667,
-    "nll": 0.025000314319254355,
+    "mean_confidence": 0.9850764713423737,
+    "mean_prediction_ms": 4.011594359416607,
+    "nll": 0.021975805486981935,
     "nll_clipped": 0,
     "reciprocal_rank": 0.9989406779661016,
     "reliability": [
       {
         "bin": 2,
-        "count": 1,
+        "count": 2,
         "lower": 0.2,
-        "mean_confidence": 0.26282238960266113,
-        "reference_accuracy": 0.0,
+        "mean_confidence": 0.27380312979221344,
+        "reference_accuracy": 1.0,
         "upper": 0.3
       },
       {
-        "bin": 3,
-        "count": 1,
-        "lower": 0.3,
-        "mean_confidence": 0.31072866916656494,
-        "reference_accuracy": 1.0,
-        "upper": 0.4
-      },
-      {
         "bin": 4,
-        "count": 9,
+        "count": 4,
         "lower": 0.4,
-        "mean_confidence": 0.4865783121850755,
+        "mean_confidence": 0.48501718044281006,
         "reference_accuracy": 1.0,
         "upper": 0.5
       },
       {
         "bin": 5,
-        "count": 4,
+        "count": 7,
         "lower": 0.5,
-        "mean_confidence": 0.5222183912992477,
-        "reference_accuracy": 1.0,
+        "mean_confidence": 0.5000012602124896,
+        "reference_accuracy": 0.8571428571428571,
         "upper": 0.6
       },
       {
-        "bin": 8,
-        "count": 1,
-        "lower": 0.8,
-        "mean_confidence": 0.8981359004974365,
-        "reference_accuracy": 1.0,
-        "upper": 0.9
-      },
-      {
         "bin": 9,
-        "count": 456,
+        "count": 459,
         "lower": 0.9,
-        "mean_confidence": 0.9998151141039112,
+        "mean_confidence": 0.9999311779319331,
         "reference_accuracy": 1.0,
         "upper": 1.0
       }

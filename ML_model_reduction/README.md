@@ -1,5 +1,11 @@
 # Reduction propagation model
 
+<!-- additional-training:start -->
+Training completed twenty additional passes, reaching thirty total. The user has authorized evaluation and publication of this reduction model. See [runs/extra_20_epochs/](runs/extra_20_epochs/README.md) for the continuation and [model_test/](model_test/README.md) for its evaluation.
+
+[runs/epochs_10_snapshot/](runs/epochs_10_snapshot/README.md) preserves the earlier weights and optimizer. The ten-pass test and report remain available at commit c2ba11c579c8851a22c69132e36a03f9ba4aa8b7. Current test outputs and report text refer to the thirty-pass model.
+<!-- additional-training:end -->
+
 This folder contains the next-step reduction model. It receives a current coefficient matrix and the complete list of steps allowed by the caller. It returns one probability for each step, the selected step, and its confidence. An exact finite-field row operation can apply the selected step.
 
 The current training data describe one target coefficient row reduced against fixed source identities. At each state the available actions use identities whose leading integral equals the target's largest remaining nonmaster integral under the stored ordering. The interface accepts multiple destination rows, but training on these records does not establish performance on Kira's full evolving matrix.
@@ -26,7 +32,7 @@ data/training/<family>.npz holds derived float32 features, state offsets, refere
 
 Every selected reference action is replayed in exact modular arithmetic during preparation. The replay checks the next sampled row, the multiplier, recorded operation counts, trace continuity and final master support. It recomputes fill-in and cancellations from the sampled matrix. The original support counts describe symbolic rows and can differ when a coefficient vanishes at the sample; the preparation records these differences. No future rows, selected equation IDs, final master coefficients, construction histories or future operation counts enter predictive features. All supplied candidate identities contribute in the same way.
 
-Training minimizes mean next-choice cross-entropy over states with at least two actions. Forced states remain in the audit and have zero loss. AdamW uses learning rate 0.001, weight decay 0.0001, batches of up to 256 states, a gradient norm cap of one, and ten passes. Sixteen families form each bounded shuffle group. The final pass defines the saved model. The fixed model has now been tested through complete target-row sequences and confidence reliability measurements in model_test/. Fitting a calibration map and full Kira timing comparisons remain separate tasks.
+Training minimizes mean next-choice cross-entropy over states with at least two actions. Forced states remain in the audit and have zero loss. AdamW uses learning rate 0.001, weight decay 0.0001, batches of up to 256 states, a gradient norm cap of one, and thirty passes (ten initial passes followed by twenty continued passes). Sixteen families form each bounded shuffle group. The final pass defines the saved model. The fixed model has now been tested through complete target-row sequences and confidence reliability measurements in model_test/. Fitting a calibration map and full Kira timing comparisons remain separate tasks.
 
 runs/status.json gives the current stage. runs/history.json records pass losses and reference-choice agreement during updates. These are training measurements, not held-out accuracy. runs/latest.pt contains resumable model and optimizer state. trained_model.pt contains the final model, feature definition and configuration. trained_model.json gives the final counts, provenance, resource use and model hash.
 
@@ -43,15 +49,15 @@ runs/status.json gives the current stage. runs/history.json records pass losses 
 9. s08_finalize.py: verifies saved artifacts and updates the scientific report with completed training measurements.
 10. s09_finalize_report.sh: bounded scheduler wrapper for final checks and PDF rendering.
 
-From the project root, submit training:
+The original ten-pass training command is retained for reproduction from its original checkpoint and configuration:
 
     qsub ML_model_reduction/s07_run_training.sh
 
 The wrapper uses the existing Python environment. It requests one CPU and 4 GiB, limits virtual memory to 3 GiB, and writes checkpoints after each family group. Repeating the wrapper resumes at the last completed group with the same configuration and data hashes. It does not change or retrain the seed model.
 
-After training:
+For the twenty-pass continuation, follow [runs/extra_20_epochs/README.md](runs/extra_20_epochs/README.md). Its request fixes thirty total passes while config.json retains the original ten-pass preparation configuration. Do not run the original training or training-only report wrapper against the thirty-pass checkpoint. Use the current test finalizer to validate that checkpoint and rebuild the report:
 
-    qsub ML_model_reduction/s09_finalize_report.sh
+    qsub ML_model_reduction/model_test/s08_finalize_report.sh
 
 Use the existing environment for prediction:
 
@@ -79,13 +85,13 @@ The scorer accepts up to 16 indices, 10,000 rows, 10,000 actions, 250,000 matrix
 Store this folder and its generated artifacts on Hoffman and GitHub only. Keep report sources and PDF synchronized to the local report folder. The report describes the mathematics and the limits of the training data.
 
 <!-- completed-training:start -->
-Training completed all ten passes on 455,341 choice states from 693 families, giving 4,553,410 state presentations and 18,006 updates. The preparation checked 585,502 total states, including 130,161 forced states. The final model has 10,529 parameters and occupies 49,122 bytes.
+Training completed thirty passes on 455,341 choice states from 693 families, giving 13,660,230 state presentations and 54,016 updates. The preparation checked 585,502 total states, including 130,161 forced states. The final model has 10,529 parameters and occupies 49,314 bytes.
 
-Final-pass mean cross-entropy during updates was 0.11509920 and reference-choice agreement was 99.7387%. These are training measurements. The completed held-out comparison is recorded below; no calibration map has been fitted. Peak training RAM was 245.71 MiB, and the training stage took 408.33 seconds after preparation.
+Final-pass mean cross-entropy during updates was 0.11314129 and reference-choice agreement was 99.8542%. These describe training. Peak RAM recorded across training was 247.29 MiB, and cumulative training time after preparation was 1,949.55 seconds. The continuation retained the optimizer state and all training settings.
 <!-- completed-training:end -->
 
 <!-- completed-testing:start -->
-The frozen reduction model was tested on 72,142 targets in 307 held-out families. It matched 95.469% of recorded choices on 194,347 states with at least two actions. Complete learned paths matched all three sampled master expansions for 72,026 targets; the fixed local rule passed 71,463. Mean attempted reduction times were 8.4426 ms and 0.4262 ms, respectively. Reference paths are valid without a proof of minimality. These are target-row tests; no full Kira speedup was measured.
+The frozen thirty-epoch reduction model was tested on 72,142 targets in 307 held-out families. It matched 94.716% of recorded choices on 194,347 states with at least two actions. Complete learned paths matched all three sampled master expansions for 72,088 targets; the fixed local rule passed 71,463. Mean attempted reduction times were 10.0639 ms and 0.4643 ms, respectively. Reference paths are valid without a proof of minimality. These are target-row tests; no full Kira speedup was measured.
 
-See [model_test/README.md](model_test/README.md) for saved predictions, complete paths, metric definitions, six figures and reproduction commands. The model weights and training records are unchanged. Historical training status files describe the state at training completion. After regenerating training-only report text, run the test report updater to restore the current cross-references.
+See [model_test/README.md](model_test/README.md) for saved predictions, complete paths, metric definitions, six figures and reproduction commands. The model weights and training records were unchanged during this evaluation. Historical training status files describe the state at training completion. The same reserved set previously evaluated the ten-epoch model; no records entered gradient updates or confidence fitting.
 <!-- completed-testing:end -->
