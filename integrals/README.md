@@ -1,77 +1,13 @@
 # Integral collection
 
-This folder contains all 1,000 families, their 9,678 master entries and their 240,472 targets. The three data folders separate the master bases, the target definitions and the relations between them:
+The collection contains 2100 family instances, 12967 family-local master entries and 381272 targets. It includes 997 one-loop families, 103 two-loop families and 100 families at each loop order from three through twelve.
 
-    integrals/
-      master_integrals/
-        families/<family>/masters.json
-        families/<family>/definition.json
-        families/<family>/basis_checks.tar.gz
-      target_integrals/
-        families/<family>/inputs.jsonl.gz
-      master_to_target/
-        families/<family>/references.jsonl.gz
-        families/<family>/elimination_traces.jsonl.gz
-        families/<family>/identities.jsonl.gz
-        families/<family>/construction_proofs.jsonl.gz
-        families/<family>/candidate_seeds.json
+master_integrals/ stores definitions and bases; target_integrals/ stores input targets; master_to_target/ stores exact master coefficients, IBP seeds, source identities, reverse constructions, elimination traces and operation counts. IDs join all three folders. training/ and testing/ are disjoint linked views; canonical data is stored once.
 
-[master_integrals](master_integrals/README.md) contains all stored master bases, including the bases that were previously inside the expanded-family archives. [target_integrals](target_integrals/README.md) combines the original targets, expanded targets and additional individual targets in the same per-family layout. [master_to_target](master_to_target/README.md) contains all reduction and construction records.
+The added 1,100 families vary 100 positive mass profiles across eleven loop orders. Each is a restricted coupled vacuum integral. Massless powers equal one, and two to four distinct massive denominators share the sum of the loop momenta. Partial fractions and Euler IBP give an exact basis and reference reductions. These mass profiles share topology and do not establish coverage of general high-loop scattering families. See higher_loops/README.md for equations, generation and checks.
 
-A family name identifies the same integral definition in all three folders. Each target has an unchanged ID such as box_profile_0001:T00001 or box_profile_0001:U00001. The same ID appears in its input, reference reduction and elimination trace. Each reference also lists master_ids in the same order as its master_coefficients. The corresponding master definitions are in that family's masters.json.
+Training contains 266890 targets from 1463 families; testing contains 114382 targets from 637 families. Related mass profiles stay in one split across loop orders. Existing assignments are preserved. Paths in model_split_summary.json and the split manifests define the current assignment. Reference seed sets and paths are sufficient; no optimality claim is made.
 
-All active data paths are relative to integrals/. JSONL files contain one record per line; their .gz suffix indicates gzip compression. The reader decompresses these files as it reads them. This keeps the collection within the storage limit.
+The collection contains 85,732 individual integrals and 295,540 integral expressions. Master counts are family-local entries; some entries represent the same lower-sector integral in different families.
 
-[catalog.json](catalog.json) gives all file locations and counts. [families.json](families.json) lists all 1,000 definitions, and [splits.json](splits.json) retains the established training, validation and test assignments. Each category also has a catalog. [validation_summary.json](validation_summary.json) records the mathematical checks already completed and the checks of this reorganization.
-
-The total of 240,472 targets comprises 55,768 individual integrals and 184,704 integral expressions. The historical collection split has 198,527 training targets, 19,600 validation targets and 22,345 test targets. The validation and test sets contain 183 and 202 individual integrals, respectively. The 384 additional individual targets contain numerator factors and lie in one-propagator sectors.
-
-The collection covers 997 one-loop and three two-loop families. The 984 added families vary exact mass and kinematic conditions within the one-loop box topology. Full kinematic profiles stay in one split across mass assignments; some lower-sector reduction structure remains shared. The basis checks cover stated finite index ranges and sample points. The data provide verified reference reductions and do not establish minimum reduction costs or high-loop model performance.
-
-## Current seed-model training and testing data
-
-[training](training/README.md) contains 168,330 targets from 693 families, and [testing](testing/README.md) contains 72,142 targets from 307 families. These directories implement the model's reviewed 70:30 division. Each contains master_integrals/, target_integrals/ and master_to_target/ directories with relative links to its complete families. The links preserve one stored copy of every original file. No family or complete box kinematic profile occurs in both model splits.
-
-Each split has a manifest.json. Its paths are relative to integrals/ and start with training/ or testing/. The model loader uses these paths, and its training run reads only training examples. Stored canonical records and splits.json preserve the earlier collection split as provenance. Model testing is deferred.
-
-s05_prepare_model_splits.py constructs the two directory views from the model's fixed split manifest, verifies all 5,000 model source-file hashes, checks group separation, and writes model_split_summary.json. It generates no new integrals and performs no model predictions. Run it after any deliberate regeneration of the model split:
-
-    python3 integrals/s05_prepare_model_splits.py
-
-## Reading a family or a target
-
-Run these commands from the project directory on Hoffman:
-
-    python3 integrals/s01_read_data.py \
-      --family box_profile_0001 --kind masters
-
-    python3 integrals/s01_read_data.py \
-      --family box_profile_0001 --kind inputs --limit 2
-
-    python3 integrals/s01_read_data.py \
-      --target box_profile_0001:U00001
-
-The last command returns the target, its exact reference expansion, its seeds and construction history, its elimination trace and the master definitions used in the expansion. Shared source identities and proof libraries remain linked through their file paths and record identifiers.
-
-For later programs, records(family, kind) supports inputs, references, traces, identities, proofs, seeds, symmetries, definition, masters and metadata. linked_target(identifier) joins the three target records and their master definitions. Keep reference answers and recorded decisions separate from the information supplied to an ML model.
-
-## Reorganization and checks
-
-The organization changed the locations and links of existing data. Target IDs, integral indices, coefficients, seeds, source identities, proof dependencies, elimination operations and operation counts retain their values. The combined split labels now appear directly in the records; stored_split retains an earlier label where a family was reassigned.
-
-The programs are numbered by their role:
-
-- s00_reorganize.py converts the earlier layout, combines additional targets and preserves the source records.
-- s01_read_data.py reads the current layout and joins targets with their master relations.
-- s02_validate.py checks every file manifest, master basis, target link, seed reference, elimination trace, operation count and split assignment.
-- s03_run_reorganization.sh runs a bounded conversion task through the Hoffman scheduler.
-- s04_run_validation.sh runs the collection checks through the scheduler.
-
-The completed migration used a full comparison with the previous data before removing the three old top-level folders. A later integrity check uses:
-
-    mkdir -p .tools/integrals-layout/logs
-    qsub integrals/s04_run_validation.sh
-
-The migration program requires the previous layout as its source. It is retained to document and reproduce the move; it does not generate new integrals. The original programs, catalogs and validation reports are preserved in master_to_target/generation_source.tar.gz and remain viewable in the [previous Git commit](https://github.com/NonHermitianMatrix/ML_for_Kira_Seeding_Reduction/tree/82ebe3c870d8382f2f72f4f1598092f102a6fdc2). Historical paths inside these records describe the original calculations.
-
-Conversion uses one CPU per task, at most four concurrent tasks, a 1.5 GB address-space limit and bounded output sizes. A 6 GB project guard reserves space below the 10 GB ceiling. All datasets and temporary copies stay on Hoffman.
+The original s00_reorganize.py and s03_run_reorganization.sh preserve the earlier folder migration. s01_read_data.py reads canonical records. s02_validate.py and s04_run_validation.sh run the current collection audit, and s05_prepare_model_splits.py maintains separate linked model views. New generation, mathematical validation, training finalization and report updates use the documented sequence in [higher_loops](higher_loops/README.md).

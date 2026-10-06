@@ -16,3 +16,6 @@ ulimit -v 3145728
 ulimit -f 131072
 ulimit -c 0
 timeout 6900s .tools/seed-model/venv/bin/python ML_model_seed_selection/model_test/s01_evaluate.py
+
+.tools/seed-model/venv/bin/python ML_model_seed_selection/model_test/s03_plot_results.py
+.tools/seed-model/venv/bin/python ML_model_seed_selection/model_test/s04_validate_outputs.py

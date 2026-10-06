@@ -52,7 +52,7 @@ def main():
             assert h.hexdigest()==canonical_hashes[old],row[key]
         totals[split].update(row["counts"]);totals[split]["families"]+=1
         split_rows[split].append(row)
-    assert totals["train"]["targets"]==168330 and totals["test"]["targets"]==72142
+    assert sum(v["targets"] for v in totals.values())==sum(m["counts"]["targets"] for m in manifest["families"])
     for split,name in NAMES.items():
         for kind in KINDS:
             got={p.name for p in (ROOT/name/kind/"families").iterdir()}
@@ -63,10 +63,10 @@ def main():
         text=("# "+name.capitalize()+" integrals\n\n"+
               "This folder contains "+str(totals[split]["targets"])+" targets from "+
               str(totals[split]["families"])+" complete families in the seed model's "+split+" split.\n\n"+
-              "The master_integrals/, target_integrals/ and master_to_target/ folders contain relative directory links to the existing family files. These links form a separate, non-overlapping view; each integral file remains stored once. Each family belongs to exactly one model split. Full box kinematic profiles remain together across mass assignments.\n\n"+
+              "The master_integrals/, target_integrals/ and master_to_target/ folders contain relative directory links to the existing family files. These links form a separate, non-overlapping view; each integral file remains stored once. Each family belongs to exactly one model split. Full box kinematic profiles remain together across mass assignments. Added vacuum mass profiles stay together across loop orders.\n\n"+
               "manifest.json lists the family records and paths, relative to integrals/. Stored records retain their original canonical file links and historical split labels. This manifest and the model's split_manifest.json define the current 70:30 model division.\n\n"+
-              ("The training program reads only this split. Testing remains a later, separately authorized step.\n" if split=="train" else
-               "These targets are reserved for later testing. The current training run does not read these examples or update parameters from them.\n"))
+              ("The training program reads only this split. The frozen expanded-data models will be evaluated on the separate testing split.\n" if split=="train" else
+               "These targets are reserved for frozen-model testing. Training does not read these examples or update parameters from them.\n"))
         (ROOT/name/"README.md").write_text(text,encoding="utf-8")
         for kind in KINDS:
             (ROOT/name/kind/"README.md").write_text(

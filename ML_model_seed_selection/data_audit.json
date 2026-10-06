@@ -1,46 +1,167 @@
 {
   "counts": {
     "test": {
-      "candidate_seed_labels": 33828275,
-      "empty_reference_seed_sets": 2,
-      "families": 307,
-      "integral_expression": 56018,
-      "positive_seed_labels": 201885,
-      "single_integral": 16124,
-      "targets": 72142,
-      "two_loop_families": 1
+      "candidate_seed_labels": 36792115,
+      "empty_reference_seed_sets": 1883,
+      "families": 637,
+      "integral_expression": 89392,
+      "positive_seed_labels": 347684,
+      "single_integral": 24990,
+      "targets": 114382
     },
     "train": {
-      "candidate_seed_labels": 79181118,
-      "empty_reference_seed_sets": 3,
-      "families": 693,
-      "integral_expression": 128686,
-      "positive_seed_labels": 474054,
-      "single_integral": 39644,
-      "targets": 168330,
-      "two_loop_families": 2
+      "candidate_seed_labels": 85538238,
+      "empty_reference_seed_sets": 3941,
+      "families": 1463,
+      "integral_expression": 206148,
+      "positive_seed_labels": 818384,
+      "single_integral": 60742,
+      "targets": 266890
     }
   },
-  "grouping": "Complete families; all mass assignments of a box kinematic profile stay together.",
-  "groups": 65,
+  "grouping": "Fixed 70:30 mass-profile assignment shared across loop orders two through twelve; previous assignments preserved.",
+  "groups": 165,
   "label_semantics": "Membership in the stored sufficient seed set; not globally optimal or necessary seeds.",
   "limitations": [
-    "Shared lower-sector physics can occur in both sets.",
-    "Only 3 two-loop families; this split does not establish high-loop generalization.",
-    "Candidate pools are bounded, not all points of the integral-index lattice."
+    "New higher-loop coverage is a restricted coupled vacuum family, varied through mass profiles.",
+    "Both splits contain all loop orders; these tests measure held-out profile performance, not transfer to unseen loop orders.",
+    "Reference seeds and paths are sufficient; no global minimality claim.",
+    "Candidate pools have explicit finite bounds.",
+    "Previously inspected held-out families remain the existing benchmark; new profile assignments were fixed before training."
   ],
+  "loop_counts": {
+    "1": {
+      "test": {
+        "families": 306,
+        "targets": 71998
+      },
+      "train": {
+        "families": 691,
+        "targets": 168086
+      }
+    },
+    "10": {
+      "test": {
+        "families": 30,
+        "targets": 3840
+      },
+      "train": {
+        "families": 70,
+        "targets": 8960
+      }
+    },
+    "11": {
+      "test": {
+        "families": 30,
+        "targets": 3840
+      },
+      "train": {
+        "families": 70,
+        "targets": 8960
+      }
+    },
+    "12": {
+      "test": {
+        "families": 30,
+        "targets": 3840
+      },
+      "train": {
+        "families": 70,
+        "targets": 8960
+      }
+    },
+    "2": {
+      "test": {
+        "families": 31,
+        "targets": 3984
+      },
+      "train": {
+        "families": 72,
+        "targets": 9204
+      }
+    },
+    "3": {
+      "test": {
+        "families": 30,
+        "targets": 3840
+      },
+      "train": {
+        "families": 70,
+        "targets": 8960
+      }
+    },
+    "4": {
+      "test": {
+        "families": 30,
+        "targets": 3840
+      },
+      "train": {
+        "families": 70,
+        "targets": 8960
+      }
+    },
+    "5": {
+      "test": {
+        "families": 30,
+        "targets": 3840
+      },
+      "train": {
+        "families": 70,
+        "targets": 8960
+      }
+    },
+    "6": {
+      "test": {
+        "families": 30,
+        "targets": 3840
+      },
+      "train": {
+        "families": 70,
+        "targets": 8960
+      }
+    },
+    "7": {
+      "test": {
+        "families": 30,
+        "targets": 3840
+      },
+      "train": {
+        "families": 70,
+        "targets": 8960
+      }
+    },
+    "8": {
+      "test": {
+        "families": 30,
+        "targets": 3840
+      },
+      "train": {
+        "families": 70,
+        "targets": 8960
+      }
+    },
+    "9": {
+      "test": {
+        "families": 30,
+        "targets": 3840
+      },
+      "train": {
+        "families": 70,
+        "targets": 8960
+      }
+    }
+  },
   "maxima": {
     "candidates": 1671,
     "coefficient_chars": 1698,
-    "indices": 5,
+    "indices": 16,
     "terms": 33
   },
   "optimizer_steps": 0,
   "requested_train_fraction": 0.7,
   "source_commit": "eb2ae060817faeda10656736a7d32f8066e8f0af",
   "split_unit": "target with its entire candidate seed list and sufficient-set labels",
-  "status": "prepared_untrained",
-  "total_targets": 240472,
-  "train_fraction": 0.6999983366046775,
-  "two_loop_grouping": "Two complete two-loop families in train and one in test, assigned using the fixed split seed"
+  "status": "expanded_data_prepared",
+  "total_targets": 381272,
+  "train_fraction": 0.6999989508802115
 }

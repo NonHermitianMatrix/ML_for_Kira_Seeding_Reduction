@@ -1,0 +1,27 @@
+{
+  "reason": "Scheduler enforced the original three-hour wall-time limit; no memory-limit failure.",
+  "stopped_job": 15059455,
+  "resumed_job": 15063054,
+  "resume_checkpoint_sha256": "ca917fd3b69523f5e7ea9c87180371801166220042c9c284a827056d74b6d6d4",
+  "last_saved_progress": {
+    "completed_epochs": 19,
+    "configured_epochs": 20,
+    "elapsed_seconds": 10702.077740430832,
+    "families_completed": 401,
+    "families_total": 1463,
+    "max_rss_kib": 320732,
+    "mean_training_loss": 0.03688179393078596,
+    "optimizer_steps": 165728,
+    "status": "training",
+    "targets_in_current_epoch": 72397,
+    "test_targets_processed": 0,
+    "training_targets_per_epoch": 266890
+  },
+  "method": "The unchanged trainer restores model, optimizer, random state, partial epoch loss and next family from the saved checkpoint.",
+  "new_allocation_wall_time_seconds": 3600,
+  "training_goal": "Twenty complete expanded-data passes; no held-out updates.",
+  "cancelled_before_execution": [
+    15063036
+  ],
+  "wrapper_change": "Skip feature preparation when a resume checkpoint exists; the trainer verifies the original manifest and code fingerprints."
+}

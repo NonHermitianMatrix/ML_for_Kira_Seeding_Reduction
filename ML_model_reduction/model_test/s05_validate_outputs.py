@@ -9,7 +9,7 @@ def main():
     split=read(ROOT/"ML_model_seed_selection/split_manifest.json")
     meta_by_id={f["family"]:f for f in split["families"] if f["split"]=="test"}
     assert set(families)==set(meta_by_id)
-    count=collections.Counter();byloop={1:collections.Counter(),2:collections.Counter()}
+    count=collections.Counter();byloop=collections.defaultdict(collections.Counter)
     source_files={};seen_targets=set();max_model_difference=0.0
     from s05_predict import Predictor
     predictor=Predictor()

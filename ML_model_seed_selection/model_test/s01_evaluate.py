@@ -26,7 +26,7 @@ def main():
     trained=read(MODEL/"trained_model.json")
     assert model_hash==trained["model_sha256"]
     model,cfg,saved=load_model(checkpoint)
-    assert saved["epoch"]==10 and saved["test_targets_processed"]==0
+    assert saved["epoch"]==trained["epochs_completed"]==20 and saved["test_targets_processed"]==0
     state_before={k:v.detach().clone() for k,v in model.state_dict().items()}
     split_hash=verify_sources(split="test")
     manifest=read(MODEL/"split_manifest.json")
@@ -34,14 +34,17 @@ def main():
     train=[m for m in manifest["families"] if m["split"]=="train"]
     assert not {m["family"] for m in test}&{m["family"] for m in train}
     assert not {m["group"] for m in test}&{m["group"] for m in train}
-    assert len(test)==307 and sum(m["counts"]["targets"] for m in test)==72142
+    expected=collections.Counter()
+    for meta in test:expected.update(meta["counts"])
+    expected["families"]=len(test)
+    assert set(m["loops"] for m in test)==set(range(1,13))
     initial_bytes=storage_guard()
     overall=Aggregate();groups=collections.defaultdict(Aggregate);families={};curves=Curves()
     inference_time=0.;encoding_time=0.;outputs=[]
     per_target_temp=HERE/"per_target_metrics.jsonl.gz.part"
     def status(done_families,finished=False):
         data=dict(status="completed" if finished else "testing",targets_processed=overall.targets,
-                  targets_total=72142,families_processed=done_families,families_total=307,
+                  targets_total=expected["targets"],families_processed=done_families,families_total=len(test),
                   elapsed_seconds=time.monotonic()-started,optimizer_updates=0,
                   threshold=0.5,model_sha256=model_hash,max_rss_kib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
         write_json(HERE/"test_status.json",data);print(json.dumps(data),flush=True)
@@ -108,8 +111,8 @@ def main():
                 if sum(p["bytes"] for p in outputs)>700000000:raise RuntimeError("Prediction archive size exceeded 700 MB budget")
     os.replace(str(per_target_temp),str(HERE/"per_target_metrics.jsonl.gz"))
     result=overall.result()
-    assert result["targets"]==72142 and result["candidate_labels"]==33828275 and result["positive_labels"]==201885
-    assert result["empty_reference_targets"]==2
+    assert result["targets"]==expected["targets"] and result["candidate_labels"]==expected["candidate_seed_labels"] and result["positive_labels"]==expected["positive_seed_labels"]
+    assert result["empty_reference_targets"]==expected["empty_reference_seed_sets"]
     assert sha(checkpoint)==model_hash
     assert all(torch.equal(state_before[k],v) for k,v in model.state_dict().items())
     family_keys=sorted({k for f in families.values() for k in f["target_macro"]})
@@ -117,10 +120,10 @@ def main():
     family_denominators={k:sum(k in f["target_macro"] for f in families.values()) for k in family_keys}
     total=result["candidate_labels"];positive=result["positive_labels"]
     summary=dict(status="completed",threshold=0.5,checkpoint_sha256=model_hash,split_sha256=split_hash,
-                 overall=result,groups={k:v.result() for k,v in groups.items()},family_macro=family_macro,
+                 overall=result,epochs_completed=trained["epochs_completed"],lineage=trained["lineage"],groups={k:v.result() for k,v in groups.items()},family_macro=family_macro,
                  family_macro_denominators=family_denominators,
                  baseline_all_zero=dict(micro=micro_metrics(total-positive,0,positive,0),
-                    exact_reference_set_fraction=2/72142,positive_prevalence=positive/total),
+                    exact_reference_set_fraction=expected["empty_reference_seed_sets"]/expected["targets"],positive_prevalence=positive/total),
                  elapsed_seconds=time.monotonic()-started,encoding_seconds=encoding_time,
                  model_inference_seconds=inference_time,optimizer_updates=0,
                  model_unchanged=True,initial_project_bytes=initial_bytes,final_project_bytes=storage_guard(),

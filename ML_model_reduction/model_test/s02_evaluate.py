@@ -103,7 +103,7 @@ def aggregate(summaries,cfg,sig,seconds):
             records.append(r)
     merged=merge_arrays(arrays);overall=metric_summary(merged)
     groups={}
-    for loop in (1,2):
+    for loop in sorted({f["loops"] for f in summaries}):
         indexes=[i for i,f in enumerate(summaries) if f["loops"]==loop]
         if not indexes:continue
         group_records=[r for r in records if r["loops"]==loop]
@@ -120,8 +120,9 @@ def aggregate(summaries,cfg,sig,seconds):
                  elapsed_seconds=seconds,max_rss_kib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
                  weights_unchanged=sha(MODEL/"trained_model.pt")==cfg["model_sha256"],
                  optimizer_updates=0,confidence_adjustment=False,full_kira_benchmark=False,symbolic_reconstruction=False)
-    assert results["weights_unchanged"] and len(records)==72142 and len(summaries)==307
-    assert overall["states"]==832924-585502
+    held=[m for m in read(ROOT/"ML_model_seed_selection/split_manifest.json")["families"] if m["split"]=="test"]
+    assert results["weights_unchanged"] and len(records)==sum(m["counts"]["targets"] for m in held) and len(summaries)==len(held)
+    assert overall["states"]==sum(f["reference_replays"] for f in summaries)
     write_json(TEST/"test_results.json",results)
     write_json(TEST/"family_metrics.json",{r["family"]:r for r in summaries})
     write_gzip(TEST/"target_metrics.jsonl.gz",records)
@@ -141,20 +142,34 @@ def aggregate(summaries,cfg,sig,seconds):
     print(json.dumps(results),flush=True)
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument("--limit",type=int);args=ap.parse_args()
+    ap=argparse.ArgumentParser();ap.add_argument("--limit",type=int)
+    ap.add_argument("--worker",type=int);ap.add_argument("--workers",type=int,default=1)
+    ap.add_argument("--aggregate-only",action="store_true");args=ap.parse_args()
+    assert args.workers>=1 and (args.worker is None or 0<=args.worker<args.workers)
+    assert not (args.limit and (args.worker is not None or args.aggregate_only))
+    assert not (args.aggregate_only and args.worker is not None)
     cfg=test_config();torch.set_num_threads(1);torch.set_num_interop_threads(1)
     torch.use_deterministic_algorithms(True)
     assert sha(MODEL/"trained_model.pt")==cfg["model_sha256"]
     split=read(ROOT/"ML_model_seed_selection/split_manifest.json")
     train=[f for f in split["families"] if f["split"]=="train"];test=[f for f in split["families"] if f["split"]=="test"]
     assert not {f["group"] for f in train}&{f["group"] for f in test}
-    # The bounded pilot includes the sole held-out two-loop family, then one one-loop family.
+    # Higher-loop held-out families are evaluated first; all results use the same frozen weights.
     test.sort(key=lambda f:(-f["loops"],f["family"]))
     sig=signature();storage=storage_guard(full=True);predictor=Predictor()
-    chosen=test[:args.limit] if args.limit else test;summaries=[];start=time.perf_counter()
+    chosen=test[:args.limit] if args.limit else test
+    if args.worker is not None:chosen=test[args.worker::args.workers]
+    summaries=[];start=time.perf_counter()
+    def progress(stage,**extra):
+        if args.worker is None:status(stage,**extra)
+        else:write_json(TEST/("worker_%02d_status.json"%args.worker),
+             dict(stage=stage,worker=args.worker,workers=args.workers,
+                  utc=time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),**extra))
     for i,meta in enumerate(chosen):
+        if args.aggregate_only:
+            assert (TEST/"families"/meta["family"]/"summary.json").exists(),"Missing family test"
         result=family_evaluate(meta,predictor,cfg,sig);summaries.append(result)
-        status("evaluating",families_completed=i+1,families_total=len(chosen),last_family=meta["family"],
+        progress("checking_completed_families" if args.aggregate_only else "evaluating",families_completed=i+1,families_total=len(chosen),last_family=meta["family"],
                elapsed_seconds=time.perf_counter()-start,max_rss_kib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
         if i%8==0:storage_guard()
         print("evaluated",i+1,len(chosen),meta["family"],result["state_metrics"]["top1"],result["model"]["success_all_samples"],flush=True)
@@ -162,5 +177,15 @@ def main():
         write_json(TEST/"pilot.json",dict(status="passed",signature=sig,families=[r["family"] for r in summaries],
                    elapsed_seconds=time.perf_counter()-start,full_protocol_unchanged=True))
         return
-    aggregate(summaries,cfg,sig,time.perf_counter()-start)
+    if args.worker is not None:
+        progress("complete",families_completed=len(summaries),families_total=len(chosen),
+                 signature=sig,families=[r["family"] for r in summaries],elapsed_seconds=time.perf_counter()-start,
+                 max_rss_kib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
+        return
+    elapsed=time.perf_counter()-start
+    if args.aggregate_only:
+        parallel=read(TEST/"parallel_execution.json")
+        assert parallel["status"]=="workers_complete" and parallel["signature"]==sig
+        elapsed+=parallel["elapsed_seconds"]
+    aggregate(summaries,cfg,sig,elapsed)
 if __name__=="__main__":main()

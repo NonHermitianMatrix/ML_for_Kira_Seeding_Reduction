@@ -2,7 +2,8 @@
 #$ -cwd
 #$ -S /bin/bash
 #$ -N KiraReductionTest
-#$ -l h_rt=02:00:00,h_data=4G
+#$ -l h_rt=02:00:00,h_data=1G,h_vmem=4G
+#$ -pe shared 4
 #$ -j y
 #$ -o ML_model_reduction/model_test/scheduler.log
 set -euo pipefail
@@ -16,4 +17,7 @@ ulimit -c 0
 TEST_PYTHON=.tools/seed-model/venv/bin/python
 "$TEST_PYTHON" ML_model_reduction/model_test/s03_check_metrics.py
 "$TEST_PYTHON" ML_model_reduction/model_test/s02_evaluate.py --limit 2
-"$TEST_PYTHON" ML_model_reduction/model_test/s02_evaluate.py
+"$TEST_PYTHON" ML_model_reduction/model_test/s10_parallel_test.py
+
+"$TEST_PYTHON" ML_model_reduction/model_test/s05_validate_outputs.py
+"$TEST_PYTHON" ML_model_reduction/model_test/s06_plot_results.py

@@ -11,7 +11,7 @@ def test_config():return read(TEST/"test_config.json")
 def status(stage,**extra):
     write_json(TEST/"status.json",dict(stage=stage,utc=time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),**extra))
 def signature():
-    scripts={p.name:sha(p) for p in TEST.glob("s0[0-2]_*.py")}
+    scripts={p.name:sha(p) for p in list(TEST.glob("s0[0-2]_*.py"))+[TEST/"s10_parallel_test.py"]}
     return dict(model_sha256=sha(MODEL/"trained_model.pt"),config_sha256=sha(TEST/"test_config.json"),
                 split_sha256=sha(ROOT/"ML_model_seed_selection/split_manifest.json"),
                 encoder_sha256=sha(MODEL/"s01_state.py"),predictor_sha256=sha(MODEL/"s05_predict.py"),

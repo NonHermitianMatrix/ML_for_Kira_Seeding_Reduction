@@ -1,0 +1,232 @@
+\subsection{Coupled vacuum families from two through twelve loops}
+\label{sec:higher-loop-generation}
+To supply examples at every loop order considered in the model study,
+we added 100 mass profiles at each order from two through twelve.
+These profiles define 1,100 additional family instances. They use
+coupled vacuum integrals whose master expansions follow from mass
+partial fractions and IBP identities, which allows us to retain exact
+reference answers as the number of loops increases. The profiles vary
+the masses within a restricted set of graphs, so the family count
+measures mass assignments as well as graph structure.
+
+For this extension we use Euclidean loop momenta and define
+\begin{equation}
+ V^{(L)}_{\boldsymbol b}=
+ \int\prod_{i=1}^{L}\frac{d^d\ell_i}{\pi^{d/2}}\,
+ \frac{1}{\ell_1^2\cdots\ell_L^2}
+ \prod_{j=1}^{R}\frac{1}{(Q^2+\mu_j)^{b_j}},
+ \qquad
+ Q=\sum_{i=1}^{L}\ell_i,\qquad \mu_j=\rho_j\mu .
+ \label{eq:coupled-vacuum}
+\end{equation}
+Here $L$ is the number of loops, $R$ is the number of distinct massive
+denominators, $\mu=m^2>0$ is a common squared-mass scale and
+$\rho_j$ is a positive mass ratio. The nonnegative integer $b_j$
+is the power of the $j$th massive denominator, and
+$B=\sum_{j=1}^{R}b_j\geq1$ is their total power. Every massless
+denominator has power one in the generated domain. The full integral
+index vector is $(1,\ldots,1,b_1,\ldots,b_R)$, with $L+R$ entries.
+Equation~\eqref{eq:coupled-vacuum} specifies the normalization and signs
+used for this Euclidean subcollection; the earlier families retain
+their stated Minkowski convention.
+
+The common momentum $Q$ couples the loop integrations. A graph
+representation has $L$ parallel massless edges between two vertices
+and a chain of $R$ massive edges joining the same vertices. It has
+$L+R$ edges and $R+1$ vertices, giving $L$ independent loops.
+All massive denominators depend on $Q^2$, which gives algebraic
+relations between them. This definition is a parent family for partial
+fractions with fixed massless powers; it does not specify a complete
+independent denominator and numerator basis for a generic
+$L$-loop scattering integral.
+
+For profile number $p=1,\ldots,100$, we choose
+\begin{equation}
+ R=2+((p-1)\bmod3),\qquad
+ \rho_1=1,\qquad
+ \rho_{j+2}=2+3p+j(p+2),\quad j=0,\ldots,R-2 .
+ \label{eq:higher-loop-masses}
+\end{equation}
+The ratios are distinct within each profile, and $\rho_1=1$ fixes a
+common rescaling. This gives 34 profiles with two massive
+denominators, 33 with three and 33 with four at each loop order.
+A twelve-loop family with four massive denominators has sixteen
+indices, which fits the existing model representation.
+
+\subsection{Exact masters and source equations for the added families}
+The dependence on the common momentum makes the master basis
+explicit. Write $\boldsymbol e_j$ for the unit vector in massive
+index position $j$ and choose
+\begin{equation}
+ M_j^{(L)}=V^{(L)}_{\boldsymbol e_j},
+ \qquad j=1,\ldots,R .
+ \label{eq:higher-loop-masters}
+\end{equation}
+To see why these integrals span the generated domain, first use
+$D_i-D_j=\mu_i-\mu_j$, where $D_j=Q^2+\mu_j$. If $b_i,b_j>0$,
+this identity gives
+\begin{equation}
+ (\mu_i-\mu_j)V^{(L)}_{\boldsymbol b}
+ -V^{(L)}_{\boldsymbol b-\boldsymbol e_i}
+ +V^{(L)}_{\boldsymbol b-\boldsymbol e_j}=0 .
+ \label{eq:higher-loop-partial-fraction}
+\end{equation}
+Repeated use removes products of distinct massive denominators.
+This equation is an algebraic mass relation and carries no IBP seed.
+
+The remaining powers follow from the sum of the $L$ IBP operators
+$\partial_{\ell_i^\nu}\ell_i^\nu$. Applying this sum to the integrand
+of Eq.~\eqref{eq:coupled-vacuum} gives
+\begin{equation}
+ 0=[Ld-2(L+B)]V^{(L)}_{\boldsymbol b}
+   +2\sum_{j=1}^{R}b_j\mu_j
+                 V^{(L)}_{\boldsymbol b+\boldsymbol e_j}.
+ \label{eq:higher-loop-euler}
+\end{equation}
+Each such equation retains its actual seed
+$(1,\ldots,1,\boldsymbol b)$ and the contributing derivative operators.
+For one massive denominator this becomes
+\begin{equation}
+ V^{(L)}_{k\boldsymbol e_j}
+ =\left[\prod_{h=1}^{k-1}
+       \frac{L+h-Ld/2}{h\mu_j}\right]M_j^{(L)},
+ \qquad k\geq1 .
+ \label{eq:higher-loop-dots}
+\end{equation}
+The empty product at $k=1$ equals one. Equations
+\eqref{eq:higher-loop-partial-fraction} and
+\eqref{eq:higher-loop-dots} therefore reduce every generated integral
+to the stated masters with coefficients rational in $d$ and $\mu$.
+
+An analytic expression also checks the basis. Set $D=d/2$,
+$\alpha=L(D-1)$ and $c=L-(L-1)D$. Repeated integration of the
+massless subgraph at fixed $Q$ gives
+\begin{equation}
+ C_L(D)(Q^2)^{-c},\qquad
+ C_L(D)=\frac{\Gamma(c)\Gamma(D-1)^L}{\Gamma(\alpha)} .
+ \label{eq:higher-loop-convolution}
+\end{equation}
+The remaining radial integration uses
+$\int d^dQ/\pi^D=\Gamma(D)^{-1}\int_0^\infty
+dx\,x^{D-1}$ for a rotationally invariant integrand, where $x=Q^2$.
+It gives
+\begin{equation}
+ M_j^{(L)}=
+ \mu_j^{\alpha-1}
+ \frac{\Gamma(c)\Gamma(D-1)^L\Gamma(1-\alpha)}{\Gamma(D)} .
+ \label{eq:higher-loop-master-value}
+\end{equation}
+Here $\Gamma$ is the Euler gamma function. These manipulations use
+the standard analytic continuation of dimensionally regularized
+integrals~\cite{Weinzierl2022}. At generic $d$, distinct $\rho_j$
+give distinct exponential functions of $d$ in
+$\rho_j^{\alpha-1}$. Their linear independence over rational
+functions of $d$ establishes independence of the $R$ masters in this
+restricted domain. After the common factors cancel, a proposed
+relation would combine exponentials with distinct growth rates.
+At fixed generic $\mu$, rational coefficients grow or decay only
+as powers of $d$, so they cannot cancel the largest exponential
+unless its coefficient vanishes. Repeating this argument removes
+each coefficient. The extension contains 299 master entries per
+loop order and 3,289 added entries in total.
+
+We also obtain the master coefficients without following the selected
+row operations. With $z=Q^2/\mu$, the rational identity
+\begin{equation}
+ \prod_{i=1}^{R}(z+\rho_i)^{-b_i}
+ =\sum_{j:b_j>0}\sum_{k=1}^{b_j}
+                 A_{jk}(z+\rho_j)^{-k}
+ \label{eq:higher-loop-oracle}
+\end{equation}
+defines rational numbers $A_{jk}$. Expanding the other factors
+around $z=-\rho_j$ gives them directly:
+\begin{equation}
+ A_{jk}=[w^{\,b_j-k}]
+           \prod_{i\ne j}(\rho_i-\rho_j+w)^{-b_i}.
+ \label{eq:higher-loop-taylor}
+\end{equation}
+Here $w=z+\rho_j$ is the expansion variable, and $[w^n]$ means
+the coefficient of $w^n$ in this Taylor
+series. Combining these coefficients with
+Eq.~\eqref{eq:higher-loop-dots} yields the independent reference
+\begin{equation}
+ V^{(L)}_{\boldsymbol b}
+ =\mu^{1-B}\sum_{j:b_j>0}\sum_{k=1}^{b_j}A_{jk}
+   \left[\prod_{h=1}^{k-1}
+             \frac{L+h-Ld/2}{h\rho_j}\right]M_j^{(L)} .
+ \label{eq:higher-loop-reference}
+\end{equation}
+The factor $\mu^{1-B}$ ensures that both sides have mass dimension
+$Ld-2L-2B$. This reference allows us to check the reduction path
+through a separate calculation.
+
+\subsection{Reverse target construction and the expanded data division}
+We supply every Euler seed with $1\leq B\leq5$ and retain the
+summed Euler identity in Eq.~\eqref{eq:higher-loop-euler} as its
+source equation together with all mass partial-fraction identities
+through $B=6$. Scalar target roots have $2\leq B\leq5$.
+The source pools contain 35, 160 or 545 equations for $R=2,3,4$,
+respectively. These counts stay fixed as $L$ changes because the
+massless powers and massive-index bounds stay fixed. The additional
+loop orders therefore test this controlled family structure, while
+large generic IBP systems require wider denominator and numerator
+domains.
+After obtaining a checked scalar relation, we reverse its steps to
+construct the corresponding integral from its master combination.
+For expressions containing several roots, we first combine their
+known master expansions and then apply the recorded inverse steps.
+Each inverse step adds a stated multiple of an exact zero identity,
+so the master coefficients remain known throughout the construction.
+
+For roots with total powers $B_\nu$, we use target weights of the form
+\begin{equation}
+ {\cal T}=\sum_\nu
+   \kappa_\nu d^{\eta_\nu}\mu^{B_\nu-B_*}
+                       V^{(L)}_{\boldsymbol b_\nu},
+ \qquad
+ B_*=\max_\nu B_\nu,\qquad \eta_\nu\in\{0,1\}.
+ \label{eq:higher-loop-target-weights}
+\end{equation}
+Here $\kappa_\nu$ is a nonzero rational number. The powers of $\mu$
+give every term the same mass dimension. Expressions use up to three
+distinct roots and include a root with every massive denominator
+present and at least one additional denominator power. Individual
+targets also sample lower sectors. We retain 128 distinct targets
+per family, giving 140,800 additional targets.
+
+For each target we retain its master coefficients, exact reverse
+construction, source equations, sufficient IBP seed set and a
+forward elimination trace. The trace records all allowed source
+rows, the chosen pivot, the coefficients before and after the
+operation, and the arithmetic operation counts. Mass
+partial-fraction steps remain separately identified, so a seed label
+always refers to an actual IBP seed. The reference path minimizes
+the next symbolic row's number of nonmaster terms, then its total
+support and immediate operation count, with a fixed final tie rule.
+This supplies a reproducible valid path without establishing a
+globally minimal sequence.
+
+We verify every source equation against
+Eq.~\eqref{eq:higher-loop-reference} and separately check the
+partial-fraction formula and the Euler derivative before integration. We replay the symbolic constructions
+and forward reductions, then independently replay all saved records
+at three finite-field samples. A candidate target is rejected if a
+reference pivot vanishes at one of those samples. The checks also
+verify connected graphs and their loop counts. At $d=2+1/L$ the
+radial master integral converges; numerical quadrature then checks
+Eq.~\eqref{eq:higher-loop-master-value} at both ends of the loop-order
+range.
+
+The complete collection now contains 2,100 family instances,
+12,967 master entries and 381,272 targets. It contains 997 one-loop
+families, 103 two-loop families and 100 families at each order from
+three through twelve. We retain the original grouped model
+assignment and assign 70 added mass profiles to training and 30 to
+testing. A profile has the same assignment at every loop order,
+giving 266,890 training targets in 1,463 families and 114,382
+test targets in 637 families. Shared lower-sector integrals can occur
+across different profiles. These tests measure transfer between the
+specified mass profiles with every loop order represented during
+training; they do not establish transfer to unseen loop orders or
+general high-loop topologies. The accompanying records contain the
+complete definitions and checks~\cite{HigherLoopIntegralData}.

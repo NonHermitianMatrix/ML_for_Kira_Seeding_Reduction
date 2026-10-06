@@ -25,11 +25,11 @@ def main():
         for ext in ("pdf","png"):fig.savefig(str(figures/(name+"."+ext)),bbox_inches="tight")
         shutil.copy2(str(figures/(name+".pdf")),str(report_figures/(name+".pdf")))
         saved.append(name);plt.close(fig)
-    history=[json.loads(line) for line in (MODEL/"runs/training.jsonl").read_text(encoding="utf-8").splitlines() if line]
+    history=read(MODEL/"runs/all_loops_history.json")
     csv_write("training_history.csv",history)
     fig,ax=plt.subplots(figsize=(6.5,3.5))
     ax.plot([r["epoch"] for r in history],[r["mean_loss"] for r in history],"o-",color="#235789")
-    ax.set(xlabel="Completed training pass",ylabel="Mean training binary cross-entropy",xticks=list(range(1,11)))
+    ax.set(xlabel="Completed expanded-data training pass",ylabel="Mean training binary cross-entropy",xticks=list(range(1,len(history)+1,2)))
     ax.set_yscale("log");ax.grid(alpha=.2);save(fig,"training_loss")
     confusion=overall["confusion"]
     counts=np.array([[confusion["tn"],confusion["fp"]],[confusion["fn"],confusion["tp"]]])
@@ -92,15 +92,12 @@ def main():
     fap=[f["target_macro"]["average_precision"] for f in families.values() if "average_precision" in f["target_macro"]]
     axes[0].hist(fap,bins=np.linspace(0,1,21),color="#235789",edgecolor="white")
     axes[0].set(xlabel="Mean target average precision within a family",ylabel="Number of test families",xlim=(0,1))
-    x=np.arange(2);width=.25
-    for j,(key,label,color) in enumerate([("precision","Precision","#235789"),("recall","Recall","#e07a1f"),("f1","F1","#357a38")]):
-        raw=[results["groups"]["loops:"+str(loop)]["micro"][key] for loop in (1,2)]
-        vals=[100*v if v is not None else 0 for v in raw]
-        bars=axes[1].bar(x+(j-1)*width,vals,width,color=color,label=label)
-        for bar,v,original in zip(bars,vals,raw):
-            axes[1].text(bar.get_x()+bar.get_width()/2,v+1,f"{v:.1f}" if original is not None else "undef.",ha="center",fontsize=7)
-    axes[1].set(xticks=x,xticklabels=["One loop\n306 families","Two loops\n1 family"],ylim=(0,113),ylabel="Seed metric (%)")
-    axes[1].legend(fontsize=8,loc="lower left");axes[1].grid(axis="y",alpha=.2)
+    loops=sorted({f["loops"] for f in families.values()})
+    for key,label,color,marker in [("precision","Precision","#235789","o"),("recall","Recall","#e07a1f","s"),("f1","F1","#357a38","^")]:
+        vals=[100*(results["groups"]["loops:"+str(loop)]["micro"][key] or 0) for loop in loops]
+        axes[1].plot(loops,vals,marker=marker,label=label,color=color,markersize=4)
+    axes[1].set(xticks=loops,xlabel="Loop order",ylim=(0,105),ylabel="Seed metric (%)")
+    axes[1].legend(fontsize=8,loc="lower left");axes[1].grid(alpha=.2)
     save(fig,"family_performance")
     rows=[]
     for fid,f in families.items():

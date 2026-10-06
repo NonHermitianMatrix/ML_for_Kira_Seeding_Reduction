@@ -1,3 +1,7 @@
+# Historical continuation on the earlier dataset
+
+This directory records the completed continuation to thirty passes before the expanded loop-order phase. The current model uses twenty further passes over the expanded dataset; see ../README.md and ../../README.md.
+
 # Twenty additional training epochs
 
 This continuation resumes the published ten-epoch weights and optimizer state and stops at thirty total epochs. It uses the same 693 training families, architecture, objective, learning rate and remaining settings. No held-out test is run and no Git command publishes the updates.

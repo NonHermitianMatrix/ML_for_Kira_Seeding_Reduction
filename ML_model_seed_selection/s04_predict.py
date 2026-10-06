@@ -38,7 +38,7 @@ def main():
     print(json.dumps(dict(target=args.target,
                           meaning="Binary membership in the recorded reference seed set",
                           decision_threshold=0.5,
-                          confidence_meaning="Model-estimated probability of the returned label; empirical calibration unmeasured",
+                          confidence_meaning="Uncalibrated model-estimated probability of the returned label",
                           ranking="descending probability_1",
                           candidates=candidates),indent=2))
 if __name__=="__main__": main()

@@ -1,6 +1,6 @@
 # Derived reduction training states
 
-The original integral records remain in ../../integrals/. This folder contains only derived features for the existing 693 training families. The grouped split remains the one in ML_model_seed_selection/split_manifest.json.
+The original integral records remain in ../../integrals/. This folder contains only derived features for the expanded 1,463 training families spanning loop orders one through twelve. The current grouped split is defined by ML_model_seed_selection/split_manifest.json.
 
 Each training/<family>.npz contains features, offsets, labels, target_number, step_number, target_ids and action_ids. For state i, features[offsets[i]:offsets[i+1]] gives its candidate features; labels[i] is the local index of the recorded chosen action. The corresponding equation IDs use the same slice of action_ids. target_ids[target_number[i]] and step_number[i] locate the original state.
 

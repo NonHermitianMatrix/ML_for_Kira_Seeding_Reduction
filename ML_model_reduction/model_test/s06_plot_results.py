@@ -18,10 +18,10 @@ def main():
         fig.tight_layout()
         for ext in ("pdf","png"):fig.savefig(figures/(name+"."+ext),bbox_inches="tight")
         shutil.copy2(figures/(name+".pdf"),report/(name+".pdf"));plt.close(fig);saved.append(name)
-    fig,ax=plt.subplots(figsize=(8,4))
-    names=["Recorded action\n(top 1)","Recorded action\n(top 3)","Same next\nsampled row","Local rule:\nrecorded action","Uniform choice:\nexpected top 1"]
-    vals=[overall["top1"],overall["top3"],overall["equivalent_next_row"],overall["greedy_top1"],overall["uniform_top1"]]
-    bars=ax.bar(range(len(vals)),np.asarray(vals)*100,color=[colors["model"]]*3+[colors["greedy"],"#879199"])
+    fig,ax=plt.subplots(figsize=(9,4.1))
+    names=["Recorded action\n(top 1)","Tie-averaged\n(top 1)","Recorded action\n(top 3)","Same next\nsampled row","Local rule:\nrecorded action","Uniform choice:\nexpected top 1"]
+    vals=[overall["top1"],tie["overall"]["tie_neutral_top1"],overall["top3"],overall["equivalent_next_row"],overall["greedy_top1"],overall["uniform_top1"]]
+    bars=ax.bar(range(len(vals)),np.asarray(vals)*100,color=[colors["model"],"#5b84b1",colors["model"],colors["model"],colors["greedy"],"#879199"])
     for b,v in zip(bars,vals):ax.text(b.get_x()+b.get_width()/2,100*v+1,f"{100*v:.2f}%",ha="center",fontsize=9)
     ax.set(xticks=range(len(vals)),xticklabels=names,ylabel="Choice states (%)",ylim=(0,112))
     ax.grid(axis="y",alpha=.2);save(fig,"reduction_action_accuracy")
@@ -38,27 +38,21 @@ def main():
     fig,axes=plt.subplots(1,2,figsize=(9,3.8))
     ranked=sorted([f for f in families.values() if f["state_metrics"]["top1"] is not None],key=lambda f:f["state_metrics"]["top1"])
     axes[0].plot(range(1,len(ranked)+1),[100*f["state_metrics"]["top1"] for f in ranked],color=colors["model"],lw=1.5)
-    for i,f in enumerate(ranked,1):
-        if f["loops"]==2:axes[0].scatter(i,100*f["state_metrics"]["top1"],s=45,color=colors["greedy"],zorder=3,label="Two-loop family")
     axes[0].set(xlabel="Test family, sorted by action agreement",ylabel="Recorded-action agreement (%)",ylim=(0,103))
-    axes[0].legend(fontsize=8);axes[0].grid(alpha=.2)
-    x=np.arange(2);width=.24
-    for j,(key,label,color) in enumerate([("top1","Recorded action",colors["model"]),("equivalent_next_row","Same next row","#377b52"),("greedy_top1","Local rule",colors["greedy"])]):
-        vals=[result["groups"][str(loop)]["state_metrics"][key]*100 for loop in (1,2)]
-        bars=axes[1].bar(x+(j-1)*width,vals,width,label=label,color=color)
-        for b,v in zip(bars,vals):axes[1].text(b.get_x()+b.get_width()/2,v+1,f"{v:.1f}",ha="center",fontsize=8)
-    axes[1].set(xticks=x,xticklabels=["One loop\n306 families","Two loops\n1 family"],ylim=(0,115),ylabel="Choice states (%)")
-    axes[1].legend(fontsize=8,loc="lower right");axes[1].grid(axis="y",alpha=.2);save(fig,"reduction_families")
+    axes[0].grid(alpha=.2)
+    loops=sorted(map(int,result["groups"]))
+    for key,label,color,marker in [("top1","Recorded action",colors["model"],"o"),("equivalent_next_row","Same next row","#377b52","s"),("greedy_top1","Local rule",colors["greedy"],"^")]:
+        vals=[100*result["groups"][str(loop)]["state_metrics"][key] for loop in loops]
+        axes[1].plot(loops,vals,label=label,color=color,marker=marker,markersize=4)
+    axes[1].set(xticks=loops,xlabel="Loop order",ylim=(0,105),ylabel="Choice states (%)")
+    axes[1].legend(fontsize=8,loc="lower right");axes[1].grid(alpha=.2);save(fig,"reduction_families")
     fig,axes=plt.subplots(1,2,figsize=(9,3.6))
-    for ax,loop in zip(axes,(1,2)):
-        group=result["groups"][str(loop)];x=np.arange(2);width=.32
-        for j,(key,label,color) in enumerate([("success_primary","Decision sample",colors["model"]),("success_all_samples","All three samples","#377b52")]):
-            vals=[100*group[p][key]/group["targets"] for p in ("model","greedy")]
-            bars=ax.bar(x+(j-.5)*width,vals,width,label=label,color=color)
-            for b,v in zip(bars,vals):ax.text(b.get_x()+b.get_width()/2,v+1,f"{v:.2f}",ha="center",fontsize=8)
-        ax.set(xticks=x,xticklabels=["Learned policy","Local rule"],ylim=(0,112),ylabel="Targets matching master coefficients (%)",
-               title=f"{loop} loop"+("s" if loop>1 else "")+f": {group['targets']:,} targets")
-        ax.grid(axis="y",alpha=.2)
+    for ax,key,title in zip(axes,("success_primary","success_all_samples"),("Decision sample","All three samples")):
+        for policy,label,marker in (("model","Learned policy","o"),("greedy","Local rule","s")):
+            vals=[100*result["groups"][str(loop)][policy][key]/result["groups"][str(loop)]["targets"] for loop in loops]
+            ax.plot(loops,vals,marker=marker,label=label,color=colors[policy],markersize=4)
+        ax.set(xticks=loops,xlabel="Loop order",ylim=(0,105),ylabel="Targets matching master coefficients (%)",title=title)
+        ax.grid(alpha=.2)
     axes[1].legend(loc="lower right",fontsize=8);save(fig,"reduction_rollout_success")
     fig,axes=plt.subplots(1,2,figsize=(9,3.8))
     common=[r for r in targets if r["reference_operations"]>0 and all(r[p]["success_all_samples"] for p in ("model","greedy"))]
@@ -98,7 +92,7 @@ def main():
         model_fewer_than_greedy=sum(r["model"]["operations"]<r["greedy"]["operations"] for r in common),
         model_more_than_greedy=sum(r["model"]["operations"]>r["greedy"]["operations"] for r in common))
     write_json(TEST/"paired_comparison.json",paired)
-    manifest=dict(model_sha256=sha(MODEL/"trained_model.pt"),epochs_completed=30,
+    manifest=dict(model_sha256=sha(MODEL/"trained_model.pt"),epochs_completed=read(MODEL/"trained_model.json")["epochs_completed"],
                   test_results_sha256=sha(TEST/"test_results.json"),
                   figures=saved,formats=["pdf","png"],matplotlib_version=matplotlib.__version__,
                   hashes={str(p.relative_to(TEST)):sha(p) for p in figures.iterdir() if p.suffix in (".pdf",".png")})

@@ -180,4 +180,10 @@ def main():
             master_records=9678,targets=240472,path_base='integrals/',
             families=[{k:v for k,v in e.items() if k not in ['origin']} for e in entries]))
     print(json.dumps(dict(status='passed',totals=totals),sort_keys=True),flush=True)
-if __name__=='__main__':main()
+if __name__=='__main__':
+    if read(ROOT/'catalog.json').get('higher_loop_validation'):
+        import sys
+        sys.path.insert(0,str(ROOT/'higher_loops'))
+        from s10_validate_collection import main as expanded_main
+        expanded_main()
+    else:main()
