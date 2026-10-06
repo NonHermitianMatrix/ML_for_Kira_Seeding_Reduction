@@ -65,6 +65,10 @@ def main():
     for ax in axes:
         ax.axvline(1,color="gray",ls="--",lw=1);ax.set_xscale("log")
         ax.set(ylabel="Fraction of common successful targets",ylim=(0,1.02));ax.grid(alpha=.2);ax.legend(fontsize=8)
+    from matplotlib.ticker import FixedLocator, FuncFormatter, NullFormatter
+    axes[0].xaxis.set_major_locator(FixedLocator([0.5,1,2,4]))
+    axes[0].xaxis.set_major_formatter(FuncFormatter(lambda value,position:format(value,"g")))
+    for ax in axes:ax.xaxis.set_minor_formatter(NullFormatter())
     axes[0].set_xlabel("Committed row operations / recorded path")
     axes[1].set_xlabel("Trial and committed row operations / recorded path")
     save(fig,"reduction_operation_counts")

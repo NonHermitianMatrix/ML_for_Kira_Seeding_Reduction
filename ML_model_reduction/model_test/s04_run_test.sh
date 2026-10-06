@@ -15,6 +15,10 @@ ulimit -v 3145728
 ulimit -f 131072
 ulimit -c 0
 TEST_PYTHON=.tools/seed-model/venv/bin/python
+if [[ "${1:-}" == "--plots-only" ]]; then
+  "$TEST_PYTHON" ML_model_reduction/model_test/s06_plot_results.py
+  exit 0
+fi
 "$TEST_PYTHON" ML_model_reduction/model_test/s03_check_metrics.py
 "$TEST_PYTHON" ML_model_reduction/model_test/s02_evaluate.py --limit 2
 "$TEST_PYTHON" ML_model_reduction/model_test/s10_parallel_test.py

@@ -53,7 +53,7 @@ def main():
    files=("families/ stores probability arrays and complete model/comparison paths. test_results.json, family_metrics.json, "
     "paired_comparison.json, tie_metrics.json and target_metrics.jsonl.gz provide measured results. "
     "s00_test_common.py and s01_policies.py define the fixed protocol; s02_evaluate.py runs it. "
-    "s03_check_metrics.py checks metric formulas, s04_run_test.sh runs the bounded workflow, "
+    "s03_check_metrics.py checks metric formulas, s04_run_test.sh runs the bounded workflow and accepts --plots-only to redraw checked results, "
     "s05_validate_outputs.py independently replays saved paths and probabilities, s06_plot_results.py draws the six plots, "
     "s07_update_report.py renders the scientific sections, s09_validate_checkpoint.py checks the frozen twenty-pass weights, and s10_parallel_test.py runs four disjoint family groups on one compute node before aggregation.\n\n")
    figures=read(test/"figure_manifest.json")["figures"]
