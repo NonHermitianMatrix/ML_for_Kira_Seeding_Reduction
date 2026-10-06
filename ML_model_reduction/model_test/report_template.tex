@@ -129,9 +129,14 @@ The learned policy matches all three sampled master expansions for
 The local rule matches all three for @GREEDY_SUCCESS@ targets
 (@GREEDY_PERCENT@\%). The respective numbers without this full
 three-sample agreement are @MODEL_FAILURES@ and
-@GREEDY_FAILURES@. Agreement at these samples is the stated
-test criterion; the test does not reconstruct a new symbolic
-rational result from the learned path.
+@GREEDY_FAILURES@. For the learned policy, @MODEL_STALLED@
+targets stop when the supplied pool has no allowed identity for the
+remaining leading integral, and @MODEL_EXTRA_FAILED@ complete at
+the decision sample but fail an additional-sample check. The local
+rule gives @GREEDY_STALLED@ and @GREEDY_EXTRA_FAILED@ in these
+two categories. Agreement at the samples is the stated test
+criterion; the test does not reconstruct a new symbolic rational
+result from the learned path.
 
 \begin{figure}[htbp]
  \centering
@@ -165,8 +170,9 @@ that this count is minimal.
 
 \subsection{Timing, checks and scope}
 The mean attempted reduction time is @MODEL_MS@ ms per target for
-the learned policy and @GREEDY_MS@ ms for the local rule, giving a
-ratio of @RATIO@. These times include action selection and committed
+the learned policy and @GREEDY_MS@ ms for the local rule. The
+learned policy therefore takes @RATIO@ times as long on this
+allocation. These times include action selection and committed
 elimination within the target-row experiment. We alternate policy
 execution order between targets and keep verification and disk
 output outside the timed interval. Four CPU workers on the same

@@ -24,12 +24,16 @@ def main():
  s=s[:s.index("\\subsection{Training labels and the 70:30 data division}")]+render("training_section_template.tex",values) if "\\subsection{Training labels and the 70:30 data division}" in s else s[:s.index("\\subsection{Training labels and the grouped data division}")]+render("training_section_template.tex",values)
  path.write_text(s,encoding="utf-8")
  families=read(HERE/"family_metrics.json")
+ low_loop=min(range(2,13),key=lambda loop:r["groups"]["loops:"+str(loop)]["micro"]["recall"])
  values.update(SINGLE=n(r["groups"]["kind:single_integral"]["targets"]),
   EXPRESSION=n(r["groups"]["kind:integral_expression"]["targets"]),LABELS=n(overall["candidate_labels"]),
   POSITIVES=n(overall["positive_labels"]),PRECISION=pc(micro["precision"]),RECALL=pc(micro["recall"]),F1=pc(micro["f1"]),
   EXACT=pc(macro["exact_reference_set_at_0_5"]),ACCURACY=pc(micro["accuracy"]),ZERO_ACCURACY=pc(r["baseline_all_zero"]["micro"]["accuracy"]),
   MAP=pc(macro["average_precision"]),RECALL10=pc(macro["recall_at_10"]),COVERAGE10=pc(macro["reference_coverage_at_10"]),
   ONE_FAMILIES=sum(f["loops"]==1 for f in families.values()),TWO_FAMILIES=sum(f["loops"]==2 for f in families.values()),
+  ONE_RECALL=pc(r["groups"]["loops:1"]["micro"]["recall"]),ONE_F1=pc(r["groups"]["loops:1"]["micro"]["f1"]),
+  TWELVE_RECALL=pc(r["groups"]["loops:12"]["micro"]["recall"]),TWELVE_F1=pc(r["groups"]["loops:12"]["micro"]["f1"]),
+  MIN_HIGH_RECALL=pc(r["groups"]["loops:"+str(low_loop)]["micro"]["recall"]),MIN_HIGH_LOOP=low_loop,
   INFERENCE_MS=format(1000*(r["encoding_seconds"]+r["model_inference_seconds"])/overall["targets"],".4f"))
  (REPORT/"seed_model_test.tex").write_text(render("report_section_template.tex",values),encoding="utf-8")
  (HERE/"report_values.json").write_text(json.dumps(values,indent=2)+"\n",encoding="utf-8")

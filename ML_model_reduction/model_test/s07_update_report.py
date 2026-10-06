@@ -26,6 +26,8 @@ def main():
   MODEL_SUCCESS=n(m["success_all_samples"]),GREEDY_SUCCESS=n(g["success_all_samples"]),
   MODEL_PERCENT=pc(m["success_all_samples"]/r["targets"]),GREEDY_PERCENT=pc(g["success_all_samples"]/r["targets"]),
   MODEL_FAILURES=n(r["targets"]-m["success_all_samples"]),GREEDY_FAILURES=n(r["targets"]-g["success_all_samples"]),
+  MODEL_STALLED=n(m["statuses"].get("no_allowed_action",0)),GREEDY_STALLED=n(g["statuses"].get("no_allowed_action",0)),
+  MODEL_EXTRA_FAILED=n(m["success_primary"]-m["success_all_samples"]),GREEDY_EXTRA_FAILED=n(g["success_primary"]-g["success_all_samples"]),
   COMMON=n(pair["common_successful_nonzero_reference_targets"]),FEWER=n(pair["model_fewer_than_greedy"]),
   EQUAL=n(pair["same_committed_operation_counts"]),MORE=n(pair["model_more_than_greedy"]),
   MODEL_MS=format(m["mean_runtime_ms"],".4f"),GREEDY_MS=format(g["mean_runtime_ms"],".4f"),RATIO=format(pair["mean_runtime_ratio"],".3f"))
