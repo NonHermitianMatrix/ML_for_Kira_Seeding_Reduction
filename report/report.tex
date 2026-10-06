@@ -15,7 +15,7 @@
 \title{\textbf{Machine Learning for Kira IBP Reduction}\\
   \large Seed selection and elimination ordering}
 \author{}
-\date{October 5, 2026}
+\date{October 6, 2026}
 
 \begin{document}
 \maketitle
@@ -30,86 +30,91 @@ Feynman integral calculations are an important component of multiloop amplitude 
 
 \section{ML for seed selection and elimination ordering}
 \label{sec:ml-roles}
-To reduce the time and memory needed for IBP reduction, we will study
-two System 1 models: one for seed selection and one for elimination
-ordering. Here a System 1 model is a small machine learning model that
-learns from recorded reductions and makes a choice from the information
-available at a given stage. We would add the seed model before equation
-generation and the elimination model at the stage where the solver
-selects a pivot. Each model would assign scores to the available choices,
-and Kira would perform the algebra for the selected choice. Training
-these models would require target integrals with known master expansions,
-the seeds that supply their reduction equations, and the steps used to
-solve those equations. Section~\ref{sec:seed-model} describes the implemented
-seed model and its completed training, while Section~\ref{sec:seed-test-results} gives the held-out test results. Section~\ref{sec:reduction-model}
-describes the implemented next-step model for reduction propagation,
-and Section~\ref{sec:reduction-test} gives its held-out results.
+To study learned choices in IBP reduction, we use two System 1
+models: one for seed selection and one for elimination ordering.
+Here a System 1 model is a small machine learning model that learns
+from recorded reductions and assigns scores to choices available at
+the current step. Training requires targets with known master
+expansions, the seeds that supply their equations and the steps used
+to reduce them. The implemented models and their completed training
+appear in Sections~\ref{sec:seed-model} and
+\ref{sec:reduction-model}, followed by their held-out tests.
+
+In a Kira integration, the seed model would act before equation
+generation and the elimination model would act when the solver
+selects a pivot. Kira would perform the selected algebraic operations.
+The present experiments test seed-reference agreement and reduction
+of a target coefficient row against a fixed source-equation pool.
+Applying the models to Kira's full evolving system remains a separate
+step.
 
 \subsection{Selecting seeds before equation generation}
-To select seeds, the first model would receive the family definition,
-the target index vectors $\boldsymbol a$, the chosen master basis and
-a set of candidate seeds within specified sectors and index bounds.
-For each candidate, it would use the seed indices and the target
-information to estimate how useful the resulting equations would be
-for the requested reduction.
+The first model receives the family definition, the target terms and
+their index vectors $\boldsymbol a$, the chosen master basis and a
+candidate seed list within stated sectors and index bounds. It
+assigns each candidate a separate probability of belonging to the
+target's recorded sufficient seed set, which allows several seeds
+to receive label one.
 
-During training, we would pair each target with the seed sets recorded
-in its known reductions. These examples would teach the model to rank
-seeds that together provide enough equations to reduce the target.
-Different reductions can use different sufficient seed sets, so the
-training data would retain these alternatives and their equation counts.
-When applying the trained model, we would select highly ranked seeds
-and ask Kira to generate their identities. If the equations leave a
-target unresolved in the chosen master basis, we would add further
-seeds and repeat the reduction. The second model would guide the
-elimination of the resulting equations.
+During training, we pair each target with the seeds used by its
+checked reference reduction. Different reductions can use different
+sufficient sets, and the stored labels identify the selected reference
+set. They do not establish that every omitted seed is unnecessary.
+For use inside Kira, a reduction would generate equations from the
+predicted seeds and check whether they suffice in the chosen master
+basis. An unresolved target would require further seeds. The
+seed-model test below measures recovery of the recorded sets; it
+does not perform this complete solver test.
 
 \subsection{Choosing elimination steps within the solver}
-To limit fill-in and the growth of coefficient expressions, the second
-model would rank the allowed pivot choices using the current equations,
-their nonzero coefficients and the integral ordering. For each recorded
-reduction step, the training example would contain the equations before
-the choice, the available pivots, the selected row and integral, and the
-operations that followed. The remaining recorded steps and their
-operation counts would show how that choice contributed to a complete
-reduction.
+The second model receives the current coefficient matrix and the
+supplied allowed row operations. It assigns a probability to each
+operation, selects one operation and reports the selected
+probability as its confidence. An exact row update then applies
+Eq.~\eqref{eq:row-update}. The next state supplies the information
+for the next choice.
 
-During a reduction, the model would select an allowed pivot and Kira
-would carry out the row operations in Eq.~\eqref{eq:row-update}. The
-model would then receive the updated system and select the next pivot,
-continuing until Kira can complete the reduction by back substitution.
-Each choice must respect the integral ordering and chosen master basis.
-Preparing the model inputs and obtaining its scores must take less time
-than its choices save in the algebraic calculation. Kira would use its
-existing reconstruction procedure for calculations over finite fields.
+Each training example specifies the matrix before the choice, the
+allowed pivots, and the recorded source row and integral to eliminate.
+The retained later steps permit checks of the complete path and its
+arithmetic count, while predictive features use the current state
+and supplied actions. In the present data, the source identities stay
+fixed and one target row changes during reduction. Extending this
+procedure to Kira requires allowed choices that follow Kira's
+integral ordering and evolving equations.
+
+The computational benefit depends on the total work: preparing
+features and evaluating the model must cost less than the algebraic
+work that its choices save. The tests therefore record complete-path
+arithmetic and timing as well as next-step agreement. Kira's existing
+finite-field reconstruction would remain responsible for obtaining
+symbolic coefficients in a later solver integration.
 
 \subsection{Integral data required for training and testing}
-To train and test these models, we require examples that specify the
-family denominators, kinematic parameters, targets and master basis,
-together with the exact coefficients in Eq.~\eqref{eq:reduction}.
-For a target containing several integrals, these coefficients specify
-the master expansion of the complete expression. Each example must
-also identify the source equations, their seeds and derivative
-operators, and any symmetry relations used, so the seed model's
-choices determine the equations available to the elimination model.
+To train and test both models, we need family denominators, kinematic
+parameters, targets and a master basis together with the exact
+coefficients in Eq.~\eqref{eq:reduction}. For a target containing
+several integrals, these coefficients specify the master expansion
+of the complete expression. Each example also identifies its source
+equations, actual IBP seeds and derivative operators. Algebraic
+identities, including mass partial fractions, remain separately
+identified because they carry no IBP seed.
 
-We have constructed a collection with these data and retained
-the operations used both to form each target from masters and to
-reduce it back to the same basis. The elimination records specify the
-target's coefficients before and after each step, the available source
-rows, the selected pivot and the operation counts. These records
-describe elimination of a target coefficient row against a fixed set
-of source identities. Using the model within Kira will also require
-inputs and allowed choices that match Kira's evolving equation system.
+We construct targets from known master combinations and retain the
+operations used to form each target and reduce it back to the same
+basis. The elimination records give the coefficients before and after
+each step, all allowed source rows, the selected pivot and the
+operation counts. These records connect seed selection to the
+equations available for elimination.
 
-The exact master coefficients supply the reference answer for checking
-complete reduction in the chosen basis, as discussed in
-Section~\ref{sec:ibp-reduction}~\cite{Kira3}. We keep these answers and
-construction histories separate from the problem information supplied
-to the models. Section~\ref{sec:integrals-generation} explains how we
-obtained the master bases, constructed the targets and checked the
-associated seed and elimination records.
-
+The known master coefficients provide a reference for checking
+complete reduction in the chosen basis, as described in
+Section~\ref{sec:ibp-reduction}~\cite{Kira3}. We keep these answers,
+the selected labels and future construction histories separate from
+the information used to predict a choice.
+Section~\ref{sec:integrals-generation} explains how we obtain the
+bases, construct the targets and check their seed and elimination
+records.
 \section{Target Integral Generation for Machine Learning}
 \label{sec:integrals-generation}
 To train and test the two models described in Section~\ref{sec:ml-roles},
@@ -119,9 +124,13 @@ identities, seeds and algebraic steps. The initial collection contains
 extended the collection to 1,000 families, giving 9,678 master
 entries and 240,472 targets with checked reference
 reductions~\cite{MasterIntegralData,TargetIntegralData,ExpandedIntegralData}.
-The following subsections define the initial families and construction
-method, then explain the additional mass and kinematic conditions and
-the resulting data. All integrals remain symbolic throughout.
+We then added 100 restricted coupled-vacuum mass profiles at each
+loop order from two through twelve, giving a complete collection of
+2,100 family instances, 12,967 master entries and 381,272 targets.
+The following subsections define the earlier construction and then
+derive the added higher-loop bases and reverse targets.
+Every target retains its exact symbolic definition and master
+expansion.
 
 \subsection{Initial one-loop families and their kinematics}
 We use the integral definition and normalization in
@@ -761,7 +770,7 @@ The enumeration found 1,673 inequivalent profiles satisfying the
 parameter and sample requirements after excluding the existing
 massless box definitions. A fixed ordering selected 984 of these
 profiles~\cite{ExpandedIntegralData}. Together with the original
-families, the collection contains 997 one-loop and three two-loop
+families, this earlier collection contained 997 one-loop and three two-loop
 families. The added profiles share the four-propagator box topology,
 so the family count describes different mass and kinematic conditions
 within this topology.
@@ -828,7 +837,7 @@ specified by the index vector. The complete four-expression definition
 therefore enters the target, while its positive indices place it in a
 one-propagator sector.
 
-The combined collection contains 9,678 master entries and
+Before the higher-loop extension, the collection contained 9,678 master entries and
 240,472 targets: 55,768 individual integrals and 184,704
 integral expressions~\cite{ExpandedIntegralData}. We count master entries
 within each family, so related lower-sector integrals can
@@ -842,7 +851,7 @@ We assigned the original validation bubble and triangle examples to
 the combined training set because those integral families also occur
 as lower sectors of the added training families. The new grouped
 families supply the expanded validation set.
-The combined split contains 771 training families with
+The original data-generation split contained 771 training families with
 198,527 targets, 106 validation families with 19,600 targets,
 and 123 test families with 22,345 targets. The reverse sequences
 require validation and test expressions to contain terms in their full
@@ -852,17 +861,17 @@ Shared lower-sector masters remain part of the family definitions.
 The complete family profile is held out, while some lower-sector
 reduction structure can also occur in training.
 
-The validation set contains 183 individual integrals and
-19,417 integral expressions, while the test set contains 202
-individual integrals and 22,143 expressions. These counts specify
-the available tests for each target type. The added individual targets
+The original data-generation validation set contained 183 individual integrals and
+19,417 integral expressions, while the corresponding test set contained 202
+individual integrals and 22,143 expressions. These counts describe
+the original construction samples. The grouped model division
+described below replaces this three-way data-generation division. The added individual targets
 supply tests of numerator integrals in one-propagator sectors.
-Individual targets with more positive denominator indices and
-additional high-loop families require further constructions. Sections~\ref{sec:seed-test-results} and \ref{sec:reduction-test}
+The higher-loop construction below supplies additional individual targets and expressions in coupled vacuum families. Sections~\ref{sec:seed-test-results} and \ref{sec:reduction-test}
 measure the two models on the current grouped split.
 
 We rederived 3,299,902 source equations and checked 227,330
-used IBP equations by independent differentiation across the complete
+used IBP equations by independent differentiation across this earlier
 collection. We replayed all 240,472 target constructions and 832,924
 recorded elimination steps with exact rational functions.
 Every reduction reproduced its reference master coefficients, and
@@ -872,6 +881,8 @@ and the correspondence between every saved target and its records.
 The accompanying collection provides the family definitions, bases,
 targets and complete reduction data~\cite{ExpandedIntegralData}.
 
+
+\input{higher_loops}
 
 \input{seed_model}
 \input{seed_model_test}

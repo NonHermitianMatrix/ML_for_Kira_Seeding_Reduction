@@ -135,8 +135,8 @@ and the solver's checks retain responsibility for the algebra.
 
 \subsection{Training examples and separation from testing}
 We retain the same grouped family division used for the seed model:
-693 families with 168,330 targets supply training records, while
-307 families with 72,142 targets remain reserved for testing.
+1,463 families with 266,890 targets supply training records, while
+637 families with 114,382 targets remain reserved for testing.
 Every state from one target stays with that target's family.
 We read the row before each recorded step and its complete stored list
 of admissible source equations. The chosen equation supplies the
@@ -161,17 +161,16 @@ not establish that its reduction is invalid.
 
 We use AdamW~\cite{AdamW} with a learning rate of $10^{-3}$, weight decay
 $10^{-4}$, batches of 256 states and a gradient norm limit of one.
-Training first completed ten passes through the training choice states
-and then continued for twenty further passes, giving thirty passes in
-total. The continuation retained the saved model and optimizer state
-and used the same training data and settings.
-The data preparation replays the selected row operations with exact
-modular arithmetic and verifies the final recorded master rows.
-Training uses shuffled states from bounded groups of families and
-retains resumable model and optimizer parameters. The reserved families remain outside parameter updates and confidence
-adjustment. We evaluated the ten-pass model before the requested
-twenty-pass continuation and evaluate the thirty-pass model on the same
-reserved set. The continuation used a specified number of passes and
-retained the original training settings.
+We continued the saved thirty-pass model and optimizer for twenty
+complete passes over the expanded training states. The new phase
+retains the architecture and optimizer settings while adding the
+higher-loop family records. Preparation replays every selected row
+operation with exact modular arithmetic and verifies its final
+recorded master row. Training shuffles states within bounded
+groups of families and retains complete resume states.
+The reserved families remain outside parameter updates and
+confidence fitting. Earlier project stages evaluated the original
+held-out families; the current experiment also reserves the newly
+assigned mass profiles at every added loop order.
 
 \input{reduction_training}

@@ -46,7 +46,7 @@ $\operatorname{sgn}(a)\log(1+|a|)$ and transform the nonnegative
 counts with $\log(1+v)$, where $v$ denotes the count. The input
 also records the number of family indices and which positions are
 present. The current representation has capacity for 16 indices;
-the existing families use at most five.
+the expanded collection uses up to sixteen.
 
 To include the coefficient functions, we separate their written
 expressions into variable names, integers and mathematical symbols.
@@ -207,127 +207,103 @@ it is not a probability that the complete selected set gives a valid
 or minimum-cost reduction. Section~\ref{sec:seed-test-results} compares these confidence values
 with their observed agreement with the reference labels.
 
-\subsection{Training labels and the 70:30 data division}
+\subsection{Training labels and the grouped data division}
 \label{sec:seed-model-split}
 For each target, let $\mathcal S_{\mathcal T}\subseteq\mathcal C$
-be its recorded sufficient seed set. We define one label per candidate:
+be the sufficient seed set used by its recorded reduction.
+The reference label for candidate $b$ is
 \begin{equation}
  y_b(\mathcal T)=
  \begin{cases}
-  1,&\boldsymbol\sigma_b\in\mathcal S_{\mathcal T},\\
-  0,&\boldsymbol\sigma_b\notin\mathcal S_{\mathcal T}.
+ 1,&\boldsymbol\sigma_b\in\mathcal S_{\mathcal T},\\
+ 0,&\boldsymbol\sigma_b\notin\mathcal S_{\mathcal T}.
  \end{cases}
  \label{eq:seed-membership-label}
 \end{equation}
-A zero label records absence from this particular set. Another
-valid reduction can still use that seed. Targets with empty reference
-seed sets retain zero labels for all candidates, and their checks
-are kept separate when a comparison requires at least one positive
-label.
-
-We assign each complete target, its candidate list and all its labels
-to one side of the 70:30 division. We also keep each complete family
-together and group four-propagator families with the same kinematic
-zero and equality pattern across all mass assignments. This includes
-matching patterns among the original massless boxes.
-These conditions prevent related targets from the same full family
-profile from being used on both sides.
-
-A reproducible assignment gives 168,330 training targets in
-693 families and 72,142 test targets in
-307 families. The training fraction is 69.99983\%.
-The ratio refers to complete target examples; each example carries its
-whole seed-label vector, whose length depends on the family.
-This model-specific division uses the complete collection and leaves
-the original data divisions in Section~\ref{sec:integrals-generation}
-available as provenance. Shared lower-sector integrals can still
-occur across the two sets. We assigned two complete two-loop families to training and one to
- testing with the fixed split seed. These three families alone cannot establish performance at high
-loop orders.
-
-The training objective is the average binary cross-entropy,
-\begin{equation}
- \mathcal L(\theta)
- =-\frac{1}{|\mathcal D_{\rm train}|}
-  \sum_{\mathcal T\in\mathcal D_{\rm train}}
-  \frac{1}{n_C(\mathcal T)}
-  \sum_{b=1}^{n_C(\mathcal T)}
-  \left[y_b\log p_b+(1-y_b)\log(1-p_b)\right].
- \label{eq:seed-training-loss}
-\end{equation}
-Here $\mathcal D_{\rm train}$ is the training target set and
-$n_C(\mathcal T)$ is the candidate count for that target.
-Each target has equal weight in this objective. We retain all candidate
-labels and use no additional positive-class weighting. We trained the model with AdamW~\cite{AdamW}, with an initial learning
-rate of $10^{-3}$, weight decay of $10^{-4}$ and ten passes through the
-training data. We fixed these settings before using the test set.
-Training completed all ten passes and made 210,420 parameter updates
-from 1,683,300 target presentations. The final saved parameters define
-the model used throughout the test.
-
-For example, suppose five candidate seeds accompany a target and its
-recorded sufficient set contains the first and third seeds. The label
-vector is then
+A zero label records absence from this particular set; another valid
+reduction can use that seed. Algebraic mass partial fractions carry
+no seed label. For example, a target whose reference uses the first
+and third of five candidates has
 \begin{equation}
  \boldsymbol y(\mathcal T)=(1,0,1,0,0).
  \label{eq:seed-label-example}
 \end{equation}
-The model receives the target, public family information, chosen basis
-and all five candidate seeds. Their labels enter the comparison with
-the predictions after the forward calculation; the labels and the
-target's master expansion remain outside the model input.
+The target coefficients and public family information enter the
+prediction, while this label vector enters the training loss.
 
-Starting from randomly initialized parameters, the model produces a
-probability for every candidate in a training example. A reference
-label of 1 contributes $-\log p_b$ to the loss, while a label of 0
-contributes $-\log(1-p_b)$. The loss uses these continuous probabilities
-during parameter updates. The threshold in
-Eq.~\eqref{eq:seed-binary-confidence} applies when reporting decisions.
+We keep each family together and preserve the grouping of related
+mass and kinematic profiles described in
+Section~\ref{sec:higher-loop-generation}. The expanded division
+contains 266,890 training targets in 1,463
+families and 114,382 test targets in 637
+families. Every loop order from one through twelve occurs in both
+sets. Each added mass profile stays in one set across all loop orders.
+The ratio applies to complete target examples, each with its full
+candidate list. Shared lower-sector integrals can occur across
+different profiles, and the original held-out families were also
+evaluated in earlier project stages.
 
-We differentiate the loss with respect to the model parameters and
-average the gradients from eight targets before each update. A gradient
-describes how a change in a parameter changes the loss. The training
-procedure limits the combined gradient norm to one and uses AdamW to
-update the 28,097 parameters. The last group in a pass uses its actual
-number of targets when fewer than eight remain. The training examples
-change order between passes. Ten passes use each training target ten
-times, and the saved parameters after the final pass define the model
-for the test comparison. The held-out targets do not enter parameter
-updates or threshold selection.
+The training objective gives each target equal weight:
+\begin{equation}
+ \mathcal L(\theta)=
+ -\frac{1}{|\mathcal D_{\rm train}|}
+ \sum_{\mathcal T\in\mathcal D_{\rm train}}
+ \frac{1}{n_C(\mathcal T)}
+ \sum_{b=1}^{n_C(\mathcal T)}
+ \left[y_b\log p_b+(1-y_b)\log(1-p_b)\right].
+ \label{eq:seed-training-loss}
+\end{equation}
+Here $\mathcal D_{\rm train}$ is the training set and
+$n_C(\mathcal T)$ is the candidate count for target $\mathcal T$.
+All positive and zero labels enter this binary cross-entropy without
+additional class weighting. The threshold of one half determines
+reported decisions after the model supplies its probabilities.
 
 \subsection{Completed training and implementation checks}
-Training began from randomly initialized parameters and completed
-the fixed ten-pass schedule. The mean loss recorded during the first
-pass was 0.0111521, and the mean during the last pass was 0.00148954.
-Figure~\ref{fig:training-loss} shows the recorded loss for each pass.
-These values average the losses encountered as the parameters changed
-within that pass. They describe the training history and do not measure
-performance on unseen targets.
+We continued the saved model and its AdamW optimizer on the expanded
+training set for twenty complete passes. The starting checkpoint
+had completed 19 passes over the earlier collection and
+70,000 targets in its next pass. The new phase retains this
+learned state and uses its own twenty-pass counter. It contains
+5,337,800 target presentations and 172,000 parameter updates.
+
+The architecture still has 28,097 parameters. AdamW uses a learning
+rate of $10^{-3}$, weight decay of $10^{-4}$ and a maximum gradient
+norm of one~\cite{AdamW}. Each update uses up to 32 targets from a
+training family. We change family and target order between passes
+and use the actual batch size for the final group. Masked batch
+calculations retain every target term, every ordered pair of
+distinct terms and every supplied seed. Comparisons with the
+individual-target calculation verified matching scores, losses and
+parameter derivatives across individual-integral and multi-term examples.
+
+The mean training loss changed from 0.08349602 in the first
+expanded-data pass to 0.03456483 in the twentieth.
+Figure~\ref{fig:training-loss} shows the complete history.
+These means include parameter changes within each pass and describe
+fitting on the training examples.
 
 \begin{figure}[htbp]
  \centering
  \includegraphics[width=0.80\linewidth]{figures/training_loss.pdf}
- \caption{Mean training binary cross-entropy during each of the ten
- passes. Each training target contributes equal weight to the mean.
- The vertical axis uses a logarithmic scale. The curve records losses
- during parameter updates; it is not a validation curve.}
+ \caption{Mean training binary cross-entropy during the twenty
+ expanded-data passes. Each target has equal weight within the
+ reported mean. The logarithmic vertical axis shows the training
+ history; held-out examples do not enter this curve.}
  \label{fig:training-loss}
 \end{figure}
 
-Before training, the preparation checked every target-label
-correspondence and verified that every recorded seed appears in its
-candidate pool. Implementation checks verified the binary labels, both
-class probabilities, the confidence values and the parameter derivatives.
-They also confirmed that the input retains coefficient and term-order
-information and that a reordering of candidates only reorders their
-scores. During training, the held-out targets supplied no parameter
-updates, threshold choices or stopping decisions.
+The checks verify target-label correspondence, membership of every
+recorded seed in the candidate pool, complete coverage during each
+pass, and equality of the published weights with the resumable
+checkpoint. The model retains the separate class probabilities and
+confidence rule in Eq.~\eqref{eq:seed-binary-confidence}.
+Held-out examples supplied no gradient updates or threshold fitting.
 
-The implementation reads examples in bounded groups and scores
-candidate seeds and ordered term pairs in blocks. It retains every
-ordered pair in Eq.~\eqref{eq:seed-pair-embedding}, so the pair count
-grows as $n_T(n_T-1)$. The current bounds are 512 terms, 10,000 candidates
-and 16 indices per integral. Inputs beyond these bounds are rejected.
-The trained model now permits a direct comparison of its predicted
-seed sets with the recorded sets in the separate test collection.
+The representation accepts up to sixteen indices, 512 target terms
+and 10,000 supplied candidates. The added twelve-loop examples reach
+the index limit. This capacity describes the input representation;
+the training evidence concerns the actual family domains defined
+above. Section~\ref{sec:seed-test-results} evaluates the frozen
+parameters on their reserved mass profiles.
 \FloatBarrier
