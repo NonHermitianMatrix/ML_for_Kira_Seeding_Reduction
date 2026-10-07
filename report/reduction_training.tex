@@ -1,9 +1,9 @@
 \subsection{Completed training and present scope}
-The expanded training set contains 1,544,521 recorded states from
-266,890 targets in 1,463 families. Of these states,
-820,420 supply at least two allowed actions and
-724,101 supply one action. The records contain
-3,755,272 candidate appearances. The unchanged model
+The expanded training set contains 14,684,059 recorded states from
+1,610,890 targets in 11,963 families. Of these states,
+5,840,122 supply at least two allowed actions and
+8,843,937 supply one action. The records contain
+26,775,999 candidate appearances. The unchanged model
 uses 132 features per candidate and has 10,529 adjustable parameters.
 
 Preparation replays every reference row operation, checks continuity
@@ -12,24 +12,27 @@ coefficients can vanish at the sampled kinematic point, so the model
 uses the support of the actual sampled matrix. The audit records
 these differences without changing the exact symbolic references.
 
-We continued the earlier thirty-pass model and its AdamW optimizer
-for twenty complete passes over the expanded data. Each new pass
+We continued the preceding expanded-data model and its AdamW
+optimizer for twenty complete passes over the enlarged data. Each new pass
 uses every training state with an action choice; a forced step has
 probability one and supplies no ranking decision. The new phase
-contains 16,408,400 choice-state presentations and
-65,013 parameter updates. The earlier thirty passes used the
-smaller collection, and the twenty new passes use all represented
-loop orders.
+contains 116,802,440 choice-state presentations and
+463,763 parameter updates. The preserved lineage contains thirty
+passes over the original smaller collection and twenty passes over
+the preceding 2,100-family collection. The latest twenty passes
+use the enlarged collection across all represented loop orders.
 
-Mean training cross-entropy changed from 0.3001051 to
-0.2404194 during this phase, while agreement with the recorded
-action changed from 96.472\% to 99.838\%.
+Mean training cross-entropy changed from 0.3823373 to
+0.3804633 during this phase, while agreement with the recorded
+action changed from 99.841\% to 99.895\%.
 These values describe losses and choices encountered during
 parameter updates. Section~\ref{sec:reduction-test} measures the
 frozen parameters on reserved families.
 
 The implementation retains the original architecture, learning rate,
-gradient bound and state-batch limits. Checks verify equal weights
+gradient bound and state-batch limits. Training uses four CPU threads,
+while inference uses one. Parallel preparation reproduces the saved
+training features and labels exactly. Checks verify equal weights
 in the inference and resumable checkpoints, complete state coverage
 and the preserved optimizer lineage. The published implementation
 retains the inputs, learned parameters and exact reference

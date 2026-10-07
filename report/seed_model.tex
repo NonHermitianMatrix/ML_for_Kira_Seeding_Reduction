@@ -234,14 +234,15 @@ prediction, while this label vector enters the training loss.
 We keep each family together and preserve the grouping of related
 mass and kinematic profiles described in
 Section~\ref{sec:higher-loop-generation}. The expanded division
-contains 266,890 training targets in 1,463
-families and 114,382 test targets in 637
+contains 1,610,890 training targets in 11,963
+families and 690,382 test targets in 5,137
 families. Every loop order from one through twelve occurs in both
 sets. Each added mass profile stays in one set across all loop orders.
 The ratio applies to complete target examples, each with its full
 candidate list. Shared lower-sector integrals can occur across
-different profiles, and the original held-out families were also
-evaluated in earlier project stages.
+different profiles, and previously reserved families were also
+evaluated in earlier project stages. The latest mass profiles were
+assigned before the new parameter updates.
 
 The training objective gives each target equal weight:
 \begin{equation}
@@ -262,10 +263,10 @@ reported decisions after the model supplies its probabilities.
 \subsection{Completed training and implementation checks}
 We continued the saved model and its AdamW optimizer on the expanded
 training set for twenty complete passes. The starting checkpoint
-had completed 19 passes over the earlier collection and
-70,000 targets in its next pass. The new phase retains this
-learned state and uses its own twenty-pass counter. It contains
-5,337,800 target presentations and 172,000 parameter updates.
+had completed 20 passes over the preceding expanded
+collection. It also retains the earlier training lineage. The latest
+phase uses the enlarged collection and its own twenty-pass counter. It contains
+32,217,800 target presentations and 1,012,000 parameter updates.
 
 The architecture still has 28,097 parameters. AdamW uses a learning
 rate of $10^{-3}$, weight decay of $10^{-4}$ and a maximum gradient
@@ -276,9 +277,12 @@ calculations retain every target term, every ordered pair of
 distinct terms and every supplied seed. Comparisons with the
 individual-target calculation verified matching scores, losses and
 parameter derivatives across individual-integral and multi-term examples.
+Training uses four CPU threads, while inference uses one. A comparison
+on training examples verified matching scores and parameter derivatives
+across the selected thread counts.
 
-The mean training loss changed from 0.08349602 in the first
-expanded-data pass to 0.03456483 in the twentieth.
+The mean training loss changed from 0.0516102 in the first
+expanded-data pass to 0.008548661 in the twentieth.
 Figure~\ref{fig:training-loss} shows the complete history.
 These means include parameter changes within each pass and describe
 fitting on the training examples.

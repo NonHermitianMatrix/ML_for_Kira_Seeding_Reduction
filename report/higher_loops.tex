@@ -1,8 +1,10 @@
-\subsection{Coupled vacuum families from two through twelve loops}
+\subsection{Coupled vacuum families from one through twelve loops}
 \label{sec:higher-loop-generation}
 To supply examples at every loop order considered in the model study,
-we added 100 mass profiles at each order from two through twelve.
-These profiles define 1,100 additional family instances. They use
+we first added 100 mass profiles at each order from two through twelve.
+We then added 1,250 further profiles at each order from one through twelve,
+in groups of 250 and 1,000 profiles. These extensions provide
+16,100 family instances beyond the original collection. They use
 coupled vacuum integrals whose master expansions follow from mass
 partial fractions and IBP identities, which allows us to retain exact
 reference answers as the number of loops increases. The profiles vary
@@ -30,7 +32,7 @@ Equation~\eqref{eq:coupled-vacuum} specifies the normalization and signs
 used for this Euclidean subcollection; the earlier families retain
 their stated Minkowski convention.
 
-The common momentum $Q$ couples the loop integrations. A graph
+For $L>1$, the common momentum $Q$ couples the loop integrations. A graph
 representation has $L$ parallel massless edges between two vertices
 and a chain of $R$ massive edges joining the same vertices. It has
 $L+R$ edges and $R+1$ vertices, giving $L$ independent loops.
@@ -40,7 +42,7 @@ fractions with fixed massless powers; it does not specify a complete
 independent denominator and numerator basis for a generic
 $L$-loop scattering integral.
 
-For profile number $p=1,\ldots,100$, we choose
+For profile number $p$, we choose
 \begin{equation}
  R=2+((p-1)\bmod3),\qquad
  \rho_1=1,\qquad
@@ -48,8 +50,11 @@ For profile number $p=1,\ldots,100$, we choose
  \label{eq:higher-loop-masses}
 \end{equation}
 The ratios are distinct within each profile, and $\rho_1=1$ fixes a
-common rescaling. This gives 34 profiles with two massive
-denominators, 33 with three and 33 with four at each loop order.
+common rescaling. The initial profiles use $p=1,\ldots,100$ at
+$L=2,\ldots,12$. The later groups use $p=101,\ldots,350$
+and $p=351,\ldots,1350$ at $L=1,\ldots,12$. The latest group
+has 333 profiles with two massive denominators, 333 with three and
+334 with four at each loop order.
 A twelve-loop family with four massive denominators has sixteen
 indices, which fits the existing model representation.
 
@@ -106,7 +111,8 @@ massless subgraph at fixed $Q$ gives
  C_L(D)=\frac{\Gamma(c)\Gamma(D-1)^L}{\Gamma(\alpha)} .
  \label{eq:higher-loop-convolution}
 \end{equation}
-The remaining radial integration uses
+For $L=1$, $Q=\ell_1$, $c=1$ and $C_1(D)=1$, so this expression
+reduces directly to the single massless propagator. The remaining radial integration uses
 $\int d^dQ/\pi^D=\Gamma(D)^{-1}\int_0^\infty
 dx\,x^{D-1}$ for a rotationally invariant integrand, where $x=Q^2$.
 It gives
@@ -127,8 +133,9 @@ relation would combine exponentials with distinct growth rates.
 At fixed generic $\mu$, rational coefficients grow or decay only
 as powers of $d$, so they cannot cancel the largest exponential
 unless its coefficient vanishes. Repeating this argument removes
-each coefficient. The extension contains 299 master entries per
-loop order and 3,289 added entries in total. We count the basis
+each coefficient. The latest addition supplies 3,001 master entries
+per loop order and 36,012 entries in total. The preceding extensions
+supplied 3,289 and 9,000 entries. We count the basis
 within each family, so the master with $\rho_1=1$ recurs across
 profiles at the same loop order.
 
@@ -189,12 +196,17 @@ For roots with total powers $B_\nu$, we use target weights of the form
  B_*=\max_\nu B_\nu,\qquad \eta_\nu\in\{0,1\}.
  \label{eq:higher-loop-target-weights}
 \end{equation}
-Here $\kappa_\nu$ is a nonzero rational number. The powers of $\mu$
-give every term the same mass dimension. Expressions use up to three
-distinct roots and include a root with every massive denominator
-present and at least one additional denominator power. Individual
-targets also sample lower sectors. We retain 128 distinct targets
-per family, giving 140,800 additional targets.
+We choose $\kappa_\nu=n_\nu/q_\nu$, where
+$n_\nu\in\{-3,-2,-1,1,2,3\}$ and $q_\nu\in\{1,2,3\}$.
+The powers of $\mu$ give every term the same mass dimension.
+Each family contains eighteen individual target integrals for $R=2$
+and thirty-two for $R=3$ or $R=4$, with full massive sectors included
+before lower sectors. The remaining targets are weighted expressions
+with one, two or three distinct roots. Each such expression includes
+a root with every massive denominator present and at least one
+additional denominator power. We retain 128 distinct targets
+per family. The latest addition supplies 1,536,000 targets, following
+the earlier additions of 140,800 and 384,000 targets.
 
 For each target we retain its master coefficients, exact reverse
 construction, source equations, sufficient IBP seed set and a
@@ -219,14 +231,14 @@ radial master integral converges; numerical quadrature then checks
 Eq.~\eqref{eq:higher-loop-master-value} at both ends of the loop-order
 range.
 
-The complete collection now contains 2,100 family instances,
-12,967 master entries and 381,272 targets. It contains 997 one-loop
-families, 103 two-loop families and 100 families at each order from
-three through twelve. We retain the original grouped model
-assignment and assign 70 added mass profiles to training and 30 to
-testing. A profile has the same assignment at every loop order,
-giving 266,890 training targets in 1,463 families and 114,382
-test targets in 637 families. Shared lower-sector integrals can occur
+The complete collection now contains 17,100 family instances,
+57,979 family-local master entries and 2,301,272 targets. It contains
+2,247 one-loop families, 1,353 two-loop families and 1,350 families
+at each order from three through twelve. We preserve every earlier
+grouped model assignment and assign 700 of the latest profiles to
+training and 300 to testing. A profile has the same assignment at
+every loop order, giving 1,610,890 training targets in 11,963 families
+and 690,382 test targets in 5,137 families. Shared lower-sector integrals can occur
 across different profiles. These tests measure transfer between the
 specified mass profiles with every loop order represented during
 training; they do not establish transfer to unseen loop orders or

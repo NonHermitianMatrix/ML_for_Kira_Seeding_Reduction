@@ -2,8 +2,8 @@
 \label{sec:seed-test-results}
 To measure seed selection after the expanded training, we froze the
 weights at the end of the twenty new passes and evaluated all
-114,382 targets from 637 reserved families.
-The test contains 24,990 individual integrals and 89,392
+690,382 targets from 5,137 reserved families.
+The test contains 148,494 individual integrals and 541,888
 integral expressions, with loop orders from one through twelve.
 It evaluates mass profiles excluded from parameter updates within
 the family domains of Section~\ref{sec:integrals-generation}.
@@ -11,7 +11,7 @@ The fixed threshold remains $p_b=1/2$, and no test result changes
 the weights or the confidence map~\cite{SeedModelTestData}.
 
 \subsection{Reference agreement and seed ranking}
-The test supplies 36,792,115 candidate labels, of which 347,684
+The test supplies 76,536,115 candidate labels, of which 2,346,128
 belong to the recorded sufficient sets. A true positive is a
 selected candidate with reference label one, while a false positive
 is a selected candidate absent from that set. A false negative is
@@ -25,10 +25,10 @@ a recorded seed that the model omits. With these counts,
              {{\rm precision}+{\rm recall}} .
  \label{eq:seed-test-pr}
 \end{equation}
-The pooled precision is 90.416\%, recall is 76.305\%
-and $F_1$ is 82.763\%. The fraction of targets whose complete predicted
-set equals its recorded set is 56.831\%. Candidate-label accuracy
-is 99.700\%; the all-zero rule gives 99.055\%
+The pooled precision is 95.750\%, recall is 96.892\%
+and $F_1$ is 96.318\%. The fraction of targets whose complete predicted
+set equals its recorded set is 84.332\%. Candidate-label accuracy
+is 99.773\%; the all-zero rule gives 96.935\%
 because zero labels are frequent. Precision, recall and complete-set
 agreement therefore describe seed recovery more directly than
 accuracy alone~\cite{SaitoRehmsmeier2015}.
@@ -53,9 +53,9 @@ the target average precision is~\cite{AveragePrecisionDefinition}
 \end{equation}
 Each increase in recovered reference seeds therefore weights the
 precision at that point. Averaging over targets with at least one
-recorded seed gives mean target average precision 93.737\%.
-The first ten candidates recover, on average, 98.009\% of
-recorded seeds and contain every recorded seed for 93.337\%
+recorded seed gives mean target average precision 99.090\%.
+The first ten candidates recover, on average, 99.787\% of
+recorded seeds and contain every recorded seed for 98.947\%
 of targets in the corresponding nonempty-reference comparison.
 The score-curve calculation uses 4,096 fixed probability intervals;
 it supplies a descriptive curve and does not select a new
@@ -97,17 +97,17 @@ the saved scores without fitting a calibration correction.
 \end{figure}
 
 Figure~\ref{fig:seed-families} separates performance by family and
-loop order. The one-loop group has 306 families,
-the two-loop group has 31, and each remaining order
-has thirty held-out mass profiles. This separation matters because
+loop order. The one-loop group has 681 families,
+the two-loop group has 406, and each remaining order
+has 405 held-out mass profiles. This separation matters because
 the added vacuum families use different identities and candidate
 bounds from the earlier one-loop collection. Loop-order comparisons
 also reflect these differences in the mathematical domain.
-At one loop the pooled recall is 91.802\% and $F_1$ is
-93.106\%; at twelve loops they are 60.358\% and
-69.568\%, respectively. Across the groups from two through
-twelve loops, the lowest recall is 39.026\% at
-$L=7$. These missed reference seeds show why a
+At one loop the pooled recall is 93.790\% and $F_1$ is
+92.181\%; at twelve loops they are 97.334\% and
+97.300\%, respectively. Across the groups from two through
+twelve loops, the lowest recall is 96.184\% at
+$L=6$. These missed reference seeds show why a
 proposed set still needs an exact sufficiency check before use in
 a complete reduction.
 
@@ -126,7 +126,7 @@ Independent checks reproduce the saved confusion counts and target
 counts, verify the prediction hashes and confirm that the weights
 remain fixed. All stored probabilities are finite and lie between
 zero and one. The mean time for input preparation and model
-inference is 3.2807 ms per target on the test allocation;
+inference is 1.6881 ms per target on the test allocation;
 this excludes a subsequent exact reduction.
 
 The labels identify one recorded sufficient set. Other seed sets can

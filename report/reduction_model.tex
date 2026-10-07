@@ -135,8 +135,8 @@ and the solver's checks retain responsibility for the algebra.
 
 \subsection{Training examples and separation from testing}
 We retain the same grouped family division used for the seed model:
-1,463 families with 266,890 targets supply training records, while
-637 families with 114,382 targets remain reserved for testing.
+11,963 families with 1,610,890 targets supply training records, while
+5,137 families with 690,382 targets remain reserved for testing.
 Every state from one target stays with that target's family.
 We read the row before each recorded step and its complete stored list
 of admissible source equations. The chosen equation supplies the
@@ -161,15 +161,15 @@ not establish that its reduction is invalid.
 
 We use AdamW~\cite{AdamW} with a learning rate of $10^{-3}$, weight decay
 $10^{-4}$, batches of 256 states and a gradient norm limit of one.
-We continued the saved thirty-pass model and optimizer for twenty
-complete passes over the expanded training states. The new phase
-retains the architecture and optimizer settings while adding the
-higher-loop family records. Preparation replays every selected row
+We continued the saved expanded-data model and optimizer for twenty
+complete passes over the enlarged training states. The new phase
+retains the architecture and optimizer settings while adding 1,250
+mass profiles at every represented loop order. Preparation replays every selected row
 operation with exact modular arithmetic and verifies its final
 recorded master row. Training shuffles states within bounded
 groups of families and retains complete resume states.
 The reserved families remain outside parameter updates and
-confidence fitting. Earlier project stages evaluated the original
+confidence fitting. Earlier project stages evaluated the preceding
 held-out families; the current experiment also reserves the newly
 assigned mass profiles at every added loop order.
 

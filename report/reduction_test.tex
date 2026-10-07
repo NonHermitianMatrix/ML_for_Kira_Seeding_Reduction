@@ -1,7 +1,7 @@
 \section{Testing the Reduction-Propagation Model}
 \label{sec:reduction-test}
 To test the model after twenty expanded-data passes, we froze its
-parameters and evaluated 114,382 targets in 637 held-out
+parameters and evaluated 690,382 targets in 5,137 held-out
 families. Every loop order from one through twelve occurs in this
 set. We first compared the predicted next step with the recorded
 choice, then allowed the model to choose a complete path from the
@@ -36,21 +36,21 @@ entry. The rule compares the immediate next rows; it does not search
 all complete reduction paths.
 
 \subsection{Next-step agreement and confidence}
-The reserved traces contain 662,139 states, including
-354,453 with an action choice and 307,686 with one allowed
+The reserved traces contain 6,364,695 states, including
+2,558,472 with an action choice and 3,806,223 with one allowed
 action. On states with a choice, the learned model selects the
-recorded action in 88.324\% of cases and places it among its first
-three candidates in 98.820\%. Its selected action gives the same
-next sampled row as the reference in 88.336\% of cases.
-The local rule selects the recorded action in 96.199\%
+recorded action in 95.845\% of cases and places it among its first
+three candidates in 99.980\%. Its selected action gives the same
+next sampled row as the reference in 95.846\% of cases.
+The local rule selects the recorded action in 99.473\%
 of these states.
 
 When $n_{\rm tie}$ actions share the largest saved probability,
 the program selects one through its fixed identifier order.
-Such ties occur in 11.185\% of choice states.
+Such ties occur in 37.747\% of choice states.
 We also assign credit $1/n_{\rm tie}$ when the recorded action
 belongs to the highest-scoring set, and zero otherwise. Averaging
-this credit gives 83.700\% reference agreement.
+this credit gives 74.506\% reference agreement.
 This diagnostic describes the scores while retaining the stated
 deterministic choice rule for the actual reductions.
 
@@ -72,7 +72,7 @@ predictions into ten fixed confidence intervals. Let
 $\mathcal D^{\rm test}_{\rm choice}$ be the set of held-out states
 with at least two allowed actions, and let $a_n^\star$ be the
 recorded action at state $n$. Applying the negative logarithmic
-loss in Eq.~\eqref{eq:reduction-loss} to this set gives 0.301291.
+loss in Eq.~\eqref{eq:reduction-loss} to this set gives 0.400146.
 The calculation replaces probabilities below $10^{-38}$ by
 $10^{-38}$ when taking their logarithms.
 
@@ -91,7 +91,7 @@ Here $\mathcal A_n$ is the supplied action set and
 $\mathbf 1_{a=a_n^\star}$ equals one for the recorded action and
 zero for every other action. We sum over all actions without
 dividing by their number, then give each state equal weight.
-The resulting score is 0.180029. The confidence comparison in
+The resulting score is 0.250632. The confidence comparison in
 Figure~\ref{fig:reduction-confidence} uses the frozen scores without
 fitting a correction. A forced action has probability one, so these
 ranking and confidence comparisons exclude forced states.
@@ -125,15 +125,15 @@ resulting rows with the exact reference master coefficients
 evaluated at those points.
 
 The learned policy matches all three sampled master expansions for
-114,179 of 114,382 targets (99.823\%).
-The local rule matches all three for 113,703 targets
-(99.406\%). The respective numbers without this full
-three-sample agreement are 203 and
-679. For the learned policy, 201
+690,302 of 690,382 targets (99.988\%).
+The local rule matches all three for 689,700 targets
+(99.901\%). The respective numbers without this full
+three-sample agreement are 80 and
+682. For the learned policy, 77
 targets stop when the supplied pool has no allowed identity for the
-remaining leading integral, and 2 complete at
+remaining leading integral, and 3 complete at
 the decision sample but fail an additional-sample check. The local
-rule gives 664 and 15 in these
+rule gives 664 and 18 in these
 two categories. Agreement at the samples is the stated test
 criterion; the test does not reconstruct a new symbolic rational
 result from the learned path.
@@ -147,11 +147,11 @@ result from the learned path.
  \label{fig:reduction-rollout-success}
 \end{figure}
 
-We compare arithmetic counts on the 113,547 targets for which
+We compare arithmetic counts on the 689,684 targets for which
 both policies pass all three samples and the reference count is
 nonzero. The learned policy uses fewer committed row operations
-than the local rule for 2,451 targets, the same number for
-94,603 and more for 16,493. A committed operation changes the
+than the local rule for 6,846 targets, the same number for
+610,196 and more for 72,642. A committed operation changes the
 selected target row. Candidate trials used to construct model
 features or evaluate the local rule also perform arithmetic, so
 Figure~\ref{fig:reduction-operations} shows both accounting choices.
@@ -169,9 +169,9 @@ that this count is minimal.
 \end{figure}
 
 \subsection{Timing, checks and scope}
-The mean attempted reduction time is 10.1628 ms per target for
-the learned policy and 0.5345 ms for the local rule. The
-learned policy therefore takes 19.013 times as long on this
+The mean attempted reduction time is 12.3438 ms per target for
+the learned policy and 0.6991 ms for the local rule. The
+learned policy therefore takes 17.657 times as long on this
 allocation. These times include action selection and committed
 elimination within the target-row experiment. We alternate policy
 execution order between targets and keep verification and disk

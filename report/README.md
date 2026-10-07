@@ -17,10 +17,10 @@ Preserve local edits before pulling, and resolve any differences before declarin
 The earlier local report and rules are retained in .tools/report-sync/before-link/ on the local machine.
 
 <!-- expanded-report -->
-The current report describes 2,100 family instances, 12,967 family-local master entries and 381,272 targets. The added data contain 100 restricted coupled-vacuum mass profiles at each loop order from two through twelve. higher_loops.tex derives their master bases, exact identities, reverse target construction and grouped division.
+The current report describes 17,100 family instances, 57,979 family-local master entries and 2,301,272 targets. The later additions contain 1,250 restricted coupled-vacuum mass profiles at each loop order from one through twelve, following the earlier 100 profiles at orders two through twelve. higher_loops.tex derives their master bases, exact identities, reverse target construction and grouped division.
 
-seed_model.tex and reduction_model.tex describe the two models and their twenty new passes over 266,890 training targets. seed_model_test.tex and reduction_test.tex give the frozen results for 114,382 targets in 637 held-out families. reduction_training.tex records the expanded-data reduction training. The twelve current PDF plots are in figures/. Earlier checkpoints and tests remain in the model archives on Hoffman and GitHub.
+seed_model.tex and reduction_model.tex describe the two models and their twenty new passes over 1,610,890 training targets. seed_model_test.tex and reduction_test.tex give the frozen results for 690,382 targets in 5137 held-out families. reduction_training.tex records the expanded-data reduction training. The twelve current PDF plots are in figures/. Earlier checkpoints and tests remain in the model archives on Hoffman and GitHub.
 
 The report distinguishes reference-set agreement from seed sufficiency, recorded next-action agreement from complete reductions, and sampled finite-field checks from symbolic reconstruction. The added family domain and shared lower-sector physics limit claims about generic high-loop integrals, unseen loop orders and full Kira speedups.
 
-The bibliography links the expanded data and models to commit 6b54a36fe7ccb635ccb07476f94ca2d6e56b7803 and the tested outputs to commit 81a2abcb70fa3d06e8983aa8b0a1c95e29da5c19. Raw data, models and predictions remain on Hoffman and GitHub; only the complete report is synchronized locally.
+The bibliography links the expanded data and models to commit 0be1c2b3884bc736e22901a7e2304e3ba6d75497 and the tested outputs to commit 2ed8b26e977fa2dca5f464532ee9891712f7f417. Raw data, models and predictions remain on Hoffman and GitHub; only the complete report is synchronized locally.
