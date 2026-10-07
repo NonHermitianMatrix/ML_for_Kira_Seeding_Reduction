@@ -891,6 +891,82 @@ targets and complete reduction data~\cite{ExpandedIntegralData}.
 \input{reduction_test}
 
 \clearpage
+\section{Conclusion}
+\label{sec:conclusion}
+We studied two System 1 models for choosing IBP seeds and allowed
+elimination steps, with exact arithmetic carrying out the selected
+row operations. To supply their training and test examples, we
+constructed targets from known master combinations through recorded
+integral identities and retained the corresponding seeds, master
+coefficients and elimination paths. The complete collection contains
+17,100 family instances, 57,979 family-local master entries and
+2,301,272 targets at loop orders from one through twelve.
+This construction lets us independently check the reference
+steps and master coefficients. The recorded paths provide
+sufficient seed sets and operation counts; establishing global
+minimality requires a separate proof~\cite{HigherLoopIntegralData}.
+
+After twenty further training passes, we tested both frozen models
+on 690,382 targets in 5,137 held-out families. The seed model reached
+95.750\% precision, 96.892\% recall and 96.318\% $F_1$ at the
+fixed probability threshold of one half. Its complete predicted
+seed set matched the recorded set for 84.332\% of targets, and
+its mean target average precision was 99.090\%. Input preparation
+and inference took 1.6881 ms per target on the test allocation.
+These measurements show how closely the model recovers the recorded
+seeds. The sufficiency of its predicted sets inside Kira still
+requires a solver test, because alternative sufficient sets can
+differ from the reference and omitted reference seeds can leave
+a reduction incomplete~\cite{SeedModelTestData}.
+
+The reduction model selected identities from a fixed source pool
+to update one target row. On states with several allowed actions,
+its selected action matched the recorded choice in 95.845\% of
+cases. Equal highest scores occurred in 37.747\% of these states;
+sharing credit equally among those tied actions gave 74.506\%
+agreement. Complete learned paths reproduced the reference master
+coefficients at all three finite-field samples for 690,302 targets
+(99.988\%), compared with 689,700 targets (99.901\%) for the
+local comparison rule. The learned policy left 77 targets without
+an allowed next identity, and three further targets failed an
+additional-sample check after completing at the decision sample.
+These checks assess the sampled reductions; they do not supply
+a reconstructed symbolic answer for each learned
+path~\cite{ReductionModelTestData}.
+
+Arithmetic counts and runtime measure the cost of the learned
+reduction choices. Among the 689,684 targets used for the paired
+operation-count comparison, the model used fewer committed row
+operations than the local rule for 6,846 targets and more for
+72,642. Its mean attempted reduction time was 12.3438 ms per
+target, compared with 0.6991 ms for the local rule, giving a
+runtime ratio of 17.657. Thus, the current reduction model has
+not demonstrated a speed advantage in this experiment.
+Agreement with recorded choices and completion of sampled
+reductions do not by themselves establish lower computational cost.
+
+The scope of these conclusions follows from the generated
+integrals. The higher-loop examples vary mass profiles within
+restricted coupled vacuum families, with bounded equation pools
+and fixed massless propagator powers. Every tested loop order
+also occurs in training, and different profiles can share
+lower-sector integrals. The results therefore measure performance
+on reserved profiles within these domains; tests on general
+multiloop scattering families and unseen loop orders remain
+necessary.
+
+The constructed master expansions and checked reduction records
+provide a basis for studying learned choices while retaining
+explicit mathematical checks. To establish their use in Kira,
+we must test the seed model through complete reductions and supply
+additional seeds when necessary. We must also assess the elimination
+model on the evolving IBP system and include feature preparation,
+model inference and exact algebra in the cost. These tests must
+compare total time, equation counts and memory against Kira's
+existing strategies to determine whether the learned choices
+accelerate reduction.
+
+\clearpage
 \renewcommand{\refname}{Citations}
 \bibliographystyle{unsrt}
 \bibliography{references}

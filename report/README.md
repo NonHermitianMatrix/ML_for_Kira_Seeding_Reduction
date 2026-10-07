@@ -24,3 +24,5 @@ seed_model.tex and reduction_model.tex describe the two models and their twenty 
 The report distinguishes reference-set agreement from seed sufficiency, recorded next-action agreement from complete reductions, and sampled finite-field checks from symbolic reconstruction. The added family domain and shared lower-sector physics limit claims about generic high-loop integrals, unseen loop orders and full Kira speedups.
 
 The bibliography links the expanded data and models to commit 0be1c2b3884bc736e22901a7e2304e3ba6d75497 and the tested outputs to commit 2ed8b26e977fa2dca5f464532ee9891712f7f417. Raw data, models and predictions remain on Hoffman and GitHub; only the complete report is synchronized locally.
+
+The conclusion in report.tex brings together the master-based target construction, both frozen-model tests, the measured reduction cost and the limits of the tested family domains. It identifies the complete Kira reductions still needed to assess a solver speedup. The reported test data and model weights remain those of the cited releases.
