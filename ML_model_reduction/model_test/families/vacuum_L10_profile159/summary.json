@@ -1,0 +1,129 @@
+{
+  "artifacts": {
+    "predictions.npz": "a26f3b15e739a9041c7bea752996fa79f8382893f4e2973d9101151dde18c80a",
+    "trajectories.jsonl.gz": "82eca0fd94aa2813ac9855759fe6987b4561b7acb6b1b7534560ece6295c17bb"
+  },
+  "family": "vacuum_L10_profile159",
+  "greedy": {
+    "comparison_targets": 128,
+    "equal": 128,
+    "higher": 0,
+    "lower": 0,
+    "mean_runtime_ms": 1.265824306756258,
+    "median_operation_ratio": 1.0,
+    "median_runtime_ms": 1.2490451335906982,
+    "statuses": {
+      "complete": 128
+    },
+    "success_all_samples": 128,
+    "success_primary": 128,
+    "targets": 128,
+    "total_operations": 10945,
+    "total_reference_operations": 10945
+  },
+  "invalid_source_rows": [],
+  "loops": 10,
+  "model": {
+    "comparison_targets": 128,
+    "equal": 77,
+    "higher": 49,
+    "lower": 2,
+    "mean_runtime_ms": 21.01450708869379,
+    "median_operation_ratio": 1.0,
+    "median_runtime_ms": 21.60927839577198,
+    "statuses": {
+      "complete": 128
+    },
+    "success_all_samples": 128,
+    "success_primary": 128,
+    "targets": 128,
+    "total_operations": 11582,
+    "total_reference_operations": 10945
+  },
+  "reference_replays": 1631,
+  "signature": {
+    "config_sha256": "52318b405ce3ba9d02456f7ed32dcf05b9ea1d6496e1d31b7b12db332f9c6d7f",
+    "encoder_sha256": "05f8b3c118ee6acad2505525698cce65923e62b9e89e23e49376076817e4ab94",
+    "model_sha256": "0b6b51597329a1cade4642f066cf2b39dadd4339ec53927d0a1c3a150a627452",
+    "predictor_sha256": "64ace889f124ce5484753c3da77c782878ffe213d0d0e9e6573da99f07601265",
+    "scripts": {
+      "s00_test_common.py": "9e8682eb32496839d9522e81889ba2859c7f4789d54286114dc7205bd22a85c9",
+      "s01_policies.py": "b9125c04d26c91df5c45b1a4de3164144b24007b6f80d49b681ccb76a3487ff0",
+      "s02_evaluate.py": "1d35f64d31ebb812348d26c094277af2b742f002ab825d1950f4cebb4ebb0c4b",
+      "s10_parallel_test.py": "873e9c0aa2367542acbeeef718e9635a991171d904c4930f916cfc986e06c151"
+    },
+    "split_sha256": "317c5167fb69424ee39b34c80290e9ed20b0ac6f208eb0adea5c681a494a5bff"
+  },
+  "source_hashes": {
+    "integrals/testing/master_integrals/families/vacuum_L10_profile159/definition.json": "cfadd50bd4cd3e1040bfda32db6538269a3168f3a8964b65e52dfb95149fac22",
+    "integrals/testing/master_integrals/families/vacuum_L10_profile159/masters.json": "32990d60ed05e432dce549afa783bcf50f418b75299f3d831a439e6ebfa1c107",
+    "integrals/testing/master_to_target/families/vacuum_L10_profile159/elimination_traces.jsonl.gz": "858fe4d424a61fa1c01b08826dbe4ffde74dc77f5fa3b2718dbb9b22456c4227",
+    "integrals/testing/master_to_target/families/vacuum_L10_profile159/identities.jsonl.gz": "17abef7b379d93c8d55fb119853f7163cabc481970f819409d054fa9bbd1f91a",
+    "integrals/testing/master_to_target/families/vacuum_L10_profile159/references.jsonl.gz": "3b1800ca9a3baf3f52041f33619792cd2a3989bc5c9bf341cc4a79d7ae852d56",
+    "integrals/testing/target_integrals/families/vacuum_L10_profile159/inputs.jsonl.gz": "b08ec2595f1e009111aef237eb289b0676ee3aba2d58ef634ae045c34a7c3c04"
+  },
+  "state_metrics": {
+    "all_state_top1": 0.9601471489883507,
+    "brier": 0.3422862557823456,
+    "candidate_actions": 3395,
+    "choice_states": 733,
+    "ece": 0.2547196570229888,
+    "equivalent_next_row": 0.9113233287858117,
+    "forced_states": 898,
+    "greedy_top1": 1.0,
+    "mean_confidence": 0.656603671762823,
+    "mean_prediction_ms": 1.4631911520666319,
+    "nll": 0.5538241507759282,
+    "nll_clipped": 0,
+    "reciprocal_rank": 0.9549795361527967,
+    "reliability": [
+      {
+        "bin": 1,
+        "count": 38,
+        "lower": 0.1,
+        "mean_confidence": 0.16666765197327263,
+        "reference_accuracy": 0.9210526315789473,
+        "upper": 0.2
+      },
+      {
+        "bin": 3,
+        "count": 190,
+        "lower": 0.3,
+        "mean_confidence": 0.3333322859124134,
+        "reference_accuracy": 0.6947368421052632,
+        "upper": 0.4
+      },
+      {
+        "bin": 4,
+        "count": 40,
+        "lower": 0.4,
+        "mean_confidence": 0.49999701529741286,
+        "reference_accuracy": 1.0,
+        "upper": 0.5
+      },
+      {
+        "bin": 5,
+        "count": 145,
+        "lower": 0.5,
+        "mean_confidence": 0.5000010297216219,
+        "reference_accuracy": 0.9724137931034482,
+        "upper": 0.6
+      },
+      {
+        "bin": 9,
+        "count": 320,
+        "lower": 0.9,
+        "mean_confidence": 0.9972623636946082,
+        "reference_accuracy": 1.0,
+        "upper": 1.0
+      }
+    ],
+    "states": 1631,
+    "top1": 0.9113233287858117,
+    "top3": 1.0,
+    "top5": 1.0,
+    "uniform_top1": 0.34012213343727665
+  },
+  "symbolic_sample_support_count_differences": 0,
+  "targets": 128
+}

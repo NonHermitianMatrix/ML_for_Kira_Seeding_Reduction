@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "case": "initial full measurement",
+      "allocated_bytes": 32768,
+      "guard_bound": 32768
+    },
+    {
+      "case": "new Git object",
+      "allocated_bytes": 1081344,
+      "guard_bound": 9469952
+    },
+    {
+      "case": "publication records grow",
+      "allocated_bytes": 1151488,
+      "guard_bound": 9540096
+    },
+    {
+      "case": "removal never lowers the initial bound",
+      "allocated_bytes": 102912,
+      "guard_bound": 8491520
+    },
+    {
+      "case": "9.7 GB stop bound including local and metadata reserves",
+      "stopped": true
+    }
+  ],
+  "temporary_files_removed": true,
+  "scope": "The publisher alone runs after dependent writers complete; its mutable paths are .git and the publication folder.",
+  "publication_source_sha256": "40e299a48f8c15a9c7be17e4f160964e6c22880ea03b95b5e30359ab0d03fe9a"
+}

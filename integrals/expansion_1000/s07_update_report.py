@@ -58,7 +58,7 @@ expansion."""
  s=s.replace("while the test set contains 202", "while the corresponding test set contained 202")
  s=s.replace("These counts specify\nthe available tests for each target type.",
              "These counts describe\nthe original construction samples. The grouped model division\ndescribed below replaces this three-way data-generation division.")
- s=re.sub(r"\\date\{[^}]*\}",lambda m:r"\date{October 6, 2026}",s)
+ s=re.sub(r"\\date\{[^}]*\}",lambda m:r"\date{October 7, 2026}",s)
  path.write_text(s,encoding="utf-8")
  make=REPORT/"Makefile";text=make.read_text(encoding="utf-8")
  if "background.tex higher_loops.tex" not in text:text=text.replace("report.tex background.tex","report.tex background.tex higher_loops.tex")

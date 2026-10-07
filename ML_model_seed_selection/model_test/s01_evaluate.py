@@ -5,7 +5,7 @@ import torch
 HERE=pathlib.Path(__file__).resolve().parent
 MODEL=HERE.parent
 sys.path.insert(0,str(MODEL))
-from s01_data import DATA,encode,encode_shared,family_records,read,storage_guard,verify_sources
+from s01_data import DATA,encode,encode_shared,family_records,read,verify_sources
 from s04_predict import load_model
 from s02_model import reference_loss
 from s00_metrics import Aggregate,Curves,micro_metrics,self_check,target_metrics
@@ -18,6 +18,20 @@ def write_json(path,data):
     temp=path.with_name(path.name+".part")
     temp.write_text(json.dumps(data,indent=2,sort_keys=True,allow_nan=False)+"\n",encoding="utf-8")
     os.replace(str(temp),str(path))
+def storage_guard():
+    # Allocated bytes include Git, tools and all generated files.
+    result=subprocess.run(["du","-s","-B1",str(MODEL.parent)],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True)
+    if result.returncode:
+        # Concurrent atomic output renames can remove a transient .part file.
+        if not result.stderr or any("No such file or directory" not in line for line in result.stderr.splitlines()):
+            raise RuntimeError("Cannot measure project storage: "+result.stderr)
+    total=int(result.stdout.split()[0])
+    if total+200000000>=9700000000:
+        raise RuntimeError("Allocated project bytes plus local allowance reached the 9.7 GB stop limit")
+    if __import__("shutil").disk_usage(str(MODEL.parent)).free<2000000000:
+        raise RuntimeError("Less than 2 GB free filesystem space")
+    return total
+
 def main():
     started=time.monotonic()
     HERE.mkdir(exist_ok=True);(HERE/"predictions").mkdir(exist_ok=True)

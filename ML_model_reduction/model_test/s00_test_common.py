@@ -4,9 +4,19 @@ import numpy as np
 TEST=pathlib.Path(__file__).resolve().parent
 MODEL=TEST.parent;ROOT=MODEL.parent
 sys.path.insert(0,str(MODEL))
-from s00_common import read,rows,record_path,sha,write_json,storage_guard
+from s00_common import read,rows,record_path,sha,write_json,storage_guard as model_storage_guard
 from s01_state import column,indices,order_key,clean_row,eliminate,public_family,state_from_step
 from s05_predict import Predictor
+def storage_guard(full=False):
+    # Retain the model-folder and free-filesystem checks during each family group.
+    model_storage_guard(full=False)
+    if not full:return None
+    import subprocess
+    total=int(subprocess.check_output(["du","-s","-B1",str(ROOT)]).split()[0])
+    # Include all allocated project blocks, plus local report storage and extra headroom.
+    if total+200000000>=9700000000:
+        raise RuntimeError("Allocated project storage approaches the combined 10 GB ceiling")
+    return total
 def test_config():return read(TEST/"test_config.json")
 def status(stage,**extra):
     write_json(TEST/"status.json",dict(stage=stage,utc=time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),**extra))

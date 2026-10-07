@@ -7,7 +7,7 @@
 #$ -o integrals/expansion_1000/publication_scheduler.log
 set -euo pipefail
 source /u/local/Modules/default/init/modules.sh
-module load python/3.9.6
+module load python/3.9.6 git/2.40.0
 export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 ulimit -v 1572864

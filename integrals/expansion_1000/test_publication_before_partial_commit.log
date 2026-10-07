@@ -1,0 +1,14 @@
+Both frozen tests recorded
+Pre-stage storage bound 5844682752 895709184 20658
+fatal: fetch-pack: invalid index-pack output
+fatal: could not fetch 785a75e2aaf3461c9bbcebd131f1d1adeb952376 from promisor remote
+Traceback (most recent call last):
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/integrals/expansion_1000/s20_publish_release.py", line 169, in <module>
+    if __name__=="__main__":main()
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/integrals/expansion_1000/s20_publish_release.py", line 165, in main
+    commit=commit_and_push(title)
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/integrals/expansion_1000/s20_publish_release.py", line 92, in commit_and_push
+    subprocess.run(["git","-c","gc.auto=0","commit","-q","-m",title],cwd=str(ROOT),check=True)
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/subprocess.py", line 528, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', '-c', 'gc.auto=0', 'commit', '-q', '-m', 'Publish frozen seed and reduction tests on 690382 held-out targets']' returned non-zero exit status 128.

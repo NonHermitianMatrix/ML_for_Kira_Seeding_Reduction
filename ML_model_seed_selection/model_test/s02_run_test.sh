@@ -1,5 +1,6 @@
 #!/bin/bash
 #$ -cwd
+#$ -q pod_smp.q
 #$ -S /bin/bash
 #$ -N KiraSeedTest
 #$ -l h_rt=06:00:00,h_data=4G

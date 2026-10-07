@@ -31,7 +31,7 @@ def main():
    files=("predictions/ stores per-family probability arrays, labels and target IDs; prediction_manifest.json identifies their hashes. "
     "per_target_metrics.jsonl.gz, family_metrics.json, test_results.json and curves.json give the measurements. "
     "s01_evaluate.py performs frozen inference, s02_run_test.sh runs the bounded test, s03_plot_results.py draws the six plots, "
-    "s04_validate_outputs.py independently checks counts and saved probabilities, and s06_update_report.py renders the scientific sections.\n\n")
+    "s04_validate_outputs.py independently checks counts and saved probabilities, and s06_update_report.py renders the scientific sections. The completed inference arrays and original timings were reused after replacing an obsolete storage cutoff with allocated bytes plus a 200 MB local allowance below 9.7 GB. Frozen inference and metric calculations remained unchanged. The cached evaluation and independent checks use pod_smp.q after a slow filesystem scan in the preceding allocation. original_inference_allocation.json identifies the original one-thread inference allocation for the retained timing arrays.\n\n")
    figures=read(test/"figure_manifest.json")["figures"]
    scope=("The labels identify one sufficient reference seed set. Alternative sufficient sets can differ, and this evaluation does not run "
     "Kira with the predicted sets or establish globally minimal seeds. Candidate-label accuracy must be read with the sparse positive-label fraction.\n")
@@ -55,7 +55,7 @@ def main():
     "s00_test_common.py and s01_policies.py define the fixed protocol; s02_evaluate.py runs it. "
     "s03_check_metrics.py checks metric formulas, s04_run_test.sh runs the bounded workflow and accepts --plots-only to redraw checked results, "
     "s05_validate_outputs.py independently replays saved paths and probabilities, s06_plot_results.py draws the six plots, "
-    "s07_update_report.py renders the scientific sections, s09_validate_checkpoint.py checks the frozen twenty-pass weights, and s10_parallel_test.py runs four disjoint family groups on one compute node. s12_finalize_test.sh then aggregates results, validates outputs and draws plots in a separate bounded memory allocation. Folder checks run every 64 families and after the last family, while existing per-file bounds remain active.\n\n")
+    "s07_update_report.py renders the scientific sections, s09_validate_checkpoint.py checks the frozen twenty-pass weights, and s10_parallel_test.py runs four disjoint family groups on one compute node. s12_finalize_test.sh then aggregates results, validates outputs and draws plots in a separate bounded memory allocation. Folder checks run every 64 families and after the last family, while existing per-file bounds remain active. Full storage checks use allocated project bytes plus a 200 MB local-report allowance and stop at 9.7 GB, while model-folder and free-filesystem limits remain active.\n\n")
    figures=read(test/"figure_manifest.json")["figures"]
    scope=("The model changes one target row against fixed source identities. The local rule minimizes the next nonmaster count, "
     "total row support, immediate operation count and fixed equation-ID tie-break in that order. "
