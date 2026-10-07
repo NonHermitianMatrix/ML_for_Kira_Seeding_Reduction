@@ -1,14 +1,14 @@
 """Prepare only the existing training-family reduction states; replay every label."""
-import argparse, collections, json, os, time
+import argparse, collections, json, os, time, resource, concurrent.futures
 import numpy as np
-from s00_common import HERE,INTEGRALS,SPLIT,config,read,rows,sha,write_json,storage_guard,status
+from s00_common import HERE,INTEGRALS,SPLIT,record_path,config,read,rows,sha,write_json,storage_guard,status
 from s01_state import column,clean_row,eliminate,state_from_step,encode_state,feature_names
 
 def prepare_family(meta,cfg,signature):
     family=meta["family"]
     base=INTEGRALS/"training/master_to_target/families"/family
     definition=INTEGRALS/meta["definition"];master_file=INTEGRALS/meta["masters"]
-    sources=[definition,master_file,base/"identities.jsonl.gz",base/"elimination_traces.jsonl.gz"]
+    sources=[definition,master_file,record_path(base/"identities.jsonl.gz"),record_path(base/"elimination_traces.jsonl.gz")]
     source_hashes={str(p.relative_to(INTEGRALS)):sha(p) for p in sources}
     output=HERE/"data/training"/(family+".npz");audit=output.with_suffix(".json")
     if output.exists() and audit.exists():
@@ -92,8 +92,21 @@ def prepare_family(meta,cfg,signature):
     write_json(audit,result)
     return result
 
+def worker_limit():
+    soft,hard=resource.getrlimit(resource.RLIMIT_AS)
+    resource.setrlimit(resource.RLIMIT_AS,(min(soft,768*1024**2) if soft>0 else 768*1024**2,hard))
+def prepare_task(args):return prepare_family(*args)
+def prepare_selected(selected,cfg,signature,workers):
+    if workers==1:
+        for meta in selected:yield prepare_family(meta,cfg,signature)
+    else:
+        with concurrent.futures.ProcessPoolExecutor(max_workers=workers,initializer=worker_limit) as pool:
+            yield from pool.map(prepare_task,((m,cfg,signature) for m in selected),chunksize=1)
 def main():
     ap=argparse.ArgumentParser();ap.add_argument("--limit",type=int);args=ap.parse_args()
+    evidence=read(HERE.parent/"integrals/expansion_1000/parallel_preparation_validation.json")
+    if evidence["status"]!="passed" or not evidence["arrays_exactly_equal"]:raise RuntimeError("Parallel preparation check required")
+    if evidence["preparer_sha256"]!=sha(HERE/"s02_prepare_data.py"):raise RuntimeError("Preparation source changed after check")
     cfg=config();storage=storage_guard(full=True);start=time.time()
     split=read(SPLIT);train=[m for m in split["families"] if m["split"]=="train"]
     test=[m for m in split["families"] if m["split"]=="test"]
@@ -103,11 +116,11 @@ def main():
     signature=dict(split_sha256=split_hash,config_sha256=sha(HERE/"config.json"),
                    encoder_sha256=sha(HERE/"s01_state.py"),preparer_sha256=sha(HERE/"s02_prepare_data.py"))
     selected=train[:args.limit] if args.limit else train
-    completed=[]
-    for i,meta in enumerate(selected):
-        item=prepare_family(meta,cfg,signature);completed.append(item)
+    completed=[];workers=min(cfg.get("training_cpu_threads",1),int(os.environ.get("NSLOTS","1")))
+    for i,item in enumerate(prepare_selected(selected,cfg,signature,workers)):
+        meta=selected[i];completed.append(item)
         if i%16==0 or i+1==len(selected):
-            storage_guard()
+            if i%64==0 or i+1==len(selected):storage_guard()
             status("preparing",families_completed=i+1,families_total=len(selected),elapsed_seconds=time.time()-start)
             print("prepared",i+1,len(selected),meta["family"],flush=True)
     counts=collections.Counter()
@@ -118,7 +131,7 @@ def main():
                 held_out_targets=sum(m["counts"]["targets"] for m in test),
                 held_out_family_ids=[m["family"] for m in test],held_out_data_read=False,
                 counts=dict(counts),families=completed,source_project_bytes=storage,
-                elapsed_seconds=time.time()-start,total_shard_bytes=sum(m["bytes"] for m in completed))
+                workers=workers,elapsed_seconds=time.time()-start,total_shard_bytes=sum(m["bytes"] for m in completed))
     if not args.limit and counts["targets"]!=sum(m["counts"]["targets"] for m in train):
         raise ValueError("Missing training targets")
     write_json(HERE/("data/pilot_manifest.json" if args.limit else "data/manifest.json"),result)

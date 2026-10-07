@@ -1,0 +1,30 @@
+Pre-stage storage bound 6249192960 1044357120 80000
+remote: To git@github.com:NonHermitianMatrix/ML_for_Kira_Seeding_Reduction.git
+   126a9fc..c21cca8  main -> main
+Git storage incremental_packing_complete
+Published family group 1 4 c21cca88e46205df858dee86cea1979cdfde9ffe
+Pre-stage storage bound 6839463936 1070096384 80000
+remote: To git@github.com:NonHermitianMatrix/ML_for_Kira_Seeding_Reduction.git
+   c21cca8..5f5a85a  main -> main
+Git storage incremental_packing_complete
+Published family group 5 8 5f5a85af1dcfb1f4f3f35c9459aa50fa407914ca
+Pre-stage storage bound 7440060928 1102204928 80000
+remote: To git@github.com:NonHermitianMatrix/ML_for_Kira_Seeding_Reduction.git
+   5f5a85a..d4bd3e9  main -> main
+Git storage incremental_packing_complete
+Published family group 9 12 d4bd3e93391625f22e8c9080e2537cbce7a7d8ae
+fatal: inflateInit: out of memory (no message)
+Traceback (most recent call last):
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/integrals/expansion_1000/s20_publish_release.py", line 133, in <module>
+    if __name__=="__main__":main()
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/integrals/expansion_1000/s20_publish_release.py", line 125, in main
+    preflight(paths)
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/integrals/expansion_1000/s20_publish_release.py", line 15, in preflight
+    names=set(run(["git","diff","--name-only","-z","HEAD","--"]+(["integrals","ML_model_seed_selection","ML_model_reduction","README.md","rules.md","report"])).split("\0"))
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/integrals/expansion_1000/s20_publish_release.py", line 7, in run
+    def run(args):return subprocess.check_output(args,cwd=str(ROOT)).decode().strip()
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/subprocess.py", line 424, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/subprocess.py", line 528, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', 'diff', '--name-only', '-z', 'HEAD', '--', 'integrals', 'ML_model_seed_selection', 'ML_model_reduction', 'README.md', 'rules.md', 'report']' returned non-zero exit status 128.

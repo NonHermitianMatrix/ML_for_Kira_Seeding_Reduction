@@ -1,3 +1,7 @@
+# Expansion in progress
+
+The next phase adds 250 mass profiles at every loop order from one through twelve, preserves all previous assignments, and will train twenty additional full passes. The previous completed model and optimizer remain in runs/before_expansion_250/. Active trained_model.pt and model_test results still belong to the preceding release until their replacements pass validation. No new training or testing has completed yet.
+
 # Encoded seed-training examples
 
 This folder contains encoded examples for 266,890 training targets from 1,463 families spanning loop orders one through twelve. Original symbolic inputs, seeds and references remain in ../../integrals/. The current grouped assignment is defined by ../split_manifest.json. Held-out targets and labels do not enter these feature archives.

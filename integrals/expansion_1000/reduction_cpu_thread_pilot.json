@@ -1,0 +1,78 @@
+{
+  "status": "passed",
+  "optimizer_updates": 0,
+  "held_out_examples_read": false,
+  "warm_checkpoint_sha256": "381688a725ed3b7b5cf68d9fe7de64763703d9a660292639de13782b3231c585",
+  "numerical_score_and_gradient_agreement": true,
+  "measurements": [
+    {
+      "group": "box",
+      "families": [
+        "box_massless_four_offshell",
+        "box_massless_onshell",
+        "box_profile_0002",
+        "box_profile_0004",
+        "box_profile_0005",
+        "box_profile_0006",
+        "box_profile_0007",
+        "box_profile_0008"
+      ],
+      "batch": 256,
+      "max_actions": 7,
+      "seconds_per_batch": {
+        "1": 0.010186073218937962,
+        "2": 0.0063905107323080305,
+        "4": 0.004645386151969433
+      }
+    },
+    {
+      "group": "vacuum",
+      "families": [
+        "vacuum_L12_profile003",
+        "vacuum_L12_profile004",
+        "vacuum_L12_profile006",
+        "vacuum_L12_profile007",
+        "vacuum_L12_profile008",
+        "vacuum_L12_profile009",
+        "vacuum_L12_profile010",
+        "vacuum_L12_profile012"
+      ],
+      "batch": 256,
+      "max_actions": 7,
+      "seconds_per_batch": {
+        "1": 0.004168217442929745,
+        "2": 0.0030846157227642835,
+        "4": 0.0026854424271732565
+      }
+    },
+    {
+      "group": "mixed",
+      "families": [
+        "box_massless_four_offshell",
+        "box_massless_onshell",
+        "box_profile_0002",
+        "box_profile_0004",
+        "vacuum_L12_profile003",
+        "vacuum_L12_profile004",
+        "vacuum_L12_profile006",
+        "vacuum_L12_profile007"
+      ],
+      "batch": 256,
+      "max_actions": 7,
+      "seconds_per_batch": {
+        "1": 0.008081574994139373,
+        "2": 0.005386619956698268,
+        "4": 0.004270755045581609
+      }
+    }
+  ],
+  "timing_scope": "Forward and backward network calculations; batch preparation and optimizer updates excluded.",
+  "model_folder_bytes": 160681752,
+  "model_folder_scan_seconds": 2.3264025039970875,
+  "max_rss_kib": 192632,
+  "sources": {
+    "s03_model.py": "04b2a9396d708d357314c09411e6c19a8eef0a3815bfb509f6e6276a098b38c1",
+    "s10_train_all_loops.py": "efb758b23db5111932ff0dca75267474a78f2d905c14913c611a48639db8acc4"
+  },
+  "benchmark_source_sha256": "38c9eb4602c3767cf8217502da91cb8723f4c11eb337a183c58d871e8ed45a99"
+}

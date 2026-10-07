@@ -1,3 +1,7 @@
+# Expansion in progress
+
+The next phase adds 250 mass profiles at every loop order from one through twelve, preserves all previous assignments, and will train twenty additional full passes. The previous completed model and optimizer remain in runs/before_expansion_250/. Active trained_model.pt and model_test results still belong to the preceding release until their replacements pass validation. No new training or testing has completed yet.
+
 # Reduction-model training runs
 
 The current phase completed twenty complete passes over the expanded training choice states from 266,890 targets in 1,463 families. all_loops_latest.pt stores the model, optimizer, random state and resume position. all_loops_history.json records completed passes; status.json records preparation or training progress; all_loops_scheduler.log records the compute job. The final compact model is stored in ../trained_model.pt.

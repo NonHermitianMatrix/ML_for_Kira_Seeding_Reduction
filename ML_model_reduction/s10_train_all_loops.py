@@ -1,5 +1,5 @@
 """Warm-start the saved reduction model and optimizer for twenty expanded-data passes."""
-import argparse, math, random, resource, time
+import argparse, math, random, resource, time, os
 import numpy as np
 import torch
 from torch.nn import functional as F
@@ -29,7 +29,9 @@ def collate(shards,items,maximum):
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument("--resume",action="store_true");args=ap.parse_args()
-    cfg=config();torch.set_num_threads(cfg["cpu_threads"]);torch.set_num_interop_threads(1)
+    cfg=config();training_threads=cfg.get("training_cpu_threads",cfg["cpu_threads"])
+    if int(os.environ.get("NSLOTS","1"))<training_threads:raise RuntimeError("Insufficient allocated CPU slots")
+    torch.set_num_threads(training_threads);torch.set_num_interop_threads(1)
     torch.use_deterministic_algorithms(True);torch.manual_seed(cfg["seed"])
     manifest=read(HERE/"data/manifest.json")
     if manifest["status"]!="complete":raise ValueError("Complete data preparation required")
@@ -50,11 +52,11 @@ def main():
         partial=saved["partial"];updates=saved["updates"];elapsed_previous=saved["elapsed_seconds"]
         torch.set_rng_state(saved["torch_rng"])
     elif latest.exists():raise RuntimeError("Checkpoint exists; use --resume")
-    warm=HERE/"runs/before_all_loops_20/runs/latest.pt"
+    warm=HERE/"runs/before_expansion_250/runs/all_loops_latest.pt"
     initial=torch.load(warm,map_location="cpu",weights_only=False)
     lineage=dict(checkpoint=str(warm.relative_to(HERE)),sha256=sha(warm),
                  previous_dataset_epochs=initial["epoch"],expanded_dataset_epochs=cfg["epochs"],
-                 previous_optimizer_updates=initial["updates"])
+                 previous_optimizer_updates=initial["updates"],prior_lineage=initial.get("lineage",{}))
     if not latest.exists():
         model.load_state_dict(initial["model"]);optimizer.load_state_dict(initial["optimizer"])
     started=time.time()
@@ -96,7 +98,7 @@ def main():
                    choice_states_seen_this_epoch=partial["states"],updates=updates,elapsed_seconds=elapsed(),
                    mean_loss=partial["loss_sum"]/max(1,partial["states"]),
                    max_rss_kib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
-            if gi%8==0:storage_guard()
+            if gi%64==0:storage_guard()
         if partial["states"]!=manifest["counts"]["choice_states"]:raise ValueError("Epoch coverage mismatch")
         metric=dict(epoch=ep+1,choice_states=partial["states"],mean_cross_entropy=partial["loss_sum"]/partial["states"],
                     reference_top1=partial["correct"]/partial["states"],updates=partial["batches"],
@@ -110,6 +112,7 @@ def main():
                  confidence_meaning="uncalibrated probability of the recorded next choice among supplied actions")
     atomic_torch(HERE/"trained_model.pt",payload)
     result=dict(status="trained_testing_deferred",epochs_completed=cfg["epochs"],lineage=lineage,parameter_count=sum(p.numel() for p in model.parameters()),
+                training_cpu_threads=training_threads,inference_cpu_threads=cfg["cpu_threads"],
                 choice_state_presentations=sum(h["choice_states"] for h in history),optimizer_updates=updates,
                 counts=manifest["counts"],train_families=manifest["train_families"],
                 held_out_families=manifest["held_out_families"],held_out_targets=manifest["held_out_targets"],

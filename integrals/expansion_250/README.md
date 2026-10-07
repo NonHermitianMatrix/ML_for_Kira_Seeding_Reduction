@@ -1,0 +1,29 @@
+# Additional mass profiles at one through twelve loops
+
+The requested expansion adds 250 mass profiles at each loop order, for 3,000 added families and 384,000 added targets. Existing families and grouped split assignments remain fixed. Profile identifiers 101 through 350 are distinct from the preceding higher-loop profiles. A fixed shuffle places 175 new profiles in training and 75 in testing, with the same assignment at every loop order.
+
+These families retain the restricted coupled vacuum integral domain described in ../higher_loops/README.md. Each contains L massless propagators of fixed power one and R=2,3,4 massive denominators carrying the sum of the loop momenta. The one-loop case uses the same radial integral, with the massless-convolution factor equal to one. Distinct positive mass ratios define family instances. These profiles share graph structures and lower-sector integrals; they do not provide independent generic scattering topologies.
+
+s00_exact.py provides exact rational Laurent arithmetic and the independent partial-fraction oracle. s01_generate.py constructs each target from a known master combination by reversing stored exact identities. It preserves coefficients, actual Euler IBP seeds, separate partial-fraction identities, source equations, traces and operation counts in the canonical folders. Every family has 128 targets. Reference paths are sufficient; their minimality is not established.
+
+s02_run_generation.sh runs six pilot families at loop orders one, two and twelve, checks them, then generates all new families and checks every construction. s03_validate.py independently checks the exact source formulas, graph loop counts, direct integrands, all reverse and forward traces at three finite-field samples, and radial master quadratures. It checks the one-loop limit in the pilot. Completed family manifests permit safe generation resume with unchanged source.
+
+The earlier mathematical checks remain in ../higher_loops/. Preserved model checkpoints, optimizer states, source and manifests are in each model's runs/before_expansion_250/. No earlier progress is discarded. After validation and catalog integration, both models will complete twenty additional passes over the enlarged training set. Frozen testing and report updates follow publication of the trained models.
+
+Only Hoffman and GitHub store generated integral, training and test data. The report also stays on the local machine. Memory, concurrency and file-size limits apply to every job, and combined project storage must remain below 10 GB.
+
+s05_integrate.py adds the validated records to catalogs and grouped directory views. s10_validate_collection.py checks all 5,100 family manifests and cross-folder links while retaining both preceding mathematical audits. s11_run_collection_audit.sh integrates and audits the collection on a compute node. The other phase scripts retain the earlier publication and report sequence and will be adapted before use.
+
+s08_finalize_training.py checks both twenty-pass checkpoints, their warm-start hashes and full-data coverage, then writes release manifests and current READMEs. s09_run_training_validation.sh runs those checks. Publication precedes frozen testing. s12_finalize_tests.py records both independently validated evaluations. s07_update_report.py and s13_build_report.sh derive and render the report after tests pass. s14_stage_data.sh stages the selected publication paths with bounded Git resources.
+
+s15_generate_parallel.py assigns disjoint loop-order groups to four single-thread processes in one four-slot compute allocation. It reuses completed family manifests with unchanged generator hashes and creates one combined summary after all groups complete. s16_run_parallel_generation.sh retains the pilot and independent full validation around that parallel generation. No family is generated concurrently by two workers; raw mathematical construction and reference choices remain unchanged.
+
+The first serial allocation completed the six-family pilot and part of the collection. Its completed family manifests were reused by the four-slot run. The serial allocation was stopped before releasing the parallel job, and the catalog-audit dependency was transferred to the new allocation. serial_generation_scheduler.log preserves the earlier log. The parallel progress files record counts separately at each loop order. Training requests twelve-hour allocations from submission and preserves exact resume checkpoints.
+
+Full independent validation uses up to four allocated workers for disjoint families, with the same exact checks as the pilot. The parent records results in family order only after each check succeeds. validation.json records the validator hash and worker count. The pilot remains serial, and a one-slot validation allocation also runs serially.
+
+The complete collection audit reserves 2 GB on one CPU. Each training job reserves 4 GB on one CPU and retains a 3 GB virtual-memory limit. The reduction test will reserve 2 GB per slot on four CPUs to provide headroom for aggregation over the enlarged held-out set; individual processes retain the 3 GB limit. The seed test retains its 4 GB allocation.
+
+s03_validate.py checks graph loop counts, source integrands, all reverse and forward records at three finite-field samples, and convergent radial master quadratures. s04_run_validation.sh runs those checks on a compute node. s05_integrate.py extends catalogs and the grouped split after validation; it preserves existing assignments. integration_summary.json records final counts. The new phase uses 535690 training targets and 229582 held-out targets.
+
+The 3,000-family addition passed integration and the full 5,100-family audit. The later request adds another 1,000 profiles per loop in ../expansion_1000/. Intermediate training jobs were cancelled before they started. Both models will train on the final enlarged collection.

@@ -1,5 +1,5 @@
 """Streaming inputs with a strict boundary between problem features and reference labels."""
-import collections, functools, gzip, hashlib, itertools, json, math, pathlib, random, re
+import collections, functools, gzip, lzma, hashlib, itertools, json, math, pathlib, random, re
 import torch
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -12,7 +12,7 @@ def config():
     return read(HERE/"config.json")
 
 def rows(path):
-    with gzip.open(str(path), "rt", encoding="utf-8") as f:
+    with (lzma.open if pathlib.Path(path).suffix==".xz" else gzip.open)(str(path), "rt", encoding="utf-8") as f:
         for line in f: yield json.loads(line)
 
 @functools.lru_cache(maxsize=8192)
@@ -159,12 +159,17 @@ def verify_sources(split=None):
     return hashlib.sha256((HERE/"split_manifest.json").read_bytes()).hexdigest()
 
 def storage_guard():
-    total = 0
-    for p in ROOT.rglob("*"):
-        try:
-            if p.is_file() and not p.is_symlink(): total += p.stat().st_size
-        except FileNotFoundError: pass
-    # Reserve 100 MB for the original local workspace and leave 1 GB cap headroom.
+    import os
+    total=0;pending=[str(ROOT)]
+    while pending:
+        with os.scandir(pending.pop()) as entries:
+            for entry in entries:
+                try:
+                    if entry.is_symlink():continue
+                    if entry.is_dir(follow_symlinks=False):pending.append(entry.path)
+                    elif entry.is_file(follow_symlinks=False):total+=entry.stat(follow_symlinks=False).st_size
+                except FileNotFoundError:pass
+    # Preserve the existing byte ceiling and complete-file coverage.
     if total+100000000 > 9000000000:
         raise RuntimeError("Project storage headroom is below the required margin")
     return total

@@ -7,7 +7,7 @@ from s01_policies import pools,current_state,greedy_choice,rollout,sample_check
 def family_evaluate(meta,predictor,cfg,sig):
     fid=meta["family"];base=ROOT/"integrals/testing/master_to_target/families"/fid
     paths={key:ROOT/"integrals"/meta[key] for key in ("definition","masters","inputs","references")}
-    paths.update(identities=base/"identities.jsonl.gz",traces=base/"elimination_traces.jsonl.gz")
+    paths.update(identities=record_path(base/"identities.jsonl.gz"),traces=record_path(base/"elimination_traces.jsonl.gz"))
     source_hashes={str(p.relative_to(ROOT)):sha(p) for p in paths.values()}
     out=TEST/"families"/fid;out.mkdir(parents=True,exist_ok=True)
     if (out/"summary.json").exists():
@@ -171,7 +171,7 @@ def main():
         result=family_evaluate(meta,predictor,cfg,sig);summaries.append(result)
         progress("checking_completed_families" if args.aggregate_only else "evaluating",families_completed=i+1,families_total=len(chosen),last_family=meta["family"],
                elapsed_seconds=time.perf_counter()-start,max_rss_kib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
-        if i%8==0:storage_guard()
+        if i%64==0 or i+1==len(chosen):storage_guard()
         print("evaluated",i+1,len(chosen),meta["family"],result["state_metrics"]["top1"],result["model"]["success_all_samples"],flush=True)
     if args.limit:
         write_json(TEST/"pilot.json",dict(status="passed",signature=sig,families=[r["family"] for r in summaries],

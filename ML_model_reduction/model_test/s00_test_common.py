@@ -4,7 +4,7 @@ import numpy as np
 TEST=pathlib.Path(__file__).resolve().parent
 MODEL=TEST.parent;ROOT=MODEL.parent
 sys.path.insert(0,str(MODEL))
-from s00_common import read,rows,sha,write_json,storage_guard
+from s00_common import read,rows,record_path,sha,write_json,storage_guard
 from s01_state import column,indices,order_key,clean_row,eliminate,public_family,state_from_step
 from s05_predict import Predictor
 def test_config():return read(TEST/"test_config.json")

@@ -2,7 +2,7 @@
 #$ -cwd
 #$ -S /bin/bash
 #$ -N KiraSeedTest
-#$ -l h_rt=02:00:00,h_data=4G
+#$ -l h_rt=06:00:00,h_data=4G
 #$ -j y
 #$ -o ML_model_seed_selection/model_test/scheduler.log
 set -euo pipefail
@@ -15,7 +15,14 @@ mkdir -p "$MPLCONFIGDIR"
 ulimit -v 3145728
 ulimit -f 131072
 ulimit -c 0
-timeout 6900s .tools/seed-model/venv/bin/python ML_model_seed_selection/model_test/s01_evaluate.py
+python3 - <<'GATE'
+import json
+from pathlib import Path
+p=Path("integrals/expansion_1000/publication.json")
+r=json.loads(p.read_text());assert r["training"]["status"]=="pushed"
+assert json.loads(Path("integrals/expansion_1000/training_release.json").read_text())["status"]=="both_models_validated"
+GATE
+timeout 21300s .tools/seed-model/venv/bin/python ML_model_seed_selection/model_test/s01_evaluate.py
 
 .tools/seed-model/venv/bin/python ML_model_seed_selection/model_test/s03_plot_results.py
 .tools/seed-model/venv/bin/python ML_model_seed_selection/model_test/s04_validate_outputs.py

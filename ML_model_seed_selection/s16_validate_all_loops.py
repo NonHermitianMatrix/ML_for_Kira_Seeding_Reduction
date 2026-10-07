@@ -5,10 +5,14 @@ from s01_data import HERE,read,verify_sources
 from s12_prepare_features import sha,write
 from s02_model import SeedSelector
 def main():
+ import subprocess,sys
+ subprocess.run([sys.executable,str(HERE.parent/"integrals/expansion_1000/s44_verify_storage_scan_resume.py")],check=True)
  metadata=read(HERE/"trained_model.json");saved=torch.load(HERE/"trained_model.pt",map_location="cpu",weights_only=False)
  latest=torch.load(HERE/"runs/all_loops_latest.pt",map_location="cpu",weights_only=False)
  manifest=read(HERE/"data/manifest.json");split=read(HERE/"split_manifest.json")
  assert metadata["epochs_completed"]==saved["epoch"]==latest["epoch"]==20
+ assert metadata["training_cpu_threads"]==saved["config"]["training_cpu_threads"]==4
+ assert metadata["inference_cpu_threads"]==saved["config"]["cpu_threads"]==1
  assert len(saved["history"])==len(latest["history"])==20
  assert all(h["targets"]==manifest["training_targets"] for h in saved["history"])
  assert metadata["model_sha256"]==sha(HERE/"trained_model.pt")
@@ -20,6 +24,10 @@ def main():
  assert latest["partial"]["targets"]==0 and latest["next_family"]==0
  assert latest["lineage"]==metadata["lineage"]==saved["lineage"]
  assert sha(HERE/latest["lineage"]["checkpoint"])==latest["lineage"]["sha256"]
+ cpu=read(HERE.parent/"integrals/expansion_1000/cpu_thread_pilot.json")
+ assert cpu["status"]=="passed" and cpu["optimizer_updates"]==0 and not cpu["held_out_examples_read"]
+ assert cpu["warm_checkpoint_sha256"]==latest["lineage"]["sha256"] and cpu["numerical_score_and_gradient_agreement"]
+ for name,digest in cpu["sources"].items():assert sha(HERE/name)==digest
  mixed=read(HERE/"runs/mixed_batch_validation.json")
  assert mixed["status"]=="passed" and not mixed["held_out_data_used"] and mixed["optimizer_updates"]==0
  for name,digest in mixed["source_hashes"].items():assert sha(HERE/name)==digest
@@ -33,6 +41,7 @@ def main():
   complete_training_target_presentations=20*manifest["training_targets"],optimizer_updates=metadata["optimizer_steps"],
   training_families=manifest["training_families"],training_targets=manifest["training_targets"],
   held_out_families=manifest["held_out_families"],held_out_targets=manifest["held_out_targets"],
+  training_cpu_threads=4,inference_cpu_threads=1,cpu_thread_comparison=cpu,
   warm_start=latest["lineage"],optimizer_state_preserved=True,compact_weights_equal_resumable_weights=True,
   held_out_data_used=False,current_source_hashes_verified=True,mixed_batch_equivalence=mixed,batch_equivalence=read(HERE/"runs/batch_equivalence.json"))
  write(HERE/"validation.json",result)

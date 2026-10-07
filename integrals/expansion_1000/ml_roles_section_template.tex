@@ -1,0 +1,87 @@
+\section{ML for seed selection and elimination ordering}
+\label{sec:ml-roles}
+To study learned choices in IBP reduction, we use two System 1
+models: one for seed selection and one for elimination ordering.
+Here a System 1 model is a small machine learning model that learns
+from recorded reductions and assigns scores to choices available at
+the current step. Training requires targets with known master
+expansions, the seeds that supply their equations and the steps used
+to reduce them. The implemented models and their completed training
+appear in Sections~\ref{sec:seed-model} and
+\ref{sec:reduction-model}, followed by their held-out tests.
+
+In a Kira integration, the seed model would act before equation
+generation and the elimination model would act when the solver
+selects a pivot. Kira would perform the selected algebraic operations.
+The present experiments test seed-reference agreement and reduction
+of a target coefficient row against a fixed source-equation pool.
+Applying the models to Kira's full evolving system remains a separate
+step.
+
+\subsection{Selecting seeds before equation generation}
+The first model receives the family definition, the target terms and
+their index vectors $\boldsymbol a$, the chosen master basis and a
+candidate seed list within stated sectors and index bounds. It
+assigns each candidate a separate probability of belonging to the
+target's recorded sufficient seed set, which allows several seeds
+to receive label one.
+
+During training, we pair each target with the seeds used by its
+checked reference reduction. Different reductions can use different
+sufficient sets, and the stored labels identify the selected reference
+set. They do not establish that every omitted seed is unnecessary.
+For use inside Kira, a reduction would generate equations from the
+predicted seeds and check whether they suffice in the chosen master
+basis. An unresolved target would require further seeds. The
+seed-model test below measures recovery of the recorded sets; it
+does not perform this complete solver test.
+
+\subsection{Choosing elimination steps within the solver}
+The second model receives the current coefficient matrix and the
+supplied allowed row operations. It assigns a probability to each
+operation, selects one operation and reports the selected
+probability as its confidence. An exact row update then applies
+Eq.~\eqref{eq:row-update}. The next state supplies the information
+for the next choice.
+
+Each training example specifies the matrix before the choice, the
+allowed pivots, and the recorded source row and integral to eliminate.
+The retained later steps permit checks of the complete path and its
+arithmetic count, while predictive features use the current state
+and supplied actions. In the present data, the source identities stay
+fixed and one target row changes during reduction. Extending this
+procedure to Kira requires allowed choices that follow Kira's
+integral ordering and evolving equations.
+
+The computational benefit depends on the total work: preparing
+features and evaluating the model must cost less than the algebraic
+work that its choices save. The tests therefore record complete-path
+arithmetic and timing as well as next-step agreement. Kira's existing
+finite-field reconstruction would remain responsible for obtaining
+symbolic coefficients in a later solver integration.
+
+\subsection{Integral data required for training and testing}
+To train and test both models, we need family denominators, kinematic
+parameters, targets and a master basis together with the exact
+coefficients in Eq.~\eqref{eq:reduction}. For a target containing
+several integrals, these coefficients specify the master expansion
+of the complete expression. Each example also identifies its source
+equations, actual IBP seeds and derivative operators. Algebraic
+identities, including mass partial fractions, remain separately
+identified because they carry no IBP seed.
+
+We construct targets from known master combinations and retain the
+operations used to form each target and reduce it back to the same
+basis. The elimination records give the coefficients before and after
+each step, all allowed source rows, the selected pivot and the
+operation counts. These records connect seed selection to the
+equations available for elimination.
+
+The known master coefficients provide a reference for checking
+complete reduction in the chosen basis, as described in
+Section~\ref{sec:ibp-reduction}~\cite{Kira3}. We keep these answers,
+the selected labels and future construction histories separate from
+the information used to predict a choice.
+Section~\ref{sec:integrals-generation} explains how we obtain the
+bases, construct the targets and check their seed and elimination
+records.

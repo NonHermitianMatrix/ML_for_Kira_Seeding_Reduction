@@ -12,14 +12,15 @@ coefficients can vanish at the sampled kinematic point, so the model
 uses the support of the actual sampled matrix. The audit records
 these differences without changing the exact symbolic references.
 
-We continued the earlier thirty-pass model and its AdamW optimizer
-for twenty complete passes over the expanded data. Each new pass
+We continued the preceding expanded-data model and its AdamW
+optimizer for twenty complete passes over the enlarged data. Each new pass
 uses every training state with an action choice; a forced step has
 probability one and supplies no ranking decision. The new phase
 contains @PRESENTATIONS@ choice-state presentations and
-@UPDATES@ parameter updates. The earlier thirty passes used the
-smaller collection, and the twenty new passes use all represented
-loop orders.
+@UPDATES@ parameter updates. The preserved lineage contains thirty
+passes over the original smaller collection and twenty passes over
+the preceding 2,100-family collection. The latest twenty passes
+use the enlarged collection across all represented loop orders.
 
 Mean training cross-entropy changed from @FIRST_LOSS@ to
 @LAST_LOSS@ during this phase, while agreement with the recorded
@@ -29,7 +30,9 @@ parameter updates. Section~\ref{sec:reduction-test} measures the
 frozen parameters on reserved families.
 
 The implementation retains the original architecture, learning rate,
-gradient bound and state-batch limits. Checks verify equal weights
+gradient bound and state-batch limits. Training uses four CPU threads,
+while inference uses one. Parallel preparation reproduces the saved
+training features and labels exactly. Checks verify equal weights
 in the inference and resumable checkpoints, complete state coverage
 and the preserved optimizer lineage. The published implementation
 retains the inputs, learned parameters and exact reference

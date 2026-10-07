@@ -1,5 +1,5 @@
 """Paths, bounded storage and reproducible file operations."""
-import gzip, hashlib, json, os, pathlib, shutil, time
+import gzip, lzma, hashlib, json, os, pathlib, shutil, time
 HERE=pathlib.Path(__file__).resolve().parent
 ROOT=HERE.parent
 INTEGRALS=ROOT/"integrals"
@@ -8,8 +8,12 @@ def read(p):
     return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
 def config():
     return read(HERE/"config.json")
+def record_path(p):
+    p=pathlib.Path(p)
+    return p.with_suffix(".xz") if not p.exists() and p.suffix==".gz" else p
 def rows(p):
-    with gzip.open(str(p),"rt",encoding="utf-8") as f:
+    p=record_path(p)
+    with (lzma.open if p.suffix==".xz" else gzip.open)(str(p),"rt",encoding="utf-8") as f:
         for line in f:
             yield json.loads(line)
 def sha(p):
@@ -34,7 +38,10 @@ def folder_size(path):
         dirs[:]=[d for d in dirs if not pathlib.Path(directory,d).is_symlink()]
         for name in files:
             p=pathlib.Path(directory,name)
-            if not p.is_symlink(): total+=p.stat().st_size
+            try:
+                if not p.is_symlink(): total+=p.stat().st_size
+            except FileNotFoundError:
+                if not name.endswith(".part"):raise
     return total
 def storage_guard(full=False):
     free=shutil.disk_usage(str(ROOT)).free

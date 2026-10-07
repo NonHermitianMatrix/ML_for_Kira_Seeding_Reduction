@@ -1,0 +1,43 @@
+\subsection{Completed training and present scope}
+The expanded training set contains @STATES@ recorded states from
+@TARGETS@ targets in @FAMILIES@ families. Of these states,
+@CHOICE_STATES@ supply at least two allowed actions and
+@FORCED_STATES@ supply one action. The records contain
+@CANDIDATE_ACTIONS@ candidate appearances. The unchanged model
+uses 132 features per candidate and has 10,529 adjustable parameters.
+
+Preparation replays every reference row operation, checks continuity
+between steps and verifies the final master support. Symbolic
+coefficients can vanish at the sampled kinematic point, so the model
+uses the support of the actual sampled matrix. The audit records
+these differences without changing the exact symbolic references.
+
+We continued the earlier thirty-pass model and its AdamW optimizer
+for twenty complete passes over the expanded data. Each new pass
+uses every training state with an action choice; a forced step has
+probability one and supplies no ranking decision. The new phase
+contains @PRESENTATIONS@ choice-state presentations and
+@UPDATES@ parameter updates. The earlier thirty passes used the
+smaller collection, and the twenty new passes use all represented
+loop orders.
+
+Mean training cross-entropy changed from @FIRST_LOSS@ to
+@LAST_LOSS@ during this phase, while agreement with the recorded
+action changed from @FIRST_TOP1@\% to @LAST_TOP1@\%.
+These values describe losses and choices encountered during
+parameter updates. Section~\ref{sec:reduction-test} measures the
+frozen parameters on reserved families.
+
+The implementation retains the original architecture, learning rate,
+gradient bound and state-batch limits. Checks verify equal weights
+in the inference and resumable checkpoints, complete state coverage
+and the preserved optimizer lineage. The published implementation
+retains the inputs, learned parameters and exact reference
+records~\cite{ReductionModelData}.
+
+The training domain still consists of one changing target row and a
+fixed source-equation pool. The new records extend this domain
+through twelve loops for the coupled vacuum families specified
+above. They provide evidence about these allowed reduction steps;
+general sparse elimination inside Kira requires a separate
+integration and benchmark.

@@ -11,17 +11,19 @@ def savept(path,obj):
  assert tmp.stat().st_size<8388608;os.replace(tmp,path)
 def main():
  ap=argparse.ArgumentParser();ap.add_argument("--pilot",action="store_true");args=ap.parse_args()
- cfg=config();torch.set_num_threads(cfg["cpu_threads"]);torch.set_num_interop_threads(1)
+ cfg=config();training_threads=cfg.get("training_cpu_threads",cfg["cpu_threads"])
+ assert int(os.environ.get("NSLOTS","1"))>=training_threads
+ torch.set_num_threads(training_threads);torch.set_num_interop_threads(1)
  torch.manual_seed(cfg["split_seed"]);torch.use_deterministic_algorithms(True)
  data=read(HERE/"data/manifest.json");assert data["status"]=="complete"
  assert data["split_sha256"]==sha(HERE/"split_manifest.json")
- warm=HERE/"runs/before_all_loops_20/runs/latest.pt"
+ warm=HERE/"runs/before_expansion_250/runs/all_loops_latest.pt"
  initial=torch.load(warm,map_location="cpu",weights_only=False)
  model=SeedSelector(cfg);model.load_state_dict(initial["model"])
  opt=torch.optim.AdamW(model.parameters(),lr=cfg["learning_rate"],weight_decay=cfg["weight_decay"]);opt.load_state_dict(initial["optimizer"])
  lineage=dict(checkpoint=str(warm.relative_to(HERE)),sha256=sha(warm),completed_prior_epochs=initial["epoch"],
   targets_in_prior_partial_epoch=initial.get("processed_in_epoch",0),prior_optimizer_steps=initial["optimizer_steps"],
-  expanded_dataset_epochs=cfg["epochs"],previous_progress_preserved=True)
+  expanded_dataset_epochs=cfg["epochs"],previous_progress_preserved=True,prior_lineage=initial.get("lineage",{}))
  fingerprint=dict(manifest=sha(HERE/"data/manifest.json"),split=data["split_sha256"],config=sha(HERE/"config.json"),
   scripts={p.name:sha(p) for p in [HERE/"s02_model.py",HERE/"s12_prepare_features.py",HERE/"s13_batch.py",HERE/"s14_train_all_loops.py"]})
  checkpoint=HERE/"runs/all_loops_latest.pt";ep=0;next_family=0;history=[];updates=0;previous=0.
@@ -83,6 +85,7 @@ def main():
   training_targets=data["training_targets"],training_families=data["training_families"],
   held_out_targets=data["held_out_targets"],held_out_families=data["held_out_families"],
   optimizer_steps=updates,elapsed_seconds=elapsed(),test_data_used=False,max_rss_kib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
+  training_cpu_threads=training_threads,inference_cpu_threads=cfg["cpu_threads"],
   batch_targets=cfg["batch_targets"],batch_execution="same architecture, features, ordered pairs and per-target BCE; masked batches",
   model_bytes=(HERE/"trained_model.pt").stat().st_size)
  write(HERE/"trained_model.json",result);write(HERE/"runs/training_status.json",dict(result,status="complete"))

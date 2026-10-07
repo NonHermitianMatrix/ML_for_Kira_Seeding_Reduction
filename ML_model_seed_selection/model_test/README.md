@@ -1,13 +1,5 @@
 # Frozen expanded-data test
 
-The frozen model was tested on all 114,382 targets in 637 held-out families. At the fixed threshold 0.5, pooled precision is 90.415884%, recall is 76.305208%, F1 is 82.763408%, and complete reference-set agreement is 56.831494%. Mean target average precision is 93.737419%.
+The model completed twenty expanded-data training passes. Checkpoint SHA-256: b8fb9cc088bd4e0cbbe1168d1e5fbd733ebea361fd41d3de48827672732ed977. The next test uses 690,382 targets from 5137 held-out families spanning one through twelve loops. Weights, thresholds and confidence maps remain fixed. Training consumed no held-out labels.
 
-predictions/ stores per-family probability arrays, labels and target IDs; prediction_manifest.json identifies their hashes. per_target_metrics.jsonl.gz, family_metrics.json, test_results.json and curves.json give the measurements. s01_evaluate.py performs frozen inference, s02_run_test.sh runs the bounded test, s03_plot_results.py draws the six plots, s04_validate_outputs.py independently checks counts and saved probabilities, and s06_update_report.py renders the scientific sections.
-
-figures/ contains six PDF plots and PNG previews. validation.json records independent checks. archive_before_all_loops/ retains the previous tests and their source.
-
-Every loop order from one through twelve occurs in training and testing. Related new mass profiles stay within one split across loop orders. The new data use restricted coupled vacuum families, and different profiles can share lower-sector physics. Weights, split, threshold and confidence maps remain fixed during evaluation. The tests do not establish transfer to unseen loop orders.
-
-The labels identify one sufficient reference seed set. Alternative sufficient sets can differ, and this evaluation does not run Kira with the predicted sets or establish globally minimal seeds. Candidate-label accuracy must be read with the sparse positive-label fraction.
-
-Checkpoint SHA-256: 9c73aa38ce869f5d70f4c8f5a0a4944d69e4c43e35a4c3451ecb31e9076294cc.
+Previous tests, figures and source are preserved in archive_before_expansion_250/. Active test scripts now use the expanded manifest and report per-loop results. The seed test measures reference-set membership; the reduction test also replays complete exact target-row paths and compares their three sampled master expansions. Neither test proves globally optimal reductions or a full Kira speedup.

@@ -31,8 +31,9 @@ families. Every loop order from one through twelve occurs in both
 sets. Each added mass profile stays in one set across all loop orders.
 The ratio applies to complete target examples, each with its full
 candidate list. Shared lower-sector integrals can occur across
-different profiles, and the original held-out families were also
-evaluated in earlier project stages.
+different profiles, and previously reserved families were also
+evaluated in earlier project stages. The latest mass profiles were
+assigned before the new parameter updates.
 
 The training objective gives each target equal weight:
 \begin{equation}
@@ -53,9 +54,9 @@ reported decisions after the model supplies its probabilities.
 \subsection{Completed training and implementation checks}
 We continued the saved model and its AdamW optimizer on the expanded
 training set for twenty complete passes. The starting checkpoint
-had completed @PRIOR_EPOCHS@ passes over the earlier collection and
-@PRIOR_PARTIAL@ targets in its next pass. The new phase retains this
-learned state and uses its own twenty-pass counter. It contains
+had completed @PRIOR_EPOCHS@ passes over the preceding expanded
+collection. It also retains the earlier training lineage. The latest
+phase uses the enlarged collection and its own twenty-pass counter. It contains
 @PRESENTATIONS@ target presentations and @UPDATES@ parameter updates.
 
 The architecture still has 28,097 parameters. AdamW uses a learning
@@ -67,6 +68,9 @@ calculations retain every target term, every ordered pair of
 distinct terms and every supplied seed. Comparisons with the
 individual-target calculation verified matching scores, losses and
 parameter derivatives across individual-integral and multi-term examples.
+Training uses four CPU threads, while inference uses one. A comparison
+on training examples verified matching scores and parameter derivatives
+across the selected thread counts.
 
 The mean training loss changed from @FIRST_LOSS@ in the first
 expanded-data pass to @LAST_LOSS@ in the twentieth.

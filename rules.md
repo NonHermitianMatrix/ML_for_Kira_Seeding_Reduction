@@ -85,7 +85,7 @@
 
 ## Training and publication across loop orders
 
-- The user authorizes 100 additional families at each loop order from two through twelve, with complete master, target, seed and reduction records. Preserve existing one- and two-loop data and document the mathematical scope of the added families.
+- The user authorizes another 1,000 families at each loop order from one through twelve, in addition to the 250 per order just generated. Preserve all existing families and their split assignments, with complete master, target, seed and reduction records. Complete this larger collection before the next twenty-pass training phases, and document the mathematical scope of the families.
 - Preserve the existing grouped split and use a grouped 70:30 division for added profiles. Keep related mass profiles together across loop orders. Train both saved models for twenty full passes over the expanded training set; retain their previous checkpoint and optimizer state and record the warm-start lineage.
 - Publish the new data, code, trained models and READMEs to GitHub. Then test the frozen models on the expanded held-out set, publish tests and plots, update the report and synchronize it locally. This instruction supersedes the earlier cluster-only seed continuation rule.
 - Store generated datasets, model features, checkpoints and tests only on Hoffman and GitHub. Keep the complete project below the combined 10 GB ceiling and enforce memory limits. Update affected READMEs throughout the work.

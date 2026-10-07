@@ -1,11 +1,12 @@
 """Evaluate disjoint held-out families on four allocated CPU slots, then aggregate."""
-import hashlib,json,os,socket,subprocess,sys,time
+import argparse,hashlib,json,os,socket,subprocess,sys,time
 from pathlib import Path
 HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[1]
 def read(p):return json.loads(p.read_text(encoding="utf-8"))
 def write(p,obj):
  tmp=p.with_name(p.name+".part");tmp.write_text(json.dumps(obj,indent=2,sort_keys=True)+"\n",encoding="utf-8");os.replace(tmp,p)
 def main():
+ ap=argparse.ArgumentParser();ap.add_argument("--workers-only",action="store_true");args=ap.parse_args()
  cfg=read(HERE/"test_config.json");workers=cfg.get("parallel_workers",1)
  assert os.environ.get("JOB_ID"),"Use a compute allocation"
  assert 1<=workers<=4 and int(os.environ.get("NSLOTS","1"))>=workers
@@ -45,6 +46,7 @@ def main():
   signature=sig,elapsed_seconds=time.perf_counter()-started,
   statement="Disjoint families share one compute node; both policies retain paired timing and fixed weights within every family.")
  write(HERE/"parallel_execution.json",record)
+ if args.workers_only:return
  subprocess.run([sys.executable,str(HERE/"s02_evaluate.py"),"--aggregate-only"],cwd=str(ROOT),check=True)
  record["status"]="complete";record["elapsed_seconds"]=time.perf_counter()-started
  write(HERE/"parallel_execution.json",record)

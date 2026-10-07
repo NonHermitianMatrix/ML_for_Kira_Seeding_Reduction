@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Read the unified integral collection on Hoffman."""
-import argparse,gzip,json
+import argparse,gzip,lzma,json
 from pathlib import Path
 ROOT=Path(__file__).resolve().parent
 FILES={'inputs':('target_integrals','inputs.jsonl.gz'),
@@ -18,7 +18,8 @@ def records(family,kind='inputs'):
     if not family or not family.replace('_','').isalnum():raise ValueError('Invalid family identifier')
     category,filename=FILES[kind]
     path=ROOT/category/'families'/family/filename
-    op=gzip.open if path.suffix=='.gz' else open
+    if not path.exists() and path.suffix=='.gz':path=path.with_suffix('.xz')
+    op=lzma.open if path.suffix=='.xz' else gzip.open if path.suffix=='.gz' else open
     with op(str(path),'rt',encoding='utf-8') as f:
         if '.jsonl' in filename:
             for line in f:
