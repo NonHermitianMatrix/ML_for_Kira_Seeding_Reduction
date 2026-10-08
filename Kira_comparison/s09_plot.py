@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.ticker import NullFormatter
+plt.rcParams.update({"font.size":14,"axes.labelsize":14,"xtick.labelsize":12,"ytick.labelsize":12})
 def main():
  data=read(HERE/"summary.json");figdir=HERE/"figures";figdir.mkdir(exist_ok=True)
  labels={"ml_seeds":"Learned seeds + Kira","ml_reduction":"Learned rows + Kira","local_reduction":"Local rows + Kira"}
@@ -12,6 +14,9 @@ def main():
   fig.tight_layout();fig.savefig(figdir/(name+".pdf"),bbox_inches="tight")
   fig.savefig(figdir/(name+".png"),dpi=135,bbox_inches="tight");plt.close(fig)
  def clean(ax):
+  if ax.get_yscale()=="log":
+   lo,hi=ax.get_ylim();ticks=[v for v in [.1,.2,.5,1,2,5,10] if lo<=v<=hi]
+   ax.set_yticks(ticks);ax.set_yticklabels(["%g"%v for v in ticks]);ax.yaxis.set_minor_formatter(NullFormatter())
   for side in ("top","right"):ax.spines[side].set_visible(False)
   ax.grid(axis="y",alpha=.18)
  matched=[c for c in data["comparisons"] if c["baseline"]=="kira_pool"]
@@ -23,8 +28,8 @@ def main():
    ax.scatter(k+offsets,values,s=13,alpha=.55,color=colors[c["policy"]])
    ax.plot([k-.2,k+.2],[np.median(values)]*2,color="black",lw=2)
   ax.axhline(1,color="black",ls="--",lw=.8)
-  ax.set_xticks(range(len(matched)));ax.set_xticklabels([labels[c["policy"]].replace(" + Kira","\n+ Kira") for c in matched],fontsize=9)
-  ax.set_yscale("log");ax.set_ylabel("Time / Kira with full stored pool");ax.set_title(title,fontsize=10);clean(ax)
+  ax.set_xticks(range(len(matched)));ax.set_xticklabels([labels[c["policy"]].replace(" + Kira","\n+ Kira") for c in matched],fontsize=12)
+  ax.set_yscale("log");ax.set_ylabel("Time / full-pool Kira");ax.set_title(title,fontsize=14);clean(ax)
  save(fig,"kira_comparison_time")
  cases=data["cases"];lookup={(x["case"],x["size"],x["policy"]):x for x in cases}
  pairs=[]
@@ -39,21 +44,21 @@ def main():
    ax.scatter(b[field],x[field],marker=marker,color="#2166ac",alpha=.65,s=28)
   maximum=max([max(b[field],x[field]) for x,b in pairs]+[1])
   ax.plot([0,maximum],[0,maximum],ls="--",color="black",lw=.8)
-  ax.set_xlabel("Kira with full stored pool");ax.set_ylabel("Learned seeds, including fallback");ax.set_title(label,fontsize=10);clean(ax)
- axes[1].text(.03,.96,"Square: fallback used",transform=axes[1].transAxes,va="top",fontsize=9)
+  ax.set_xlabel("Kira with full stored pool");ax.set_ylabel("Learned seeds, including fallback");ax.set_title(label,fontsize=14);clean(ax)
+ axes[1].text(.03,.96,"Square: fallback used",transform=axes[1].transAxes,va="top",fontsize=12)
  save(fig,"kira_comparison_equations")
  fig,axes=plt.subplots(1,2,figsize=(10,4))
  for c in matched:
   v=[x["rss_ratio"] for x in c["pairs_detail"]]
   k=list(labels).index(c["policy"]);axes[0].scatter(k+np.linspace(-.1,.1,len(v)),v,s=13,alpha=.5,color=colors[c["policy"]])
- axes[0].set_xticks(range(3));axes[0].set_xticklabels(["Learned seeds","Learned rows","Local rows"],fontsize=9)
- axes[0].set_ylabel("Peak summed RSS / full-pool Kira");axes[0].axhline(1,ls="--",lw=.8,color="black");clean(axes[0])
+ axes[0].set_xticks(range(3));axes[0].set_xticklabels(["Learned seeds","Learned rows","Local rows"],fontsize=12)
+ axes[0].set_ylabel("Peak RSS / full-pool Kira");axes[0].axhline(1,ls="--",lw=.8,color="black");clean(axes[0])
  for x in cases:
   if x["policy"]!="ml_reduction" or not x["all_complete"]:continue
   b=lookup.get((x["case"],x["size"],"local_reduction"))
   if b and b["all_complete"] and b["preprocessor_all_complete"] and x["preprocessor_all_complete"]:axes[1].scatter(b["coefficient_field_operations"],x["coefficient_field_operations"],s=23,color="#b2182b",alpha=.6)
  limit=max(axes[1].get_xlim()[1],axes[1].get_ylim()[1]);axes[1].plot([0,limit],[0,limit],ls="--",lw=.8,color="black")
- axes[1].set_xlabel("Local-rule coefficient operations");axes[1].set_ylabel("Learned coefficient operations");clean(axes[1])
+ axes[1].set_xlabel("Local-rule field operations");axes[1].set_ylabel("Learned field operations");clean(axes[1])
  save(fig,"kira_comparison_memory_operations")
  fig,axes=plt.subplots(1,2,figsize=(10,4))
  for ax,baseline,title in zip(axes,["kira_native","kira_native_trim"],["Native Kira: default seeding","Native Kira: restricted seeding"]):
@@ -62,8 +67,8 @@ def main():
    if c:
     v=[x["cold_ratio"] for x in c["pairs_detail"]]
     ax.scatter(k+np.linspace(-.1,.1,len(v)),v,s=17,alpha=.6,color=colors[policy])
-  ax.axhline(1,ls="--",lw=.8,color="black");ax.set_xticks(range(3));ax.set_xticklabels(["Learned seeds","Learned rows","Local rows"],fontsize=9)
-  ax.set_yscale("log");ax.set_ylabel("Complete time / native Kira");ax.set_title(title,fontsize=10);clean(ax)
+  ax.axhline(1,ls="--",lw=.8,color="black");ax.set_xticks(range(3));ax.set_xticklabels(["Learned seeds","Learned rows","Local rows"],fontsize=12)
+  ax.set_yscale("log");ax.set_ylabel("Complete time / native Kira");ax.set_title(title,fontsize=14);clean(ax)
  save(fig,"kira_comparison_native")
  print("Four PDF/PNG plots written")
 if __name__=="__main__":main()

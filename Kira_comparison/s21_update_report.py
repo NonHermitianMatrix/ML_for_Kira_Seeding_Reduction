@@ -8,7 +8,7 @@ def comparison(data,baseline,policy):
 def ratio_fields(c):
  return "%.3f"%c["cold_geomean_ratio"],"%.3f"%c["warm_geomean_ratio"]
 def figure(name,caption,label):
- return "\n\\begin{figure}[htbp]\n\\centering\n\\includegraphics[width=\\linewidth]{figures/"+name+".pdf}\n\\caption{"+caption+"}\n\\label{fig:"+label+"}\n\\end{figure}\n"
+ return "\n\\begin{figure}[!htbp]\n\\centering\n\\includegraphics[width=\\linewidth]{figures/"+name+".pdf}\n\\caption{"+caption+"}\n\\label{fig:"+label+"}\n\\end{figure}\n"
 def replace_once(text,old,new):
  if new in text:return text
  assert text.count(old)==1,old[:100]
@@ -93,6 +93,7 @@ aggregate reduction in the stated time or committed-operation measures.
  content+=figure("kira_comparison_time","Matched time ratios relative to Kira with the full stored source pool. Each point uses a batch's three-repeat median. The left panel includes process and model loading; the right panel uses prepared family inputs and a loaded model. Short solid lines show the median case ratio; the dashed line denotes equal time.","kira-cost-time")
  content+=figure("kira_comparison_equations","Supplied source equations and equations selected by Kira for identical batches. Learned-seed counts include any full-pool fallback. Squares identify batches with fallback, and the diagonal denotes equal counts.","kira-cost-equations")
  content+=figure("kira_comparison_memory_operations","Sampled summed resident-memory ratios and committed coefficient-operation counts. Memory ratios use the largest recorded peak within each three-repeat group. The operation panel compares only batches that both row procedures completely reduced before the final Kira call. These counts exclude polynomial simplification and candidate-scoring work.","kira-cost-memory")
+ content+="\n\\FloatBarrier\n\\subsection{Native seeding results}\n"
  content+=fr"""
 The direct native-seeding comparison completed {native_done} learned
 trials, {kdone} default-baseline trials, {tdone} restricted-baseline
@@ -130,11 +131,12 @@ total cost under the tested settings.
  content+=figure("kira_native_learned_seeds","Direct native-seeding comparison on the largest frozen batches in seven independent-basis families. Ratios compare learned sector bounds with the three stated native baselines. Equation counts sum the initial system sizes that Kira reports for each attempt; internal regeneration can perform additional work.","native-learned-cost")
  content+=figure("kira_comparison_native","The methods using stored identities compared with native component reduction at the same targets and master basis. Native timings include equation generation and exact combination of the component results. This comparison changes the available source representation as well as the external method, so it does not isolate the benefit of learning.","native-stored-cost")
  failures=read(HERE/"validation.json")["incomplete_trials"]+read(HERE/"native_seed/validation.json")["incomplete_trials"]
+ assert not failures
  content+=fr"""
-Across both comparisons, {len(failures)} trials did not produce a
-checked complete result within the stated bounds. Their outcomes
-remain in the released records, and the paired timing ratios above
-use only cases with three completed repeats for both methods.
+\FloatBarrier
+Across both comparisons, all {a['trials']+b['trials']} trials produced a
+checked complete result within the stated bounds. The paired timing
+ratios above use three completed repeats for both methods.
 The recorded limits and three-repeat design bound the interpretation
 of small timing differences on the shared cluster.
 
@@ -216,11 +218,65 @@ families remains necessary before claiming general solver acceleration."""
  if oldlast in text:text=text.replace(oldlast,marked)
  elif "%% Kira cost conclusion begin" in text:
   text=re.sub(r"%% Kira cost conclusion begin.*?%% Kira cost conclusion end",lambda m:marked,text,flags=re.S)
+ elif "We tested two learned decision policies for IBP reduction" in text:pass
  else:raise ValueError("Unexpected conclusion text")
+ full_conclusion=fr"""
+We tested two learned decision policies for IBP reduction and measured
+their full cost with exact symbolic Kira reductions. Across the
+{a['trials']+b['trials']} comparison trials, every final expansion matched
+the constructed master coefficients. The current implementations
+increased aggregate elapsed time against their matched Kira baselines,
+which shows that recovering useful seeds or reduction steps alone
+does not establish a computational advantage~\cite{{KiraCostComparisonData}}.
+
+For the stored-equation comparison, learned seed selection reduced
+the supplied source count to {input_ratio:.3f} times the full-pool count,
+including fallback. Kira's selected-equation count was
+{selected_ratio:.3f} times the baseline, and the complete-process and
+prepared-input time ratios were {sc} and {sw}. The learned row method
+gave time ratios of {rc} and {rw} against full-pool Kira and {lc} and
+{lw} against the local row rule. On the {len(op)} batches that both row
+procedures completed before the final Kira call, the learned procedure
+used {int(ops_model):,} committed coefficient operations and the local
+rule used {int(ops_local):,}.
+
+The direct native comparison includes Kira's equation generation.
+Learned sector bounds gave complete-process and prepared-input time
+ratios of {nc} and {nw} against the stated default bounds, {tc} and
+{tw} against restricted bounds, and {xc} and {xw} against bounds taken
+directly from target indices. The learned method required fallback
+in {b['totals']['ml_native_seeds']['fallback_trials']} of its
+{b['totals']['ml_native_seeds']['trials']} trials. These measurements
+include model preparation, inference, exact algebra and verification.
+
+The integral collection contains 17,100 family instances, 57,979
+family-local master entries and 2,301,272 constructed targets.
+Their recorded identities connect the targets to known master
+combinations and provide sufficient reference seeds and operation
+counts~\cite{{HigherLoopIntegralData}}. On the 690,382 held-out targets,
+the seed model reached 96.318\% $F_1$, and its predicted stored
+equations sufficed inside Kira for 94.515\% of targets. The full
+candidate pool supplied a sufficient fallback for all targets.
+The earlier sampled row test reproduced the reference coefficients
+at three finite-field points for 99.988\% of targets, compared with
+99.901\% for the local rule, and used 17.657 times the mean reduction
+time~\cite{{SeedModelTestData,KiraSeedSufficiencyData,ReductionModelTestData}}.
+
+The higher-loop examples vary mass profiles within restricted coupled
+vacuum families, and every tested loop order also occurs in training.
+The native cost comparison covers seven independent-basis families
+at one and two loops. The row policy updates a target against fixed
+source identities. These scopes require further tests on larger
+independent multiloop families and Kira's evolving matrix before
+drawing conclusions about general solver performance.
+"""
+ start=text.index("\\section{Conclusion}");end=text.index("\\clearpage",start+1)
+ text=text[:start]+"\\section{Conclusion}\n\\label{sec:conclusion}\n"+full_conclusion+"\n"+text[end:]
  assert text.split("\\begin{abstract}",1)[1].split("\\end{abstract}",1)[0]==before
  from zoneinfo import ZoneInfo
  date=datetime.datetime.now(ZoneInfo("America/Los_Angeles")).strftime("%B %d, %Y").replace(" 0"," ")
  text=re.sub(r"\\date\{[^}]*\}",lambda m:"\\date{"+date+"}",text)
+ text=text.replace("\\clearpage\n\\section{Conclusion}", "\\section{Conclusion}")
  p.write_text(text,encoding="utf-8")
  p=report/"seed_kira_test.tex";t=p.read_text()
  t=t.replace("Native Kira equation generation from predicted\nseeds and comparisons with its own seeding heuristics remain\nseparate tests.",
@@ -243,6 +299,7 @@ families remains necessary before claiming general solver acceleration."""
 }}
 """
  if "@misc{KiraCostComparisonData," not in t:t+=entry
+ t=t.replace("Native Kira Baselines","Native {Kira} Baselines")
  p.write_text(t,encoding="utf-8")
  p=report/"README.md";t=p.read_text(encoding="utf-8")
  if "<!-- kira-cost-comparison -->" not in t:

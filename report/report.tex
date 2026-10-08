@@ -15,7 +15,7 @@
 \title{\textbf{Machine Learning for Kira IBP Reduction}\\
   \large Seed selection and elimination ordering}
 \author{}
-\date{October 7, 2026}
+\date{October 8, 2026}
 
 \begin{document}
 \maketitle
@@ -40,14 +40,15 @@ to reduce them. The implemented models and their completed training
 appear in Sections~\ref{sec:seed-model} and
 \ref{sec:reduction-model}, followed by their held-out tests.
 
-In a Kira integration, the seed model would act before equation
-generation and the elimination model would act when the solver
-selects a pivot. Kira would perform the selected algebraic operations.
 The present experiments test seed-reference agreement, whether
-the stored identities from the predicted seeds suffice for reductions
-inside Kira, and reduction of a target coefficient row.
-Native Kira equation generation and learned choices on its full
-evolving matrix remain separate integration steps.
+the stored identities from the predicted seeds suffice inside Kira,
+and reduction of a target coefficient row. We then compare complete
+symbolic reductions with Kira's existing strategies. A native adapter
+converts predicted seeds into sector bounds for equation generation,
+while the row adapter applies exact symbolic target-row updates before
+Kira finishes the reduction. Section~\ref{sec:cost-comparison} measures
+their costs. Learned choices on Kira's full evolving matrix require
+a separate integration.
 
 \subsection{Selecting seeds before equation generation}
 The first model receives the family definition, the target terms and
@@ -83,15 +84,14 @@ The retained later steps permit checks of the complete path and its
 arithmetic count, while predictive features use the current state
 and supplied actions. In the present data, the source identities stay
 fixed and one target row changes during reduction. Extending this
-procedure to Kira requires allowed choices that follow Kira's
+procedure to Kira's full evolving matrix requires choices that follow its
 integral ordering and evolving equations.
 
 The computational benefit depends on the total work: preparing
 features and evaluating the model must cost less than the algebraic
 work that its choices save. The tests therefore record complete-path
-arithmetic and timing as well as next-step agreement. Kira's existing
-finite-field reconstruction would remain responsible for obtaining
-symbolic coefficients in a later solver integration.
+arithmetic and timing as well as next-step agreement. The comparison in Section~\ref{sec:cost-comparison} measures
+complete symbolic reductions with the selected operations.
 
 \subsection{Integral data required for training and testing}
 To train and test both models, we need family denominators, kinematic
@@ -687,7 +687,7 @@ families and the stated construction bounds. The following sections
 describe seed-model training and its held-out comparison on the
 expanded collection. Section~\ref{sec:reduction-model} describes the reduction model.
 Section~\ref{sec:reduction-test} measures complete target-row sequences
-and their selection costs. Measurements of total runtime with native Kira seeding remain a later stage.
+and their selection costs. Section~\ref{sec:cost-comparison} compares complete symbolic reductions, including native Kira seeding.
 
 Before accepting the collection, we rederived all 55,654 stored source
 equations from their family definitions and checked the recorded
@@ -892,86 +892,59 @@ targets and complete reduction data~\cite{ExpandedIntegralData}.
 \input{seed_model_test}
 \input{reduction_model}
 \input{reduction_test}
+\input{kira_comparison}
 
-\clearpage
 \section{Conclusion}
 \label{sec:conclusion}
-We studied two System 1 models for choosing IBP seeds and allowed
-elimination steps, with exact arithmetic carrying out the selected
-row operations. To supply their training and test examples, we
-constructed targets from known master combinations through recorded
-integral identities and retained the corresponding seeds, master
-coefficients and elimination paths. The complete collection contains
-17,100 family instances, 57,979 family-local master entries and
-2,301,272 targets at loop orders from one through twelve.
-This construction lets us independently check the reference
-steps and master coefficients. The recorded paths provide
-sufficient seed sets and operation counts; establishing global
-minimality requires a separate proof~\cite{HigherLoopIntegralData}.
 
-After twenty further training passes, we tested both frozen models
-on 690,382 targets in 5,137 held-out families. The seed model reached
-95.750\% precision, 96.892\% recall and 96.318\% $F_1$ at the
-fixed probability threshold of one half. Its complete predicted
-seed set matched the recorded set for 84.332\% of targets, and
-its mean target average precision was 99.090\%. Input preparation
-and inference took 1.6881 ms per target on the test allocation.
-Exact symbolic tests in Kira found the predicted sets sufficient for
-652,517 targets (94.515\%) and the full candidate pool
-sufficient for all 690,382. The full pool therefore supplies a
-fallback within the stored domain for 37,865 incomplete predictions.
-All symbolic decisions agree with independent checks at three
-finite-field samples, and 70,302 sufficient selections differ
-from the reference sets~\cite{SeedModelTestData,KiraSeedSufficiencyData}.
+We tested two learned decision policies for IBP reduction and measured
+their full cost with exact symbolic Kira reductions. Across the
+876 comparison trials, every final expansion matched
+the constructed master coefficients. The current implementations
+increased aggregate elapsed time against their matched Kira baselines,
+which shows that recovering useful seeds or reduction steps alone
+does not establish a computational advantage~\cite{KiraCostComparisonData}.
 
-The reduction model selected identities from a fixed source pool
-to update one target row. On states with several allowed actions,
-its selected action matched the recorded choice in 95.845\% of
-cases. Equal highest scores occurred in 37.747\% of these states;
-sharing credit equally among those tied actions gave 74.506\%
-agreement. Complete learned paths reproduced the reference master
-coefficients at all three finite-field samples for 690,302 targets
-(99.988\%), compared with 689,700 targets (99.901\%) for the
-local comparison rule. The learned policy left 77 targets without
-an allowed next identity, and three further targets failed an
-additional-sample check after completing at the decision sample.
-These checks assess the sampled reductions; they do not supply
-a reconstructed symbolic answer for each learned
-path~\cite{ReductionModelTestData}.
+For the stored-equation comparison, learned seed selection reduced
+the supplied source count to 0.251 times the full-pool count,
+including fallback. Kira's selected-equation count was
+1.027 times the baseline, and the complete-process and
+prepared-input time ratios were 1.720 and 1.116. The learned row method
+gave time ratios of 1.719 and 1.205 against full-pool Kira and 1.520 and
+1.043 against the local row rule. On the 53 batches that both row
+procedures completed before the final Kira call, the learned procedure
+used 19,401 committed coefficient operations and the local
+rule used 18,881.
 
-Arithmetic counts and runtime measure the cost of the learned
-reduction choices. Among the 689,684 targets used for the paired
-operation-count comparison, the model used fewer committed row
-operations than the local rule for 6,846 targets and more for
-72,642. Its mean attempted reduction time was 12.3438 ms per
-target, compared with 0.6991 ms for the local rule, giving a
-runtime ratio of 17.657. Thus, the current reduction model has
-not demonstrated a speed advantage in this experiment.
-Agreement with recorded choices and completion of sampled
-reductions do not by themselves establish lower computational cost.
+The direct native comparison includes Kira's equation generation.
+Learned sector bounds gave complete-process and prepared-input time
+ratios of 1.596 and 1.344 against the stated default bounds, 1.671 and
+1.373 against restricted bounds, and 1.425 and 1.141 against bounds taken
+directly from target indices. The learned method required fallback
+in 9 of its
+21 trials. These measurements
+include model preparation, inference, exact algebra and verification.
 
-The scope of these conclusions follows from the generated
-integrals. The higher-loop examples vary mass profiles within
-restricted coupled vacuum families, with bounded equation pools
-and fixed massless propagator powers. Every tested loop order
-also occurs in training, and different profiles can share
-lower-sector integrals. The results therefore measure performance
-on reserved profiles within these domains; tests on general
-multiloop scattering families and unseen loop orders remain
-necessary.
+The integral collection contains 17,100 family instances, 57,979
+family-local master entries and 2,301,272 constructed targets.
+Their recorded identities connect the targets to known master
+combinations and provide sufficient reference seeds and operation
+counts~\cite{HigherLoopIntegralData}. On the 690,382 held-out targets,
+the seed model reached 96.318\% $F_1$, and its predicted stored
+equations sufficed inside Kira for 94.515\% of targets. The full
+candidate pool supplied a sufficient fallback for all targets.
+The earlier sampled row test reproduced the reference coefficients
+at three finite-field points for 99.988\% of targets, compared with
+99.901\% for the local rule, and used 17.657 times the mean reduction
+time~\cite{SeedModelTestData,KiraSeedSufficiencyData,ReductionModelTestData}.
 
-The constructed master expansions and checked reduction records
-provide a basis for studying learned choices while retaining
-explicit mathematical checks. The new Kira test establishes when
-the predicted sets suffice within the stored equation pools and
-checks the full-pool fallback for incomplete predictions.
-Further integration must generate identities from the predicted
-seeds through Kira's native family interface and assess the
-elimination model on the evolving IBP system. Comparisons must
-include feature preparation, model inference and exact algebra,
-together with total time, equation counts and memory against Kira's
-existing strategies, to determine whether the learned choices
-accelerate reduction.
+The higher-loop examples vary mass profiles within restricted coupled
+vacuum families, and every tested loop order also occurs in training.
+The native cost comparison covers seven independent-basis families
+at one and two loops. The row policy updates a target against fixed
+source identities. These scopes require further tests on larger
+independent multiloop families and Kira's evolving matrix before
+drawing conclusions about general solver performance.
 
 \clearpage
 \renewcommand{\refname}{Citations}

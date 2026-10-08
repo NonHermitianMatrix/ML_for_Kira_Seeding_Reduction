@@ -3,19 +3,23 @@ from s01_common import *
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.ticker import NullFormatter
+plt.rcParams.update({"font.size":14,"axes.labelsize":14,"xtick.labelsize":12,"ytick.labelsize":12})
 def main():
  data=read(HERE/"native_seed/summary.json");figdir=HERE/"figures";figdir.mkdir(exist_ok=True)
- fig,axes=plt.subplots(1,3,figsize=(12,4))
+ fig,axes=plt.subplots(1,3,figsize=(10,4.2))
  comparisons=data["comparisons"]
- for ax,field,title in zip(axes,["cold_ratio","warm_ratio","generation_ratio"],["Complete process","Prepared inputs and model","Reported initial equation counts"]):
+ for ax,field,title in zip(axes,["cold_ratio","warm_ratio","generation_ratio"],["Complete process","Prepared inputs\nand model","Initial equation\ncounts"]):
   for j,base in enumerate(["kira_native","kira_native_trim","kira_native_tight"]):
    c=next((x for x in comparisons if x["baseline"]==base),None)
    if c:
     v=[x[field] for x in c["pairs_detail"]]
     ax.scatter([j+(k-(len(v)-1)/2)*.025 for k in range(len(v))],v,color="#2166ac",s=30)
-  ax.axhline(1,ls="--",color="black",lw=.8);ax.set_xticks([0,1,2]);ax.set_xticklabels(["Default","Restricted","Target bounds"],fontsize=9)
-  ax.set_yscale("log");ax.set_ylabel("Learned native bounds / baseline" );ax.set_title(title)
+  ax.axhline(1,ls="--",color="black",lw=.8);ax.set_xticks([0,1,2]);ax.set_xticklabels(["Default","Restricted","Target\nbounds"],fontsize=12)
+  ax.set_yscale("log");ax.set_ylabel("Ratio to baseline" );ax.set_title(title)
   for side in ("top","right"):ax.spines[side].set_visible(False)
+  lo,hi=ax.get_ylim();ticks=[v for v in [.1,.2,.5,1,1.5,2,3,5,10] if lo<=v<=hi]
+  ax.set_yticks(ticks);ax.set_yticklabels(["%g"%v for v in ticks]);ax.yaxis.set_minor_formatter(NullFormatter())
   ax.grid(axis="y",alpha=.18)
  fig.tight_layout();fig.savefig(figdir/"kira_native_learned_seeds.pdf",bbox_inches="tight")
  fig.savefig(figdir/"kira_native_learned_seeds.png",dpi=135,bbox_inches="tight");plt.close(fig)
