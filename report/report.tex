@@ -43,10 +43,11 @@ appear in Sections~\ref{sec:seed-model} and
 In a Kira integration, the seed model would act before equation
 generation and the elimination model would act when the solver
 selects a pivot. Kira would perform the selected algebraic operations.
-The present experiments test seed-reference agreement and reduction
-of a target coefficient row against a fixed source-equation pool.
-Applying the models to Kira's full evolving system remains a separate
-step.
+The present experiments test seed-reference agreement, whether
+the stored identities from the predicted seeds suffice for reductions
+inside Kira, and reduction of a target coefficient row.
+Native Kira equation generation and learned choices on its full
+evolving matrix remain separate integration steps.
 
 \subsection{Selecting seeds before equation generation}
 The first model receives the family definition, the target terms and
@@ -60,11 +61,13 @@ During training, we pair each target with the seeds used by its
 checked reference reduction. Different reductions can use different
 sufficient sets, and the stored labels identify the selected reference
 set. They do not establish that every omitted seed is unnecessary.
-For use inside Kira, a reduction would generate equations from the
-predicted seeds and check whether they suffice in the chosen master
-basis. An unresolved target would require further seeds. The
-seed-model test below measures recovery of the recorded sets; it
-does not perform this complete solver test.
+For use inside Kira, we supply the stored equations associated with
+the predicted seeds and check whether they suffice in the chosen
+master basis. An unresolved target requires further identities.
+Section~\ref{sec:seed-test-results} measures recovery of the recorded
+sets and then tests their algebraic sufficiency through symbolic
+Kira reductions. The second test also checks the full candidate
+pool as a fallback.
 
 \subsection{Choosing elimination steps within the solver}
 The second model receives the current coefficient matrix and the
@@ -684,7 +687,7 @@ families and the stated construction bounds. The following sections
 describe seed-model training and its held-out comparison on the
 expanded collection. Section~\ref{sec:reduction-model} describes the reduction model.
 Section~\ref{sec:reduction-test} measures complete target-row sequences
-and their selection costs. Measurements of full Kira jobs remain a later stage.
+and their selection costs. Measurements of total runtime with native Kira seeding remain a later stage.
 
 Before accepting the collection, we rederived all 55,654 stored source
 equations from their family definitions and checked the recorded
@@ -913,11 +916,13 @@ fixed probability threshold of one half. Its complete predicted
 seed set matched the recorded set for 84.332\% of targets, and
 its mean target average precision was 99.090\%. Input preparation
 and inference took 1.6881 ms per target on the test allocation.
-These measurements show how closely the model recovers the recorded
-seeds. The sufficiency of its predicted sets inside Kira still
-requires a solver test, because alternative sufficient sets can
-differ from the reference and omitted reference seeds can leave
-a reduction incomplete~\cite{SeedModelTestData}.
+Exact symbolic tests in Kira found the predicted sets sufficient for
+652,517 targets (94.515\%) and the full candidate pool
+sufficient for all 690,382. The full pool therefore supplies a
+fallback within the stored domain for 37,865 incomplete predictions.
+All symbolic decisions agree with independent checks at three
+finite-field samples, and 70,302 sufficient selections differ
+from the reference sets~\cite{SeedModelTestData,KiraSeedSufficiencyData}.
 
 The reduction model selected identities from a fixed source pool
 to update one target row. On states with several allowed actions,
@@ -957,13 +962,15 @@ necessary.
 
 The constructed master expansions and checked reduction records
 provide a basis for studying learned choices while retaining
-explicit mathematical checks. To establish their use in Kira,
-we must test the seed model through complete reductions and supply
-additional seeds when necessary. We must also assess the elimination
-model on the evolving IBP system and include feature preparation,
-model inference and exact algebra in the cost. These tests must
-compare total time, equation counts and memory against Kira's
-existing strategies to determine whether the learned choices
+explicit mathematical checks. The new Kira test establishes when
+the predicted sets suffice within the stored equation pools and
+checks the full-pool fallback for incomplete predictions.
+Further integration must generate identities from the predicted
+seeds through Kira's native family interface and assess the
+elimination model on the evolving IBP system. Comparisons must
+include feature preparation, model inference and exact algebra,
+together with total time, equation counts and memory against Kira's
+existing strategies, to determine whether the learned choices
 accelerate reduction.
 
 \clearpage

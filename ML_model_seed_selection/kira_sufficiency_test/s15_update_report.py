@@ -150,19 +150,13 @@ seeds. The sufficiency of its predicted sets inside Kira still
 requires a solver test, because alternative sufficient sets can
 differ from the reference and omitted reference seeds can leave
 a reduction incomplete~\\cite{SeedModelTestData}."""
- new=rf"""These measurements show how closely the model recovers the recorded
-seeds~\cite{{SeedModelTestData}}. We then supplied the corresponding
-stored identities to Kira and established sufficiency for
-{passed:,} targets ({pct(passed):.3f}\%) with the predicted sets.
-The remaining {failed:,} targets had a nonzero remainder outside
-the specified master span.
-The full candidate pool was sufficient for {full:,} targets
-({pct(full):.3f}\%), which tests the fallback within the stored domain.
-These decisions follow from exact symbolic membership in the master
-span and agree with independent row-space checks at three
-finite-field samples.
-Among the sufficient predicted selections, {different:,} used a set
-different from the reference~\cite{{KiraSeedSufficiencyData}}."""
+ new=rf"""Exact symbolic tests in Kira found the predicted sets sufficient for
+{passed:,} targets ({pct(passed):.3f}\%) and the full candidate pool
+sufficient for all {full:,}. The full pool therefore supplies a
+fallback within the stored domain for {failed:,} incomplete predictions.
+All symbolic decisions agree with independent checks at three
+finite-field samples, and {different:,} sufficient selections differ
+from the reference sets~\cite{{SeedModelTestData,KiraSeedSufficiencyData}}."""
  assert old in s;s=s.replace(old,new)
  old="""explicit mathematical checks. To establish their use in Kira,
 we must test the seed model through complete reductions and supply
