@@ -1,0 +1,1 @@
+The initial master-span runs combined many independent selections. Some boxes exceeded 600 seconds or the per-file size bound. Complete results remain in results/. Smaller execution batches preserve every selected equation and target. The saved worker states document unresolved computations before that resume; those cases are not counted as insufficient seeds.

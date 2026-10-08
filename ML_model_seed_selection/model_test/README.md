@@ -11,3 +11,8 @@ Every loop order from one through twelve occurs in training and testing. Related
 The labels identify one sufficient reference seed set. Alternative sufficient sets can differ, and this evaluation does not run Kira with the predicted sets or establish globally minimal seeds. Candidate-label accuracy must be read with the sparse positive-label fraction.
 
 Checkpoint SHA-256: b8fb9cc088bd4e0cbbe1168d1e5fbd733ebea361fd41d3de48827672732ed977.
+
+<!-- exact-kira-sufficiency -->
+The exact Kira sufficiency test is complete for 690,382 reserved targets in 5,137 families. Predicted seeds suffice for 652,517 targets (94.515%). The full candidate pool suffices for 690,382 (100.000%), and background identities without IBP seeds suffice for 26,915 (3.899%). All symbolic decisions agree with three independent finite-field row-space checks. The model and threshold remain unchanged. This test checks existence of a reduction within the stored identity pools; it does not reconstruct all master coefficients or measure a native Kira speedup.
+
+See the [Kira sufficiency test](../kira_sufficiency_test/README.md) for the equations, fixed protocol, raw symbolic remainders and independent checks.

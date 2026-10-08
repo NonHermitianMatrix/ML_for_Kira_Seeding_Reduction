@@ -1,0 +1,13 @@
+jobs:
+  - reduce_user_defined_system:
+      input_system: {files: ["system.kira"], config: false, otf: false}
+      select_integrals:
+        select_mandatory_list:
+          - [targets]
+      preferred_masters: masters
+      run_initiate: true
+      run_triangular: true
+      run_back_substitution: true
+  - kira2file:
+      target:
+        - [targets]

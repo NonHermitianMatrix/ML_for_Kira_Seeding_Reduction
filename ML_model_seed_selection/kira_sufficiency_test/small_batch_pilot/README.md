@@ -1,0 +1,1 @@
+The complete trial passed for 283 targets. Its 209 compressed batch records, raw Kira exports and family summary are retained once in ../results/worker_14/ under box_profile_0168. validation.json records the counts and source hash.

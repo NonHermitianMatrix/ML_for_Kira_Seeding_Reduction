@@ -1,0 +1,45 @@
+{
+  "worker_output_bytes": 83886080,
+  "per_worker_output_reserves": {
+    "0": 33554432,
+    "1": 33554432,
+    "2": 50331648,
+    "3": 33554432,
+    "4": 50331648,
+    "5": 50331648,
+    "6": 50331648,
+    "7": 50331648,
+    "8": 50331648,
+    "9": 50331648,
+    "10": 83886080,
+    "11": 50331648,
+    "12": 50331648,
+    "13": 33554432,
+    "14": 50331648,
+    "15": 25165824
+  },
+  "completed_donor_workers": [
+    0,
+    1,
+    3,
+    13,
+    15
+  ],
+  "total_worker_output_reserve_bytes": 746586112,
+  "maximum_concurrent_workers": 8,
+  "scratch_per_worker_bytes": 67108864,
+  "auxiliary_reserve_bytes": 134217728,
+  "combined_reserved_bytes": 9874794112,
+  "scientific_inputs_unchanged": true,
+  "scripts": {
+    "s44_output_budget_80.py": "86aa228cb7e5f2409a875e6b6edcfe2d78d8e696214b194b97fe4f415d1aaa9d",
+    "s45_resume_large_output.py": "cee708f3085e42c39fcbb776259d1297bac9a5dbe86235da83ad52fe0f12979b",
+    "s46_run_large_output.sh": "aedf2bf2c7502c90fa1dce8b06f1b48ce8b59d76b3e3e83030900301a5b46c54"
+  },
+  "reason": "Redistribute unused reservations from completed shards to worker 10; its continuation waits for the preceding writer for that shard. Other independent workers remain within the combined eight-task bound.",
+  "scheduler_override": {
+    "job": 15098669,
+    "h_rt": "02:00:00",
+    "reason": "Only sixty missing families remain; shorten the reservation for scheduling."
+  }
+}

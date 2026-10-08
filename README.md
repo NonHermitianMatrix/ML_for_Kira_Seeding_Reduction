@@ -13,3 +13,8 @@ Both the [seed model](ML_model_seed_selection/README.md) and [reduction model](M
 The [report PDF](report/report.pdf), [LaTeX source](report/report.tex), [bibliography](report/references.bib) and [rules](rules.md) accompany the project. Hoffman is the primary working location. Generated integral data, encoded examples, trained models and tests stay on Hoffman and GitHub; only report files are also synchronized locally. The combined storage ceiling is 10 GB.
 
 Hoffman Git commands use `module load git/2.40.0`. To keep the project below 10 GB, the repository retains all working files and published history while using a partial Git object cache. GitHub supplies historical file objects when a command needs them; routine evaluation reads the complete working files directly.
+
+<!-- exact-kira-sufficiency -->
+The exact Kira sufficiency test is complete for 690,382 reserved targets in 5,137 families. Predicted seeds suffice for 652,517 targets (94.515%). The full candidate pool suffices for 690,382 (100.000%), and background identities without IBP seeds suffice for 26,915 (3.899%). All symbolic decisions agree with three independent finite-field row-space checks. The model and threshold remain unchanged. This test checks existence of a reduction within the stored identity pools; it does not reconstruct all master coefficients or measure a native Kira speedup.
+
+See the [Kira sufficiency test](ML_model_seed_selection/kira_sufficiency_test/README.md) for the equations, fixed protocol, raw symbolic remainders and independent checks.
