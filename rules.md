@@ -89,3 +89,7 @@
 - Preserve the existing grouped split and use a grouped 70:30 division for added profiles. Keep related mass profiles together across loop orders. Train both saved models for twenty full passes over the expanded training set; retain their previous checkpoint and optimizer state and record the warm-start lineage.
 - Publish the new data, code, trained models and READMEs to GitHub. Then test the frozen models on the expanded held-out set, publish tests and plots, update the report and synchronize it locally. This instruction supersedes the earlier cluster-only seed continuation rule.
 - Store generated datasets, model features, checkpoints and tests only on Hoffman and GitHub. Keep the complete project below the combined 10 GB ceiling and enforce memory limits. Update affected READMEs throughout the work.
+
+## Comparison with Kira
+
+- The study aims to reduce operation counts and/or runtime in seed selection and reduction. Compare the learned methods with existing Kira strategies on the same physical targets and master basis. Include input preparation, model inference, exact algebra, checks and fallback costs, and report failures and scope limits. Keep the frozen models and held-out split fixed during comparisons. Publish the comparison code, measurements, affected READMEs and revised report on Hoffman and GitHub, and synchronize the complete report locally.
