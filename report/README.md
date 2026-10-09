@@ -6,9 +6,7 @@ The local folder is /home/physics/projects/ML_for_Kira_SeedReduction/report. The
 
 The local project is a shallow, partial Git checkout. Its sparse file selection includes report/, rules.md and .gitignore. Integral datasets and model-training files are not checked out or downloaded.
 
-After report changes on Hoffman, rebuild the PDF and publish the sources and PDF together. From the local project root, update the local copy with:
-
-    git -c merge.stat=false pull --ff-only --no-stat
+After report changes on Hoffman, rebuild the PDF and publish the sources and PDF together. The local helper .tools/report-sync/s02_sync_report.py accepts the reviewed commit and its report-file hash manifest. It fetches commit/tree metadata with the blob:none filter and applies a two-tree fast-forward checkout restricted to the existing sparse paths. It prefetches only the explicitly allowed report/rules blobs and disables network access during checkout. This avoids downloading integral-data blobs or performing a content merge over them. The cache audit in s01_prune_git_cache.py verifies that only report, rules and .gitignore blobs remain locally, while preserving Git history metadata.
 
 The local Git connection uses the existing Hoffman SSH authentication and Hoffman's existing GitHub access. Its helper is .tools/report-sync/s00_git_via_hoffman.py, configured through core.sshCommand. No credentials are stored in this repository. The helper relays Git's SSH arguments through Hoffman. The connection requires network access to Hoffman.
 
@@ -38,3 +36,17 @@ The rendered paper has been checked for readable plot labels, continuous result 
 
 <!-- live-matrix-comparison -->
 kira_live_matrix.tex describes 84 repeated trials with the frozen row model inside Kira's symbolic forward elimination. It compares stock Kira, instrumented Kira, the deterministic schedule control and the learned policy on seven independent-basis families and 99 targets. The new time and operation figures are live_kira_times.pdf and live_kira_operations.pdf. The data release is d08fdcddcc64060a7f0ccd397fd3e0924b97c63a. All final reductions passed their exact checks. The supplied abstract is unchanged.
+
+<!-- native-acceleration -->
+kira_acceleration.tex and kira_acceleration_results.tex explain direct seed filtering, NumPy seed inference, the compiled source-row policy and their reserved native comparisons. The new plots are native_acceleration_times.pdf, native_acceleration_work.pdf and native_transfer_times.pdf. kira_adaptive_development.tex records the separate early-admission experiments, and kira_transfer_results.tex gives the two-loop transfer comparison. The numerical values come from Kira_comparison/acceleration/summary.json and its independent audit. The supplied abstract and earlier results remain unchanged. The complete report folder, including the new figures, is synchronized to Hoffman, GitHub and the local report directory.
+
+<!-- whole-expression-confirmation -->
+kira_expression_results.tex adds the complete-expression seed interface, its validation and its 360-record reserved confirmation. figures/whole_expression_times.pdf compares complete costs with the full equation pool and the fixed distance rule. The source values are expression_summary.json, expression_test_summary.json and their independent audits. The conclusion reports native, two-loop transfer and whole-expression results with their separate scopes.
+
+<!-- matched-admission-confirmation -->
+The additional matched-admission confirmation applies the same early master check and full-pool fallback to learned seeds and the 64-seed distance control. It contains 360 planned records, 348 measured trials and 345 exact completions. The learned complete-time ratios are 0.931643 (descriptive 95% interval 0.844721–1.030866; 23 complete paired batches) against the full pool and 0.925206 (descriptive 95% interval 0.847770–1.023721; 23 complete paired batches) against the matched distance control. The full-pool control completed 0 additional batches, and the learned method completed 0 additional batches. This repeats the same twelve physical family instances; it is not a new-family test. The first comparison is fully retained, and its distance control lacks the early admission check.
+
+kira_expression_matched.tex and figures/whole_expression_matched_times.pdf give the matched-admission result. Both selectors use the same early check in this comparison.
+
+<!-- single-target-result -->
+The predefined single-target comparison gives 8.6% lower geometric mean complete time against the full-pool Kira control and 8.7% lower time against the distance control with the same early check. Both descriptive intervals lie below one across all twelve held-out instances, with five exact repeats per method. The earlier confirmation gave 7.8% lower time against the full pool for this batch size. The sixteen-target intervals include one. This measured benefit applies to one constructed target expression at a time using an existing IBP identity pool; it does not establish a native Kira or general high-loop speedup.

@@ -47,8 +47,10 @@ symbolic reductions with Kira's existing strategies. A native adapter
 converts predicted seeds into sector bounds for equation generation,
 while the row adapter applies exact symbolic target-row updates before
 Kira finishes the reduction. Section~\ref{sec:cost-comparison} measures
-their costs. Learned choices on Kira's full evolving matrix require
-a separate integration.
+their costs. Section~\ref{sec:live-matrix} then places the row model
+inside Kira's evolving matrix, and Section~\ref{sec:native-acceleration}
+tests direct seed filtering and a compiled row policy with lower
+prediction costs.
 
 \subsection{Selecting seeds before equation generation}
 The first model receives the family definition, the target terms and
@@ -83,9 +85,10 @@ allowed pivots, and the recorded source row and integral to eliminate.
 The retained later steps permit checks of the complete path and its
 arithmetic count, while predictive features use the current state
 and supplied actions. In the present data, the source identities stay
-fixed and one target row changes during reduction. Extending this
-procedure to Kira's full evolving matrix requires choices that follow its
-integral ordering and evolving equations.
+fixed and one target row changes during reduction. The native
+integration follows Kira's integral ordering and supplies allowed
+choices from the current evolving equations. This changes the states
+seen by the model and requires separate exact and runtime checks.
 
 The computational benefit depends on the total work: preparing
 features and evaluating the model must cost less than the algebraic
@@ -894,6 +897,7 @@ targets and complete reduction data~\cite{ExpandedIntegralData}.
 \input{reduction_test}
 \input{kira_comparison}
 \input{kira_live_matrix}
+\input{kira_acceleration}
 
 \section{Conclusion}
 \label{sec:conclusion}
@@ -928,18 +932,25 @@ exact checks. The learned method took 1.305 times the complete
 stock-Kira time and used 5,771 committed coefficient operations
 against 5,070 for Kira's native policy. The forward-stage
 time ratio remained 62.270 after subtracting recorded model
-loading. The tested implementations increased aggregate runtime,
+loading. The earlier implementations increased aggregate runtime,
 and this evolving-matrix policy also increased the summed
 coefficient-operation count~\cite{KiraLiveMatrixData}.
 
+The new native integration filters individual IBP seeds and evaluates the source-row network inside Kira. Its complete-time ratios against restricted native Kira are 1.295, 1.024, 1.983, in seed, row and combined order. These ratios use 20, 21, 15 complete paired batches, respectively, with five repetitions per method. The complete paired comparisons do not show a lower aggregate runtime than restricted native Kira for these learned methods. Lower inference costs alone do not ensure that the chosen seeds and rows save enough algebraic work. All 590 completed trials matched their exact master coefficients~\cite{KiraNativeAccelerationData}.
+
+The separate two-loop transfer gave 60 exact completions. The compiled learned-row pipeline reduced the median complete time for 64 targets from 12.770 to 12.460 seconds, a 2.4\% decrease. Its advantage over the deterministic compiled source control remained unresolved, and the full-pool control was faster at 11.773 seconds. This limited native-baseline gain does not establish a general benefit from learned row choices.
+
+Direct reduction of complete target expressions provides a different use of the seed model. The first confirmation contains 360 planned records and 345 exact completions. A second comparison applies the same early master check to learned and distance-selected seeds and contains 360 planned records and 345 exact completions. In this matched comparison, complete-time ratios are 0.932 against the full supplied-equation pool and 0.925 against the fixed distance control. The learned workflow has an observed 6.8\% lower geometric mean complete time than the full-pool Kira control on batches where both methods completed all five repetitions. Because the descriptive interval includes one, the aggregate timing gain across both batch sizes remains uncertain. For the predefined single-target comparison, the learned method reduced geometric mean complete time by 8.6\% relative to the full pool and by 8.7\% relative to the distance rule with the same early check. Both descriptive intervals lie below one, and every method completed all five repeats for all twelve instances. The first confirmation gave a 7.8\% reduction relative to the full pool for this batch size. These results support a repeated gain for one constructed target expression at a time in this stored-identity setting. The sixteen-target intervals include one, so that batch size does not establish a consistent gain. The geometric means of the twelve per-family median complete times were 5.478 seconds for the full pool and 5.005 seconds for the learned method. Prior generation of the common identity pool is outside these measurements \cite{KiraNativeAccelerationData}.
+
 The higher-loop collection varies mass profiles within restricted
 coupled vacuum families, and all tested loop orders occur in training.
-Native timing tests and the evolving-matrix experiment cover seven
-independent-basis families at one and two loops. The current evidence
-supports conclusions within these domains and the specified action
-sets. Tests on larger independent multiloop systems and training on
-their changing IBP matrices remain necessary to assess broader
-performance.
+The earlier native comparisons cover seven independent-basis families
+at one and two loops, while the new reserved comparison covers
+twelve one-loop box instances in six kinematic groups. These results
+support conclusions within the tested domains, resource limits and
+action sets. Larger independent multiloop systems and cost-oriented
+training on their changing IBP matrices remain necessary to assess
+broader performance.
 
 \clearpage
 \renewcommand{\refname}{Citations}

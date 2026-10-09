@@ -64,7 +64,7 @@ if (HERE/"expression_test_summary.json").exists():
  out.append(f'The frozen plan contains {s["planned"]} records. We executed {s["executed"]} trials and obtained {s["exact"]} exact completions; {s["executed"]-s["exact"]} measured trials failed to complete within the bounds, and {s["planned"]-s["executed"]} remaining repeats were skipped after an earlier failure. Every completed master expansion matched its exact reference, and the independent audit checked {a["independent_master_sample_checks"]:,} target coefficients directly against the exported Kira reductions. Skipped repetitions have no assigned runtime.')
  for method,label in [(policy,"The learned interface"),("stored_pool","The full-pool control"),("stored_distance","The distance control")]:
   t=s["totals"][method]
-  out.append(f'{label} produced {t["exact"]} exact completions, {t["failed"]} failed trials and {t["skipped"]} skipped repeats. Completed trials used fallback {t["completed_fallbacks"]} times.')
+  out.append(f'{label} produced {t["exact"]} exact completions, {t["failed"]} failed trial{"s" if t["failed"] != 1 else ""} and {t["skipped"]} skipped repeats. Completed trials used fallback {t["completed_fallbacks"]} times.')
  out.append(r'We form a median from five successful repetitions for each method and batch, and take geometric mean ratios over complete paired batches. Descriptive 95\% intervals resample the six kinematic groups 10,000 times, preserving the relationship between profiles and batch sizes. Completion losses remain separate from these ratios.')
  for c in s["comparisons"]:
   if c["numerator"]=="stored_distance" or c["size"] is not None:continue

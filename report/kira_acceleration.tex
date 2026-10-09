@@ -1,0 +1,185 @@
+\section{Direct Seed Filtering and Lower-Cost Model Inference}
+\label{sec:native-acceleration}
+The preceding comparisons show that a learned choice must save more
+algebraic work than its prediction costs. We therefore changed the
+interfaces between the frozen models and Kira, and measured the complete
+reductions again. The seed interface can now select individual seeds
+before Kira constructs their equations. We also tested a smaller set of
+row choices that follows the form of the reduction model's training
+examples. The original checkpoints remain unchanged.
+
+\subsection{Relating the predicted seeds to Kira's targets}
+A stored target can contain several integrals,
+\begin{equation}
+ \mathcal T_\nu=\sum_{\boldsymbol a\in\mathcal J_\nu}
+ c_{\nu\boldsymbol a}(\boldsymbol x,d)I_{\boldsymbol a}.
+ \label{eq:accel-expression}
+\end{equation}
+Here $\nu$ identifies a target, $\mathcal J_\nu$ is its set of component index vectors, and
+$c_{\nu\boldsymbol a}$ is the known coefficient of each component.
+The native interface asks Kira to reduce these components and then
+combines their reductions with exact algebra. This procedure provides
+two possible inputs for the seed model: the complete expression $\mathcal T_\nu$,
+or each component $I_{\boldsymbol a}$ with coefficient one.
+
+Let $\mathcal C$ be the stored candidate seed pool and let
+$p_\theta(\boldsymbol b\mid \mathcal T_\nu)$ denote the frozen model's score for
+seed $\boldsymbol b$, with the family and chosen masters also supplied.
+For a threshold $\tau$, the expression-based seed set is
+\begin{equation}
+ \widehat{\mathcal S}_{\rm expr}(\tau)
+ =\bigcup_\nu\{\boldsymbol b\in\mathcal C:
+             p_\theta(\boldsymbol b\mid \mathcal T_\nu)\geq\tau\}.
+\end{equation}
+The component-based set instead uses
+\begin{equation}
+ \widehat{\mathcal S}_{\rm comp}(\tau)
+ =\bigcup_{\boldsymbol a\in\cup_\nu\mathcal J_\nu}
+ \{\boldsymbol b\in\mathcal C:
+       p_\theta(\boldsymbol b\mid I_{\boldsymbol a})\geq\tau\}.
+\end{equation}
+Components already in the prescribed master basis need no prediction.
+A seed set sufficient for the combined expression can differ from a set
+sufficient for all components separately, since terms can cancel in
+Eq.~\eqref{eq:accel-expression}. Both interfaces therefore require a
+check of the final expression in the prescribed master basis.
+
+We also test a local enlargement of a predicted set,
+\begin{equation}
+ \mathcal N_1(\mathcal S)
+ =\left\{\boldsymbol b\in\mathcal C:
+   \min_{\boldsymbol a\in\mathcal S}
+   \sum_{i=1}^{N}|b_i-a_i|\leq1\right\}.
+ \label{eq:seed-neighbours}
+\end{equation}
+Here $N$ is the number of family indices. This rule adds candidate seeds
+that differ by one unit in one index. It supplies nearby IBP relations
+without using the reference reduction. It gives no general proof that
+the set suffices.
+
+\subsection{Filtering before equation construction}
+The earlier native adapter represented predictions by sector bounds.
+Those bounds include intermediate seeds even when the model omitted
+them. The new interface still supplies bounds that contain the chosen
+seeds, but it also checks each seed vector before Kira constructs its
+IBP equations. A vector outside the selected set contributes no IBP
+equations through this call. Kira retains its symmetry handling,
+equation selection, exact elimination and back substitution
+\cite{Kira3}. The audit records both the allowed seed vectors and the
+vectors that the generator actually used.
+
+The model scores and the reference master coefficients serve separate
+purposes. Predictions use only public family, target, master-label and
+candidate information. After reduction, we check whether the target
+contains any integral outside the prescribed master basis. An incomplete
+learned attempt triggers a standard restricted native calculation within
+the remaining time allowance. The final symbolic coefficients are then
+compared with the recorded exact answer. Prediction, preparation,
+unsuccessful attempts, fallback, target combination and exact checks
+all contribute to the measured complete time.
+
+\subsection{Reducing prediction costs and choosing a source row}
+We exported the trained weights to a NumPy implementation of the same
+layers. This removes the need to import the training framework for each
+reduction, and it reuses the family, master and candidate embeddings
+within a target batch. On 64 development targets, the seed probabilities
+differed from the original implementation by at most
+$4.18\times10^{-6}$, and every decision at threshold $0.5$ agreed.
+Separate bounded feature checks verified the exported row network.
+These checks concern numerical inference; exact reduction still comes
+from Kira and the final coefficient checks.
+
+For the row model, we first retained the full changing-matrix interface
+of Section~\ref{sec:live-matrix} with the exported network. We then
+restricted each decision to a source row for one current destination.
+Using the leading-column group $R_{k_n}^{(n)}$ defined there, the largest
+row identifier selects the destination $r_n$, and the model scores
+\begin{equation}
+ \mathcal A_n^{\rm source}
+ =\{(q,r_n,k_n):q\in R_{k_n}^{(n)},\ q\ne r_n\}.
+\end{equation}
+The feature input contains the current rows in this group, with the
+destination assigned the target role. Thus the model sees one changing
+destination and its allowed sources, as in its training examples.
+Kira applies the selected exact update from
+Eq.~\eqref{eq:live-update}. The source can itself have changed in an
+earlier step. The candidate count falls from $g(g-1)$ to $g-1$ for a
+group of $g$ rows, while Kira's ordering still fixes the pivot column.
+If the group contains only two rows, the supplied action set has one
+element, so we apply that forced action without evaluating the network.
+
+We also implemented the source-row network inside Kira's compiled
+reduction code. Each choice reads the current rows directly, samples
+their rational coefficients at the fixed finite-field point and forms
+the same input features. The trained weights and features retain their
+single-precision values, while the compiled layer arithmetic uses
+double precision. An independent implementation with the same
+arithmetic precision checks the probabilities, and development tests
+also compare selected sources with the original single-precision
+network. This numerical prediction only selects a valid source; Kira
+continues to perform the rational row update exactly.
+
+The compiled interface removes per-choice communication with a Python
+process. It retains an audit of chosen rows and their probabilities,
+and the measured time includes this audit. A combined method applies
+both the learned seed filter and the compiled row policy during the
+same reduction. An incomplete seed attempt uses the same exact
+fallback rule as the seed-only method.
+
+
+This restriction changes the model's supplied state and action set.
+Its purpose is to reduce prediction work and test transfer to a
+closer training configuration. It does not establish an optimal
+elimination order, and its benefit must be measured against Kira's
+native choices.
+
+\input{kira_adaptive_development}
+
+\subsection{Development, validation and reserved comparisons}
+We selected family instances before the new timing comparisons.
+Development and adapter-validation instances use separate kinematic
+groups from the original model-training partition. The reserved
+cost-test instances come from the original test partition, and their
+kinematic groups exclude every box group in the earlier cost comparison.
+The network weights remain fixed throughout this selection.
+The adapter-validation families belong to the original training
+partition, so this stage selects an interface configuration and does
+not measure generalization of the network itself. We performed
+development comparisons on three of the reserved development
+instances, selected the seed configuration on six validation instances
+and then froze the policy before testing twelve instances from six
+reserved kinematic groups.
+
+All new native cases use symbolic reduction of one-loop box families
+with independent propagator bases. Each case uses the same target expressions and master
+basis for every method. Controls include restricted native seed bounds,
+bounds taken directly from target indices, and the full stored candidate
+pool with the individual-seed filter. These controls separate the
+learned selection from changes to seed bounds or equation generation.
+
+Every trial uses one computation thread with explicit time, memory and
+scratch limits. We increased the array allowance from two simultaneous
+jobs to four and then eight after checking the available node memory and project
+storage. This changed the scheduling of independent trials while
+preserving their individual resource limits and frozen policies. Methods run in rotated order on the same node for each
+family and target-batch size. The retained-evidence limit interrupted some batches before a new trial could start; after lossless archive recompression, we resumed the missing trials on their original nodes and retained every completed observation. Every reserved method receives the same
+initial 160-second native calculation allowance within a 180-second
+complete-process limit. The memory and scratch limits are also the
+same. We retain failed trials and report their completion status.
+The validation rule assigns the 180-second total cap to an incomplete
+trial when choosing the learned seed configuration. This capped score
+is a selection rule; it is not a measured time for a completed
+reduction. The reserved comparison uses the frozen configuration,
+five repetitions and batches of 16 and 64 stored target expressions.
+After an unsuccessful attempt, the remaining identical repetitions for
+that method and batch are marked as skipped. Skipped repetitions receive
+no measured time. Timing ratios require five successful repeats for both
+methods, while completion and failure counts retain every attempted
+case.
+
+\input{kira_acceleration_results}
+\input{kira_transfer_results}
+
+\input{kira_expression_results}
+
+\input{kira_expression_matched}

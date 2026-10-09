@@ -26,7 +26,7 @@ the definitions in the preceding subsection.
 parts.append(f'The comparison with the same early check contains {s["planned"]} records, of which {s["executed"]} are measured trials. It produced {s["exact"]} exact completions, {s["executed"]-s["exact"]} incomplete measured trials and {s["planned"]-s["executed"]} skipped repetitions. Independent checks evaluated {a["independent_master_sample_checks"]:,} target coefficients against the raw Kira exports. All completed reductions matched their exact reference coefficients.')
 for name,label in [(policy,"The learned method"),("stored_pool","The full-pool control"),("stored_distance_checked","The distance control with the early check")]:
  t=s["totals"][name]
- parts.append(f'{label} completed {t["exact"]} trials exactly, with {t["failed"]} failed trials and {t["skipped"]} skipped repetitions. Its completed trials required fallback {t["completed_fallbacks"]} times.')
+ parts.append(f'{label} completed {t["exact"]} trials exactly, with {t["failed"]} failed trial{"s" if t["failed"] != 1 else ""} and {t["skipped"]} skipped repetitions. Its completed trials required fallback {t["completed_fallbacks"]} times.')
 for c in s["comparisons"]:
  if c["numerator"]!=policy:continue
  control="the full-pool control" if c["denominator"]=="stored_pool" else "the distance control with the same early check"
