@@ -1,0 +1,37 @@
+--- a/src/kira/connect2kira.cpp
++++ b/src/kira/connect2kira.cpp
+@@ -36,6 +36,7 @@
+ #include <sstream>
+ #include <string>
+ 
++#include "s01_reap_child.h"
+ #include "kira/connect2kira.h"
+ #include "kira/exceptions.h"
+ #include "kira/tools.h"
+@@ -654,24 +655,8 @@
+   fclose(g_to);
+   fclose(g_from);
+ 
+-  // give Fermat some time to properly close itself
+-  std::this_thread::sleep_for(1s);
+-
+-  // check if Fermat closed itself properly
+-  pid_t tmp = waitpid(g_childpid, &status, WNOHANG);
+-
+-  if (tmp == g_childpid) {
+-    if (!WIFEXITED(status) && !WIFSIGNALED(status)) {
+-      // Fermat still runs, force termination
+-      kill(g_childpid, SIGKILL);
+-      waitpid(g_childpid, &status, 0);
+-    }
+-  }
+-  else if (tmp == 0) {
+-    // Fermat still runs, force termination
+-    kill(g_childpid, SIGKILL);
+-    waitpid(g_childpid, &status, 0);
+-  }
++  // Reap promptly, retaining the original one-second grace and kill fallback.
++  kira_responsive::reap(g_childpid, status);
+ 
+   if (mustCleanup) {
+     delete[] g_baseout;
