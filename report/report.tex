@@ -893,58 +893,53 @@ targets and complete reduction data~\cite{ExpandedIntegralData}.
 \input{reduction_model}
 \input{reduction_test}
 \input{kira_comparison}
+\input{kira_live_matrix}
 
 \section{Conclusion}
 \label{sec:conclusion}
+We constructed exact master-based integral data and tested learned
+policies for seed selection and row reduction. The collection contains
+17,100 family instances, 57,979 family-local master entries and
+2,301,272 targets with recorded identities, seed sets and reduction
+paths. These paths establish valid constructions and reference costs;
+they do not establish globally minimal reductions.
 
-We tested two learned decision policies for IBP reduction and measured
-their full cost with exact symbolic Kira reductions. Across the
-876 comparison trials, every final expansion matched
-the constructed master coefficients. The current implementations
-increased aggregate elapsed time against their matched Kira baselines,
-which shows that recovering useful seeds or reduction steps alone
-does not establish a computational advantage~\cite{KiraCostComparisonData}.
+On the 690,382 held-out targets, the seed model reached 96.318\%
+$F_1$, and its predicted stored equations supplied complete master-span
+reductions for 94.515\% of targets. The full candidate pool supplied a
+sufficient fallback for all targets. The earlier sampled row test
+reproduced reference coefficients for 99.988\% of targets and required
+17.657 times the local rule's mean reduction time
+\cite{SeedModelTestData,KiraSeedSufficiencyData,ReductionModelTestData}.
 
-For the stored-equation comparison, learned seed selection reduced
-the supplied source count to 0.251 times the full-pool count,
-including fallback. Kira's selected-equation count was
-1.027 times the baseline, and the complete-process and
-prepared-input time ratios were 1.720 and 1.116. The learned row method
-gave time ratios of 1.719 and 1.205 against full-pool Kira and 1.520 and
-1.043 against the local row rule. On the 53 batches that both row
-procedures completed before the final Kira call, the learned procedure
-used 19,401 committed coefficient operations and the local
-rule used 18,881.
+The 876 earlier cost-comparison trials all matched their exact master
+coefficients. Learned seed filtering reduced supplied equations to
+0.251 times the full-pool count, while Kira's selected-equation count
+was 1.027 times the baseline. Complete and prepared-input time ratios
+were 1.720 and 1.116. Target-row preprocessing gave corresponding
+ratios of 1.719 and 1.205. Direct learned seed bounds gave ratios of
+1.671 and 1.373 against restricted native Kira. These results include
+prediction, exact algebra, checks and required fallback
+\cite{KiraCostComparisonData}.
 
-The direct native comparison includes Kira's equation generation.
-Learned sector bounds gave complete-process and prepared-input time
-ratios of 1.596 and 1.344 against the stated default bounds, 1.671 and
-1.373 against restricted bounds, and 1.425 and 1.141 against bounds taken
-directly from target indices. The learned method required fallback
-in 9 of its
-21 trials. These measurements
-include model preparation, inference, exact algebra and verification.
+The additional 84 trials place the frozen row policy inside
+Kira's evolving selected IBP matrix. Every final reduction passed its
+exact checks. The learned method took 1.305 times the complete
+stock-Kira time and used 5,771 committed coefficient operations
+against 5,070 for Kira's native policy. The forward-stage
+time ratio remained 62.270 after subtracting recorded model
+loading. The tested implementations increased aggregate runtime,
+and this evolving-matrix policy also increased the summed
+coefficient-operation count~\cite{KiraLiveMatrixData}.
 
-The integral collection contains 17,100 family instances, 57,979
-family-local master entries and 2,301,272 constructed targets.
-Their recorded identities connect the targets to known master
-combinations and provide sufficient reference seeds and operation
-counts~\cite{HigherLoopIntegralData}. On the 690,382 held-out targets,
-the seed model reached 96.318\% $F_1$, and its predicted stored
-equations sufficed inside Kira for 94.515\% of targets. The full
-candidate pool supplied a sufficient fallback for all targets.
-The earlier sampled row test reproduced the reference coefficients
-at three finite-field points for 99.988\% of targets, compared with
-99.901\% for the local rule, and used 17.657 times the mean reduction
-time~\cite{SeedModelTestData,KiraSeedSufficiencyData,ReductionModelTestData}.
-
-The higher-loop examples vary mass profiles within restricted coupled
-vacuum families, and every tested loop order also occurs in training.
-The native cost comparison covers seven independent-basis families
-at one and two loops. The row policy updates a target against fixed
-source identities. These scopes require further tests on larger
-independent multiloop families and Kira's evolving matrix before
-drawing conclusions about general solver performance.
+The higher-loop collection varies mass profiles within restricted
+coupled vacuum families, and all tested loop orders occur in training.
+Native timing tests and the evolving-matrix experiment cover seven
+independent-basis families at one and two loops. The current evidence
+supports conclusions within these domains and the specified action
+sets. Tests on larger independent multiloop systems and training on
+their changing IBP matrices remain necessary to assess broader
+performance.
 
 \clearpage
 \renewcommand{\refname}{Citations}

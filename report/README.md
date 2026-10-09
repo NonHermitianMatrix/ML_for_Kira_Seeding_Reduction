@@ -25,7 +25,7 @@ The report distinguishes reference-set agreement from seed sufficiency, recorded
 
 The bibliography links the expanded data and models to commit 0be1c2b3884bc736e22901a7e2304e3ba6d75497 and the tested outputs to commit 2ed8b26e977fa2dca5f464532ee9891712f7f417. Raw data, models and predictions remain on Hoffman and GitHub; only the complete report is synchronized locally.
 
-The conclusion in report.tex brings together the master-based target construction, both frozen-model tests, the measured reduction cost and the limits of the tested family domains. It includes the new symbolic master-span sufficiency test in Kira and identifies the native equation-generation and total-cost comparisons still needed to assess a solver speedup. The reported test data and model weights remain those of the cited releases.
+The conclusion in report.tex brings together the master-based target construction, both frozen-model tests, the measured reduction cost and the limits of the tested family domains. It includes the symbolic master-span sufficiency test, native equation-generation comparisons and evolving-matrix cost measurements. The reported test data and model weights remain those of the cited releases.
 
 seed_kira_test.tex describes all 690,382 reserved targets tested for exact membership in their master span with predicted, full and empty IBP seed sets through Kira's user-defined-system interface. Predicted sets suffice for 652,517 targets (94.515%). The full candidate pool suffices for 690,382. The associated results and code are fixed at 097204f4228b5999c4379c8da57db1aa9495c367; the new PDF figures are kira_seed_sufficiency.pdf and kira_seed_sets.pdf. These are exact symbolic membership tests within the stored source pools, with three independent finite-field rank checks. The full experiment does not reconstruct all rational master coefficients. This experiment does not measure native Kira seeding or a total solver speedup.
 
@@ -33,3 +33,8 @@ seed_kira_test.tex describes all 690,382 reserved targets tested for exact membe
 kira_comparison.tex reports the complete symbolic cost comparison: 792 main trials in 19 held-out families and 84 direct native seed-bound trials in seven independent-basis families. The same frozen models, targets and prescribed master bases are used throughout. The five new comparison figures show complete and prepared-input time, equation counts, memory, committed row operations and native seeding. Both fallback and incomplete trials remain in the accounting. The report distinguishes stored identities from native generation and target-row preprocessing from full Kira pivot selection. The fixed data release is 297d7dd0c134e9f873de36b818c8dd3377c9089c. The supplied abstract remains unchanged.
 
 The rendered paper has been checked for readable plot labels, continuous result paragraphs, complete citations and preserved abstract text. Its conclusion distinguishes the full integral collection from the held-out test set and states the measured runtime increases.
+
+
+
+<!-- live-matrix-comparison -->
+kira_live_matrix.tex describes 84 repeated trials with the frozen row model inside Kira's symbolic forward elimination. It compares stock Kira, instrumented Kira, the deterministic schedule control and the learned policy on seven independent-basis families and 99 targets. The new time and operation figures are live_kira_times.pdf and live_kira_operations.pdf. The data release is d08fdcddcc64060a7f0ccd397fd3e0924b97c63a. All final reductions passed their exact checks. The supplied abstract is unchanged.

@@ -48,6 +48,8 @@ system and perform back substitution~\cite{Kira3}.
 
 \subsection{Choices in the current IBP matrix}
 We retain the matrix notation of Eq.~\eqref{eq:reduction-action}.
+At step $n$, $A^{(n)}_{rj}$ is the coefficient of integral $j$ in
+identity row $r$.
 Let $w(j)$ be Kira's ordering weight for integral column $j$, with larger
 weights denoting integrals to eliminate earlier. The leading column of a
 nonzero row $r$ and the rows with a common leading column are
@@ -63,6 +65,7 @@ rows. If this column is $k_n$, the allowed choices are
  \{(q,r,k_n):q,r\in R_{k_n}^{(n)},\ q\ne r\}.
  \label{eq:live-actions}
 \end{equation}
+Here $q$ is the source row and $r$ is the destination row.
 The prescribed master columns remain protected. A proposed elimination
 of a protected master, or a zero pivot at the public sampling point,
 causes the learned trial to fail its interface check.
@@ -93,7 +96,7 @@ solve, and it receives the initial matrix followed by each changed row.
 A system with no allowed row updates does not load the model.
 
 \subsection{Matched controls and measurements}
-We use the same seven independent-basis families and 99 targets as the
+We use the same seven families with independent master bases and 99 targets as the
 native comparison in Section~\ref{sec:cost-comparison}. They include three
 one-loop box profiles, a one-loop bubble, triangle and tadpole, and a
 two-loop propagator. All methods use the same restricted native seed
@@ -136,13 +139,13 @@ polynomial work in rational simplification. Elapsed time includes that
 work and the candidate trial updates used to prepare features.
 The tests keep the action capacity at 10,000, the matrix capacity at
 10,000 rows and 250,000 nonzeros, and use bounded time and memory.
-These are limits of this implementation rather than statements about
-general IBP-system size.
+These limits bound the systems and action sets tested here.
 
 \subsection{Exact checks and measured results}
 All @@TRIALS@@ final trials produced the prescribed symbolic master
 coefficients. Independent evaluation of the archived native exports
-passed @@CHECKS@@ target-sample checks, and the saved row updates passed
+passed @@CHECKS@@ checks of target coefficients at independent sample
+points, and the saved row updates passed
 @@ROWCHECKS@@ independent finite-field checks. The model made
 @@CHOICES@@ choices across its repeated runs. In @@CHANGED@@ choices,
 its source row had already changed in an earlier elimination.
@@ -203,8 +206,8 @@ The added feature construction and scoring therefore have a small
 available time budget. The model was trained on target-row reductions
 with fixed source identities, so its application to changing identity
 rows also tests transfer beyond those training states. The results apply
-to the stated one- and two-loop families and this order-preserving
-forward policy. Larger independent multiloop systems, other admissible
+to the stated one- and two-loop families and a forward policy that
+preserves Kira's integral ordering. Larger independent multiloop systems, other admissible
 pivot-column choices and learned back-substitution order remain outside
 the present experiment.
 """
@@ -248,9 +251,9 @@ exact checks. The learned method took @@STOCK@@ times the complete
 stock-Kira time and used @@OPML@@ committed coefficient operations
 against @@OPNATIVE@@ for Kira's native policy. The forward-stage
 time ratio remained @@READY@@ after subtracting recorded model
-loading. Thus the tested implementations provide valid decisions but
-do not deliver the intended aggregate reduction in runtime or operation
-count at these integration points\cite{KiraLiveMatrixData}.
+loading. The tested implementations increased aggregate runtime,
+and this evolving-matrix policy also increased the summed
+coefficient-operation count~\cite{KiraLiveMatrixData}.
 
 The higher-loop collection varies mass profiles within restricted
 coupled vacuum families, and all tested loop orders occur in training.
