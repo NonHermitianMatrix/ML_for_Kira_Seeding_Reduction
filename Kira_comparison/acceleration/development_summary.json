@@ -1,0 +1,618 @@
+{
+  "scope": "Single development trials on existing training/adapter-validation families; no independent speedup inference.",
+  "stages": {
+    "preflight_pilot": {
+      "planned": 6,
+      "exact_successes": 3,
+      "rows": [
+        {
+          "trial": "train_02_n16_r0_combined",
+          "family": "box_profile_0878",
+          "partition": "train",
+          "case": 2,
+          "size": 16,
+          "policy": "combined",
+          "seconds": 15.43566820025444,
+          "success": true,
+          "status": "completed",
+          "fallback": true,
+          "selected": 60,
+          "rounds": []
+        },
+        {
+          "trial": "train_02_n16_r0_ml_lower",
+          "family": "box_profile_0878",
+          "partition": "train",
+          "case": 2,
+          "size": 16,
+          "policy": "ml_lower",
+          "seconds": 14.776029363274574,
+          "success": true,
+          "status": "completed",
+          "fallback": true,
+          "selected": 60,
+          "rounds": []
+        },
+        {
+          "trial": "train_02_n16_r0_trim",
+          "family": "box_profile_0878",
+          "partition": "train",
+          "case": 2,
+          "size": 16,
+          "policy": "trim",
+          "seconds": 14.207494966685772,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": null,
+          "rounds": []
+        },
+        {
+          "trial": "train_02_n64_r0_combined",
+          "family": "box_profile_0878",
+          "partition": "train",
+          "case": 2,
+          "size": 64,
+          "policy": "combined",
+          "seconds": 155.56957763433456,
+          "success": false,
+          "status": "error",
+          "fallback": null,
+          "selected": 126,
+          "rounds": []
+        },
+        {
+          "trial": "train_02_n64_r0_ml_lower",
+          "family": "box_profile_0878",
+          "partition": "train",
+          "case": 2,
+          "size": 64,
+          "policy": "ml_lower",
+          "seconds": 155.60953038185835,
+          "success": false,
+          "status": "error",
+          "fallback": null,
+          "selected": 126,
+          "rounds": []
+        },
+        {
+          "trial": "train_02_n64_r0_trim",
+          "family": "box_profile_0878",
+          "partition": "train",
+          "case": 2,
+          "size": 64,
+          "policy": "trim",
+          "seconds": 160.6373903080821,
+          "success": false,
+          "status": "error",
+          "fallback": null,
+          "selected": null,
+          "rounds": []
+        }
+      ],
+      "independent_master_sample_checks": 144
+    },
+    "adaptive_pilot": {
+      "planned": 8,
+      "exact_successes": 8,
+      "rows": [
+        {
+          "trial": "train_02_n16_r0_adaptive_distance",
+          "family": "box_profile_0878",
+          "partition": "train",
+          "case": 2,
+          "size": 16,
+          "policy": "adaptive_distance",
+          "seconds": 14.966618329286575,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": 256,
+          "rounds": [
+            {
+              "budget": 32,
+              "rejected": true,
+              "seconds": 0.32670121639966965
+            },
+            {
+              "budget": 64,
+              "rejected": true,
+              "seconds": 0.32418154180049896
+            },
+            {
+              "budget": 128,
+              "rejected": true,
+              "seconds": 0.3250700980424881
+            },
+            {
+              "budget": 256,
+              "rejected": false,
+              "seconds": 7.321497447788715
+            }
+          ]
+        },
+        {
+          "trial": "train_02_n16_r0_adaptive_ml",
+          "family": "box_profile_0878",
+          "partition": "train",
+          "case": 2,
+          "size": 16,
+          "policy": "adaptive_ml",
+          "seconds": 15.47706962376833,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": 256,
+          "rounds": [
+            {
+              "budget": 32,
+              "rejected": true,
+              "seconds": 0.3267238736152649
+            },
+            {
+              "budget": 64,
+              "rejected": true,
+              "seconds": 0.3236009031534195
+            },
+            {
+              "budget": 128,
+              "rejected": true,
+              "seconds": 0.324310339987278
+            },
+            {
+              "budget": 256,
+              "rejected": false,
+              "seconds": 7.409804627299309
+            }
+          ]
+        },
+        {
+          "trial": "train_02_n16_r0_pool_checked",
+          "family": "box_profile_0878",
+          "partition": "train",
+          "case": 2,
+          "size": 16,
+          "policy": "pool_checked",
+          "seconds": 14.088899068534374,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": 471,
+          "rounds": [
+            {
+              "budget": 471,
+              "rejected": false,
+              "seconds": 7.565918043255806
+            }
+          ]
+        },
+        {
+          "trial": "train_02_n16_r0_trim_checked",
+          "family": "box_profile_0878",
+          "partition": "train",
+          "case": 2,
+          "size": 16,
+          "policy": "trim_checked",
+          "seconds": 14.592680864036083,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": null,
+          "rounds": [
+            {
+              "budget": 0,
+              "rejected": false,
+              "seconds": 7.825535587966442
+            }
+          ]
+        },
+        {
+          "trial": "train_04_n16_r0_adaptive_distance",
+          "family": "box_profile_0053",
+          "partition": "train",
+          "case": 4,
+          "size": 16,
+          "policy": "adaptive_distance",
+          "seconds": 12.208111738786101,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": 128,
+          "rounds": [
+            {
+              "budget": 32,
+              "rejected": true,
+              "seconds": 0.3200656920671463
+            },
+            {
+              "budget": 64,
+              "rejected": true,
+              "seconds": 0.3187703606672585
+            },
+            {
+              "budget": 128,
+              "rejected": false,
+              "seconds": 5.93582568410784
+            }
+          ]
+        },
+        {
+          "trial": "train_04_n16_r0_adaptive_ml",
+          "family": "box_profile_0053",
+          "partition": "train",
+          "case": 4,
+          "size": 16,
+          "policy": "adaptive_ml",
+          "seconds": 12.520109673961997,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": 64,
+          "rounds": [
+            {
+              "budget": 32,
+              "rejected": true,
+              "seconds": 0.37154084583744407
+            },
+            {
+              "budget": 64,
+              "rejected": false,
+              "seconds": 6.497067149728537
+            }
+          ]
+        },
+        {
+          "trial": "train_04_n16_r0_pool_checked",
+          "family": "box_profile_0053",
+          "partition": "train",
+          "case": 4,
+          "size": 16,
+          "policy": "pool_checked",
+          "seconds": 11.099651515949517,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": 471,
+          "rounds": [
+            {
+              "budget": 471,
+              "rejected": false,
+              "seconds": 5.495650239288807
+            }
+          ]
+        },
+        {
+          "trial": "train_04_n16_r0_trim_checked",
+          "family": "box_profile_0053",
+          "partition": "train",
+          "case": 4,
+          "size": 16,
+          "policy": "trim_checked",
+          "seconds": 11.803139701951295,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": null,
+          "rounds": [
+            {
+              "budget": 0,
+              "rejected": false,
+              "seconds": 5.788184414617717
+            }
+          ]
+        }
+      ],
+      "independent_master_sample_checks": 384
+    },
+    "adaptive_validation": {
+      "planned": 8,
+      "exact_successes": 8,
+      "rows": [
+        {
+          "trial": "validation_03_n16_r0_adaptive_distance",
+          "family": "box_massless_onshell",
+          "partition": "validation",
+          "case": 3,
+          "size": 16,
+          "policy": "adaptive_distance",
+          "seconds": 10.142420161049813,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": 64,
+          "rounds": [
+            {
+              "budget": 32,
+              "rejected": true,
+              "seconds": 0.31929508224129677
+            },
+            {
+              "budget": 64,
+              "rejected": false,
+              "seconds": 4.833140796050429
+            }
+          ]
+        },
+        {
+          "trial": "validation_03_n16_r0_adaptive_ml",
+          "family": "box_massless_onshell",
+          "partition": "validation",
+          "case": 3,
+          "size": 16,
+          "policy": "adaptive_ml",
+          "seconds": 10.575809950940311,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": 128,
+          "rounds": [
+            {
+              "budget": 32,
+              "rejected": true,
+              "seconds": 0.3220100458711386
+            },
+            {
+              "budget": 64,
+              "rejected": true,
+              "seconds": 0.3195410966873169
+            },
+            {
+              "budget": 128,
+              "rejected": false,
+              "seconds": 4.841010642703623
+            }
+          ]
+        },
+        {
+          "trial": "validation_03_n16_r0_pool_checked",
+          "family": "box_massless_onshell",
+          "partition": "validation",
+          "case": 3,
+          "size": 16,
+          "policy": "pool_checked",
+          "seconds": 10.295266604050994,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": 471,
+          "rounds": [
+            {
+              "budget": 471,
+              "rejected": false,
+              "seconds": 4.787044344004244
+            }
+          ]
+        },
+        {
+          "trial": "validation_03_n16_r0_trim_checked",
+          "family": "box_massless_onshell",
+          "partition": "validation",
+          "case": 3,
+          "size": 16,
+          "policy": "trim_checked",
+          "seconds": 10.348775627091527,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": null,
+          "rounds": [
+            {
+              "budget": 0,
+              "rejected": false,
+              "seconds": 4.9359263950027525
+            }
+          ]
+        },
+        {
+          "trial": "validation_04_n16_r0_adaptive_distance",
+          "family": "box_profile_0044",
+          "partition": "validation",
+          "case": 4,
+          "size": 16,
+          "policy": "adaptive_distance",
+          "seconds": 49.2973682526499,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": 471,
+          "rounds": [
+            {
+              "budget": 32,
+              "rejected": true,
+              "seconds": 0.32104843808338046
+            },
+            {
+              "budget": 64,
+              "rejected": true,
+              "seconds": 0.31911094998940825
+            },
+            {
+              "budget": 128,
+              "rejected": true,
+              "seconds": 0.3186726439744234
+            },
+            {
+              "budget": 256,
+              "rejected": true,
+              "seconds": 0.31954651698470116
+            },
+            {
+              "budget": 471,
+              "rejected": false,
+              "seconds": 25.453423698898405
+            }
+          ]
+        },
+        {
+          "trial": "validation_04_n16_r0_adaptive_ml",
+          "family": "box_profile_0044",
+          "partition": "validation",
+          "case": 4,
+          "size": 16,
+          "policy": "adaptive_ml",
+          "seconds": 67.46778677869588,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": 128,
+          "rounds": [
+            {
+              "budget": 32,
+              "rejected": true,
+              "seconds": 0.32004175893962383
+            },
+            {
+              "budget": 64,
+              "rejected": true,
+              "seconds": 0.2690828857012093
+            },
+            {
+              "budget": 128,
+              "rejected": false,
+              "seconds": 44.88833625521511
+            }
+          ]
+        },
+        {
+          "trial": "validation_04_n16_r0_pool_checked",
+          "family": "box_profile_0044",
+          "partition": "validation",
+          "case": 4,
+          "size": 16,
+          "policy": "pool_checked",
+          "seconds": 46.6386219128035,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": 471,
+          "rounds": [
+            {
+              "budget": 471,
+              "rejected": false,
+              "seconds": 24.605966596864164
+            }
+          ]
+        },
+        {
+          "trial": "validation_04_n16_r0_trim_checked",
+          "family": "box_profile_0044",
+          "partition": "validation",
+          "case": 4,
+          "size": 16,
+          "policy": "trim_checked",
+          "seconds": 47.44131668983027,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": null,
+          "rounds": [
+            {
+              "budget": 0,
+              "rejected": false,
+              "seconds": 25.65420482074842
+            }
+          ]
+        }
+      ],
+      "independent_master_sample_checks": 384
+    },
+    "residual_pilot": {
+      "planned": 4,
+      "exact_successes": 4,
+      "rows": [
+        {
+          "trial": "train_02_n16_r0_pool_checked",
+          "family": "box_profile_0878",
+          "partition": "train",
+          "case": 2,
+          "size": 16,
+          "policy": "pool_checked",
+          "seconds": 14.243074501864612,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": 471,
+          "rounds": [
+            {
+              "budget": 471,
+              "rejected": false,
+              "seconds": 7.296013928949833
+            }
+          ]
+        },
+        {
+          "trial": "train_02_n16_r0_residual_distance",
+          "family": "box_profile_0878",
+          "partition": "train",
+          "case": 2,
+          "size": 16,
+          "policy": "residual_distance",
+          "seconds": 14.492950012907386,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": 121,
+          "rounds": [
+            {
+              "budget": 64,
+              "rejected": true,
+              "seconds": 0.3715609721839428
+            },
+            {
+              "budget": 121,
+              "rejected": false,
+              "seconds": 7.051049901172519
+            }
+          ]
+        },
+        {
+          "trial": "train_02_n16_r0_residual_ml",
+          "family": "box_profile_0878",
+          "partition": "train",
+          "case": 2,
+          "size": 16,
+          "policy": "residual_ml",
+          "seconds": 14.388335838913918,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": 71,
+          "rounds": [
+            {
+              "budget": 64,
+              "rejected": true,
+              "seconds": 0.37120416993275285
+            },
+            {
+              "budget": 71,
+              "rejected": false,
+              "seconds": 6.138381146360189
+            }
+          ]
+        },
+        {
+          "trial": "train_02_n16_r0_trim_checked",
+          "family": "box_profile_0878",
+          "partition": "train",
+          "case": 2,
+          "size": 16,
+          "policy": "trim_checked",
+          "seconds": 14.444635959342122,
+          "success": true,
+          "status": "completed",
+          "fallback": false,
+          "selected": null,
+          "rounds": [
+            {
+              "budget": 0,
+              "rejected": false,
+              "seconds": 7.6450982061214745
+            }
+          ]
+        }
+      ],
+      "independent_master_sample_checks": 192
+    }
+  },
+  "all_stages_complete": true
+}

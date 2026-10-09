@@ -1,0 +1,24 @@
+{
+  "partition": "validation",
+  "cases": 6,
+  "sizes": [
+    16
+  ],
+  "repetitions": 1,
+  "policies": [
+    "trim",
+    "tight",
+    "pool_filter",
+    "ml_lower",
+    "ml_components_halo",
+    "row_native",
+    "row_source"
+  ],
+  "purpose": "Choose one learned seed configuration using complete runtime and completion on separate original-training kinematic groups. Test row-source adaptation against native rows.",
+  "selection": "Rank learned seed candidates by geometric mean time across six validation cases, assigning the total 180-second cap to any incomplete trial; also report completion separately. Freeze one candidate before evaluating reserved cost-test families, even if neither candidate beats the controls. Enable no default learned row policy without measured benefit.",
+  "row_screen": "Admit source-row policy to reserved tests only if capped validation time is at least two percent lower than instrumented native rows and completion count does not decrease. This rule is fixed before validation.",
+  "reserved_failure_rule": "After any unsuccessful reserved trial, mark remaining repetitions for that same method and family batch as skipped_after_failure. No runtime is assigned to skipped observations. Report planned entries, executed attempts, successes and skips separately. Complete-case timing ratios require five successful repeats for both methods.",
+  "compiled_backend_extension": "The native C++ implementation keeps the source-row action set and frozen weights. After independent development checks, test row_cpp and combined on the reserved cases without using test outcomes for changes. The earlier two-percent screen applies only to the Python server variant.",
+  "combined_check": "Before reserved trials, require exact successful combined seed and compiled-row reductions on development cases 2 and 4.",
+  "final_attempt_limit": "Reserved tests give every method the same initial 160-second native-and-combination allowance within the 180-second complete-trial cap. Any fallback uses only remaining time. Earlier development used a shorter learned first attempt to reserve fallback time; all such observations remain identified by stage."
+}

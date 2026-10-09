@@ -1,0 +1,31 @@
+{
+  "purpose": "Early completeness admission for complete target expressions, preserving exact solver arithmetic and frozen model weights. Separate training-only development; no reserved outcomes select thresholds.",
+  "cases": [
+    2,
+    4
+  ],
+  "partition": "train",
+  "sizes": [
+    16
+  ],
+  "repetitions": 3,
+  "policies": [
+    "stored_pool",
+    "stored_ml",
+    "stored_ml_lower"
+  ],
+  "controls": "Identical preferred-master preflight on both learned and full supplied-pool runs.",
+  "sha256": {
+    "s69_expression_preflight.py": "01867f4432e6505329a0861f2e37cc936acc3a33343d14f4449cb362e9a44d62",
+    "s70_expression_preflight_run.py": "d6c1930b3d51dd56fe7f2b026aae27de8d214297656eb70e2c79bd5fb2f7d3f5",
+    "s71_expression_preflight.sh": "0dfebe6e6c0ae188a84bb3495d0192ed081828e9839b2eef9dbfd6df366f8deb"
+  },
+  "scheduler_amendment": {
+    "jobs": [
+      "15110286",
+      "15110287"
+    ],
+    "wall_seconds": 600,
+    "reason": "The completed component pilot indicates short runs; use a shorter bounded allocation. Per-trial limits and scientific policies are unchanged."
+  }
+}

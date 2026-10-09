@@ -93,3 +93,9 @@
 ## Comparison with Kira
 
 - The study aims to reduce operation counts and/or runtime in seed selection and reduction. Compare the learned methods with existing Kira strategies on the same physical targets and master basis. Include input preparation, model inference, exact algebra, checks and fallback costs, and report failures and scope limits. Keep the frozen models and held-out split fixed during comparisons. Publish the comparison code, measurements, affected READMEs and revised report on Hoffman and GitHub, and synchronize the complete report locally.
+
+## Native acceleration development
+
+- The user authorizes finding, implementing and testing System 1 changes that reduce complete Kira calculation time, then publishing code, results, READMEs and the revised report. Preserve earlier checkpoints and experiments. Use separate development and validation families for new policies and freeze policies before evaluating reserved cost-test cases. Include prediction, preparation, exact checks and fallback costs; report measured gains and remaining limits without assuming a speedup. Maintain the existing resource and storage limits and synchronize the report locally.
+
+- Continue the current acceleration work until it produces a measured complete-calculation speedup with exact results and the code, report and GitHub updates are finished. Develop changes on training/validation data and preserve independent tests; report the supported domain and all costs. Do not claim a speedup that the measurements do not establish.

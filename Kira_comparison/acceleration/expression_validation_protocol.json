@@ -1,0 +1,31 @@
+{
+  "partition": "validation",
+  "cases": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "sizes": [
+    1,
+    16
+  ],
+  "repetitions": 1,
+  "policies": [
+    "stored_pool",
+    "stored_ml_lower",
+    "stored_ml_lower_checked"
+  ],
+  "expected_records": 36,
+  "purpose": "Choose a whole-expression interface using separate original-training groups. Compare with unmodified full supplied-pool Kira; include inference, admission, failed attempts, fallback and exact checks.",
+  "selection": "Choose a learned interface only if every matched baseline completion is preserved and the geometric mean complete-time ratio to the full pool is below one. Preserve failures and do not use reserved outcomes for this choice.",
+  "sha256": {
+    "s65_expression_worker.py": "54f348cc56da20d7cf76b2ca80c416688242627d1c3b1eb896480e21ead5b3d0",
+    "s69_expression_preflight.py": "01867f4432e6505329a0861f2e37cc936acc3a33343d14f4449cb362e9a44d62",
+    "s73_expression_policy_worker.py": "685db5a0f03edea6bd18b2dc3b235735ac0c7da8dbabf94d9bbc770d2a48cbee",
+    "s74_expression_policy_run.py": "bfc45f643090d91677a15df947411c78fa1bbca5d43bb8f0533f3029533890d9",
+    "s75_expression_validation.sh": "ed8942b12e3cb70eed4a11f1ca89175795b392076bda24eedf2be16384e95a03"
+  }
+}

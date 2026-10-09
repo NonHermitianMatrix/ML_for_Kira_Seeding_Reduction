@@ -1,0 +1,63 @@
+{
+  "schema": 3,
+  "target_sizes": [
+    16,
+    64
+  ],
+  "selection": "Two families per SHA256-ranked kinematic group; disjoint development and validation groups; exclude all previous cost-comparison box groups",
+  "seed_checkpoint_sha256": "b8fb9cc088bd4e0cbbe1168d1e5fbd733ebea361fd41d3de48827672732ed977",
+  "row_checkpoint_sha256": "0b6b51597329a1cade4642f066cf2b39dadd4339ec53927d0a1c3a150a627452",
+  "split_sha256": "317c5167fb69424ee39b34c80290e9ed20b0ac6f208eb0adea5c681a494a5bff",
+  "repetitions": 5,
+  "development_repetitions": 1,
+  "threads": 1,
+  "concurrency": 2,
+  "timeout_seconds": 180,
+  "virtual_memory_bytes": 1900000000,
+  "rss_limit_bytes": 1700000000,
+  "scratch_limit_bytes": 67108864,
+  "retained_bytes_limit": 190000000,
+  "previous_project_upper_bytes": 8710940188,
+  "resource_reserve_bytes": 800000000,
+  "scope": "Fixed-policy transfer to the previously studied two-loop massless propagator family. Targets are positions 64:80 and 64:128 in the existing public hash order. This is a timing transfer check, not a new-family generalization claim.",
+  "resource_amendment": "Before reserved testing: deduplicate large exact solver text by content hash and raise retained-output cap from 125 MB to 190 MB. Publication guard includes four copies plus two Git indexes and remains below 10 GB.",
+  "transfer": [
+    {
+      "meta": {
+        "counts": {
+          "candidate_seed_labels": 240624,
+          "empty_reference_seed_sets": 1,
+          "integral_expression": 91,
+          "positive_seed_labels": 438,
+          "single_integral": 53,
+          "targets": 144
+        },
+        "definition": "testing/master_integrals/families/propagator_two_loop_massless/definition.json",
+        "family": "propagator_two_loop_massless",
+        "group": "family:propagator_two_loop_massless",
+        "inputs": "testing/target_integrals/families/propagator_two_loop_massless/inputs.jsonl.gz",
+        "loops": 2,
+        "masters": "testing/master_integrals/families/propagator_two_loop_massless/masters.json",
+        "references": "testing/master_to_target/families/propagator_two_loop_massless/references.jsonl.gz",
+        "seeds": "testing/master_to_target/families/propagator_two_loop_massless/candidate_seeds.json",
+        "split": "test"
+      },
+      "domain": "propagator"
+    }
+  ],
+  "target_offset": 64,
+  "policies": [
+    "trim",
+    "pool_filter",
+    "ml_lower",
+    "row_cpp_native",
+    "row_cpp",
+    "combined"
+  ],
+  "earlier_batch_sizes": [
+    1,
+    4,
+    16
+  ],
+  "utc": "2026-10-09T05:40:41.198776+00:00"
+}
