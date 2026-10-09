@@ -9,17 +9,22 @@ def main():
  t=t.replace("Tests checked normal exits, delayed exits,\nforced termination, invalid process identifiers and the absence of\nunreaped children.","Tests checked that the arithmetic process exits normally or reaches\nthe existing termination limit.")
  t=t.replace("At most two trials run concurrently.","The array began with two simultaneous trials and increased to three\nand then six after memory and storage checks. The individual limits,\ntargets, models and calculation code stayed fixed.")
  find=lambda n,d,b:next(c for c in s["comparisons"] if (c["numerator"],c["denominator"],c["size"])==(n,d,b))
- counts=[]
+ def batch_count(n):
+  return f'{n} batch'+('' if n==1 else 'es')
+ single=find("exit_ml","stock_ml",1)
+ larger=find("exit_ml","stock_ml",16)
+ paragraph=(f'The two learned workflows both completed all five repetitions in {single["paired_batches"]} of the twelve single-target batches '
+            f'and {larger["paired_batches"]} of the twelve sixteen-target batches. ')
+ if not any(c["control_only"] or c["modified_only"] for c in [single,larger]):
+  paragraph+='Their successful batch sets agreed at each batch size. '
  for size in [1,16]:
-  c=find("exit_ml","stock_ml",size)
-  line=f'For batches of {size} target'+('' if size==1 else 's')+f', the two learned workflows both completed all five repeats in {c["paired_batches"]} of twelve batches. '
-  lost,gained=len(c["control_only"]),len(c["modified_only"])
-  if lost or gained:line+=f'The original workflow alone completed {lost} batches, and the modified workflow alone completed {gained} batches. '
-  else:line+='Their completed batch sets agreed. '
-  control=find("exit_ml","exit_pool",size);lost,gained=len(control["control_only"]),len(control["modified_only"])
-  if lost or gained:line+=f'With the modified shutdown, the full pool alone completed {lost} batches and learned selection alone completed {gained} batches. '
-  counts.append(line)
- paragraph=" ".join(counts)+"The quoted ratios use only the stated complete paired subsets; all other outcomes remain in the completion counts.\n\n"
+  control=find("exit_ml","exit_pool",size)
+  lost,gained=len(control["control_only"]),len(control["modified_only"])
+  if gained:
+   paragraph+=f'With the modified shutdown, learned selection alone completed {batch_count(gained)} of {size} target'+('' if size==1 else 's')+'. '
+  if lost:
+   paragraph+=f'With the modified shutdown, the full pool alone completed {batch_count(lost)} of {size} target'+('' if size==1 else 's')+'. '
+ paragraph+="The quoted ratios use only the stated complete paired subsets; all other outcomes remain in the completion counts.\n\n"
  marker="% responsive-exit-cohorts"
  if marker in t:t=t.split(marker)[0]+t.split("% responsive-exit-cohorts-end",1)[1].lstrip("\n")
  t=t.replace(r"\begin{figure}",marker+"\n"+paragraph+"% responsive-exit-cohorts-end\n\n"+r"\begin{figure}",1)
@@ -35,6 +40,8 @@ def main():
   block="".join(paragraphs)
   assert block in t
   t=t.replace(block,replacement)
+ t=t.replace("same physical targets, and values below one indicate less complete time.}",
+             "same physical targets, and values below one indicate less complete time. Here $n$ is the number of complete paired batches.}")
  p.write_text(t)
  p=REPORT/"references.bib";t=p.read_text()
  block=(f'@misc{{KiraResponsiveExitData,\n author = {{Saraswat, Rushil}},\n'
@@ -47,7 +54,8 @@ def main():
  p=REPORT/"report.tex";t=p.read_text();primary=find("exit_ml","stock_ml",1)
  t=t.replace("In twelve new held-out one-loop instances, its one-target time ratio",f'In {primary["paired_batches"]} complete paired single-target batches from twelve new held-out one-loop instances, its time ratio')
  anchor="These results\nsupport conclusions within the tested domains"
- t=t.replace(anchor,"The shutdown study adds twelve one-loop instances in six further\nheld-out kinematic groups. These results\nsupport conclusions within the tested domains")
+ if "The shutdown study adds twelve one-loop instances" not in t:
+  t=t.replace(anchor,"The shutdown study adds twelve one-loop instances in six further\nheld-out kinematic groups. These results\nsupport conclusions within the tested domains")
  p.write_text(t)
  print("Report cohorts, scheduler conditions and citation formatting checked.")
 if __name__=="__main__":main()

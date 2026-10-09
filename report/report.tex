@@ -898,6 +898,7 @@ targets and complete reduction data~\cite{ExpandedIntegralData}.
 \input{kira_comparison}
 \input{kira_live_matrix}
 \input{kira_acceleration}
+\input{kira_fast_expression}
 
 \section{Conclusion}
 \label{sec:conclusion}
@@ -942,11 +943,17 @@ The separate two-loop transfer gave 60 exact completions. The compiled learned-r
 
 Direct reduction of complete target expressions provides a different use of the seed model. The first confirmation contains 360 planned records and 345 exact completions. A second comparison applies the same early master check to learned and distance-selected seeds and contains 360 planned records and 345 exact completions. In this matched comparison, complete-time ratios are 0.932 against the full supplied-equation pool and 0.925 against the fixed distance control. The learned workflow has an observed 6.8\% lower geometric mean complete time than the full-pool Kira control on batches where both methods completed all five repetitions. Because the descriptive interval includes one, the aggregate timing gain across both batch sizes remains uncertain. For the predefined single-target comparison, the learned method reduced geometric mean complete time by 8.6\% relative to the full pool and by 8.7\% relative to the distance rule with the same early check. Both descriptive intervals lie below one, and every method completed all five repeats for all twelve instances. The first confirmation gave a 7.8\% reduction relative to the full pool for this batch size. These results support a repeated gain for one constructed target expression at a time in this stored-identity setting. The sixteen-target intervals include one, so that batch size does not establish a consistent gain. The geometric means of the twelve per-family median complete times were 5.478 seconds for the full pool and 5.005 seconds for the learned method. Prior generation of the common identity pool is outside these measurements \cite{KiraNativeAccelerationData}.
 
+% responsive-exit-conclusion-begin
+The responsive Fermat shutdown further reduces the complete cost of the learned seed workflow. In 12 complete paired single-target batches from twelve new held-out one-loop instances, its time ratio to the original learned workflow is 0.385, with descriptive interval $[0.342,0.453]$, and the paired geometric mean times decrease from 5.528 to 2.126 seconds. This 61.5\% reduction comes from closing arithmetic processes promptly; model weights and symbolic row operations remain unchanged. Against the full pool with the same shutdown improvement, the learned workflow has a one-target ratio of 0.690, with interval $[0.424,0.931]$. All 400 completed trials matched their exact reference coefficients. These comparisons retain failed attempts and measure existing IBP pools, so their conclusions concern the stated supplied-equation domain \cite{KiraResponsiveExitData}.
+
+% responsive-exit-conclusion-end
+
 The higher-loop collection varies mass profiles within restricted
 coupled vacuum families, and all tested loop orders occur in training.
 The earlier native comparisons cover seven independent-basis families
 at one and two loops, while the new reserved comparison covers
-twelve one-loop box instances in six kinematic groups. These results
+twelve one-loop box instances in six kinematic groups. The shutdown study adds twelve one-loop instances in six further
+held-out kinematic groups. These results
 support conclusions within the tested domains, resource limits and
 action sets. Larger independent multiloop systems and cost-oriented
 training on their changing IBP matrices remain necessary to assess

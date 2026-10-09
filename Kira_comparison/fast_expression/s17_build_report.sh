@@ -10,6 +10,6 @@ source /u/local/Modules/default/init/modules.sh
 module load python/3.9.6
 export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
-.tools/seed-model/venv/bin/python Kira_comparison/fast_expression/s14_report.py --data-commit "$1"
+.tools/seed-model/venv/bin/python Kira_comparison/fast_expression/s21_report_compat.py --data-commit "$1"
 .tools/seed-model/venv/bin/python Kira_comparison/fast_expression/s20_report_finish.py --data-commit "$1"
 make -C report
