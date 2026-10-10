@@ -23,4 +23,7 @@ The native candidate region is finite. Coverage retains target seeds, the prescr
 - s10_fit_thresholds.py: Fit execution thresholds from complete native training-workflow cost.
 
 <!-- shared-evaluation-current -->
-The current backend is s11_shared_runtime.cpp with s12_shared_seed.py and the original compiled_weights.bin. s89_build_shared.sh in the integration folder builds it. Shared affine prefixes preserve the floating-point addition order and give bitwise-identical probabilities in every checked context. The new library stays outside Git; the implementation and unchanged weight export are retained. See fast_evaluation/ for complete timing, exact parity, the freeze and current production entry.
+The preceding backend is s11_shared_runtime.cpp with s12_shared_seed.py and the original compiled_weights.bin. s89_build_shared.sh in the integration folder builds it. Shared affine prefixes preserve the floating-point addition order and give bitwise-identical probabilities in every checked context. The new library stays outside Git; the implementation and unchanged weight export are retained. See fast_evaluation/ for complete timing, exact parity, the freeze and current production entry.
+
+<!-- parallel-inference-current -->
+The latest backend is s13_lane_runtime.cpp with s14_lane_seed.py. It transposes weight storage once at loading and computes independent neural outputs together, preserving each float32 addition order. s109_build_parallel.sh compiles it without fused multiply-add or fast-math. All 36 development contexts and complete paired reductions retain identical probabilities and masks. The existing compiled_weights.bin and thresholds remain unchanged. See Kira_comparison/parallel_inference/ for costs, exact checks and the current entry.
