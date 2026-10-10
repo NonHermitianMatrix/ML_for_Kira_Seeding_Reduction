@@ -903,66 +903,44 @@ targets and complete reduction data~\cite{ExpandedIntegralData}.
 \input{kira_multiloop_methods}
 \input{kira_multiloop_results}
 
+\input{kira_integrated_methods}
+\input{kira_integrated_results}
+
+\input{kira_integrated_pair}
+
 \section{Conclusion}
 \label{sec:conclusion}
-We constructed exact master-based integral data and tested learned
-policies for seed selection and row reduction. The collection contains
-17,100 family instances, 57,979 family-local master entries and
-2,301,272 targets with recorded identities, seed sets and reduction
-paths. These paths establish valid constructions and reference costs;
-they do not establish globally minimal reductions.
+We integrated a compiled seed-selection network and a learned source-row
+policy with native exact Kira reduction. The initial 560 workflows and the 400-workflow implementation confirmation all match their exact reference coefficients. In the latter comparison, complete-time ratios to the smaller native control are 1.155, 0.999 and 1.159 for the seed, row and combined methods. The row policy's forward-stage ratio is 1.041, with descriptive interval $[1.017,1.065]$, while its complete-time interval is $[0.992,1.007]$. These measurements include model loading, fresh IBP generation, exact algebra, checks and fallback~\cite{KiraIntegratedRuntimeData}.
 
-On the 690,382 held-out targets, the seed model reached 96.318\%
-$F_1$, and its predicted stored equations supplied complete master-span
-reductions for 94.515\% of targets. The full candidate pool supplied a
-sufficient fallback for all targets. The earlier sampled row test
-reproduced reference coefficients for 99.988\% of targets and required
-17.657 times the local rule's mean reduction time
-\cite{SeedModelTestData,KiraSeedSufficiencyData,ReductionModelTestData}.
+The seed model's complete-time ratio on the two-loop box profiles is 0.964, with interval $[0.949,0.979]$. The row policy gives an aggregate committed coefficient-operation ratio of 0.985. The physical-class results specify where the measured timing changes occur; the aggregate values retain slower cases. The automatic interface uses the routing rule fixed from validation and keeps native execution for other input classes.
 
-The 876 earlier cost-comparison trials all matched their exact master
-coefficients. Learned seed filtering reduced supplied equations to
-0.251 times the full-pool count, while Kira's selected-equation count
-was 1.027 times the baseline. Complete and prepared-input time ratios
-were 1.720 and 1.116. Target-row preprocessing gave corresponding
-ratios of 1.719 and 1.205. Direct learned seed bounds gave ratios of
-1.671 and 1.373 against restricted native Kira. These results include
-prediction, exact algebra, checks and required fallback
-\cite{KiraCostComparisonData}.
+Shared execution changes also contribute to the calculation time. Dependency-ordered back substitution bounds helper-worker creation, and node temporary storage reduces the measured storage overhead. Both models and controls receive these changes. Starting from the smaller native region gives a complete-time ratio of 0.502 to the conservative region in the initial comparison. The two-row identity then lowers inference cost while preserving the learned source choices. A finite comparison of these strategies establishes measured costs on the stated inputs and does not prove a globally fastest reduction.
 
-The additional 84 trials place the frozen row policy inside
-Kira's evolving selected IBP matrix. Every final reduction passed its
-exact checks. The learned method took 1.305 times the complete
-stock-Kira time and used 5,771 committed coefficient operations
-against 5,070 for Kira's native policy. The forward-stage
-time ratio remained 62.270 after subtracting recorded model
-loading. The earlier implementations increased aggregate runtime,
-and this evolving-matrix policy also increased the summed
-coefficient-operation count~\cite{KiraLiveMatrixData}.
+The data construction provides 17,100 family instances, 57,979 family-local
+master entries and 2,301,272 targets with recorded identities and reduction
+paths. These paths provide valid reference constructions and costs.
+On 690,382 held-out targets, the seed model reaches 96.318\% $F_1$, and its
+predicted stored equations supply complete master-span reductions for
+94.515\% of targets. The full candidate pool supplies the remaining reductions.
+These label and sufficiency measures require separate runtime tests; the
+earlier cost comparisons and their negative results remain part of the
+study~\cite{HigherLoopIntegralData,SeedModelTestData,KiraSeedSufficiencyData,KiraCostComparisonData}.
 
-The first native integration filters individual IBP seeds and evaluates the source-row network inside Kira. Its complete-time ratios against restricted native Kira are 1.295, 1.024, 1.983, in seed, row and combined order. These ratios use 20, 21, 15 complete paired batches, respectively, with five repetitions per method. The complete paired comparisons do not show a lower aggregate runtime than restricted native Kira for these learned methods. Lower inference costs alone do not ensure that the chosen seeds and rows save enough algebraic work. All 590 completed trials matched their exact master coefficients~\cite{KiraNativeAccelerationData}.
+For production use, the interface needs a prescribed master basis and can
+calculate target coefficients without their reference answers. Native exact
+IBP operations determine the coefficients, and explicit output-basis admission
+detects incomplete seed sets. Eight application checks pass independent
+coefficient comparisons after execution with reference answers withheld
+from the reducer. The report keeps this native algebraic assurance separate
+from the additional reference comparisons used in the benchmark.
 
-The separate two-loop transfer gave 60 exact completions. The compiled learned-row pipeline reduced the median complete time for 64 targets from 12.770 to 12.460 seconds, a 2.4\% decrease. Its advantage over the deterministic compiled source control remained unresolved, and the full-pool control was faster at 11.773 seconds. This limited native-baseline gain does not establish a general benefit from learned row choices.
-
-Direct reduction of complete target expressions provides a different use of the seed model. The first confirmation contains 360 planned records and 345 exact completions. A second comparison applies the same early master check to learned and distance-selected seeds and contains 360 planned records and 345 exact completions. In this matched comparison, complete-time ratios are 0.932 against the full supplied-equation pool and 0.925 against the fixed distance control. The learned workflow has an observed 6.8\% lower geometric mean complete time than the full-pool Kira control on batches where both methods completed all five repetitions. Because the descriptive interval includes one, the aggregate timing gain across both batch sizes remains uncertain. For the predefined single-target comparison, the learned method reduced geometric mean complete time by 8.6\% relative to the full pool and by 8.7\% relative to the distance rule with the same early check. Both descriptive intervals lie below one, and every method completed all five repeats for all twelve instances. The first confirmation gave a 7.8\% reduction relative to the full pool for this batch size. These results support a repeated gain for one constructed target expression at a time in this stored-identity setting. The sixteen-target intervals include one, so that batch size does not establish a consistent gain. The geometric means of the twelve per-family median complete times were 5.478 seconds for the full pool and 5.005 seconds for the learned method. Prior generation of the common identity pool is outside these measurements \cite{KiraNativeAccelerationData}.
-
-% responsive-exit-conclusion-begin
-The responsive Fermat shutdown further reduces the complete cost of the learned seed workflow. In 12 complete paired single-target batches from twelve new held-out one-loop instances, its time ratio to the original learned workflow is 0.385, with descriptive interval $[0.342,0.453]$, and the paired geometric mean times decrease from 5.528 to 2.126 seconds. This 61.5\% reduction comes from closing arithmetic processes promptly; model weights and symbolic row operations remain unchanged. Against the full pool with the same shutdown improvement, the learned workflow has a one-target ratio of 0.690, with interval $[0.424,0.931]$. All 400 completed trials matched their exact reference coefficients. These comparisons retain failed attempts and measure existing IBP pools, so their conclusions concern the stated supplied-equation domain \cite{KiraResponsiveExitData}.
-
-% responsive-exit-conclusion-end
-
-% native-multiloop-conclusion-begin
-The complete-generation comparison adds physical two- and three-loop targets and includes fresh IBP generation in every measured workflow. Of 324 planned trials, 324 completed every target and matched its exact reference coefficients. The learned seed workflow has an aggregate complete-time ratio of 0.742 with descriptive interval $[0.560,1.009]$ to responsive stock Kira. The interval includes one, so the aggregate timing advantage remains uncertain across these cases. Across the physical classes, this ratio is 0.563 for the two-loop boxes, 1.266 for the three-loop vacuum cases and 0.573 for the three-loop ladders. On the box cases with 32 targets, measured complete time is 49.6\% lower than the stock control. On the box cases with 128 targets, measured complete time is 37.0\% lower than the stock control. These statements concern the fixed rational kinematics, prescribed master bases and paired completion rules of Section~\ref{sec:complete-multiloop}~\cite{KiraCompleteMultiloopData}.
-
-The separate row tree learns from measured native continuation costs in 98 exact training and validation reductions. When the model chooses sources repeatedly in the reserved matrices, its complete-time ratio to the instrumented native policy is 1.008, and its forward coefficient-operation ratio is 1.003. This policy increases both measured quantities in the paired aggregate. The complete-time interval includes one, so a consistent row-policy timing gain is unresolved. The single-choice continuation objective and repeated use in changing matrices therefore require separate evaluation. For 128 targets, the learned seed workflow completes 18 of 18 trials, including 6 completed through fallback. Batch splitting bounds individual reductions but repeats generation and startup, and its completion and timing results must be assessed together.
-
-The original collection through twelve loops varies mass profiles within restricted coupled vacuum families. The present native study extends the evidence to independent scalar-product bases at two and three loops, with the ladder topology absent from new row training and validation. General symbolic multiscale coefficients and unrestricted high-loop scattering families remain outside the demonstrated domain. The measured seed gains support use in the stated cases, while the row results identify the limits of the current cost-trained policy.
-% native-multiloop-conclusion-end
-
-
-
-
-
+The original collection through twelve loops uses restricted coupled vacuum
+families. The native performance comparisons cover physical two- and
+three-loop inputs at fixed rational kinematics with symbolic $d$.
+The ladder topology is absent from the new row-policy training and validation
+sets. General multiscale coefficients, broader high-loop families and
+globally minimal reduction paths remain outside the demonstrated scope.
 
 
 \clearpage

@@ -1,0 +1,284 @@
+\section{Integrated seed and row policies with bounded execution}
+\label{sec:integrated-runtime}
+The complete reductions in Section~\ref{sec:complete-multiloop} show that a learned
+choice can save algebraic work while other parts of the calculation determine
+most of the elapsed time. We therefore examine both the cost of applying the
+models and the native operations that surround them. Every comparison in this
+section starts from physical denominators, generates IBP equations and checks
+the final master coefficients. We retain the earlier checkpoints and results,
+and use separate training, validation and reserved cases for the new policies.
+
+\subsection{Removing costs shared by both decision methods}
+Back substitution replaces the remaining nonmaster integrals in each triangular
+equation with their reductions. If the equation for $I_{\boldsymbol a}$ contains
+$I_{\boldsymbol b}$ on its right-hand side, the latter reduction must be available
+before the former equation can finish. We represent this dependency by the
+directed edge
+\[
+ I_{\boldsymbol b}\longrightarrow I_{\boldsymbol a}.
+\]
+A topological order is a sequence in which every dependency appears before the
+equation that uses it. The modified single-worker schedule constructs this order
+from the loaded equations, preserves the native arithmetic and rejects a cycle
+or an invalid dependency. This permits one bounded group of back-substitution
+workers. The inspected native implementation created helper workers for each
+sector range, even when the calculation used one arithmetic worker.
+
+An initial merge that retained the loaded row order reached a dependency wait
+and exceeded its time limit. The corrected order completed all six subsequent
+bounded pilot reductions and reproduced their reference coefficients. The
+corresponding smaller-region native control reported an allocation failure.
+These are development checks of the scheduling change. They do not attribute a
+gain to either learned model or establish a general memory-exhaustion mechanism.
+
+The calculation also creates temporary databases. We compare the same native
+reductions with those databases on project storage and on the compute node's
+temporary storage. The eight exact pilot runs use the same resource limits and
+two repetitions of each region and storage condition. Their geometric mean time
+ratio for node storage relative to project storage is $0.307$. We use node
+storage for all later learned and deterministic controls. Both controls therefore
+receive the same scheduling and storage improvements.
+
+\subsection{Applying the seed model with unchanged probabilities}
+The seed policy retains the trained neural weights and the finite candidate
+region described earlier. For each batch, it constructs the family features,
+the ordered target features and the candidate index features before predicting
+a separate probability for every seed. We construct the index features in
+arrays and reuse shared family information so that the model performs less
+repeated preparation.
+
+A parity check compares 5,000 generated index vectors and all candidate
+predictions for the nine development profiles. The feature values, embeddings
+and final probabilities agree exactly with the preceding implementation. In
+the development box checks with 3,510 candidates, shared feature construction
+and prediction decrease from approximately $0.08$ to $0.01$ seconds. These
+component measurements motivate the implementation change; complete-workflow
+comparisons must also include model loading, equation generation, exact algebra
+and any fallback.
+
+The selected seeds always retain the prescribed mandatory integrals and the
+stated deterministic coverage rule. Kira checks whether the resulting system
+introduces masters outside the reference basis. An insufficient set triggers
+the fixed fallback sequence, and the elapsed time includes the unsuccessful
+attempt. Final coefficients must agree with the common reference in
+$\mathbb Q(d)$.
+
+\subsection{Estimating cancellations before a row choice}
+The row model chooses among source equations with the same leading integral,
+as in the preceding native experiment. To include cancellations in its
+description of each choice, consider source row $\boldsymbol u_q$ and
+destination row $\boldsymbol v_j$, with common leading column $p$ and nonzero
+source coefficient $u_{qp}$. Exact elimination forms
+\[
+ v'_{jk}=v_{jk}-\frac{v_{jp}}{u_{qp}}u_{qk}.
+\]
+A resulting coefficient vanishes when
+\[
+ v_{jk}u_{qp}-v_{jp}u_{qk}=0.
+\]
+We estimate this condition by evaluating the rational coefficients at
+$d=17$ and $d=19$ modulo the prime $2\,147\,483\,647$. Two zero evaluations
+supply a feature estimate of cancellation; they do not certify a symbolic
+identity. Kira still performs the exact update, and the final reduction still
+undergoes an exact coefficient check. Unsupported expressions and poles cause
+the policy to retain the native source.
+
+Let $\widehat n_{jq}$ be the estimated number of surviving entries in
+destination $j$ after using source $q$. Six additional features describe the
+total $\sum_{j\ne q}\widehat n_{jq}$, the cancellation fraction, the largest
+resulting row, the number of zero rows, the sum
+$\sum_{j\ne q}\widehat n_{jq}^{\,2}$, and whether the modular estimate is valid.
+They extend the previous eighteen features to twenty-four. The implementation
+bounds the group size, coefficient text and modular cache, and retains native
+behavior outside these limits.
+
+Independent checks compare the evaluator with exact rational arithmetic for
+210 expressions and three row-choice fixtures. A separate in-process comparison
+checks shared feature construction against the original formula in 4,041
+changing row groups. Python and the compiled policy also agree on all 3,247
+recorded decisions in that check, and all three full reductions match their
+reference coefficients. Shared construction calculates each row's length and
+coefficient statistics once per group and each pairwise overlap once.
+
+\subsection{Learning from local cost and complete trajectories}
+Each of the six training profiles and three validation profiles has an ordinary
+batch and a deeper batch. The deeper batch includes integrals with two extra
+propagator powers and mixed numerator and propagator powers. Both batches from
+a physical profile remain in the same partition. Collection gives 2,520
+eligible training groups and 1,372 validation groups, with exact reference
+agreement required before any group can enter training.
+
+We first fit small regression trees to immediate insertion time, resulting
+coefficient text length, and a combination of these quantities. The
+time-selected trees keep every native choice in their recorded validation
+groups. The coefficient-length tree changes 371 choices and gives a
+family-weighted immediate coefficient-length ratio of $0.920$, accompanied by
+an insertion-time ratio of $1.097$. These labels describe a single group.
+Repeated deployment can change later matrices, so the full reduction supplies
+the required cost comparison.
+
+The next search therefore evaluates a policy throughout the native forward
+reduction. A candidate assigns source $q$ the score
+\[
+ s_{\boldsymbol w}(S,q)=\boldsymbol w^{\mathsf T}\boldsymbol x(S,q),
+ \qquad
+ q^*(S)=\underset{q}{\operatorname{arg\,min}}\,
+             s_{\boldsymbol w}(S,q),
+\]
+where $S$ is the current row group, $\boldsymbol x(S,q)$ is its feature vector
+and $\boldsymbol w$ is the policy's coefficient vector. Ties retain the native
+source. The bounded candidate set varies the emphasis on source length,
+coefficient length, predicted surviving entries, squared resulting row lengths
+and preference for the native source.
+
+We evaluate eighteen coefficient vectors on all twelve training batches.
+For each complete trajectory, the forward-work estimate remains
+$\sum_j(1+2n_j)$ from Eq.~\eqref{eq:continuation-cost}. This count now includes
+every committed update caused by repeated policy choices. We rank candidates
+by the geometric mean ratio to native work, first averaging the ordinary and
+deeper batches within each physical profile and then giving profiles equal
+weight. Thus later algebraic consequences enter the training objective directly.
+The measured count excludes Fermat's internal polynomial operations and
+back substitution, which remain covered by the complete-time measurement.
+
+
+The two nontrivial linear policies retained for the final comparison use
+\begin{align}
+ s_A(S,q)&=
+ 2\log(1+n_q)+
+ \log\!\left(1+\sum_{j\ne q}\widehat n_{jq}\right),\\
+ s_B(S,q)&=
+ \tfrac12\log(1+n_q)+
+ \log\!\left(1+\sum_{j\ne q}\widehat n_{jq}\right)
+ +0.3\log\!\left(1+\sum_{j\ne q}\widehat n_{jq}^{\,2}\right)
+ -0.01\,\delta_{q0}.
+\end{align}
+Here $n_q$ is the number of entries in source row $q$, and
+$\delta_{q0}$ is one for the native source and zero for another source.
+The lower score selects the source. These coefficient vectors come from
+the stated finite search; validation then selects which vector to use for
+each topology. The small native-source preference in $s_B$ reduces changes
+when its other features give nearly equal scores.
+
+Separate validation compares the selected policies with native choices and
+a deterministic rule that minimizes the predicted number of surviving entries.
+It also measures the seed policy alone and the combined seed and row policy.
+A model reports the normalized score
+\[
+ P(q\mid S)=
+ \frac{\exp[-s_{\boldsymbol w}(S,q)]}
+ {\sum_{q'}\exp[-s_{\boldsymbol w}(S,q')]}.
+\]
+This gives a relative preference among the supplied actions, with no
+calibration or global-optimality claim. Reserved cases do not select weights,
+thresholds or deployment rules.
+
+\subsection{Timing a complete integrated workflow}
+All methods use fresh processes, the same temporary storage and the same
+bounded back-substitution schedule. Production timing includes preparation,
+prediction, equation generation and selection, elimination, back substitution,
+exact comparison and every required fallback. A child-exit notification ends
+the wait promptly and avoids adding the monitor's polling interval to short
+calculations. Detailed training traces remain disabled during production
+timing, while aggregate operation and time counters remain enabled.
+
+The reference reduction and prescribed master basis are common benchmark
+preparation and remain outside the paired production time. Successful trials
+must reduce every supplied target to that basis with exact coefficients.
+At most two production reductions run concurrently, each with 128 MiB of
+temporary storage and the preceding process-memory limits. The project ledger
+reserves storage for temporary files, retained records, publication copies and
+the local report while remaining below the user's combined 10 GB ceiling.
+
+\subsection{Reducing the cost of a single model call}
+The vector implementation accelerates repeated inference, but a short
+reduction also pays for loading its numerical library. We therefore export
+the same trained weights to a compiled evaluator that reads the same family,
+target and candidate features. The evaluator uses single-precision arithmetic
+and preserves the network's matrix operations, nonlinear functions and
+attention calculation. Different accumulation orders can change the last
+digits of a probability, so we check both probabilities and the selected sets.
+
+Across thirty-six development contexts, the largest absolute probability
+difference is $9.48\times10^{-6}$. All selection masks agree at thresholds
+$0.003$, $0.01$, $0.03$, $0.1$, $0.3$ and $0.5$. A further forty-eight fresh-process
+checks use eight validation contexts, two implementations and three repetitions.
+Their selected sets also agree. The compiled implementation takes between
+$0.264$ and $0.804$ times the numerical-library implementation's median
+preparation and inference time across these contexts. Its arithmetic alone
+is slower in the warm tests; the fresh-process benefit comes from the lower
+startup cost. Production comparisons therefore retain startup in the timed
+workflow.
+
+We also reduce the row policy's feature cost. Once training selects a sparse
+coefficient vector $\boldsymbol w$, only features with $w_k\ne0$ affect its score.
+The production evaluator computes those features, while the diagnostic path
+retains the full vector. Thirty-six complete comparisons check three policies
+on six validation batches with this optimization enabled and disabled.
+The selected sources, committed operations and exact exports agree. The
+deterministic cancellation rule receives the same feature optimization, and
+its coverage control loads no neural model. These controls prevent model
+startup and unused feature work from creating an artificial learned advantage.
+
+\subsection{Selecting thresholds from complete reduction cost}
+The seed probabilities describe membership in the recorded construction data.
+Their classification threshold need not minimize the cost of a new native
+reduction. We therefore select an execution threshold using only the twelve
+native training batches. For each threshold $\tau$ in the six-value set above,
+the policy selects every candidate whose probability is at least $\tau$,
+together with the mandatory coverage seeds. The search retains all time spent
+on unsuccessful attempts and the fixed native fallback.
+
+Let $T_{i,\tau}$ be this complete time for training batch $i$, and let
+$T_{i,\mathrm{native}}$ be the time for the smaller native region with its
+fallback. Batches share a threshold when they have the same topology, largest
+number of additional propagator powers and largest total numerator power.
+For each such class $\mathcal C$, training selects
+\[
+ \tau_{\mathcal C}=
+ \underset{\tau}{\operatorname{arg\,min}}\,
+ \exp\left[
+  \frac{1}{|\mathcal C|}
+  \sum_{i\in\mathcal C}
+  \log\frac{T_{i,\tau}}{T_{i,\mathrm{native}}}
+ \right].
+\]
+Here $|\mathcal C|$ is the number of training batches in that class.
+The scan contains ninety-six complete workflows, including the smaller
+native and deterministic coverage controls. This threshold search changes
+execution settings and preserves the earlier classification tests at their
+original threshold.
+
+One development subset exposed an additional admission requirement. Its
+export still contained an integral outside the prescribed master basis,
+although the native master check had accepted the initial system. The exact
+reference comparison rejected the result. We now also inspect every
+integral on the right-hand side of the exported reduction. An extra integral
+marks an incomplete reduction and triggers the fixed expansion of the seed
+region. A disagreement between coefficients in the admitted basis stops the
+calculation. The original rejected result remains in the evidence, and its
+replacement workflow includes the unsuccessful subset's elapsed time.
+
+\subsection{Controls and the scope of the optimization}
+The smaller native control starts with the target's own bounds on propagator
+and numerator powers and expands them if needed. The conservative control
+starts one step beyond these bounds. The learned and deterministic coverage
+methods first try a subset of the smaller region, then the whole smaller
+region, then the conservative region. Row policies make each source choice
+inside the current native matrix throughout these attempts. This comparison
+separates the effect of a learned subset from the effect of starting with
+fewer native equations.
+
+An additional experiment changes the database settings only for fresh,
+disposable trial directories. Three paired exact reductions give a median
+time ratio of approximately $1.011$ to the unchanged settings, so the final
+configuration retains the usual database settings. A separate system-call
+diagnostic finds negligible time in database flushes for the examined box
+calculation. Disabling synchronization or moving a journal to memory changes
+recovery guarantees~\cite{SQLitePragmas}; the retained configuration receives
+no performance claim from this rejected experiment.
+
+These searches compare a finite set of models and execution choices under
+the stated memory and storage limits. They identify configurations with lower
+measured cost on their supported inputs. They do not prove a globally minimal
+number of algebraic operations or a globally shortest calculation time.

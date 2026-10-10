@@ -11,11 +11,13 @@ def main():
  s=json.loads((HERE/"pair_reserved_summary.json").read_text())
  v=json.loads((HERE/"pair_summary.json").read_text());cache=json.loads((HERE/"cache_summary.json").read_text())
  app=json.loads((HERE/"application_verification.json").read_text());audit=json.loads((HERE/"verification.json").read_text())
+ assert [audit[k] for k in ["integrated_seed_attempts","used_selected_seeds","integrated_learned_attempts","learned_row_groups","changed_row_sources"]]==[404,147556,324,363759,5795]
  assert s["observed"]==400 and s["outcomes"].get("completed")==400 and app["all_passed"] and app["checks"]==8 and audit["all_passed"]
  def c(name,field="complete_seconds",kind=None):
   a=s["comparisons"][name][field]
   return a["all"] if kind is None else a["by_topology"][kind]
- text=r"""\subsection{Removing redundant features in two-row decisions}
+ text=r"""\clearpage
+\subsection{Removing redundant features in two-row decisions}
 The preceding comparison lowers the row-operation count while leaving the
 cost of evaluating row choices visible in the forward stage. The recorded
 training data contain 1,923 groups with two source candidates among 2,520
@@ -83,12 +85,19 @@ forward stage in this confirmation~\cite{KiraIntegratedRuntimeData}.
   text+=f"\nThe {label} has a complete-time ratio of {number(x['ratio'])} to the smaller native control, with interval {interval(x)}. {evidence(x)} Its forward-stage ratio is {number(y['ratio'])}, with interval {interval(y)}.\n"
  for kind,label in [("sunrise","two-loop sunrise"),("double_box","two-loop box"),("vacuum3","three-loop vacuum"),("ladder3","three-loop ladder")]:
   a=c("seed_over_small",kind=kind);b=c("row_over_small",kind=kind);d=c("row_over_small","forward_seconds",kind);e=c("combined_over_small",kind=kind)
-  text+=f"\nFor the {label} profiles, the seed, row and combined complete-time ratios are {number(a['ratio'])}, {number(b['ratio'])} and {number(e['ratio'])}. The row policy's forward-stage ratio is {number(d['ratio'])}, with interval {interval(d)}. Each class contains two physical profiles with two target batches per profile.\n"
+  text+=f"\nFor the {label} profiles, the seed, row and combined complete-time ratios are {number(a['ratio'])}, {number(b['ratio'])} and {number(e['ratio'])}. The complete-time intervals are {interval(a)}, {interval(b)} and {interval(e)}, respectively. The row policy's forward-stage ratio is {number(d['ratio'])}, with interval {interval(d)}.\n"
  x=c("combined_over_seed");y=c("combined_over_seed","forward_seconds")
  text+=f"\nApplying the row policy within the learned-seed workflow gives a complete-time ratio of {number(x['ratio'])} to seed selection alone, with interval {interval(x)}. Its forward-stage ratio in that comparison is {number(y['ratio'])}, with interval {interval(y)}. These measurements include the model cost and the algebraic consequences of its choices.\n"
  x=c("row_over_fill_small")
  text+=f"\nThe row model's complete-time ratio to the deterministic cancellation rule is {number(x['ratio'])}, with interval {interval(x)}. The deterministic rule receives the same two-row shortcut, which keeps this comparison matched.\n"
  text+=r"""
+The native integration audit verifies that every used seed belongs to the
+selected mask and that each learned row attempt loads the frozen policy for
+its physical class. It records 404 learned-seed attempts with 147,556 used
+selected seeds, and 324 learned-row attempts with 363,759 eligible groups
+and 5,795 changes from the native source. These counters show that the
+models affect native equation generation and the evolving elimination.
+
 The aggregate row-operation reduction therefore does not establish a reduction
 in forward-stage time. The complete-time interval for the row policy includes
 one, while always enabling seed selection or both models increases aggregate
@@ -100,14 +109,15 @@ results do not retune it.
 \centering
 \includegraphics[width=\linewidth]{figures/integrated_pair_times.pdf}
 \caption{The implementation confirmation compares the same frozen models with
-the smaller native control after reducing two-row inference cost. The upper
-panel shows complete-time ratios and the lower panel shows forward-stage
+the smaller native control after reducing two-row inference cost. The left
+panel shows complete-time ratios and the right panel shows forward-stage
 ratios. Each point uses five repeated complete reductions of the indicated
 batch. The physical profiles repeat those in the initial comparison; all
 algebraic choices and exact exports remain unchanged.}
 \label{fig:integrated-pair-times}
 \end{figure}
 
+\clearpage
 \subsection{Reducing new targets from a known master basis}
 The reference answers above provide an independent benchmark check.
 The production interface also accepts only the physical family, target
