@@ -15,7 +15,7 @@
 \title{\textbf{Machine Learning for Kira IBP Reduction}\\
   \large Seed selection and elimination ordering}
 \author{}
-\date{October 8, 2026}
+\date{October 9, 2026}
 
 \begin{document}
 \maketitle
@@ -900,6 +900,9 @@ targets and complete reduction data~\cite{ExpandedIntegralData}.
 \input{kira_acceleration}
 \input{kira_fast_expression}
 
+\input{kira_multiloop_methods}
+\input{kira_multiloop_results}
+
 \section{Conclusion}
 \label{sec:conclusion}
 We constructed exact master-based integral data and tested learned
@@ -937,7 +940,7 @@ loading. The earlier implementations increased aggregate runtime,
 and this evolving-matrix policy also increased the summed
 coefficient-operation count~\cite{KiraLiveMatrixData}.
 
-The new native integration filters individual IBP seeds and evaluates the source-row network inside Kira. Its complete-time ratios against restricted native Kira are 1.295, 1.024, 1.983, in seed, row and combined order. These ratios use 20, 21, 15 complete paired batches, respectively, with five repetitions per method. The complete paired comparisons do not show a lower aggregate runtime than restricted native Kira for these learned methods. Lower inference costs alone do not ensure that the chosen seeds and rows save enough algebraic work. All 590 completed trials matched their exact master coefficients~\cite{KiraNativeAccelerationData}.
+The first native integration filters individual IBP seeds and evaluates the source-row network inside Kira. Its complete-time ratios against restricted native Kira are 1.295, 1.024, 1.983, in seed, row and combined order. These ratios use 20, 21, 15 complete paired batches, respectively, with five repetitions per method. The complete paired comparisons do not show a lower aggregate runtime than restricted native Kira for these learned methods. Lower inference costs alone do not ensure that the chosen seeds and rows save enough algebraic work. All 590 completed trials matched their exact master coefficients~\cite{KiraNativeAccelerationData}.
 
 The separate two-loop transfer gave 60 exact completions. The compiled learned-row pipeline reduced the median complete time for 64 targets from 12.770 to 12.460 seconds, a 2.4\% decrease. Its advantage over the deterministic compiled source control remained unresolved, and the full-pool control was faster at 11.773 seconds. This limited native-baseline gain does not establish a general benefit from learned row choices.
 
@@ -948,16 +951,19 @@ The responsive Fermat shutdown further reduces the complete cost of the learned 
 
 % responsive-exit-conclusion-end
 
-The higher-loop collection varies mass profiles within restricted
-coupled vacuum families, and all tested loop orders occur in training.
-The earlier native comparisons cover seven independent-basis families
-at one and two loops, while the new reserved comparison covers
-twelve one-loop box instances in six kinematic groups. The shutdown study adds twelve one-loop instances in six further
-held-out kinematic groups. These results
-support conclusions within the tested domains, resource limits and
-action sets. Larger independent multiloop systems and cost-oriented
-training on their changing IBP matrices remain necessary to assess
-broader performance.
+% native-multiloop-conclusion-begin
+The complete-generation comparison adds physical two- and three-loop targets and includes fresh IBP generation in every measured workflow. Of 324 planned trials, 324 completed every target and matched its exact reference coefficients. The learned seed workflow has an aggregate complete-time ratio of 0.742 with descriptive interval $[0.560,1.009]$ to responsive stock Kira. The interval includes one, so the aggregate timing advantage remains uncertain across these cases. Across the physical classes, this ratio is 0.563 for the two-loop boxes, 1.266 for the three-loop vacuum cases and 0.573 for the three-loop ladders. On the box cases with 32 targets, measured complete time is 49.6\% lower than the stock control. On the box cases with 128 targets, measured complete time is 37.0\% lower than the stock control. These statements concern the fixed rational kinematics, prescribed master bases and paired completion rules of Section~\ref{sec:complete-multiloop}~\cite{KiraCompleteMultiloopData}.
+
+The separate row tree learns from measured native continuation costs in 98 exact training and validation reductions. When the model chooses sources repeatedly in the reserved matrices, its complete-time ratio to the instrumented native policy is 1.008, and its forward coefficient-operation ratio is 1.003. This policy increases both measured quantities in the paired aggregate. The complete-time interval includes one, so a consistent row-policy timing gain is unresolved. The single-choice continuation objective and repeated use in changing matrices therefore require separate evaluation. For 128 targets, the learned seed workflow completes 18 of 18 trials, including 6 completed through fallback. Batch splitting bounds individual reductions but repeats generation and startup, and its completion and timing results must be assessed together.
+
+The original collection through twelve loops varies mass profiles within restricted coupled vacuum families. The present native study extends the evidence to independent scalar-product bases at two and three loops, with the ladder topology absent from new row training and validation. General symbolic multiscale coefficients and unrestricted high-loop scattering families remain outside the demonstrated domain. The measured seed gains support use in the stated cases, while the row results identify the limits of the current cost-trained policy.
+% native-multiloop-conclusion-end
+
+
+
+
+
+
 
 \clearpage
 \renewcommand{\refname}{Citations}

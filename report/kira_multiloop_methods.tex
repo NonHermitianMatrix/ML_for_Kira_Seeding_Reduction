@@ -1,0 +1,243 @@
+\section{Complete native multiloop reductions}
+\label{sec:complete-multiloop}
+The preceding supplied-equation tests begin with an existing IBP pool.
+To include the work needed to form that pool, we now give Kira physical
+denominators and indexed target integrals and repeat equation generation
+in every measured calculation. We also train a separate row model from
+the algebraic work caused by choices inside Kira. This connects the
+training objective to the intended reduction cost and permits a direct
+comparison with Kira's own source-row choices.
+
+\subsection{Physical families and independent targets}
+The integral notation remains $I_{\boldsymbol a}$, with
+$D_i=q_i^2-m_i^2+\mathrm{i}0$ as defined earlier. We use the following
+ordered momentum lists:
+\begin{align}
+ \boldsymbol q_{\rm sunrise}
+ &= (\ell_1,\ell_2,p-\ell_1-\ell_2,p-\ell_1,p-\ell_2),\\
+ \boldsymbol q_{\rm box}
+ &= (\ell_1,\ell_1-p_1,\ell_1-p_1-p_2,
+     \ell_2,\ell_2-p_1-p_2,\ell_2-p_1-p_2-p_3,\nonumber\\
+ &\hspace{2em}\ell_1-\ell_2,\ell_1-p_3,\ell_2-p_1),\\
+ \boldsymbol q_{\rm vacuum}
+ &= (\ell_1,\ell_2,\ell_3,\ell_1-\ell_2,
+     \ell_2-\ell_3,\ell_1-\ell_3),\\
+ \boldsymbol q_{\rm ladder}
+ &= (\ell_1,\ell_1-p,\ell_2,\ell_2-p,\ell_3,\ell_3-p,
+     \ell_1-\ell_2,\ell_2-\ell_3,\ell_1-\ell_3).
+\end{align}
+The first three sunrise entries, seven box entries and eight ladder
+entries are physical propagators. Their remaining entries complete the
+scalar-product basis and can appear with nonpositive indices. All six
+vacuum entries are physical propagators. The first two lists contain
+two loop momenta, and the last two contain three. In particular, the
+three-loop vacuum and ladder systems couple the loop momenta through
+shared propagators.
+
+For each list, we expand the squared momenta in
+$\ell_i\cdot\ell_j$ and $\ell_i\cdot p_j$ and check that the resulting
+coefficient matrix has rank
+\[
+ N_{\rm sp}=\frac{L(L+1)}{2}+LE.
+\]
+Here $E$ is the number of independent external momenta, and $N_{\rm sp}$
+is the number of independent scalar products involving loop momenta.
+All fifteen family definitions pass this check, and their nonempty
+external Gram matrices have nonzero determinants. This prevents a
+dependent denominator list from entering the comparison.
+
+All squared masses and external scalar products have fixed rational
+values in a common squared-momentum unit, while the dimension $d$
+remains symbolic. The reduction coefficients therefore belong to
+$\mathbb Q(d)$. For the box, the external momenta satisfy
+\[
+ p_i^2=0,\qquad
+ 2p_1\cdot p_2=s,\qquad
+ 2p_1\cdot p_3=t,\qquad
+ 2p_2\cdot p_3=-s-t.
+\]
+The six training cases consist of two sunrise mass profiles
+$(1,1,1)$ and $(1,2,3)$ with $p^2=-1,-2$ respectively, two massless
+boxes with $(s,t)=(-1,-2),(-2,-3)$, and two vacuum profiles
+$(1,1,1,1,1,1)$ and $(1,1,1,2,2,2)$. These profiles specify squared
+masses in the displayed propagator order. Validation uses the sunrise
+profile $(1,1,2)$ at $p^2=-3$, a box at $(s,t)=(-3,-4)$, and the vacuum
+profile $(1,1,1,1,1,2)$.
+
+The six reserved cases use boxes at $(s,t)=(-5,-7),(-7,-11)$,
+vacuum profiles $(1,1,2,1,2,2)$ and $(1,2,2,1,2,2)$, and two ladder
+instances. One ladder is massless with $p^2=-1$; the other has
+$m_1^2=1$, all other squared masses zero, and $p^2=-2$. The ladder
+topology appears only in the reserved set. The other reserved cases
+test different kinematic or mass conditions within training topologies.
+These tests concern rational kinematic points with symbolic $d$ and
+do not establish performance for general symbolic multiscale
+coefficients.
+
+Targets are individual indexed integrals. We begin with the full-sector
+corner, then increase each positive index by one and insert each
+available auxiliary numerator once. We repeat this enumeration after
+removing one, two and three physical denominators, retain at least two
+physical denominators, and remove duplicate index vectors. The reserved
+batches contain the first 32 or 128 targets in this fixed order. This
+construction selects targets without using learned scores or reverse
+construction paths.
+
+\subsection{Seed regions, learned subsets and complete fallback}
+For a batch $\mathcal T$, define
+\[
+ r_{\mathcal T}=\max_{\boldsymbol a\in\mathcal T}
+                  \sum_i\max(a_i,0),\qquad
+ s_{\mathcal T}=\max_{\boldsymbol a\in\mathcal T}
+                  \sum_i\max(-a_i,0),\qquad
+ b_{\mathcal T}=\max_{\boldsymbol a\in\mathcal T}
+                  \sum_i\max(a_i-1,0).
+\]
+The last quantity is the largest total number of additional propagator
+powers, also called dots. We specify Kira seed bounds
+$(r_{\mathcal T}+\delta,s_{\mathcal T}+\delta,b_{\mathcal T}+\delta)$,
+where $\delta=1$ defines the conservative reference region and
+$\delta=0$ defines the smaller region. Kira still applies its native
+symmetry, equation-generation and equation-selection procedures within
+these bounds~\cite{Kira3}. The bounds are explicit input choices;
+their difference is not a learned improvement to Kira.
+
+The saved seed model scores the finite candidate region using the
+ordered sum of the batch targets, with coefficient one for each target.
+This sum supplies model context, while Kira still reduces every target
+separately. Every sector corner, target and prescribed master that
+belongs to the candidate region remains available. An additional
+deterministic rule can retain all seeds with at most one dot or one
+numerator power in total. The learned policy can add seeds above its
+probability threshold, and a separate control applies the same
+deterministic rule without model inference.
+
+Kira first checks whether the selected system requires masters outside
+the prescribed reference basis. A rejected subset triggers the
+documented fallback sequence, and its time remains part of the
+measurement. A final successful calculation must produce every
+requested target and match its reference coefficient in $\mathbb Q(d)$.
+Other failed attempts also move through the prescribed fallback sequence. A coefficient mismatch makes the complete workflow unsuccessful. Splitting a batch into groups of
+32 targets bounds each calculation, but it also repeats equation
+generation and process startup; the timing comparison includes both
+effects.
+
+\subsection{Training row choices on their algebraic consequences}
+The new row model chooses a source among equations with the same
+leading integral. It preserves Kira's native pivot and group order, and
+Kira carries out every resulting row operation exactly. At state $S$,
+the allowed action $q$ selects one such source row, which removes the
+leading integral from the other rows in that group. The model therefore
+acts on the changing native matrix through a restricted, explicitly
+defined action set.
+
+The first training objective measures the immediate symbolic insertion
+time for each source. We clone the destination rows, apply the exact
+native update, and average two rotated measurement orders while
+excluding clone time. This measures local arithmetic cost, but it does
+not include the equations created by later eliminations. We therefore
+also measure a continuation cost,
+\begin{equation}
+ C(S,q)=\sum_{j\in\mathcal U(S,q)}(1+2n_j).
+ \label{eq:continuation-cost}
+\end{equation}
+Here $\mathcal U(S,q)$ is the sequence of committed forward insertions
+after choosing $q$ and then following Kira's native choices, and $n_j$
+is the number of nonzero coefficients in the source of insertion $j$.
+The count assigns one division and two coefficient operations per
+source entry. It is an algebraic operation estimate tied to measured
+native insertions; it does not count Fermat's internal polynomial
+operations or back substitution.
+
+We choose up to four evenly spaced eligible states from the saved
+local-cost sample in each development case, which contains at most
+100 measured groups. We prefer groups with at least three source
+choices and use smaller groups when no such group is available. Each alternative receives a separate complete Kira continuation.
+The recorded pivot and all candidate features must match the original
+state, and the final master coefficients must match the reference
+reduction before its cost can enter training. The resulting labels
+measure a choice followed by native continuation. They do not prove a
+globally minimum reduction path.
+
+Each candidate has eighteen features describing row length, coefficient
+text length and operations, overlap with destination columns, estimated
+new entries, and its position relative to Kira's preferred source.
+A linear fit to log continuation cost retained the native source in all
+nine validation states. We therefore also fit a small regression tree~\cite{CART1984},
+which can represent conditions involving several features.
+
+For this tree, the target is the normalized change in measured
+continuation cost,
+\[
+ y_q=\frac{C(S,q)-C(S,0)}
+           {\max\{1,\max_{q'}C(S,q')-\min_{q'}C(S,q')\}},
+ \qquad
+ \widehat y_q=h(\boldsymbol x_q-\boldsymbol x_0).
+\]
+The index $0$ denotes Kira's preferred source, $\boldsymbol x_q$ is the
+candidate feature vector, and $h$ is the fitted tree. Lower targets
+correspond to fewer recorded operations. We fix $\widehat y_0=0$ and
+fit the remaining candidates with a weighted least-squares loss that
+gives each training family equal weight. Validation selects tree
+depth, minimum leaf population, target normalization and the required
+predicted gain.
+
+The selected tree has 21 nodes, depth four and at least two training
+examples in each leaf. Its training set contains 68 candidate
+continuations in 24 states from six families, while validation contains
+30 candidates in nine states from three families. All 98 continuations
+match their exact reference reductions. The tree changes nine training
+choices and three validation choices, with family-weighted continuation
+count ratios of 0.998602 and 0.999967 to the native choices. These
+ratios measure individual choices followed by native continuation;
+the next test must determine the effect of using the model repeatedly.
+
+The model chooses the lowest predicted score and reports
+\[
+ P(q\mid S)=\frac{\exp(-\widehat y_q)}
+                 {\sum_{q'}\exp(-\widehat y_{q'})}.
+\]
+This quantity expresses a relative model score, with no calibration
+claim. Kira evaluates each score directly in compiled code. Groups with two rows or more than
+32 rows keep the native source, which also avoids feature construction
+for those groups. We preserve the original neural checkpoint and both
+earlier linear fits as separate artifacts, and hold the final tree
+fixed during reserved testing.
+
+The seed implementation also reads its unchanged weight archive once
+per process and retains at most two sets of family and candidate
+embeddings within a workflow. A new target batch still receives its
+own target features and scores. Independent checks compare every
+probability with the original implementation and compare native tree
+scores and choices with the Python model. These changes reduce
+repeated loading and feature preparation while preserving the tested
+seed predictions.
+
+\subsection{Complete timing and reference checks}
+Every final trial starts a new process and includes input preparation,
+model loading and inference, native IBP generation and selection,
+symbolic elimination, back substitution, exact coefficient comparison,
+and all failed attempts and fallback reductions. Evidence compression
+follows the stop time. These checks establish reduction to the prescribed reference basis;
+they do not prove global minimality of the master set.
+We report the initial reference calculation separately as common
+benchmark preparation. Each policy receives the same prescribed
+master basis and exact comparison result within a case.
+
+All controls use the responsive Fermat shutdown from the preceding
+section. We compare both the unchanged reduction executable with that
+shutdown fix and an instrumented executable that keeps native row
+choices. This separates the cost of measurement and integration from
+the learned action. We also compare smaller deterministic regions and
+matched deterministic seed subsets, since either could explain a gain
+over conservative bounds.
+
+Each trial uses one calculation thread, a bounded scratch directory
+and limits on elapsed time and process-tree memory. Production trials
+have 128 MiB of scratch space, a 2,400 MiB solver address-space limit, and a 2,100 MiB solver process-tree resident-memory limit. The enclosing worker has a 2,800 MiB address-space limit and a 2,600 MiB process-tree resident-memory limit. A single common-reference calculation
+can use 256 MiB while retaining the same symbolic bounds, and the
+storage ledger includes additional monitoring headroom. Final comparisons
+use paired cases and report completion counts alongside time ratios.
+Repeated runs reduce timing noise within a case, while different
+kinematic instances remain distinct from different topologies.
+The reserved results do not select the policy or its thresholds.

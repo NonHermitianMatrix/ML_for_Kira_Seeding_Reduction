@@ -103,3 +103,7 @@
 ## Complete multiloop and cost-based training stage
 
 - The user authorizes new full-workflow comparisons that include IBP equation generation, independent larger multiloop families, larger-batch completion improvements, and training row choices on measured algebraic cost inside Kira. Preserve previous checkpoints and results; save newly trained weights separately, use distinct training, validation and reserved test cases, and freeze each tested policy before evaluation. Publish the completed code, data, models, tests, READMEs and report on Hoffman and GitHub, and synchronize the report and rules locally. Keep the existing 10 GB combined storage ceiling. Report measured outcomes and limits without assuming a general speedup.
+
+## Joint native integration and timing improvements
+
+- Continue the authorized integration work for both seed selection and reduction propagation. Measure each model against matched native and deterministic controls, include all inference and fallback costs, and keep improving the supported calculation time. Preserve negative results and prior models, use separate development and validation cases, freeze changes before new reserved tests, and document the entire integration and measured limits in the report. A measured best configuration is not a proof of a globally fastest reduction.
