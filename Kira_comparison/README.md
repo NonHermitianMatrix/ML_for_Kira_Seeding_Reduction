@@ -97,3 +97,9 @@ The latest production entry is Kira_comparison/integrated_runtime/s108_reduce.py
 ## Target-dependent equation selection
 
 The trained third model and native integration are in [../ML_model_equation_selection](../ML_model_equation_selection/README.md). The current s35_reduce.py route uses the recorded 21-target two-loop sunrise domain with native seed and row choices. Six fresh profiles give complete-time ratio 0.9942 and preparation ratio 0.7848. Other domains and combinations with earlier learned policies retain native equation choices. The report preserves the slower broad and combined results, descriptive intervals, exact checks and current limits.
+
+<!-- early-equation-release -->
+The current early equation policy predicts which seed/operator identities to construct. On eight fresh physical profiles, its complete-time ratio to matched native choices is 0.942907, with descriptive 95% interval [0.915,0.970]. Its preparation ratio is 0.637888, with interval [0.546,0.734]. The complete-time ratio to the previous release is 0.943456, and the ratio to the distance control is 0.933657. All 280 comparisons and eight basis-only applications pass exact checks. The selected route keeps native seed and row choices and preserves the preceding sunrise policy. These results include every fallback cost and cover known two-/three-loop structures at fixed rational kinematics with symbolic d.
+
+See [early equation selection](../ML_model_equation_selection/early_generation/README.md).
+<!-- early-equation-release-end -->

@@ -1,0 +1,84 @@
+--- .tools/kira-source/src/pyred/interface.cpp
++++ interface.cpp
+@@ -27,6 +27,7 @@
+ 
+ #include "pyred/interface.h"
+ #include "pyred/parser.h"
++#include "s00_early_policy.h"
+ #include "gzstream/gzstream.h"
+ 
+ 
+@@ -473,6 +474,7 @@
+     const std::vector<SeedSpec>& ibp_seedspec,
+     const std::vector<SeedSpec>& ibp_seedcompl,
+     const std::vector<SeedSpec>& sym_seedspec) {
++  kira_eq::StageTimer equation_stage_timer("generation_modular");
+   if (Integral::sector_ordering() == 1 &&
+       (Config::lookahead() == 0 || Config::lookahead() == 1)) {
+     // In sector ordering 1, sectors are not ordered by number of lines.
+@@ -507,14 +509,17 @@
+     std::vector<std::size_t>&& eqnums,
+     const std::function<void(eqdata&&)>& treateq,
+     const std::function<std::string(const std::string&)>& treatcoeff) {
++  kira_eq::StageTimer equation_stage_timer("equation_regeneration");
+   // Generate a system of equation for the given seed, insert coefficients
+   // as strings, optionally simplified by treatcoeff,
+   // and apply treateq to all equations (i.e. no selection).
++  kira_eq::retrieve_begin();
++  auto eq_callback=[&](eqdata&& eq){kira_eq::selected(eq);treateq(std::move(eq));};
+ #define PYRED_PP_CCS_SYSTEMGENERATERETRIEVE1(k)                            \
+   PYRED_PP_IF_TRUE(k, else) if (coeff_cls == k + 1) {                      \
+     GeneratorHelper::generate_and_retrieve<PYRED_PP_COEFFCLASS(k)>(        \
+         ibp_seedspec, ibp_seedcompl, sym_seedspec, Config::auto_symseed(), \
+-        std::move(eqnums), treatcoeff, treateq, Config::parallel());       \
++        std::move(eqnums), treatcoeff, eq_callback, Config::parallel());       \
+   }
+   PYRED_PP_REPEAT0(PYRED_PP_NCOEFFCLASSES, PYRED_PP_CCS_SYSTEMGENERATERETRIEVE1)
+ }
+@@ -522,6 +527,7 @@
+ void System::generate_retrieve(
+     std::vector<std::size_t>&& eqnums, const std::function<void(eqdata&&)>& treateq,
+     const std::function<std::string(const std::string&)>& treatcoeff) {
++  kira_eq::StageTimer equation_stage_timer("equation_regeneration");
+   // Re-generate the system, insert coefficients as strings,
+   // optionally simplified by treatcoeff,
+   // and apply treateq to the (selected) equations with numbers in eqnums.
+@@ -529,11 +535,13 @@
+     throw init_error("System::generate_retrieve(): seeds have not been set for "
+                      "re-generation.");
+   }
++  kira_eq::retrieve_begin();
++  auto eq_callback=[&](eqdata&& eq){kira_eq::selected(eq);treateq(std::move(eq));};
+ #define PYRED_PP_CCS_SYSTEMGENERATERETRIEVE2(k)                           \
+   PYRED_PP_IF_TRUE(k, else) if (coeff_cls == k + 1) {                     \
+     GeneratorHelper::generate_and_retrieve<PYRED_PP_COEFFCLASS(k)>(       \
+         std::get<0>(m_seeds), std::get<1>(m_seeds), std::get<2>(m_seeds), \
+-        Config::auto_symseed(), std::move(eqnums), treatcoeff, treateq,   \
++        Config::auto_symseed(), std::move(eqnums), treatcoeff, eq_callback,   \
+         Config::parallel());                                              \
+   }
+   PYRED_PP_REPEAT0(PYRED_PP_NCOEFFCLASSES, PYRED_PP_CCS_SYSTEMGENERATERETRIEVE2)
+@@ -708,6 +716,7 @@
+ }
+ 
+ std::vector<std::size_t> System::solve() {
++  kira_eq::StageTimer equation_stage_timer("modular_solve");
+   std::vector<std::size_t> indep_eqnums;
+ #define PYRED_PP_CCS_SYSTEMSOLVE(k)                      \
+   PYRED_PP_IF_TRUE(k, else) if (coeff_cls == k + 1) {    \
+@@ -788,6 +797,7 @@
+ 
+ std::pair<std::vector<std::size_t>, std::vector<Weight>> System::select(
+     const std::vector<Weight>& mandatory, const std::vector<Weight>& if_reduced) {
++  kira_eq::StageTimer equation_stage_timer("equation_selection");
+   /*
+    * 'mandatory':
+    * - Vector of integrals for which a reduction formula is required.
+@@ -884,6 +894,7 @@
+ 
+ std::pair<std::vector<size_t>, std::vector<Weight>> System::select_coeff(
+     const std::vector<Weight>& mandatory, const std::vector<Weight>& if_reduced) {
++  kira_eq::StageTimer equation_stage_timer("equation_selection_coeff");
+   /*
+    * 'mandatory':
+    * - Vector of integrals for which a reduction formula is required.

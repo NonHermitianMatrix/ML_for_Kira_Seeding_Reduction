@@ -1,0 +1,3 @@
+# Native equation-construction interface
+
+s00_early_policy.h evaluates seed/operator features before the coefficient constructor. It caches seed features and operator decisions, preserves operator positions, and leaves symmetry/preferred-basis identities on their native paths. Source patches and build.json record the change, compiler/link commands and hashes. s00_build.py builds from the established patched Kira installation under .tools/; existing upstream and project build scripts provide those dependencies. The old binaries remain unchanged. validation/prediction_parity.json records 918,744 matching decisions; final reductions receive separate exact audits.

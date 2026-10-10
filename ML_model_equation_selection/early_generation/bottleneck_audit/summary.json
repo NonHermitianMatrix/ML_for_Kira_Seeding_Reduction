@@ -1,0 +1,286 @@
+{
+  "scope": "diagnostic profile of current native baseline, frozen models unchanged",
+  "runs": 12,
+  "all_exact": true,
+  "timing_note": "Includes timestamp-wrapper and logging costs. Nonoverlapping native output intervals are broader than internal function timers. Fresh node timings do not replace published benchmark times or imply speedup. Separately computed medians need not add exactly.",
+  "groups": {
+    "equation_test_00_sunrise": {
+      "repetitions": 3,
+      "median_seconds": {
+        "total": 1.2373458929359913,
+        "family_and_initial_setup": 0.20562967285513878,
+        "equation_preparation": 0.43965817242860794,
+        "triangular_with_transfer": 0.18212282843887806,
+        "back_substitution_with_commit": 0.01935790292918682,
+        "export_and_exit": 0.17047688737511635,
+        "outside_wrapper": 0.22435438074171543,
+        "setup_and_equation_fraction": 0.47643708573107707
+      }
+    },
+    "equation_test_02_double_box": {
+      "repetitions": 3,
+      "median_seconds": {
+        "total": 3.7501527462154627,
+        "family_and_initial_setup": 0.5153304468840361,
+        "equation_preparation": 1.4038753639906645,
+        "triangular_with_transfer": 0.7537830211222172,
+        "back_substitution_with_commit": 0.3457799479365349,
+        "export_and_exit": 0.13838637992739677,
+        "outside_wrapper": 0.3238162714987993,
+        "setup_and_equation_fraction": 0.530051045415238
+      }
+    },
+    "equation_test_06_ladder3": {
+      "repetitions": 3,
+      "median_seconds": {
+        "total": 4.230480447411537,
+        "family_and_initial_setup": 0.9355616979300976,
+        "equation_preparation": 1.4069166705012321,
+        "triangular_with_transfer": 0.8184445276856422,
+        "back_substitution_with_commit": 0.5724477339535952,
+        "export_and_exit": 0.16714049689471722,
+        "outside_wrapper": 0.28742837347090244,
+        "setup_and_equation_fraction": 0.5548662523349758
+      }
+    },
+    "equation_test_07_ladder3": {
+      "repetitions": 3,
+      "median_seconds": {
+        "total": 4.357008036226034,
+        "family_and_initial_setup": 1.072680201381445,
+        "equation_preparation": 1.2254224363714457,
+        "triangular_with_transfer": 0.9158548284322023,
+        "back_substitution_with_commit": 0.608986197039485,
+        "export_and_exit": 0.17216632701456547,
+        "outside_wrapper": 0.26821597293019295,
+        "setup_and_equation_fraction": 0.5432835395682224
+      }
+    }
+  },
+  "records": [
+    {
+      "case": "equation_test_00_sunrise",
+      "file": ".tools/bottleneck-audit/equation_test_00_sunrise_n21_r0_events.json",
+      "seconds": {
+        "total": 1.2373458929359913,
+        "family_and_initial_setup": 0.20562967285513878,
+        "equation_preparation": 0.43965817242860794,
+        "triangular_with_transfer": 0.18212282843887806,
+        "back_substitution_with_commit": 0.01825786754488945,
+        "export_and_exit": 0.17047688737511635,
+        "outside_wrapper": 0.2212004642933607,
+        "setup_and_equation_fraction": 0.5215096675615893
+      },
+      "worker_host": "n7403",
+      "success": true,
+      "peak_scratch_bytes": 143360,
+      "peak_rss_bytes": 29982720
+    },
+    {
+      "case": "equation_test_00_sunrise",
+      "file": ".tools/bottleneck-audit/equation_test_00_sunrise_n21_r1_events.json",
+      "seconds": {
+        "total": 1.1027454175055027,
+        "family_and_initial_setup": 0.1740589551627636,
+        "equation_preparation": 0.338232709094882,
+        "triangular_with_transfer": 0.16129747219383717,
+        "back_substitution_with_commit": 0.01935790292918682,
+        "export_and_exit": 0.10794665478169918,
+        "outside_wrapper": 0.3018517233431339,
+        "setup_and_equation_fraction": 0.4645602295192392
+      },
+      "worker_host": "n7403",
+      "success": true,
+      "peak_scratch_bytes": 188416,
+      "peak_rss_bytes": 29761536
+    },
+    {
+      "case": "equation_test_00_sunrise",
+      "file": ".tools/bottleneck-audit/equation_test_00_sunrise_n21_r2_events.json",
+      "seconds": {
+        "total": 1.615507548674941,
+        "family_and_initial_setup": 0.24254360795021057,
+        "equation_preparation": 0.5271441005170345,
+        "triangular_with_transfer": 0.3162707947194576,
+        "back_substitution_with_commit": 0.03433987498283386,
+        "export_and_exit": 0.27085478976368904,
+        "outside_wrapper": 0.22435438074171543,
+        "setup_and_equation_fraction": 0.47643708573107707
+      },
+      "worker_host": "n7403",
+      "success": true,
+      "peak_scratch_bytes": 180224,
+      "peak_rss_bytes": 29872128
+    },
+    {
+      "case": "equation_test_02_double_box",
+      "file": ".tools/bottleneck-audit/equation_test_02_double_box_n128_r0_events.json",
+      "seconds": {
+        "total": 3.46848014742136,
+        "family_and_initial_setup": 0.4345961641520262,
+        "equation_preparation": 1.4038753639906645,
+        "triangular_with_transfer": 0.7454510312527418,
+        "back_substitution_with_commit": 0.3456863798201084,
+        "export_and_exit": 0.2150549367070198,
+        "outside_wrapper": 0.3238162714987993,
+        "setup_and_equation_fraction": 0.530051045415238
+      },
+      "worker_host": "n7403",
+      "success": true,
+      "peak_scratch_bytes": 872448,
+      "peak_rss_bytes": 35979264
+    },
+    {
+      "case": "equation_test_02_double_box",
+      "file": ".tools/bottleneck-audit/equation_test_02_double_box_n128_r1_events.json",
+      "seconds": {
+        "total": 4.256066806614399,
+        "family_and_initial_setup": 0.5585142001509666,
+        "equation_preparation": 1.8631184753030539,
+        "triangular_with_transfer": 0.7537830211222172,
+        "back_substitution_with_commit": 0.3457799479365349,
+        "export_and_exit": 0.13838637992739677,
+        "outside_wrapper": 0.5964847821742296,
+        "setup_and_equation_fraction": 0.5689837085476513
+      },
+      "worker_host": "n7403",
+      "success": true,
+      "peak_scratch_bytes": 872448,
+      "peak_rss_bytes": 35987456
+    },
+    {
+      "case": "equation_test_02_double_box",
+      "file": ".tools/bottleneck-audit/equation_test_02_double_box_n128_r2_events.json",
+      "seconds": {
+        "total": 3.7501527462154627,
+        "family_and_initial_setup": 0.5153304468840361,
+        "equation_preparation": 1.2386498060077429,
+        "triangular_with_transfer": 1.1360226683318615,
+        "back_substitution_with_commit": 0.445043932646513,
+        "export_and_exit": 0.13284330070018768,
+        "outside_wrapper": 0.2822625916451216,
+        "setup_and_equation_fraction": 0.46770901656254965
+      },
+      "worker_host": "n7403",
+      "success": true,
+      "peak_scratch_bytes": 872448,
+      "peak_rss_bytes": 35991552
+    },
+    {
+      "case": "equation_test_06_ladder3",
+      "file": ".tools/bottleneck-audit/equation_test_06_ladder3_n128_r0_events.json",
+      "seconds": {
+        "total": 4.655852850526571,
+        "family_and_initial_setup": 1.1397433448582888,
+        "equation_preparation": 1.340878838673234,
+        "triangular_with_transfer": 1.120808020234108,
+        "back_substitution_with_commit": 0.5724477339535952,
+        "export_and_exit": 0.19454653933644295,
+        "outside_wrapper": 0.28742837347090244,
+        "setup_and_equation_fraction": 0.5327965172376459
+      },
+      "worker_host": "n7403",
+      "success": true,
+      "peak_scratch_bytes": 1310720,
+      "peak_rss_bytes": 37376000
+    },
+    {
+      "case": "equation_test_06_ladder3",
+      "file": ".tools/bottleneck-audit/equation_test_06_ladder3_n128_r1_events.json",
+      "seconds": {
+        "total": 4.230480447411537,
+        "family_and_initial_setup": 0.8218350801616907,
+        "equation_preparation": 1.592877870425582,
+        "triangular_with_transfer": 0.8184445276856422,
+        "back_substitution_with_commit": 0.5641515348106623,
+        "export_and_exit": 0.15632683597505093,
+        "outside_wrapper": 0.2768445983529091,
+        "setup_and_equation_fraction": 0.5707892946449473
+      },
+      "worker_host": "n7403",
+      "success": true,
+      "peak_scratch_bytes": 1310720,
+      "peak_rss_bytes": 37437440
+    },
+    {
+      "case": "equation_test_06_ladder3",
+      "file": ".tools/bottleneck-audit/equation_test_06_ladder3_n128_r2_events.json",
+      "seconds": {
+        "total": 4.221699118614197,
+        "family_and_initial_setup": 0.9355616979300976,
+        "equation_preparation": 1.4069166705012321,
+        "triangular_with_transfer": 0.7094669714570045,
+        "back_substitution_with_commit": 0.6536059491336346,
+        "export_and_exit": 0.16714049689471722,
+        "outside_wrapper": 0.3490073326975107,
+        "setup_and_equation_fraction": 0.5548662523349758
+      },
+      "worker_host": "n7403",
+      "success": true,
+      "peak_scratch_bytes": 1310720,
+      "peak_rss_bytes": 37634048
+    },
+    {
+      "case": "equation_test_07_ladder3",
+      "file": ".tools/bottleneck-audit/equation_test_07_ladder3_n128_r0_events.json",
+      "seconds": {
+        "total": 4.357008036226034,
+        "family_and_initial_setup": 1.0931215081363916,
+        "equation_preparation": 1.3139931112527847,
+        "triangular_with_transfer": 0.9158548284322023,
+        "back_substitution_with_commit": 0.5595817919820547,
+        "export_and_exit": 0.2062408234924078,
+        "outside_wrapper": 0.26821597293019295,
+        "setup_and_equation_fraction": 0.5524696303920931
+      },
+      "worker_host": "n7403",
+      "success": true,
+      "peak_scratch_bytes": 1331200,
+      "peak_rss_bytes": 37670912
+    },
+    {
+      "case": "equation_test_07_ladder3",
+      "file": ".tools/bottleneck-audit/equation_test_07_ladder3_n128_r1_events.json",
+      "seconds": {
+        "total": 4.491161065176129,
+        "family_and_initial_setup": 1.072680201381445,
+        "equation_preparation": 1.104219101369381,
+        "triangular_with_transfer": 0.9508396498858929,
+        "back_substitution_with_commit": 1.0012612342834473,
+        "export_and_exit": 0.13369818776845932,
+        "outside_wrapper": 0.228462690487504,
+        "setup_and_equation_fraction": 0.4847074667684969
+      },
+      "worker_host": "n7403",
+      "success": true,
+      "peak_scratch_bytes": 835584,
+      "peak_rss_bytes": 37367808
+    },
+    {
+      "case": "equation_test_07_ladder3",
+      "file": ".tools/bottleneck-audit/equation_test_07_ladder3_n128_r2_events.json",
+      "seconds": {
+        "total": 3.9621913116425276,
+        "family_and_initial_setup": 0.9271708838641644,
+        "equation_preparation": 1.2254224363714457,
+        "triangular_with_transfer": 0.7602269630879164,
+        "back_substitution_with_commit": 0.608986197039485,
+        "export_and_exit": 0.17216632701456547,
+        "outside_wrapper": 0.26821850426495075,
+        "setup_and_equation_fraction": 0.5432835395682224
+      },
+      "worker_host": "n7403",
+      "success": true,
+      "peak_scratch_bytes": 856064,
+      "peak_rss_bytes": 37404672
+    }
+  ],
+  "source_sha256": {
+    ".tools/bottleneck-audit/s00_timestamp.py": "3be1bc49711bebe942b2701f4339c3f04c0b015ca5aac1c431de3bb43bfb3594",
+    ".tools/bottleneck-audit/s01_profile.py": "a5ffc81042019e3e2e89b3bae7ab778d26ea781366450986f3f1e8503416b68b",
+    ".tools/bottleneck-audit/s03_profile_run.py": "0eea57527b0433d44618191f1385f1c0531c4dd966b396ef2a5c4adda7efa9d0",
+    ".tools/bottleneck-audit/s04_summarize.py": "e3c41d603b0d71a9dc1d317356d45b12f019d8712ad8aa2d04da31912359aab5",
+    "ML_model_equation_selection/s03_run.py": "d269e126163cd4bf776a479d53a6beb2e9cce3037c1e952e2c5ac525141f3a15",
+    ".tools/kira-equation-selection/kira-lazy": "c5a610d768f62999608866150a03cab69603f33e353eccd74f87bb567d043fad"
+  }
+}

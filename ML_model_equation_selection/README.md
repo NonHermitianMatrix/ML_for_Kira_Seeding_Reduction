@@ -1,6 +1,14 @@
+<!-- early-equation-current -->
+The current application is [early_generation/s12_reduce.py](early_generation/s12_reduce.py).
+
+The current early equation policy predicts which seed/operator identities to construct. On eight fresh physical profiles, its complete-time ratio to matched native choices is 0.942907, with descriptive 95% interval [0.915,0.970]. Its preparation ratio is 0.637888, with interval [0.546,0.734]. The complete-time ratio to the previous release is 0.943456, and the ratio to the distance control is 0.933657. All 280 comparisons and eight basis-only applications pass exact checks. The selected route keeps native seed and row choices and preserves the preceding sunrise policy. These results include every fallback cost and cover known two-/three-loop structures at fixed rational kinematics with symbolic d.
+
+See the [extension README](early_generation/README.md). The remaining text describes the preceding frozen release.
+<!-- early-equation-current-end -->
+
 # Target-dependent equation selection
 
-The current application is s35_reduce.py. It enables the trained equation model for the recorded 21-target two-loop sunrise domain with native seed and row choices. Other target sets, other topologies, and requests for the earlier seed/row models retain native equation choices. The slower three-model combination stays disabled.
+The preceding application is s35_reduce.py. It enables the trained equation model for the recorded 21-target two-loop sunrise domain with native seed and row choices. Other target sets, other topologies, and requests for the earlier seed/row models retain native equation choices. The slower three-model combination stays disabled.
 
 On six fresh physical profiles, the equation policy has complete-time ratio 0.994238, descriptive interval [0.9912948654378096, 0.9970062760952034], and equation-preparation ratio 0.784781, interval [0.7763148590933325, 0.7941014613492257]. This is about 0.6% lower complete time and 21.5% lower preparation time within that domain. Generated-equation ratio is 0.413523; selected-equation count is unchanged. Native median complete times range from 0.692 to 0.709 seconds. Preparation occupies about 3.29% of native complete time.
 
@@ -22,7 +30,7 @@ Folders:
 - references/: additional native reference reductions. Some unchanged references remain in Kira_comparison and are identified by path in each record.
 - development_v1/ and development_v2/: rejected label-collection attempts, with explanations. Training excludes them.
 
-Use s35_reduce.py inside a scheduled Hoffman job with node-local TMPDIR. Required arguments are --family-file, --masters-file, --size and --output. Use the family definition, ordered target list and topology metadata schema in families.json. The output must lie inside this folder. The optional --base accepts native, seed, row or both. The current interface prevents an equation-filter combination that the tests found slower.
+Use s35_reduce.py inside a scheduled Hoffman job with node-local TMPDIR. Required arguments are --family-file, --masters-file, --size and --output. Use the family definition, ordered target list and topology metadata schema in families.json. The output must lie inside this folder. The optional --base accepts native, seed, row or both. That preceding interface prevents an equation-filter combination that the tests found slower.
 
 On the configured cluster installation, s25_build_lazy.sh builds the final native evaluator. s04_experiment.py collects training examples, s06_train.py fits the tree, and s12_freeze.py locks the original broad experiment. s19_test.sh performs the broad tests. s30_confirmation.py prepare defines and freezes the six fresh profiles; s32_confirm.sh runs their comparison and independent audit. These completed experiments must remain fixed; use separate folders and fresh profiles for further policy development.
 

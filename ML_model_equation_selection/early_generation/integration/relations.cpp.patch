@@ -1,0 +1,27 @@
+--- .tools/kira-acceleration/relations_accel.cpp
++++ relations.cpp
+@@ -29,6 +29,7 @@
+ #include "pyred/parser.h"
+ #include "pyred/ppmacros.h"
+ #include "relations.h"
++#include "s00_early_policy.h"
+ #include "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/Kira_comparison/acceleration/s03_seed_filter.h"
+ 
+ namespace pyred {
+@@ -419,6 +420,8 @@
+     s_seed.push_back(std::to_string(p));
+   }
+   for (const auto& ibp_tmpl : m_ibps) {
++    const int eq_cached=kira_eq::precheck(seed,numibps.size());
++    if(eq_cached==0){numibps.emplace_back();continue;}
+     eqdata crop;
+     crop.reserve(ibp_tmpl.size());
+     for (const auto& ic : ibp_tmpl) {
+@@ -428,6 +431,7 @@
+         crop.emplace_back(weight, coeff);
+       }
+     }
++    if(eq_cached<0 && !kira_eq::allow(seed,numibps.size(),crop))crop.clear();
+     numibps.push_back(std::move(crop));
+   }
+   return numibps;

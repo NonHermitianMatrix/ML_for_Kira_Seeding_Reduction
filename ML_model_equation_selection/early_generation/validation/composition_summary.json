@@ -1,0 +1,374 @@
+{
+  "by_topology": {
+    "double_box": {
+      "label": "early_d12_t0.01",
+      "row": false,
+      "comparisons": {
+        "early": {
+          "batches": 2,
+          "complete_seconds": 0.9019842845396382,
+          "equation_preparation_seconds": 0.6331287396153474,
+          "forward_seconds": 1.0576858636243065,
+          "fallback_workflows": 0
+        },
+        "early_row": {
+          "batches": 2,
+          "complete_seconds": 0.9587916695258787,
+          "equation_preparation_seconds": 0.6519735507413549,
+          "forward_seconds": 0.9419933047936774,
+          "fallback_workflows": 0
+        },
+        "row_increment": {
+          "batches": 2,
+          "complete_seconds": 1.0629804598150336,
+          "equation_preparation_seconds": 1.029764580166518,
+          "forward_seconds": 0.8906172779560534,
+          "fallback_workflows": 0
+        }
+      }
+    },
+    "ladder3": {
+      "label": "early_d8_t0.01",
+      "row": true,
+      "comparisons": {
+        "early": {
+          "batches": 2,
+          "complete_seconds": 0.9120800467127634,
+          "equation_preparation_seconds": 0.6768786638215238,
+          "forward_seconds": 0.9885241223758867,
+          "fallback_workflows": 0
+        },
+        "early_row": {
+          "batches": 2,
+          "complete_seconds": 0.9037129075154349,
+          "equation_preparation_seconds": 0.6690545762852859,
+          "forward_seconds": 1.000426312696044,
+          "fallback_workflows": 0
+        },
+        "row_increment": {
+          "batches": 2,
+          "complete_seconds": 0.9908263104455748,
+          "equation_preparation_seconds": 0.9884409304733219,
+          "forward_seconds": 1.0120403640647138,
+          "fallback_workflows": 0
+        }
+      }
+    },
+    "sunrise": {
+      "label": "previous",
+      "row": false,
+      "reason": "Early filter did not meet the initial validation conditions."
+    },
+    "vacuum3": {
+      "label": "early_d8_t0.01",
+      "row": true,
+      "comparisons": {
+        "early": {
+          "batches": 4,
+          "complete_seconds": 0.9689706030477303,
+          "equation_preparation_seconds": 0.5961047728834064,
+          "forward_seconds": 0.8541376403241059,
+          "fallback_workflows": 0
+        },
+        "early_row": {
+          "batches": 4,
+          "complete_seconds": 0.9681839684834889,
+          "equation_preparation_seconds": 0.6247793187869443,
+          "forward_seconds": 0.944725855387526,
+          "fallback_workflows": 0
+        },
+        "row_increment": {
+          "batches": 4,
+          "complete_seconds": 0.9991881749954362,
+          "equation_preparation_seconds": 1.0481031979744715,
+          "forward_seconds": 1.1060580997566694,
+          "fallback_workflows": 0
+        }
+      }
+    }
+  },
+  "batches": [
+    {
+      "case": "early_validation_ladder_227",
+      "size": 32,
+      "topology": "ladder3",
+      "group": "ladder3:{\"masses\": [1, 0, 0, 0, 0, 0, 0, 0], \"p2\": -227}",
+      "methods": {
+        "early": {
+          "repetitions": 3,
+          "complete_seconds": 2.6260796021670103,
+          "equation_preparation_seconds": 0.3702590726315975,
+          "forward_seconds": 0.618332483805716,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 25635
+        },
+        "early_row": {
+          "repetitions": 3,
+          "complete_seconds": 2.5606918651610613,
+          "equation_preparation_seconds": 0.4147943314164877,
+          "forward_seconds": 0.6203292403370142,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 25635
+        },
+        "native": {
+          "repetitions": 3,
+          "complete_seconds": 3.0606825575232506,
+          "equation_preparation_seconds": 0.5853454172611237,
+          "forward_seconds": 0.7293337183073163,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 0
+        }
+      }
+    },
+    {
+      "case": "early_validation_ladder_227",
+      "size": 128,
+      "topology": "ladder3",
+      "group": "ladder3:{\"masses\": [1, 0, 0, 0, 0, 0, 0, 0], \"p2\": -227}",
+      "methods": {
+        "early": {
+          "repetitions": 3,
+          "complete_seconds": 2.8942781584337354,
+          "equation_preparation_seconds": 0.5182052720338106,
+          "forward_seconds": 0.6722030714154243,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 34624
+        },
+        "early_row": {
+          "repetitions": 3,
+          "complete_seconds": 2.9139754762873054,
+          "equation_preparation_seconds": 0.4519351962953806,
+          "forward_seconds": 0.6862715110182762,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 34624
+        },
+        "native": {
+          "repetitions": 3,
+          "complete_seconds": 2.9851348539814353,
+          "equation_preparation_seconds": 0.7154407352209091,
+          "forward_seconds": 0.583205645903945,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 0
+        }
+      }
+    },
+    {
+      "case": "early_validation_vacuum_7",
+      "size": 32,
+      "topology": "vacuum3",
+      "group": "vacuum3:{\"masses\": [1, 1, 1, 7, 7, 7]}",
+      "methods": {
+        "early": {
+          "repetitions": 3,
+          "complete_seconds": 0.616890087723732,
+          "equation_preparation_seconds": 0.044156067073345184,
+          "forward_seconds": 0.016294145956635475,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 5514
+        },
+        "early_row": {
+          "repetitions": 3,
+          "complete_seconds": 0.592228869907558,
+          "equation_preparation_seconds": 0.05074229929596186,
+          "forward_seconds": 0.016602767631411552,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 5514
+        },
+        "native": {
+          "repetitions": 3,
+          "complete_seconds": 0.6472652163356543,
+          "equation_preparation_seconds": 0.07904797699302435,
+          "forward_seconds": 0.01605008915066719,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 0
+        }
+      }
+    },
+    {
+      "case": "early_validation_vacuum_7",
+      "size": 128,
+      "topology": "vacuum3",
+      "group": "vacuum3:{\"masses\": [1, 1, 1, 7, 7, 7]}",
+      "methods": {
+        "early": {
+          "repetitions": 3,
+          "complete_seconds": 0.6742381490767002,
+          "equation_preparation_seconds": 0.049001666717231274,
+          "forward_seconds": 0.021859307773411274,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 5388
+        },
+        "early_row": {
+          "repetitions": 3,
+          "complete_seconds": 0.6181117091327906,
+          "equation_preparation_seconds": 0.045764096081256866,
+          "forward_seconds": 0.019483289681375027,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 5388
+        },
+        "native": {
+          "repetitions": 3,
+          "complete_seconds": 0.677862148731947,
+          "equation_preparation_seconds": 0.08084242045879364,
+          "forward_seconds": 0.02831911761313677,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 0
+        }
+      }
+    },
+    {
+      "case": "validation_01_double_box",
+      "size": 32,
+      "topology": "double_box",
+      "group": "double_box:{\"s\": -3, \"t\": -4}",
+      "methods": {
+        "early": {
+          "repetitions": 3,
+          "complete_seconds": 1.7722931373864412,
+          "equation_preparation_seconds": 0.4011788861826062,
+          "forward_seconds": 0.483330057002604,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 29960
+        },
+        "early_row": {
+          "repetitions": 3,
+          "complete_seconds": 2.1510381726548076,
+          "equation_preparation_seconds": 0.44687342178076506,
+          "forward_seconds": 0.4567666696384549,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 29960
+        },
+        "native": {
+          "repetitions": 3,
+          "complete_seconds": 2.1228216337040067,
+          "equation_preparation_seconds": 0.607154643163085,
+          "forward_seconds": 0.5551637327298522,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 0
+        }
+      }
+    },
+    {
+      "case": "validation_01_double_box",
+      "size": 128,
+      "topology": "double_box",
+      "group": "double_box:{\"s\": -3, \"t\": -4}",
+      "methods": {
+        "early": {
+          "repetitions": 3,
+          "complete_seconds": 2.3143671145662665,
+          "equation_preparation_seconds": 0.4441026858985424,
+          "forward_seconds": 0.8037622906267643,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 27276
+        },
+        "early_row": {
+          "repetitions": 3,
+          "complete_seconds": 2.1546178348362446,
+          "equation_preparation_seconds": 0.4227784499526024,
+          "forward_seconds": 0.6746200695633888,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 27276
+        },
+        "native": {
+          "repetitions": 3,
+          "complete_seconds": 2.3749603256583214,
+          "equation_preparation_seconds": 0.7320455275475979,
+          "forward_seconds": 0.6255138693377376,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 0
+        }
+      }
+    },
+    {
+      "case": "validation_02_vacuum3",
+      "size": 32,
+      "topology": "vacuum3",
+      "group": "vacuum3:{\"masses\": [1, 1, 1, 1, 1, 2]}",
+      "methods": {
+        "early": {
+          "repetitions": 3,
+          "complete_seconds": 0.6108445394784212,
+          "equation_preparation_seconds": 0.04140783380717039,
+          "forward_seconds": 0.01587622333317995,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 4170
+        },
+        "early_row": {
+          "repetitions": 3,
+          "complete_seconds": 0.6770089818164706,
+          "equation_preparation_seconds": 0.039996993727982044,
+          "forward_seconds": 0.02112255711108446,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 4170
+        },
+        "native": {
+          "repetitions": 3,
+          "complete_seconds": 0.6361222472041845,
+          "equation_preparation_seconds": 0.06215143483132124,
+          "forward_seconds": 0.01745965238660574,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 0
+        }
+      }
+    },
+    {
+      "case": "validation_02_vacuum3",
+      "size": 128,
+      "topology": "vacuum3",
+      "group": "vacuum3:{\"masses\": [1, 1, 1, 1, 1, 2]}",
+      "methods": {
+        "early": {
+          "repetitions": 3,
+          "complete_seconds": 0.6518685789778829,
+          "equation_preparation_seconds": 0.035476225428283215,
+          "forward_seconds": 0.018069717101752758,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 4056
+        },
+        "early_row": {
+          "repetitions": 3,
+          "complete_seconds": 0.6661162441596389,
+          "equation_preparation_seconds": 0.041296662762761116,
+          "forward_seconds": 0.022381492890417576,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 4056
+        },
+        "native": {
+          "repetitions": 3,
+          "complete_seconds": 0.6731397146359086,
+          "equation_preparation_seconds": 0.0633796053007245,
+          "forward_seconds": 0.024191475473344326,
+          "failed_attempts": 0,
+          "fallback_workflows": 0,
+          "skipped_construction_calls": 0
+        }
+      }
+    }
+  ],
+  "workflows": 72,
+  "selection": "Choose the least complete-time eligible configuration after repeated validation, including the existing row model; reserve all fresh test profiles."
+}

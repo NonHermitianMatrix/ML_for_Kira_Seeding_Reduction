@@ -111,3 +111,7 @@
 ## Target-dependent equation selection
 
 - Implement and train a third System 1 model in ML_model_equation_selection/ on Hoffman to select generated IBP equations for the requested targets. Keep training, validation and test families separate, retain exact reduction and basis checks, and count all prediction and fallback costs. Compare equation-selection and complete calculation times with matched native and deterministic controls; preserve negative results and do not assume a speedup. Maintain the affected READMEs, publish the completed model, code and results on GitHub, and update and synchronize the report. Preserve the existing models and the combined 10 GB storage ceiling.
+
+## Equation preparation acceleration
+
+- Use trained System 1 models to reduce measured equation-preparation cost. Reuse an existing model folder when extending that model; create a new model folder for a distinct model. Integrate decisions before the algebraic work they can avoid, include all costs and exact fallback, compare complete reductions, and document the measured best supported configuration. Update READMEs, the report and its local copy, and publish completed work under the existing publication rules. A measured improvement does not prove globally minimal calculation time.
