@@ -1,0 +1,162 @@
+\clearpage
+\section{Target-dependent equation selection}
+\label{sec:equation-selection}
+The preceding policies choose seeds and source rows, but each retained seed
+can produce several identities. A third model selects identities for the
+requested targets before Kira performs modular independence elimination.
+This choice can reduce the system that Kira processes, provided that the
+saved algebraic work exceeds the cost of making the choice. We therefore
+measure equation preparation and the complete reduction with the model
+included~\cite{Kira3,KiraEquationSelectionData}.
+
+\subsection{The equations and their training labels}
+Let $\mathcal T$ be the set of requested integral indices. An identity
+generated from seed $\boldsymbol\sigma$ and derivative or
+Lorentz-invariance operator $o$ has the form
+\begin{equation}
+ E_{\boldsymbol\sigma,o}:\qquad
+ \sum_{\boldsymbol a\in A_{\boldsymbol\sigma,o}}
+ c_{\boldsymbol\sigma,o,\boldsymbol a}(\boldsymbol x,d)
+ I_{\boldsymbol a}=0 .
+ \label{eq:equation-selection-identity}
+\end{equation}
+Here $A_{\boldsymbol\sigma,o}$ is the set of integral indices that occur
+in the identity and $c_{\boldsymbol\sigma,o,\boldsymbol a}$ is the
+coefficient of $I_{\boldsymbol a}$. The variables $\boldsymbol x$ and
+$d$ retain their definitions as the kinematic parameters and integration
+dimension. The operator index distinguishes the several identities from
+one seed, so the third policy can retain only part of a seed's output.
+
+We first run native Kira reductions on training families and record the
+integral supports of the equations retained in the final regenerated
+system. An integral support is the set of indices with nonzero
+coefficients after combining repeated terms at the finite-field selection
+point. If $\mathcal S_{\rm native}$ is the collection of these supports,
+the training label is
+\begin{equation}
+ y_{\boldsymbol\sigma,o}
+ =\mathbf 1\!\left[
+  \operatorname{supp}(E_{\boldsymbol\sigma,o})
+  \in\mathcal S_{\rm native}\right].
+ \label{eq:equation-selection-label}
+\end{equation}
+The indicator $\mathbf 1$ equals one when the condition holds and zero
+otherwise. Several equations can have the same support and different
+coefficients, so this label describes support membership in the recorded
+selection. It supplies a conservative training proxy and does not establish
+a necessary or smallest equation set.
+
+The training collection contains 74,692 candidate equations, with
+5,978 positive labels, from ten target batches in six physical profiles.
+These profiles comprise two-loop sunrise and double-box integrals and
+three-loop vacuum integrals. We keep three additional profiles for
+validation and eight for testing. The held-out tests also include a
+three-loop ladder topology absent from the training and validation
+collections. Each profile fixes rational masses and kinematic invariants,
+while the reductions retain symbolic dependence on $d$.
+
+\subsection{Features and the learned probability}
+The model receives 23 numerical features that describe the family,
+the target set, the seed and the generated equation. These features include
+the numbers of loops and external momenta, the number of integral indices,
+the target count, positive propagator powers, numerator powers, sector
+membership, the operator index and the equation's integral terms.
+For example, the distance from a seed to the targets is
+\begin{equation}
+ \delta(\boldsymbol\sigma,\mathcal T)
+ =\min_{\boldsymbol a\in\mathcal T}
+   \sum_{i=1}^{N}|\sigma_i-a_i| ,
+ \label{eq:equation-selection-distance}
+\end{equation}
+where $N$ is the number of expressions in the integral family.
+The model also uses differences between the seed's dot or numerator
+counts and the largest corresponding counts in the target set and
+in the same sector. These quantities describe which equations lie near
+the requested part of the integral-index lattice.
+
+We fit a classification tree using weighted impurity reduction,
+with equal total weight for each training profile~\cite{CART1984}.
+A sequence of feature comparisons leads to a leaf, which stores
+\begin{equation}
+ p_{\boldsymbol\sigma,o}
+ =\frac{n_+ + 1/2}{n_{\rm leaf}+1},
+ \qquad
+ E_{\boldsymbol\sigma,o}\ \hbox{is retained if}\
+ p_{\boldsymbol\sigma,o}\geq\tau .
+ \label{eq:equation-selection-probability}
+\end{equation}
+Here $n_+$ is the number of positive training rows in that leaf,
+$n_{\rm leaf}$ is its total number of training rows and $\tau$ is
+the retention threshold. The fitted tree has 233 nodes and a maximum
+depth of eight. Each accepted split leaves at least 24 rows in each
+child. The score is a smoothed empirical frequency of the recorded
+label, and its numerical value has no separate calibration guarantee.
+
+Training the tree takes 2.75 seconds after the native examples have
+been collected. This time excludes the generation of training reductions.
+We retain one additional diagnostic field for coefficient-text length,
+but exclude it from the decisions because equivalent coefficient
+expressions can have different printed lengths. The saved model and
+its compiled evaluator give identical probabilities for 18,754 candidates
+in the implementation checks.
+
+\subsection{Native integration and the cost of a decision}
+Kira constructs a candidate identity before the model first scores it.
+The retained identities then enter native modular equation processing.
+Symmetry identities and preferred-basis relations continue through their
+existing paths. The model scores the IBP and Lorentz-invariance identities
+at the generation interface; it does not replace Kira's later algebraic
+independence checks.
+
+Several operators share one seed, so we calculate their common
+seed-to-target features once. We also store each seed--operator decision.
+When Kira later requests the same identity, a stored omission allows the
+generation code to skip rebuilding its coefficients. A retained identity
+is regenerated through the native code. The tree also calculates an equation feature only when a comparison
+on its chosen path needs that feature. Propagator and numerator counts
+come directly from the native integral ordering. These saved decisions avoid
+repeated predictions and remove part of the repeated equation generation.
+Exact comparisons check that the implementation changes preserve the
+decision features, probabilities, masks and reduction results.
+
+After reduction, we require every target to lie in the prescribed master
+basis. An incomplete filtered attempt triggers an unfiltered native
+attempt, followed by an enlarged native seed range when necessary.
+The benchmark additionally compares every exported rational coefficient
+with an independently stored native reference. The application interface
+requires the master basis and can operate without reference target
+coefficients; we check these application outputs separately after the
+reducer returns.
+
+\subsection{Validation and held-out comparisons}
+We select thresholds using complete reduction times on the three
+validation profiles. A topology uses the learned filter in the automatic
+route only when its validation time ratio is below $0.98$; other
+topologies retain native equation choices. The test also includes a
+forced learned filter and a deterministic distance filter using
+Eq.~\eqref{eq:equation-selection-distance}. Validation selects each
+filter's threshold before the test runs, and the saved hashes fix the
+model, integration and test protocol.
+
+The test contains fourteen target batches from eight physical profiles.
+Each sunrise batch contains 21 targets; the other profiles use batches
+of 32 and 128 targets. Five alternating repetitions compare native choices,
+the forced learned filter, the distance filter and the automatic route,
+giving 280 complete workflows. All four arms use the same compiled
+binary, with native choices switching off the three learned policies.
+Each time includes preparation, loading,
+predictions, equation generation, exact algebra, output checks and all
+failed attempts before fallback. The experiment driver is already running when timing begins; Kira process startup and model loading are included. Creation of the independent references
+and compression of the evidence files lie outside this timer.
+
+Equation preparation includes generation with modular processing,
+equation selection, modular solving and equation regeneration.
+It therefore measures the full preparation affected by the filter.
+We report median times within each batch and geometric ratios with equal
+weight for each physical profile. Descriptive intervals resample these
+eight profiles 10,000 times. These intervals describe this finite set of
+profiles and do not establish performance for arbitrary multiloop families.
+
+\input{equation_selection_results}
+
+\input{equation_selection_confirmation}

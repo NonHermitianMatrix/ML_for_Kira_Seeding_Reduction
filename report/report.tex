@@ -8,12 +8,12 @@
 \usepackage{hyperref}
 \hypersetup{hidelinks,
   pdftitle={Machine Learning for Kira IBP Reduction},
-  pdfsubject={Feynman integrals, IBP reduction, seed-selection and reduction-model test results}}
+  pdfsubject={Feynman integrals, IBP reduction, seed, row and target-dependent equation selection}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
 \setlength{\emergencystretch}{2em}
 \title{\textbf{Machine Learning for Kira IBP Reduction}\\
-  \large Seed selection and elimination ordering}
+  \large Seed selection, elimination ordering and equation selection}
 \author{}
 \date{October 10, 2026}
 
@@ -30,7 +30,7 @@ Feynman integral calculations are an important component of multiloop amplitude 
 
 \section{ML for seed selection and elimination ordering}
 \label{sec:ml-roles}
-To study learned choices in IBP reduction, we use two System 1
+We first study two System 1
 models: one for seed selection and one for elimination ordering.
 Here a System 1 model is a small machine learning model that learns
 from recorded reductions and assigns scores to choices available at
@@ -39,6 +39,8 @@ expansions, the seeds that supply their equations and the steps used
 to reduce them. The implemented models and their completed training
 appear in Sections~\ref{sec:seed-model} and
 \ref{sec:reduction-model}, followed by their held-out tests.
+Section~\ref{sec:equation-selection} then adds a third model that
+selects identities generated from the retained seeds for the requested targets.
 
 The present experiments test seed-reference agreement, whether
 the stored identities from the predicted seeds suffice inside Kira,
@@ -912,6 +914,8 @@ targets and complete reduction data~\cite{ExpandedIntegralData}.
 
 \input{kira_parallel_inference}
 
+\input{equation_selection}
+
 \section{Conclusion}
 \label{sec:conclusion}
 We integrated seed and source-row policies with exact native Kira reduction
@@ -964,6 +968,25 @@ three-loop inputs at fixed rational kinematics with symbolic $d$.
 The ladder topology is absent from the new row-policy training and validation
 sets. General multiscale coefficients, broader high-loop families and
 globally minimal reduction paths remain outside the demonstrated scope.
+
+
+
+
+
+
+
+% BEGIN EQUATION CONCLUSION
+The third model selects generated identities for the requested targets.
+The broad test found that incomplete vacuum filters added fallback cost.
+A restricted route was then fixed and tested on six fresh sunrise profiles.
+It gives a complete-time ratio of 0.994, with descriptive interval $[0.991,0.997]$
+and an equation-preparation ratio of 0.785, with descriptive interval $[0.776,0.794]$.
+All 162 confirmation comparisons, 36 checks with the two earlier models
+and six applications pass exact coefficient checks. The deployed equation
+policy uses the recorded 21-target sunrise domain and retains native
+choices elsewhere~\cite{KiraEquationSelectionData}.
+The measured three-model composition is slower, with time ratio 1.317 to the earlier two-model configuration. The deployed interface therefore retains native equation choices when either earlier learned policy is active.
+% END EQUATION CONCLUSION
 
 
 \clearpage

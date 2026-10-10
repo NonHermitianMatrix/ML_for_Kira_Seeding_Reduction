@@ -74,3 +74,10 @@ The latest section, kira_shared_evaluation.tex, documents reuse of affine prefix
 
 <!-- parallel-inference -->
 The latest section, kira_parallel_inference.tex, explains vector evaluation of independent neural outputs, exact Euclidean field inverses and direct integer features. It preserves 144 rejected-candidate validation workflows and reports 144 final validation workflows, 640 confirmation workflows, all fallback attempts and eight basis-only application checks. The new figure separates implementation costs from comparisons with native choices. The supplied abstract is unchanged. Data commit: a766f15379be2d777628c215e7b5c41016c95dec.
+
+<!-- target-dependent-equation-selection -->
+The equation_selection section introduces the third probability model and its native Kira integration. equation_selection_results and equation_selection_domain retain the broad test, including incomplete vacuum filters and their fallback costs. equation_selection_confirmation documents the restricted 21-target sunrise route and six fresh confirmation profiles. The new figures separate complete time, equation preparation and equation counts. Code, model weights, frozen protocols, exact checks and data are in [ML_model_equation_selection](https://github.com/NonHermitianMatrix/ML_for_Kira_Seeding_Reduction/tree/63d87b1e863e9387eb821623ca09b1ae634884f7/ML_model_equation_selection). The supplied abstract remains unchanged.
+
+The current equation-policy interface uses native seed and row choices in its measured sunrise domain. It disables equation filtering when an earlier learned policy is requested because the three-model composition was slower. The complete report-generation entry point is ML_model_equation_selection/s39_finish_report.sh.
+
+Equation-selection data commit: 63d87b1e863e9387eb821623ca09b1ae634884f7.
