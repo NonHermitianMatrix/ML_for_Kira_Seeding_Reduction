@@ -1,0 +1,146 @@
+--- a/src/kira/reduction.cpp
++++ b/src/kira/reduction.cpp
+@@ -35,6 +35,8 @@
+ #include "pyred/defs.h"
+ #include "pyred/integrals.h"
+ 
++#include <queue>
++#include "s10_sparse_policy.h"
+ using namespace std;
+ using namespace GiNaC;
+ 
+@@ -1696,6 +1698,7 @@
+ }
+ 
+ int Kira::insert_equation(BaseIntegral*& EqPtr, BaseIntegral*& insertEqPtr) {
++  kira_cost::before(EqPtr,insertEqPtr);
+   unsigned srange = EqPtr[0].length;
+   unsigned rrange = insertEqPtr[0].length;
+ 
+@@ -1866,10 +1869,10 @@
+     }
+   }
+ 
+-  if (srange != 0)
+-    return 1;
+-  else
+-    return 0;
++  kira_cost::after(EqPtr,srange);
++  if(srange) return 1;
++  if(!collectTerms.empty()) delete[] EqPtr;
++  EqPtr=nullptr; return 0;
+ }
+ 
+ void Kira::sort_equation(BaseIntegral*& EqPtr) {
+@@ -1958,11 +1961,13 @@
+     }
+   }
+ 
++  kira_cost::choose(fwEQ[0],lengthEQ,[this](BaseIntegral*& d,BaseIntegral*& s){return insert_equation(d,s);});
+   for (uint32_t jtt = 1; jtt < lengthEQ; jtt++) {
+     insert_equation(fwEQ[0][jtt], fwEQ[0][0]);
+   }
+ 
+   for (uint32_t jtt = 1; jtt < lengthEQ; jtt++) {
++    if(!fwEQ[0][jtt]) continue;
+     pyred::Weight ID = fwEQ[0][jtt][0].id;
+     pthread_mutex_lock(&mPreserveResults);
+ 
+@@ -2045,6 +2050,8 @@
+ 
+   int counter = 0;
+ 
++  kira_cost::start();
++  const double cost_begin=kira_cost::now();
+   do {
+     Clock clock;
+ 
+@@ -2191,6 +2198,8 @@
+     logger << "time: ( " << finalt << " s )\n";
+ 
+   } while (red_1);
++  kira_cost::finish(kira_cost::now()-cost_begin);
++
+ 
+   logger << "redundant: " << counter << "; insertions " << information << "\n";
+   // Triangular form is complete, norm the coefficients and write them to the
+@@ -2520,7 +2529,34 @@
+           ? (reduct2StartHere.size())
+           : coreNumber;
+ 
+-  biggestSize = reduct2StartHere.size();
++  const bool compact_bs=std::getenv("KIRA_BOUNDED_BACKSUB") &&
++      std::string(std::getenv("KIRA_BOUNDED_BACKSUB"))=="1" &&
++      coreNumber==1 && !reduct2StartHere.empty();
++  biggestSize = compact_bs ? 1 : reduct2StartHere.size();
++  const double bs_begin=kira_cost::now();
++  std::vector<unsigned> compact_order;
++  if(compact_bs){
++    std::vector<unsigned> indegree(reihen,0);
++    std::vector<std::vector<unsigned>> dependents(reihen);
++    for(unsigned row=0;row<reihen;++row){
++      if(!(rdy2P[row]&1))continue;
++      for(unsigned k=1;k<allEq[row][0][0].length;++k){
++        auto found=reverseLastReduce.find(allEq[row][0][k].id);
++        if(found==reverseLastReduce.end())continue;
++        unsigned dep=found->second;
++        if(dep>=reihen)throw ExceptionInternal("Back-substitution dependency outside loaded system");
++        if(rdy2P[dep]&1){++indegree[row];dependents[dep].push_back(row);}
++      }
++    }
++    std::priority_queue<unsigned,std::vector<unsigned>,std::greater<unsigned>> ready;
++    for(unsigned row=0;row<reihen;++row)if(!indegree[row])ready.push(row);
++    while(!ready.empty()){
++      const unsigned row=ready.top();ready.pop();compact_order.push_back(row);
++      for(unsigned next:dependents[row])if(--indegree[next]==0)ready.push(next);
++    }
++    if(compact_order.size()!=reihen)throw ExceptionInternal("Cyclic unresolved back-substitution dependencies");
++  }
++
+ 
+   poolBS = new ThreadPool;
+   poolBS->initialize(biggestSize);
+@@ -2530,9 +2566,9 @@
+     pool4[i].initialize(1);
+ 
+   for (unsigned itReduct = 0; itReduct < biggestSize; itReduct++) {
+-    unsigned itStart = /*itReduct*/ reduct2StartHere[itReduct];
++    unsigned itStart = compact_bs ? 0 : reduct2StartHere[itReduct];
+     unsigned itEnd;
+-    if (itReduct < reduct2StartHere.size() - 1)
++    if (!compact_bs && itReduct < reduct2StartHere.size() - 1)
+       itEnd = reduct2StartHere[itReduct + 1];
+     else
+       itEnd = reihen;
+@@ -2540,13 +2576,13 @@
+     poolBS->enqueue([this, biggestSize, itReduct, &cond_var, &processed, &m,
+                      &countReduct, itStart, itEnd, &allResults, &finalResults,
+                      &masterIntegral, &lastTime, &reducedIntegralCount, &myfile,
+-                     &clock, &database]() {
++                     &clock, &database, compact_bs, &compact_order]() {
+       std::mutex mPool4;
+       std::condition_variable cond_varPool4;
+       bool processedPool4 = false;
+       unsigned countPool4 = 0;
+-      for (unsigned it = itStart; it < /*reihen*/ itEnd;
+-           it++ /*=biggestSize*/) {
++      for (unsigned schedule_pos = itStart; schedule_pos < itEnd; ++schedule_pos) {
++        const unsigned it = compact_bs ? compact_order[schedule_pos] : schedule_pos;
+         pool4[itReduct /*%coreNumber*/].enqueue(
+             [this, &cond_varPool4, &processedPool4, &mPool4, &countPool4,
+              itStart, itEnd, &allResults, &finalResults, &masterIntegral,
+@@ -2901,6 +2937,14 @@
+ 
+   delete poolBS;
+   delete[] pool4;
++  if(const char* metrics=std::getenv("KIRA_STAGE_METRICS")){
++    std::ofstream out(metrics,std::ios::app);
++    out<<std::setprecision(17)<<R"json({"stage":"back_substitution","seconds":)json"
++       <<kira_cost::now()-bs_begin<<R"json(,"sector_ranges":)json"<<reduct2StartHere.size()
++       <<R"json(,"worker_ranges":)json"<<biggestSize<<R"json(,"equations":)json"<<reihen
++       <<'}'<<std::endl;
++  }
++
+ 
+   if (dataFile == 1) myfile.close();
+ 

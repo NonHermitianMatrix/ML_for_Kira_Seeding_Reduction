@@ -68,3 +68,11 @@ The independent audit passed. Family-level results and completion counts must ac
 
 [Methods, raw evidence and outcomes](../Kira_comparison/multiloop_native/README.md). Original integral records and neural checkpoints remain unchanged.
 <!-- native-multiloop-results-end -->
+
+## Integrated runtime extension
+
+The ongoing native integration extension is documented in [integrated_runtime](../Kira_comparison/integrated_runtime/README.md). It preserves previous trained models and comparisons, verifies faster seed feature construction, develops row policies from measured exact trajectories and compares complete workflows with matched native controls. New weights and measurements remain separate from earlier frozen results.
+
+
+<!-- integrated-runtime-current -->
+The current native-integration extension is in Kira_comparison/integrated_runtime/. It combines compiled seed inference, complete-trajectory row policies and matched native/deterministic controls. The model additions are in ML_model_seed_selection/runtime_inference/ and ML_model_reduction/runtime_training/. The initial comparison completed all 560 workflows. A 400-workflow implementation confirmation on the same eight physical profiles also completed every target with exact reference agreement. In the confirmation, seed, row and combined complete-time ratios to the smaller native control are 1.154805, 0.998979, 1.159119. The seed ratio for boxes is 0.963700; the aggregate row operation ratio is 0.985327, but its forward-stage time ratio is 1.041202. Neither model has a universal runtime advantage. Read summary.json and pair_reserved_summary.json for grouped intervals, topology results and all failed attempts. Earlier data, checkpoints and tests remain preserved. See that folder's README for the integration entry point, exact checks, resources and reproducible execution order.

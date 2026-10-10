@@ -1,0 +1,53 @@
+--- a/src/kira/dataBase.cpp
++++ b/src/kira/dataBase.cpp
+@@ -23,6 +23,34 @@
+ #include "kira/kira.h"
+ #include "kira/tools.h"
+ 
++
++#include <cstdlib>
++#include <climits>
++#include <fstream>
++#include <cstring>
++static void configure_ephemeral_database(sqlite3* db) {
++  const char* mode=std::getenv("KIRA_EPHEMERAL_DB");
++  if(!mode || std::string(mode)!="1") return;
++  const char* base=std::getenv("KIRA_EPHEMERAL_ROOT");
++  const char* filename=sqlite3_db_filename(db,"main");
++  char root[PATH_MAX],file[PATH_MAX];
++  if(!base || !filename || !realpath(base,root) || !realpath(filename,file))
++    throw std::runtime_error("Invalid ephemeral database path");
++  const std::string prefix=std::string(root)+"/";
++  if(std::string(file).compare(0,prefix.size(),prefix)!=0 ||
++      !std::ifstream(prefix+".kira_ephemeral_trial"))
++    throw std::runtime_error("Database outside disposable trial directory");
++  char* error=nullptr;
++  int rc=sqlite3_exec(db,
++      "PRAGMA journal_mode=MEMORY; PRAGMA synchronous=OFF; "
++      "PRAGMA temp_store=MEMORY; PRAGMA cache_size=-8192;",
++      nullptr,nullptr,&error);
++  if(rc!=SQLITE_OK){
++    std::string message=error?error:"unknown SQLite error";
++    sqlite3_free(error);throw std::runtime_error(message);
++  }
++}
++
+ using namespace std;
+ using namespace GiNaC;
+ 
+@@ -50,6 +78,7 @@
+     throw ExceptionDisk("Cannot open database + '" + std::string(sqlite3_errmsg(db)) + "'");
+   }
+ 
++  configure_ephemeral_database(db);
+   string equation("EQUATION");
+   string version("VERSION");
+ 
+@@ -77,6 +106,7 @@
+     throw ExceptionDisk("Cannot open database + '" + std::string(sqlite3_errmsg(db)) + "'");
+   }
+ 
++  configure_ephemeral_database(db);
+   string equation("EQUATION");
+   string version("VERSION");
+ 
