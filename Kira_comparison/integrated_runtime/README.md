@@ -118,3 +118,6 @@ The normal sequence is development/collection, fitting, parity checks, validatio
 - s83_check_application.sh: Scheduler/build wrapper: .tools/seed-model/venv/bin/python Kira_comparison/integrated_runtime/s82_check_application.py
 - s84_document_pair.py: Document the unchanged-choice shortcut and the usable basis-only interface.
 - s85_plot_pair.py: Plot complete and forward-stage costs after the two-row shortcut.
+
+<!-- shared-evaluation-current -->
+The current implementation is Kira_comparison/integrated_runtime/s88_reduce.py, described in [the current integration guide](https://github.com/NonHermitianMatrix/ML_for_Kira_Seeding_Reduction/tree/main/Kira_comparison/integrated_runtime/fast_evaluation). It reuses seed-network affine prefixes and symmetric row-cancellation calculations while preserving weights and algebraic choices. All 800 implementation-confirmation workflows and 180 validation workflows complete with exact coefficient and decision parity. New/preceding complete-time ratios for seed, row, both and automatic execution are 0.982155, 1.005713, 0.996704, 0.982498. These ratios retain all fallback attempts. Separate comparisons with the new native control appear in confirmation_summary.json; an implementation gain does not itself establish a general ML advantage. Earlier checkpoints and implementations remain preserved.

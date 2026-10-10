@@ -21,3 +21,6 @@ The native candidate region is finite. Coverage retains target seeds, the prescr
 - s08_cold_benchmark.py: Compare cold seed backends with identical candidates and decisions.
 - s09_cold_benchmark.sh: Scheduler/build wrapper: .tools/seed-model/venv/bin/python ML_model_seed_selection/runtime_inference/s05_verify_compiled.py --expanded; .tools/seed-model/venv/bin/python ML_model_seed_selection/runtime_inference/s08_cold_benchmark.py
 - s10_fit_thresholds.py: Fit execution thresholds from complete native training-workflow cost.
+
+<!-- shared-evaluation-current -->
+The current backend is s11_shared_runtime.cpp with s12_shared_seed.py and the original compiled_weights.bin. s89_build_shared.sh in the integration folder builds it. Shared affine prefixes preserve the floating-point addition order and give bitwise-identical probabilities in every checked context. The new library stays outside Git; the implementation and unchanged weight export are retained. See fast_evaluation/ for complete timing, exact parity, the freeze and current production entry.

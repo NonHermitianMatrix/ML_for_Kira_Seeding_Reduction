@@ -25,3 +25,6 @@ Feature tests, full/shared-feature parity and sparse/full-policy parity remain p
 - s12_cached_modular.h: Bounded modular estimates of exact row-update cancellations; GPL-3.0-or-later.
 - s13_cached_policy.h: Source-row cost policy for Kira; GPL-3.0-or-later.
 - s14_pair_policy.h: Source-row cost policy for Kira; GPL-3.0-or-later.
+
+<!-- shared-evaluation-current -->
+The current runtime headers are s15_shared_modular.h and s16_shared_policy.h. They evaluate each unordered row pair once and reuse its cancellation statistics for both candidate sources. Cached settings, sparse score evaluation and optional confidence calculation reduce repeated work. All six features, source-choice digests and exact results match the preceding implementation in the recorded checks. The selected trajectory weights are unchanged. See Kira_comparison/integrated_runtime/fast_evaluation/ for complete timing, exact checks and the current release.
