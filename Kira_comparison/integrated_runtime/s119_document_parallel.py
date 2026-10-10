@@ -16,7 +16,8 @@ def main():
 The shared calculations in the preceding section reduce repeated work, but the
 remaining model evaluation still contributes to the reduction time. We now
 evaluate independent outputs of the seed network together and use a different
-exact algorithm for modular division in the row features. We also reduce\nrepeated coefficient parsing and storage allocation. The weights,
+exact algorithm for modular division in the row features. We also reduce
+repeated coefficient parsing and storage allocation. The weights,
 thresholds, seed rules and source-row policy remain fixed, so this comparison
 measures the cost of calculating the same decisions.
 
@@ -76,6 +77,7 @@ still rejects that estimate and retains the existing fallback. These
 finite-field calculations guide the row choice; native Kira performs
 the symbolic row operations.
 
+\begin{samepage}
 Integer coefficients have the same residue at both dimension points.
 For a coefficient $c\in\mathbb Z$, we calculate its residue $r$ once,
 \[
@@ -89,6 +91,7 @@ We also allocate the evaluated coefficients for a row group in one
 contiguous array, which removes separate allocations for each row.
 These changes preserve every coefficient value and the order of the
 cancellation calculations.
+\par\end{samepage}
 
 Checks on 100,000 nonzero field elements agree with the preceding inverse
 and satisfy $aa^{-1}=1\bmod p$. A further 1,000 sparse-row checks agree
@@ -147,6 +150,9 @@ estimate and retain the native source.
   x=ratio(method+"_new_over_native_new")
   text+=r"\begin{samepage}"+"\n"+f'Relative to that control, the {label} has a complete-time ratio of {num(x["ratio"])}, with interval {interval(x)}.\n'+r"\par\end{samepage}"+"\n\n"
  text+="All three new-to-preceding complete-time intervals include one. The component timings show lower evaluation cost, while these complete-workflow measurements leave the size of the overall change uncertain. Relative to native choices, the aggregate seed and combined ratios exceed one, and the row-only interval also includes one. The results therefore support lower model-evaluation cost within the measured scope; a general complete-time advantage over native Kira remains unestablished.\n\n"
+ for method,label in [("seed","seed"),("row","row"),("both","combined")]:
+  topo=d["comparisons"][method+"_new_over_native_new"]["complete_seconds"]["by_topology"]
+  text+=f'For the {label} method, the complete-time ratios relative to native choices are {num(topo["double_box"]["ratio"])} for the double boxes, {num(topo["ladder3"]["ratio"])} for the three-loop ladders, {num(topo["sunrise"]["ratio"])} for the sunrise integrals and {num(topo["vacuum3"]["ratio"])} for the three-loop vacuum integrals.\n\n'
  text+=r"""\begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/parallel_inference_times.pdf}
@@ -154,7 +160,8 @@ estimate and retain the native source.
 panel compares the new implementation with the preceding shared calculations.
 The right panel compares each new method with the new native control.
 Each point is the median of five repetitions for one target batch, including
-failed attempts and fallback.}
+failed attempts and fallback. A and B identify the two physical profiles
+within each topology, and the numbers give the target counts.}
 \label{fig:parallel-inference}
 \end{figure}
 
@@ -181,7 +188,8 @@ or multiscale reductions.
 We integrated seed and source-row policies with exact native Kira reduction
 and reduced their evaluation cost while retaining the same decisions.
 The latest seed implementation evaluates independent neural outputs together,
-and the row implementation combines Euclid's modular inverse with direct\ninteger evaluation and shared coefficient storage.
+and the row implementation combines Euclid's modular inverse with direct
+integer evaluation and shared coefficient storage.
 All probability vectors agree in the thirty-six development contexts.
 Checks on 100,000 inverses and 1,000 sparse-row groups also agree.
 
@@ -194,8 +202,7 @@ Checks on 100,000 inverses and 1,000 sparse-row groups also agree.
  conclusion+=r"""All 144 validation workflows and 640 confirmation workflows pass the exact
 checks and preserve the recorded decisions and operation counts. These times
 include IBP generation, model evaluation, exact algebra, checks and fallback.
-Eight additional application checks pass with the reference target coefficients
-withheld from the reducer. The implementation comparison reuses eight physical
+The implementation comparison reuses eight physical
 profiles and retains the weights, thresholds and routing selected before
 confirmation~\cite{KiraParallelInferenceData}.
 

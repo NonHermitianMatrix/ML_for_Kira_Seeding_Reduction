@@ -68,3 +68,9 @@ kira_integrated_pair.tex gives the two-row scalar-multiple identity, the 144-wor
 
 <!-- shared-evaluation -->
 The latest section, kira_shared_evaluation.tex, documents reuse of affine prefixes in the unchanged seed network and unordered-pair cancellation estimates in the unchanged row policy. It reports 180 validation workflows, 800 paired implementation-confirmation workflows, all failed attempts and eight basis-only application checks. Figure shared_evaluation_times.pdf separates improvements over the preceding implementation from comparisons with the native control. The supplied abstract is unchanged. Frozen data commit: 387e80d58304bfd837ba942f6cba3d95a83daa7d.
+
+
+
+
+<!-- parallel-inference -->
+The latest section, kira_parallel_inference.tex, explains vector evaluation of independent neural outputs, exact Euclidean field inverses and direct integer features. It preserves 144 rejected-candidate validation workflows and reports 144 final validation workflows, 640 confirmation workflows, all fallback attempts and eight basis-only application checks. The new figure separates implementation costs from comparisons with native choices. The supplied abstract is unchanged. Data commit: a766f15379be2d777628c215e7b5c41016c95dec.
