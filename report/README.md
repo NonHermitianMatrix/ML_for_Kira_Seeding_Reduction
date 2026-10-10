@@ -62,3 +62,9 @@ The latest extension is in kira_integrated_methods.tex and kira_integrated_resul
 
 <!-- two-row-confirmation -->
 kira_integrated_pair.tex gives the two-row scalar-multiple identity, the 144-workflow parity and timing validation, and the 400-workflow confirmation on the same eight profiles. All source choices and exact results remain unchanged. figures/integrated_pair_times.pdf separates complete time from forward-stage time. The additional inverse cache remains disabled. Eight basis-only application checks pass independent postrun coefficient comparisons; production use can supply master indices without target answers. The revised conclusion reports the latest measured model effects and their limits. The original abstract remains unchanged.
+
+
+
+
+<!-- shared-evaluation -->
+The latest section, kira_shared_evaluation.tex, documents reuse of affine prefixes in the unchanged seed network and unordered-pair cancellation estimates in the unchanged row policy. It reports 180 validation workflows, 800 paired implementation-confirmation workflows, all failed attempts and eight basis-only application checks. Figure shared_evaluation_times.pdf separates improvements over the preceding implementation from comparisons with the native control. The supplied abstract is unchanged. Frozen data commit: 387e80d58304bfd837ba942f6cba3d95a83daa7d.

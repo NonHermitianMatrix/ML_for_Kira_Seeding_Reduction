@@ -13,7 +13,8 @@ def main():
  def c(key,field="complete_seconds",kind=None):
   d=s["comparisons"][key][field]
   return d["all"] if kind is None else d["by_topology"][kind]
- text=r"""\section{Reusing model calculations without changing reductions}
+ text=r"""\clearpage
+\section{Reusing model calculations without changing reductions}
 \label{sec:shared-evaluation}
 The preceding comparison shows that model evaluation can offset savings in
 algebraic work. We therefore reduce repeated calculations inside the same
@@ -62,6 +63,7 @@ and inference time is """
 loaded; the complete-workflow comparisons below also include loading and
 fallback~\cite{KiraSharedEvaluationData}.
 
+\begin{samepage}
 \subsection{Sharing cancellation estimates between source choices}
 The two-row identity in the preceding section also applies to each pair
 within a larger group of equations. Let $\boldsymbol R_j$ and
@@ -83,6 +85,7 @@ at the valid finite-field points used by the policy. Here $\widehat n_{jq}$
 is the predicted number of entries after source $q$ updates row $j$.
 The union size, cancellation count and zero-row indicator also agree in the
 two directions.
+\end{samepage}
 
 We evaluate each unordered pair once and add its statistics to both candidate
 sources. The previous implementation evaluated both directions separately.
@@ -103,6 +106,7 @@ conditions require lower seed complete time, lower row decision time and
 a row complete-time ratio no larger than $1.02$. These conditions are fixed
 before validation.
 
+\begin{samepage}
 \subsection{Complete calculations with the unchanged decisions}
 After validation, we freeze the implementation and compare five methods:
 native choices, the seed model, the row model, both models, and automatic
@@ -112,6 +116,7 @@ Five repetitions give 800 complete workflows. We increase the confirmation
 from three to five repetitions before its freeze because validation shows
 execution-time variation between runs. This confirmation reuses the earlier
 physical profiles and provides no additional independent-family evidence.
+\end{samepage}
 
 The time includes preparation, model loading, inference, fresh IBP generation,
 exact elimination, back substitution, reference checks and every fallback.
@@ -121,7 +126,7 @@ alternate within each method, and method order rotates across repetitions.
 We take a median for each batch and use the same profile-weighted geometric
 ratios and descriptive bootstrap intervals as before.
 """
- text+=f"\nAll {s['observed']} workflows finish with exact reference agreement, using {s['attempts']} attempts. The retained failures comprise {sum(s['failed_attempts'].values())} unsuccessful attempts and contribute to the completed workflow times. All {s['checked_pairs']} old--new pairs preserve the recorded algebraic choices and outputs. Across validation and confirmation, the independent parser checks {audit['coefficient_comparisons']:,} coefficient comparisons through exact polynomial cross multiplication in $\\mathbb Q(d)$.\n"
+ text+=f"\nAll {s['observed']} workflows finish with exact reference agreement, using {s['attempts']} attempts. The retained failures comprise {sum(s['failed_attempts'].values())} unsuccessful attempts and contribute to the completed workflow times. All {s['checked_pairs']} old--new pairs preserve the recorded algebraic choices and outputs. Across validation and confirmation, the independent parser verifies {audit['coefficient_comparisons']:,} coefficient equalities through exact polynomial cross multiplication in $\\mathbb Q(d)$.\n"
  for method,label in [("native","native control"),("seed","seed model"),("row","row model"),("both","combined method"),("auto","automatic method")]:
   x=c(method+"_new_over_"+method+"_old")
   text+=f"\nThe {label} has a new-to-preceding complete-time ratio of {n(x['ratio'])}, with descriptive interval {interval(x)}."
@@ -176,8 +181,11 @@ the stated two- and three-loop inputs with fixed rational kinematics and
 symbolic dimension $d$. A general gain across unrestricted higher-loop
 families and a globally fastest reduction remain outside this evidence.
 """
+ text=re.sub(r"\n(Relative to the new native control,[^\n]+)\n",lambda m:"\n"+r"\begin{samepage}"+"\n"+m[1]+"\n"+r"\end{samepage}"+"\n",text)
+ text=text.replace(r"\end{samepage}",r"\par\end{samepage}")
+ text+=r"\clearpage"+"\n"
  (ROOT/"report/kira_shared_evaluation.tex").write_text(text)
- p=ROOT/"report/report.tex";main=p.read_text()
+ p=ROOT/"report/report.tex";main=p.read_text().replace(r"\date{October 9, 2026}",r"\date{October 10, 2026}")
  if r"\input{kira_shared_evaluation}" not in main:main=main.replace(r"\section{Conclusion}",r"\input{kira_shared_evaluation}"+"\n\n"+r"\section{Conclusion}")
  start=main.index(r"\section{Conclusion}");end=main.index("\nThe data construction provides",start)
  paragraph=r"""\section{Conclusion}
@@ -199,8 +207,6 @@ All complete-time comparisons include native IBP generation, model evaluation,
 exact reduction, checks and fallback. The native controls receive the same
 shared execution settings. Automatic routing retains the rule fixed from
 validation, and the confirmation does not retune weights or thresholds.
-The tests use a finite set of physical inputs and do not establish a globally
-fastest calculation.
 """
  main=main[:start]+paragraph+"\n"+main[end:]
  abstract=main.split(r"\begin{abstract}",1)[1].split(r"\end{abstract}",1)[0]

@@ -23,7 +23,7 @@ def main():
  for ax in axes:
   ax.axvline(1,color="black",lw=.65);ax.grid(axis="x",alpha=.2);ax.set_axisbelow(True)
   for spine in ["top","right"]:ax.spines[spine].set_visible(False)
- axes[0].set_yticks(range(len(rows)),labels);axes[0].invert_yaxis()
+ axes[0].set_yticks(range(len(rows)));axes[0].set_yticklabels(labels);axes[0].invert_yaxis()
  axes[0].set_xlabel("New time / preceding time");axes[1].set_xlabel("New time / new native time")
  fig.legend(*axes[0].get_legend_handles_labels(),loc="upper center",ncol=4,frameon=False)
  fig.tight_layout(rect=(0,0,1,.94))

@@ -15,7 +15,7 @@
 \title{\textbf{Machine Learning for Kira IBP Reduction}\\
   \large Seed selection and elimination ordering}
 \author{}
-\date{October 9, 2026}
+\date{October 10, 2026}
 
 \begin{document}
 \maketitle
@@ -908,14 +908,32 @@ targets and complete reduction data~\cite{ExpandedIntegralData}.
 
 \input{kira_integrated_pair}
 
+\input{kira_shared_evaluation}
+
 \section{Conclusion}
 \label{sec:conclusion}
-We integrated a compiled seed-selection network and a learned source-row
-policy with native exact Kira reduction. The initial 560 workflows and the 400-workflow implementation confirmation all match their exact reference coefficients. In the latter comparison, complete-time ratios to the smaller native control are 1.155, 0.999 and 1.159 for the seed, row and combined methods. The row policy's forward-stage ratio is 1.041, with descriptive interval $[1.017,1.065]$, while its complete-time interval is $[0.992,1.007]$. These measurements include model loading, fresh IBP generation, exact algebra, checks and fallback~\cite{KiraIntegratedRuntimeData}.
+We integrated seed and source-row policies with exact native Kira reduction
+and reduced repeated arithmetic in both models. The shared seed network gives
+bitwise identical probabilities in all thirty-six development contexts.
+The row feature calculation agrees in one thousand checks, and the 180
+validation workflows and 800 confirmation workflows retain the same algebraic
+choices and exact results as the preceding implementation.
 
-The seed model's complete-time ratio on the two-loop box profiles is 0.964, with interval $[0.949,0.979]$. The row policy gives an aggregate committed coefficient-operation ratio of 0.985. The physical-class results specify where the measured timing changes occur; the aggregate values retain slower cases. The automatic interface uses the routing rule fixed from validation and keeps native execution for other input classes.
+The seed method has a complete-time ratio of 0.982 to its preceding implementation, with descriptive interval $[0.970,0.993]$. Its ratio to the new native control is 1.162, with interval $[1.019,1.348]$.
 
-Shared execution changes also contribute to the calculation time. Dependency-ordered back substitution bounds helper-worker creation, and node temporary storage reduces the measured storage overhead. Both models and controls receive these changes. Starting from the smaller native region gives a complete-time ratio of 0.502 to the conservative region in the initial comparison. The two-row identity then lowers inference cost while preserving the learned source choices. A finite comparison of these strategies establishes measured costs on the stated inputs and does not prove a globally fastest reduction.
+The row method has a complete-time ratio of 1.006 to its preceding implementation, with descriptive interval $[0.978,1.046]$. Its ratio to the new native control is 1.023, with interval $[1.002,1.047]$.
+
+The combined method has a complete-time ratio of 0.997 to its preceding implementation, with descriptive interval $[0.976,1.015]$. Its ratio to the new native control is 1.145, with interval $[0.998,1.334]$.
+
+The automatic method has a complete-time ratio of 0.982 to its preceding implementation, with descriptive interval $[0.951,1.009]$. Its ratio to the new native control is 0.998, with interval $[0.948,1.049]$.
+
+The row policy's decision-time ratio to its preceding implementation is 0.669, while its forward-stage ratio to the new native control is 0.993. The shared calculations preserve the committed algebraic operation counts. The new seed implementation reduces complete time by about $1.8\%$ relative to its preceding implementation, while the complete row-model comparison does not resolve a time saving. Both model paths have larger complete-time estimates than the new native control on this set of inputs. These results separate reduced inference cost from the effect of learned choices on exact algebra~\cite{KiraSharedEvaluationData}.
+
+All complete-time comparisons include native IBP generation, model evaluation,
+exact reduction, checks and fallback. The native controls receive the same
+shared execution settings. Automatic routing retains the rule fixed from
+validation, and the confirmation does not retune weights or thresholds.
+
 
 The data construction provides 17,100 family instances, 57,979 family-local
 master entries and 2,301,272 targets with recorded identities and reduction
