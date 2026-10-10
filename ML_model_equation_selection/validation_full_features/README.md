@@ -1,0 +1,1 @@
+Earlier valid-label validation with a 24-feature decision tree, including coefficient-string length. This variant was rejected because equivalent coefficient spellings can change that feature. The archived trained_model preserves its model. Its complete and stage costs remain development evidence.

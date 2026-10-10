@@ -1,0 +1,216 @@
+{
+  "measures": {
+    "auto": {
+      "complete_seconds": {
+        "ratio": 1.097611590541777,
+        "interval95": [
+          0.9814083564235155,
+          1.2588948395254302
+        ],
+        "groups": 8
+      },
+      "equation_preparation_seconds": {
+        "ratio": 1.062347453688297,
+        "interval95": [
+          0.8961467150479615,
+          1.2614077940406117
+        ],
+        "groups": 8
+      },
+      "generated_equations": {
+        "ratio": 0.8494919210890209,
+        "interval95": [
+          0.6012268783981072,
+          1.1143436645414084
+        ],
+        "groups": 8
+      },
+      "selected_equations": {
+        "ratio": 1.0,
+        "interval95": [
+          1.0,
+          1.0
+        ],
+        "groups": 8
+      }
+    },
+    "distance": {
+      "complete_seconds": {
+        "ratio": 1.0161328237771055,
+        "interval95": [
+          0.993775129131042,
+          1.0396995759602625
+        ],
+        "groups": 8
+      },
+      "equation_preparation_seconds": {
+        "ratio": 1.088517926440153,
+        "interval95": [
+          1.0347211359614252,
+          1.144439309507394
+        ],
+        "groups": 8
+      },
+      "generated_equations": {
+        "ratio": 1.0,
+        "interval95": [
+          1.0,
+          1.0
+        ],
+        "groups": 8
+      },
+      "selected_equations": {
+        "ratio": 1.0,
+        "interval95": [
+          1.0,
+          1.0
+        ],
+        "groups": 8
+      }
+    },
+    "learned": {
+      "complete_seconds": {
+        "ratio": 1.0801368595649274,
+        "interval95": [
+          0.9760391577313505,
+          1.2198084298638354
+        ],
+        "groups": 8
+      },
+      "equation_preparation_seconds": {
+        "ratio": 1.0533553646461358,
+        "interval95": [
+          0.9039108065993204,
+          1.2241721765150888
+        ],
+        "groups": 8
+      },
+      "generated_equations": {
+        "ratio": 0.7692120115114117,
+        "interval95": [
+          0.5644065676723513,
+          1.022582304574437
+        ],
+        "groups": 8
+      },
+      "selected_equations": {
+        "ratio": 0.9848223512209013,
+        "interval95": [
+          0.9624867102811308,
+          1.0
+        ],
+        "groups": 8
+      }
+    }
+  },
+  "composition_ratios": {
+    "row": 1.1649386943229196,
+    "both": 1.183810099739068
+  },
+  "labels": {
+    "rows": 77246,
+    "positives": 6932,
+    "precision": 0.11325815820946523,
+    "recall": 0.9562896710905944,
+    "brier": 0.06212681812273408
+  },
+  "audit": {
+    "all_passed": true,
+    "workflows": 280,
+    "attempts": 320,
+    "failed_attempts": 40,
+    "coefficient_pairs": 91240,
+    "distinct_coefficient_pairs": 1931,
+    "all_frozen_files_unchanged": true
+  },
+  "application": {
+    "all_passed": true,
+    "checks": 8,
+    "results": [
+      {
+        "case": "equation_test_00_sunrise",
+        "size": 21,
+        "success": true,
+        "reference_supplied_to_reducer": false,
+        "independent_check_passed": true
+      },
+      {
+        "case": "equation_test_01_sunrise",
+        "size": 21,
+        "success": true,
+        "reference_supplied_to_reducer": false,
+        "independent_check_passed": true
+      },
+      {
+        "case": "equation_test_02_double_box",
+        "size": 128,
+        "success": true,
+        "reference_supplied_to_reducer": false,
+        "independent_check_passed": true
+      },
+      {
+        "case": "equation_test_03_double_box",
+        "size": 128,
+        "success": true,
+        "reference_supplied_to_reducer": false,
+        "independent_check_passed": true
+      },
+      {
+        "case": "equation_test_04_vacuum3",
+        "size": 128,
+        "success": true,
+        "reference_supplied_to_reducer": false,
+        "independent_check_passed": true
+      },
+      {
+        "case": "equation_test_05_vacuum3",
+        "size": 128,
+        "success": true,
+        "reference_supplied_to_reducer": false,
+        "independent_check_passed": true
+      },
+      {
+        "case": "equation_test_06_ladder3",
+        "size": 128,
+        "success": true,
+        "reference_supplied_to_reducer": false,
+        "independent_check_passed": true
+      },
+      {
+        "case": "equation_test_07_ladder3",
+        "size": 128,
+        "success": true,
+        "reference_supplied_to_reducer": false,
+        "independent_check_passed": true
+      }
+    ]
+  },
+  "config": {
+    "runtime_binary": ".tools/kira-equation-selection/kira-lazy",
+    "threshold": 0.001,
+    "distance_threshold": 4.0,
+    "by_topology": {
+      "double_box": {
+        "mode": "off",
+        "threshold": 0.0001,
+        "validation_ratio": 0.9975367182829387
+      },
+      "sunrise": {
+        "mode": "learned",
+        "threshold": 0.001,
+        "validation_ratio": 0.9533272586011878
+      },
+      "vacuum3": {
+        "mode": "learned",
+        "threshold": 0.0001,
+        "validation_ratio": 0.899676351758049
+      }
+    },
+    "unknown_mode": "off",
+    "selection": "Grouped complete-time ratios on validation only; forced learned and deterministic test arms remain separate."
+  },
+  "native_median_range": [
+    0.7851583249866962,
+    5.879512742161751
+  ]
+}

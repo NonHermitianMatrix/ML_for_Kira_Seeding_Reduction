@@ -1,0 +1,1 @@
+Scientific plots generated from checked model_test summaries by s23_plot.py. PDF files are also copied to report/figures. Complete times include prediction, algebra, exact checks and fallback. Intervals resample physical profiles.

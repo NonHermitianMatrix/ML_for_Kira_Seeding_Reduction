@@ -1,0 +1,1 @@
+Additional unfiltered native reductions supply benchmark reference coefficients. Records can also reference unchanged native results in Kira_comparison. These answers are used for benchmark checks, never as model inputs. The production application requires a prescribed master basis and receives no reference target coefficients.

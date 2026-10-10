@@ -1,0 +1,1 @@
+Final implementation comparisons on three held-out validation profiles and five target batches. Each grid point has three repetitions. summary.json retains complete timings, fallback costs and exact checks. trained_model/deployment.json uses only these results; the separate model_test set does not choose thresholds.

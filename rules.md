@@ -107,3 +107,7 @@
 ## Joint native integration and timing improvements
 
 - Continue the authorized integration work for both seed selection and reduction propagation. Measure each model against matched native and deterministic controls, include all inference and fallback costs, and keep improving the supported calculation time. Preserve negative results and prior models, use separate development and validation cases, freeze changes before new reserved tests, and document the entire integration and measured limits in the report. A measured best configuration is not a proof of a globally fastest reduction.
+
+## Target-dependent equation selection
+
+- Implement and train a third System 1 model in ML_model_equation_selection/ on Hoffman to select generated IBP equations for the requested targets. Keep training, validation and test families separate, retain exact reduction and basis checks, and count all prediction and fallback costs. Compare equation-selection and complete calculation times with matched native and deterministic controls; preserve negative results and do not assume a speedup. Maintain the affected READMEs, publish the completed model, code and results on GitHub, and update and synchronize the report. Preserve the existing models and the combined 10 GB storage ceiling.

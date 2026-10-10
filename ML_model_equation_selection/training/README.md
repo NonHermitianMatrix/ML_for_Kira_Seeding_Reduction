@@ -1,0 +1,1 @@
+Native training reductions and per-equation features/labels. summary.json hashes each source record and records the six grouped profiles, 74,692 rows, 5,978 positive labels and training cost. Each compressed record contains the native reduction and tab-separated candidate records. Exclude failed records and all development archives when fitting.
