@@ -50,6 +50,7 @@ summary.json and trials.csv contain every planned outcome. verification.json rec
 - s29_plot.py and s30_plot.sh create standalone complete-time, operation-count and completion figures from the checked results.
 - s31_document.py writes result prose and report_values.json from summary.json and verification.json.
 - s32_build_report.sh renders the full LaTeX report using its bounded Makefile.
+- s33_baseline_diagnostic.py and s34_baseline_diagnostic.sh compare smaller-region failure logs from stock and instrumented native Kira on a validation case after the primary comparison. They do not change frozen policies or add performance samples.
 
 The existing Kira toolchain and seed-gate build described in ../acceleration/ are prerequisites. New binaries, objects and scheduler logs remain under ignored .tools/ directories. Published patches and build metadata identify them.
 
@@ -62,6 +63,10 @@ Complete times include a fresh process, preparation, model loading and predictio
 The stock control uses the responsive Fermat shutdown. The instrumented native control uses the same source hook as the model while retaining native choices. Smaller deterministic regions and matched coverage subsets isolate gains that do not require ML. The count 1 + 2 * source_nonzeros per insertion estimates coefficient work; it excludes Fermat's internal polynomial operations and back substitution.
 
 Three repeats are planned for each reserved policy and batch. Failures and skipped repeats remain explicit. Paired ratios require three exact completions from both policies for each included batch. Descriptive intervals resample physical cases, not repeated timings.
+
+## Post-comparison baseline diagnostic
+
+The 128-target validation box failed with std::bad_alloc in both the responsive stock and instrumented native executables when using the smaller seed region under identical solver limits. This failure therefore also occurs without the row-policy hook. baseline_diagnostic/ retains both records and their summary. This check concerns the failure mechanism, uses validation inputs only and supplies no new performance comparison. Frozen reserved inputs remain unchanged.
 
 ## Resources
 

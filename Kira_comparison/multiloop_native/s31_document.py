@@ -128,6 +128,9 @@ comparison data~\cite{KiraCompleteMultiloopData}.
  recursive=sum(a.get("recursive_termination",False) for a in s["failed_attempts"])
  text+=f"Among unsuccessful attempts, {allocation} logs report an allocation failure and {recursive} report recursive termination; these diagnostic counts can overlap. "
  text+=r"The fixed process limits constrain these outcomes, and the logs alone do not establish exhaustion of physical RAM. The workflow retains their costs and follows the same fallback rule."+" "
+ diagnostic=load("baseline_diagnostic/summary.json")
+ assert all(r["allocation_failure"] and not r["success"] for r in diagnostic["results"])
+ text+=r"A separate post-comparison check repeated the smaller seed region for the 128-target validation box using both the responsive stock executable and the instrumented native executable. Both reported \texttt{std::bad\_alloc} under the same solver limits, so this failure also occurs without the row-policy hook. This check concerns the failure mechanism and supplies no additional timing comparison; it leaves all frozen reserved settings unchanged."+ "\n\n"
  if s.get("scheduler_interruption"):
   text+=r"One scheduler interruption stopped a test worker when the sum of its processes' virtual address spaces exceeded the job limit. We preserved its completed records and resumed only missing work with a larger scheduler address-space allowance, while keeping the measured physical-memory, scratch and elapsed-time limits fixed. This interruption is recorded separately from completed workflow timings. "
  if s.get("without_resumed_case"):
@@ -141,7 +144,8 @@ comparison data~\cite{KiraCompleteMultiloopData}.
   freeze_sha256=hashlib.sha256((HERE/"freeze.json").read_bytes()).hexdigest(),
   planned=s["planned"],measured=s["measured"],completed=s["completed"],counts=s["counts"],
   comparisons=s["comparisons"],topology_comparisons=s["topology_comparisons"],
-  reference_calculations=refs,verification=v)
+  reference_calculations=refs,verification=v,
+  diagnostic_sha256=hashlib.sha256((HERE/"baseline_diagnostic/summary.json").read_bytes()).hexdigest())
  (HERE/"report_values.json").write_text(json.dumps(values,indent=2)+"\n")
  write_readmes(s,v,f)
  write_conclusion(s,f)
@@ -206,9 +210,11 @@ def write_conclusion(s,f):
  text+=f"Of {s['planned']} planned trials, {s['completed']} completed every target and matched its exact reference coefficients. "
  text+=f"The learned seed workflow has an aggregate complete-time ratio of {ratio(seed)} to responsive stock Kira. "
  if seed.get("interval95") and seed["interval95"][0]<=1<=seed["interval95"][1]:text+="The interval includes one, so the aggregate timing advantage remains uncertain across these cases. "
- for topology,label in [("double_box","two-loop box"),("vacuum3","three-loop vacuum"),("ladder3","three-loop ladder")]:
+ descriptions=[]
+ for topology,label in [("double_box","two-loop boxes"),("vacuum3","three-loop vacuum cases"),("ladder3","three-loop ladders")]:
   x=tc(topology,None)
-  if x.get("paired_batches"):text+=f"Its {label} ratio is {x['ratio']:.3f}. "
+  if x.get("paired_batches"):descriptions.append(f"{x['ratio']:.3f} for the {label}")
+ text+="Across the physical classes, this ratio is "+", ".join(descriptions[:-1])+" and "+descriptions[-1]+". "
  for size in [32,128]:
   x=tc("double_box",size)
   if x.get("paired_batches"):

@@ -65,7 +65,7 @@ def main():
    for row in rows.values():
     for value in row.values():rational(value)
   checked.add(key)
- for directory in ["reserved_references","reference_checks","model_test/attempts","runtime_checks"]:
+ for directory in ["reserved_references","reference_checks","model_test/attempts","runtime_checks","baseline_diagnostic"]:
   for p in sorted((HERE/directory).glob("*.json.gz")):validate(p)
  continuation_count=0
  for p in sorted((HERE/"rollouts").glob("*_summary.json.gz")):
@@ -80,6 +80,13 @@ def main():
     assert sum(m["operations"] for m in t["metrics"])-g["prefix_operations"]==trial["remaining_operations"]
     validate(path);continuation_count+=1
  assert continuation_count==98
+ diagnostic=json.loads((HERE/"baseline_diagnostic/summary.json").read_text())
+ assert diagnostic["post_comparison"] and diagnostic["validation_only"]
+ assert diagnostic["models_and_reserved_protocol_unchanged"] and not diagnostic["performance_comparison"]
+ for result in diagnostic["results"]:
+  record=read_record(HERE/result["path"])
+  assert record["success"]==result["success"] and record["status"]==result["status"]
+  assert ("std::bad_alloc" in record["log"])==result["allocation_failure"]
  assert json.loads((HERE/"runtime_check.json").read_text())["all_passed"]
  model=json.loads((ROOT/"ML_model_reduction/cost_training/trained_model.json").read_text())
  for name,want in model["input_sha256"].items():assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest()==want
@@ -88,6 +95,7 @@ def main():
  result=dict(all_passed=True,shared_content_objects=content,verified_continuations=continuation_count,**counts,
   method="independent native-export parser and exact cross multiplication of rational polynomials over Q(d)",
   frozen_inputs_unchanged=True,seed_probabilities_unchanged=True,native_tree_scores_checked=True,
+  post_comparison_diagnostic_records=len(diagnostic["results"]),
   trial_count=summary["planned"],completed_trials=summary["completed"],
   expanded_bound_attempts=len(summary["expanded_bound_checks"]),expanded_bound_completions=sum(r["success"] for r in summary["expanded_bound_checks"]))
  (HERE/"verification.json").write_text(json.dumps(result,indent=2)+"\n");print(json.dumps(result),flush=True)

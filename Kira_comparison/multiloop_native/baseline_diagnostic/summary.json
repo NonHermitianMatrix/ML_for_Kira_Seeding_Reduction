@@ -1,0 +1,29 @@
+{
+  "purpose": "Determine whether smaller-region allocation failures also occur in the responsive stock executable.",
+  "post_comparison": true,
+  "validation_only": true,
+  "models_and_reserved_protocol_unchanged": true,
+  "performance_comparison": false,
+  "results": [
+    {
+      "policy": "stock",
+      "path": "baseline_diagnostic/stock_margin0.json.gz",
+      "success": false,
+      "status": "kira_error",
+      "complete_seconds": 9.992124299518764,
+      "allocation_failure": true,
+      "recursive_termination": false,
+      "returncode": -6
+    },
+    {
+      "policy": "native",
+      "path": "baseline_diagnostic/native_margin0.json.gz",
+      "success": false,
+      "status": "kira_error",
+      "complete_seconds": 10.725973218679428,
+      "allocation_failure": true,
+      "recursive_termination": false,
+      "returncode": -6
+    }
+  ]
+}
