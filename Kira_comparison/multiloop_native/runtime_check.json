@@ -1,0 +1,88 @@
+{
+  "original_seed_weights_unchanged": true,
+  "cases": [
+    {
+      "case": "training_00_sunrise",
+      "candidates": 78,
+      "probabilities_sha256": "faccfa2b96ca70298190c546979a880fee399de6648a5234231e2be6dfdce383",
+      "first_call": {
+        "model_cache_hit": false,
+        "shared_cache_hit": false,
+        "enumeration_seconds": 3.896653652191162e-06,
+        "load_seconds": 0.003942996263504028,
+        "inference_seconds": 0.0023268982768058777,
+        "candidates": 78,
+        "selected": 43
+      },
+      "repeat_call": {
+        "model_cache_hit": true,
+        "shared_cache_hit": true,
+        "enumeration_seconds": 2.5331974029541016e-06,
+        "load_seconds": 1.6093254089355469e-06,
+        "inference_seconds": 0.0011166781187057495,
+        "candidates": 78,
+        "selected": 43
+      }
+    },
+    {
+      "case": "training_02_double_box",
+      "candidates": 3510,
+      "probabilities_sha256": "9748d10dc54cc3c088a37b88cbbb16626b99c5c4c17b155d2ecd35333a8945a7",
+      "first_call": {
+        "model_cache_hit": true,
+        "shared_cache_hit": false,
+        "enumeration_seconds": 4.380941390991211e-06,
+        "load_seconds": 1.6838312149047852e-06,
+        "inference_seconds": 0.07126649469137192,
+        "candidates": 3510,
+        "selected": 1541
+      },
+      "repeat_call": {
+        "model_cache_hit": true,
+        "shared_cache_hit": true,
+        "enumeration_seconds": 3.46451997756958e-06,
+        "load_seconds": 2.9653310775756836e-06,
+        "inference_seconds": 0.018528908491134644,
+        "candidates": 3510,
+        "selected": 1541
+      }
+    }
+  ],
+  "tree_cases": [
+    {
+      "case": "validation_00_sunrise",
+      "exact_reference_match": true,
+      "verified_choice_groups": 23,
+      "metrics": [
+        {
+          "mode": "learned",
+          "updates": 139,
+          "operations": 1421,
+          "groups": 110,
+          "changed_sources": 1,
+          "peak_row": 20,
+          "training_groups": 0,
+          "forward_seconds": 0.021496400237083435
+        }
+      ]
+    },
+    {
+      "case": "validation_01_double_box",
+      "exact_reference_match": true,
+      "verified_choice_groups": 487,
+      "metrics": [
+        {
+          "mode": "learned",
+          "updates": 3064,
+          "operations": 39710,
+          "groups": 2437,
+          "changed_sources": 106,
+          "peak_row": 51,
+          "training_groups": 0,
+          "forward_seconds": 0.5343253910541534
+        }
+      ]
+    }
+  ],
+  "all_passed": true
+}

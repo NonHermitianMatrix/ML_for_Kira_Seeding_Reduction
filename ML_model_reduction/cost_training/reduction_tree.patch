@@ -1,0 +1,65 @@
+--- a/src/kira/reduction.cpp
++++ b/src/kira/reduction.cpp
+@@ -35,6 +35,7 @@
+ #include "pyred/defs.h"
+ #include "pyred/integrals.h"
+ 
++#include "s10_tree_policy.h"
+ using namespace std;
+ using namespace GiNaC;
+ 
+@@ -1696,6 +1697,7 @@
+ }
+ 
+ int Kira::insert_equation(BaseIntegral*& EqPtr, BaseIntegral*& insertEqPtr) {
++  kira_cost::before(EqPtr,insertEqPtr);
+   unsigned srange = EqPtr[0].length;
+   unsigned rrange = insertEqPtr[0].length;
+ 
+@@ -1866,10 +1868,10 @@
+     }
+   }
+ 
+-  if (srange != 0)
+-    return 1;
+-  else
+-    return 0;
++  kira_cost::after(EqPtr,srange);
++  if(srange) return 1;
++  if(!collectTerms.empty()) delete[] EqPtr;
++  EqPtr=nullptr; return 0;
+ }
+ 
+ void Kira::sort_equation(BaseIntegral*& EqPtr) {
+@@ -1958,11 +1960,13 @@
+     }
+   }
+ 
++  kira_cost::choose(fwEQ[0],lengthEQ,[this](BaseIntegral*& d,BaseIntegral*& s){return insert_equation(d,s);});
+   for (uint32_t jtt = 1; jtt < lengthEQ; jtt++) {
+     insert_equation(fwEQ[0][jtt], fwEQ[0][0]);
+   }
+ 
+   for (uint32_t jtt = 1; jtt < lengthEQ; jtt++) {
++    if(!fwEQ[0][jtt]) continue;
+     pyred::Weight ID = fwEQ[0][jtt][0].id;
+     pthread_mutex_lock(&mPreserveResults);
+ 
+@@ -2045,6 +2049,8 @@
+ 
+   int counter = 0;
+ 
++  kira_cost::start();
++  const double cost_begin=kira_cost::now();
+   do {
+     Clock clock;
+ 
+@@ -2191,6 +2197,8 @@
+     logger << "time: ( " << finalt << " s )\n";
+ 
+   } while (red_1);
++  kira_cost::finish(kira_cost::now()-cost_begin);
++
+ 
+   logger << "redundant: " << counter << "; insertions " << information << "\n";
+   // Triangular form is complete, norm the coefficients and write them to the

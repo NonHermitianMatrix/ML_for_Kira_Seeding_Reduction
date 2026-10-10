@@ -50,3 +50,21 @@ The additional matched-admission confirmation applies the same early master chec
 
 <!-- single-target-result -->
 The predefined single-target comparison gives 8.6% lower geometric mean complete time against the full-pool Kira control and 8.7% lower time against the distance control with the same early check. Both descriptive intervals lie below one across all twelve held-out instances, with five exact repeats per method. The earlier confirmation gave 7.8% lower time against the full pool for this batch size. The sixteen-target intervals include one. This measured benefit applies to one constructed target expression at a time using an existing IBP identity pool; it does not establish a native Kira or general high-loop speedup.
+
+<!-- native-multiloop-results-begin -->
+## Complete multiloop cost comparison
+
+The fixed complete-generation experiment has 324 planned workflows, 324 measured workflows and 324 exact completions.
+
+The selected seed policy's complete-time ratio to responsive stock Kira is 0.741945 (12 paired batches).
+
+Seed-to-stock time ratios are 0.563457 for two-loop boxes, 1.265710 for three-loop vacua, 0.572691 for three-loop ladders. The aggregate seed time interval includes one; gains are specific to the tested family classes. The row-time interval also includes one.
+
+The cost-trained row policy's complete-time ratio to instrumented native Kira is 1.007901 (12 paired batches); its forward coefficient-operation ratio is 1.003162 (12 paired batches).
+
+These are paired, three-repeat comparisons at rational kinematics with symbolic d. Results include inference, native generation, exact algebra, verification and fallback. The common reference basis is prepared separately.
+
+The independent audit passed. Family-level results and completion counts must accompany aggregate ratios; none establishes a universal speedup.
+
+[Methods, raw evidence and outcomes](../Kira_comparison/multiloop_native/README.md). Original integral records and neural checkpoints remain unchanged.
+<!-- native-multiloop-results-end -->

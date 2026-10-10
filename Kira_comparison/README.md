@@ -61,3 +61,21 @@ The predefined single-target comparison gives 8.6% lower geometric mean complete
 The responsive Fermat shutdown comparison contains 480 planned records, 416 measured trials and 400 exact completions in twelve new held-out one-loop box instances. For one target, the modified learned workflow has a complete-time ratio of 0.384629 to the original learned workflow (descriptive 95% interval 0.342069–0.452551; 12 paired batches), with geometric mean times 5.528 and 2.126 seconds. For sixteen targets the corresponding ratio is 0.685856 (interval 0.540426–0.844099). Against the full pool with the same shutdown improvement, the single-target learned ratio is 0.690298 (interval 0.423691–0.931312). All completed reductions matched exact references. Both learned methods use the same original weights, threshold, early master check and fallback. The shutdown change preserves symbolic operations and also applies to the full-pool control. These measurements use existing IBP identity pools; they exclude their original generation.
 
 Code, measurements, source patch, frozen inputs and independent checks are in Kira_comparison/fast_expression/. The report explains the separate shutdown and learned-seed effects in kira_fast_expression.tex and figures/responsive_exit_times.pdf.
+
+<!-- native-multiloop-results-begin -->
+## Complete multiloop cost comparison
+
+The fixed complete-generation experiment has 324 planned workflows, 324 measured workflows and 324 exact completions.
+
+The selected seed policy's complete-time ratio to responsive stock Kira is 0.741945 (12 paired batches).
+
+Seed-to-stock time ratios are 0.563457 for two-loop boxes, 1.265710 for three-loop vacua, 0.572691 for three-loop ladders. The aggregate seed time interval includes one; gains are specific to the tested family classes. The row-time interval also includes one.
+
+The cost-trained row policy's complete-time ratio to instrumented native Kira is 1.007901 (12 paired batches); its forward coefficient-operation ratio is 1.003162 (12 paired batches).
+
+These are paired, three-repeat comparisons at rational kinematics with symbolic d. Results include inference, native generation, exact algebra, verification and fallback. The common reference basis is prepared separately.
+
+The independent audit passed. Family-level results and completion counts must accompany aggregate ratios; none establishes a universal speedup.
+
+[Methods, raw evidence and outcomes](multiloop_native/README.md). Original integral records and neural checkpoints remain unchanged.
+<!-- native-multiloop-results-end -->
