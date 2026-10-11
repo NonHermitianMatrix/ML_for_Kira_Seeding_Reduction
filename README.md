@@ -99,7 +99,7 @@ See [ML_model_equation_selection/higher_loops/README.md](ML_model_equation_selec
 <!-- batch-reuse-begin -->
 ## Learned equation reuse across target batches
 
-The latest restricted vacuum-family interface is [batch_reuse](ML_model_equation_selection/batch_reuse/README.md). It trains a batch equation-cost model, shares exact coefficient checks across loop orders and combines independent systems in one Kira call. All 460 reserved applications pass exact checks. The selected combined route has complete-time ratio 0.220 to the preceding separate workflow. Matched simple-rule and inference-backend comparisons remain recorded. General high-loop native IBP generation is outside this scope.
+The earlier batch interface is [batch_reuse](ML_model_equation_selection/batch_reuse/README.md). It trains a batch equation-cost model, shares exact coefficient checks across loop orders and combines independent systems in one Kira call. All 460 reserved applications pass exact checks. The selected combined route has complete-time ratio 0.220 to the preceding separate workflow. Matched simple-rule and inference-backend comparisons remain recorded. General high-loop native IBP generation is outside this scope.
 <!-- batch-reuse-end -->
 
 <!-- pre-reduction-current -->
@@ -107,3 +107,9 @@ Validation selects the simple direct route. On 200 reserved applications, its ca
 
 See [exact pre-reduction](ML_model_equation_selection/pre_reduction/README.md).
 <!-- pre-reduction-current-end -->
+
+<!-- polynomial-reuse-current -->
+The current restricted vacuum-family interface shares exact loop-order transformations and Taylor factors, with an optional persistent worker. Validation selects both arithmetic changes and preserves the simple extreme ordering. Across eight reserved batches, calculation-time ratio to the preceding direct arithmetic is 0.372, and full-worker ratio is 0.682. Arithmetic plus persistent execution has full-time ratio 0.365 across three specified overlapping streams. All 352 reserved applications pass exact checks; 28860 expanded coefficient positions also match the older loop-dependent formula. These gains come from exact reuse and process startup. The unchanged learned model remains optional. General native high-loop IBP generation retains its earlier scope.
+
+See [exact polynomial reuse](ML_model_equation_selection/polynomial_reuse/README.md).
+<!-- polynomial-reuse-current-end -->

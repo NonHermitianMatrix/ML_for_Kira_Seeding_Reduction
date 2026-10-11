@@ -1,0 +1,129 @@
+\subsection{Sharing exact polynomial work across targets and loop orders}
+\label{sec:polynomial-reuse}
+The direct reduction in Section~\ref{sec:pre-reduction} removes the Kira
+call when exact recurrence relations complete the requested reduction.
+Its remaining cost includes construction of the independent check and
+expansion of each coefficient at every requested loop order. We now reuse
+the algebraic terms that these operations have in common and keep the
+calculation process available for a bounded sequence of requests.
+The master basis, selected identities and exact checks remain the same.
+
+Write a coefficient as
+\(C(z)=D^{-1}\sum_{n=0}^{q}a_nz^n\), where \(D\) is a positive integer,
+the \(a_n\) are integers, and \(q\) is its degree. For each loop order
+\(L\), define the integer transformation
+\begin{equation}
+ \begin{aligned}
+ T^{(L)}_{kn}&=
+ \begin{cases}
+ \displaystyle\binom{n}{k}L^n(-2)^{n-k},& n\geq k,\\
+ 0,& n<k.
+ \end{cases}
+ \\[4pt]
+ C\bigl(L(d-2)\bigr)&=\frac{1}{D}
+ \sum_{k=0}^{q}\left(\sum_{n=k}^{q}T^{(L)}_{kn}a_n\right)d^k.
+ \end{aligned}
+ \label{eq:reuse-transform}
+\end{equation}
+Here \(k\) is the power of \(d\) and \(n\) is the original power of \(z\).
+We form this transformation once for each requested \(L\) and reuse it
+for all target coefficients. The present power limit gives \(q\leq13\).
+We also obtain the common denominator once per symbolic coefficient,
+then apply the integer transformations and cancel common factors.
+This removes repeated binomial coefficients, powers and denominator
+construction while retaining the full expanded result.
+
+The independent check in Eq.~\eqref{eq:pre-taylor} contains repeated
+Taylor terms. For a positive denominator power \(\beta\), a nonnegative
+series index \(n\), and a nonzero mass difference
+\(\Delta=\rho_i-\rho_j\), these terms are
+\begin{equation}
+ [t^n](\Delta+t)^{-\beta}
+ =(-1)^n\binom{\beta+n-1}{n}\Delta^{-(\beta+n)}.
+ \label{eq:reuse-taylor}
+\end{equation}
+We retain each required truncated factor within its mass profile and
+multiply the factors with integer polynomials over common denominators.
+We also form each single-denominator polynomial
+\(\prod_{h=1}^{k-1}(2h-z)/(2h\rho_j)\) once for that profile and reuse it
+in Eq.~\eqref{eq:pre-independent}. Every target still receives its own
+independent master expansion and exact comparison with the selected
+recurrence. This reuse changes the arithmetic work needed to construct
+the check.
+
+For a sequence of requests, one running process retains the transformation
+matrices and, when requested, the unchanged trained model.
+Each new mass profile receives fresh mass-dependent Taylor terms, so
+a repeated integral identifier cannot transfer coefficients between
+different physical inputs. The current interface bounds the retained
+transforms and the number of requests per process. A failed exact
+comparison retries the preserved Kira route. The previous ordering
+policy remains the default, and this extension introduces no new model
+training.
+
+We compare the preceding arithmetic, shared transformations alone,
+shared Taylor terms alone, and both changes together.
+All routes use the same output writer, which stores each exact coefficient
+block once. Four new three-profile batches provide 48 validation
+calculations and select @@SELECTED@@ before the reserved test.
+Eight further batches provide 160 calculations: four variants with five
+repetitions each. The tests use two, three or four massive denominators,
+total massive-denominator power \(B\leq14\), up to 96 requested targets
+per profile, and every
+loop order from one through twelve. Validation and reserved mass ranges
+are disjoint from each other and from earlier training and comparisons.
+
+The two changes together have calculation-time ratio @@BOTH@@ to the
+preceding arithmetic, with descriptive 95\% interval @@BCI@@.
+The ratio including process startup and output saving is @@EXTERNAL@@,
+with interval @@ECI@@. Shared transformations alone have
+calculation-time ratio @@TRANSFORM@@, and shared Taylor terms alone have
+ratio @@TAYLOR@@. The combined route reduces expansion time to
+@@EXPANSION@@ of its previous value and construction time for the
+independent check to @@ORACLE@@.
+These ratios compare batch medians and then take the geometric mean over
+eight batches. The descriptive intervals resample those eight batches.
+Figure~\ref{fig:polynomial-reuse-times} separates the component changes.
+
+We then compare separate processes with one persistent process for streams
+of four, four and eight batches. The eight-batch stream contains the
+inputs from both four-batch streams. Three repetitions of four
+configurations give 36 stream runs and 192 additional batch calculations.
+All stream times include initial process startup, input reading,
+calculation, exact checks and output saving.
+With the updated arithmetic, process reuse has time ratio @@WORKER@@
+to separate updated processes. Combining arithmetic and process reuse
+has ratio @@STREAM@@ to separate processes with the preceding arithmetic.
+The three specified streams overlap, so we report these descriptive
+ratios without a statistical interval.
+Figure~\ref{fig:polynomial-reuse-streams} gives the individual stream times.
+
+All 352 reserved batch calculations return identical exact coefficients
+across the applicable routes. The independent audit checks @@POSITIONS@@
+expanded coefficient positions with the older formula at each loop order.
+Additional interface checks cover changed masses and loop orders under
+the same integral identifier, continued operation after an invalid request,
+the request limit, retained model evaluation, and recovery through Kira
+after a deliberately failed check. These savings come from shared exact
+arithmetic and reduced process startup. They apply to the restricted
+vacuum family and its existing reduction interface; the earlier native
+IBP-generation scope remains unchanged. The frozen implementation,
+measurements and checks are available with the data~\cite{KiraPolynomialReuseData}.
+
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=\linewidth]{figures/polynomial_reuse_times.pdf}
+ \caption{Reserved batch medians for the preceding arithmetic, each
+ reuse change separately, and both changes together. Each point uses
+ five complete calculations with identical target outputs and checks.}
+ \label{fig:polynomial-reuse-times}
+\end{figure}
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=\linewidth]{figures/polynomial_reuse_streams.pdf}
+ \caption{Total time for the specified request streams, including startup,
+ all exact checks and saving the results. Each bar gives the median of
+ three runs. The eight-batch stream uses all inputs from the two
+ four-batch streams.}
+ \label{fig:polynomial-reuse-streams}
+\end{figure}
