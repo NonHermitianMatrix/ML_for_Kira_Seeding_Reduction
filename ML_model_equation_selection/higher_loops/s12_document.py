@@ -8,6 +8,14 @@ def block(p,start,end,text,prepend=False):
  elif prepend:s=v+"\n\n"+s
  else:s=s.rstrip()+"\n\n"+v+"\n"
  p.write_text(s)
+def polish(t):
+ held=[]
+ def keep(m):
+  held.append(m.group());return '__LATEX_REFERENCE_'+str(len(held)-1)+'__'
+ t=re.sub(r'\\(?:eqref|ref|label|cite)\{[^}]*\}',keep,t)
+ for a,b in [['two- and three-loop\nstructures', 'structures with two or three loops'], ['partial-fraction', 'partial fraction'], ['loop-order', 'loop order'], ['single-denominator Euler seeds', 'Euler seeds with one massive denominator'], ['user-defined-system\ninterface', 'interface for supplied\nsystems'], ['a general\nhigher-loop IBP system', 'a general\nIBP system at higher loop orders'], ['full-equation fallback', 'fallback to the full equation pool'], ['mass-profile batches', 'batches of mass profiles'], ['lower-power exponent shapes', 'exponent shapes with lower powers'], ['power-twelve cases', 'cases with maximum power twelve'], ['separate full-pool\nreductions', 'separate reductions with the full equation pool'], ['a shared full-pool\nreduction', 'a shared reduction with the full equation pool'], ['a shared rule-based reduction', 'a shared reduction with a simple rule'], ['a shared learned\nreduction', 'a shared learned\nreduction'], ['rule-based control', 'control with a simple rule'], ['separate full-pool reductions', 'separate reductions with the full equation pool'], ['process-tree memory', 'memory of Kira and its child processes'], ['Kira-backed routes', 'routes that use Kira'], ['native high-loop Kira speedup', 'native Kira speedup at higher loop orders'], ['higher-loop native IBP generation', 'native IBP generation at higher loop orders'], ['family-specific coefficient reuse', 'coefficient reuse within this family'], ['separate-loop learned route', 'learned route with separate reductions at each loop order'], ['mass-pair rule', 'rule for the mass pair']]:t=t.replace(a,b)
+ for i,value in enumerate(held):t=t.replace('__LATEX_REFERENCE_'+str(i)+'__',value)
+ return t
 def main():
  ap=argparse.ArgumentParser();ap.add_argument("--data-commit");args=ap.parse_args()
  s=json.loads((HERE/"model_test/summary.json").read_text());v=json.loads((HERE/"model_test/verification.json").read_text())
@@ -44,9 +52,7 @@ def main():
 {model['training_groups']:,} exponent shapes, with total power through nine.
 We fit depth limits four, eight and twelve using a minimum child size of
 four examples. Validation selects the depth-{model['maximum_depth']} candidate, which
-contains {len(model['nodes'])} nodes. We preserve the first development pass
-and repeat validation after refining the ordered-index features and the
-coefficient reader. On 277 distinct development coefficients, the reader
+contains {len(model['nodes'])} nodes. On 277 distinct development coefficients, the reader
 agrees with symbolic algebra and takes {audit['fast_seconds']:.3f} seconds,
 compared with {audit['symbolic_seconds']:.3f} seconds for the symbolic
 reader. This reading improvement applies to every comparison arm and is
@@ -90,13 +96,40 @@ Figures~\\\\ref{{fig:higher-loop-complete-time}} and
 Validation fixes the deployed rule before these tests; we retain the
 learned results as a measured alternative.
 """.replace("\\\\","\\")
+ calc=c["separate_learned_over_separate_dense"]["complete_seconds"]
+ native=c["separate_learned_over_separate_dense"]["kira_seconds"]
+ incremental=c["shared_learned_over_shared_dense"]["complete_seconds"]
+ simple=c["shared_learned_over_shared_control"]["complete_seconds"]
+ reuse=c[deployed+"_over_separate_dense"]["complete_seconds"]
+ results+=f"""
+We separate calculation time from the cost of starting Python and archiving
+the test evidence. Before those two outer costs, the separate learned
+route has time ratio {calc['ratio']:.3f}, with descriptive interval
+\\\\([{calc['interval'][0]:.3f},{calc['interval'][1]:.3f}]\\\\), to the full pool.
+The time spent inside Kira has ratio {native['ratio']:.3f}, with interval
+\\\\([{native['interval'][0]:.3f},{native['interval'][1]:.3f}]\\\\).
+Thus the calculation saves {(1-calc['ratio'])*100:.1f}\\\\% and Kira itself saves
+{(1-native['ratio'])*100:.1f}\\\\% in this comparison. Archiving fewer source
+equations contributes to the larger saving in external process time.
+
+With shared coefficients, the ratio of calculation times of the learned route
+to the full pool is {incremental['ratio']:.3f}, with interval
+\\\\([{incremental['interval'][0]:.3f},{incremental['interval'][1]:.3f}]\\\\).
+Its ratio to the control with a simple rule is {simple['ratio']:.3f}, with interval
+\\\\([{simple['interval'][0]:.3f},{simple['interval'][1]:.3f}]\\\\).
+This comparison does not establish an added advantage over the simple rule.
+The deployed shared calculation has ratio {reuse['ratio']:.3f} to separate
+calculations with the full equation pool, with interval
+\\\\([{reuse['interval'][0]:.3f},{reuse['interval'][1]:.3f}]\\\\).
+The exact change of variable supplies the main reduction in repeated work.
+""".replace("\\\\","\\")
  check=f"""All 90 reserved workflows and six additional applications pass exact
 checks. The extra applications use loop orders 13, 16, 24 and 32.
 The audit checks {s['coefficient_checks']:,} coefficient positions, including
 {s['distinct_coefficient_positions']:,} distinct positions, across
 {s['kira_calls']} Kira calls. It finds {s['attempt_failures']} failed attempts
 and {s['fallbacks']} fallback workflows.
-The largest sampled Kira process-tree memory is
+The largest sampled process-tree memory is
 {s['peak_kira_tree_rss_bytes']/1024**2:.2f} MiB, and the largest temporary
 solver storage is {s['peak_scratch_bytes']/1024**2:.2f} MiB.
 The analytic reference also supplies a direct reduction for this
@@ -104,14 +137,17 @@ special family. The reported comparisons measure Kira-backed routes.
 """
  for key,value in [("TRAINING",training),("DESIGN",design),("RESULTS",results),("AUDIT",check)]:template=template.replace("@@"+key+"@@",value)
  assert "@@" not in template
- (report/"higher_loop_acceleration.tex").write_text(template)
+ (report/"higher_loop_acceleration.tex").write_text(polish(template))
  shutil.copy2(HERE/"model_test/plots/complete_times.pdf",report/"figures/higher_loop_complete_times.pdf")
  shutil.copy2(HERE/"model_test/plots/loops_and_equations.pdf",report/"figures/higher_loop_equations.pdf")
  p=report/"equation_selection.tex";t=p.read_text()
  if r"\input{higher_loop_acceleration}" not in t:t+=r"\input{higher_loop_acceleration}"+"\n"
  p.write_text(t)
  p=report/"Makefile";p.write_text(p.read_text().replace("equation_selection_early.tex references.bib","equation_selection_early.tex higher_loop_acceleration.tex references.bib"))
- p=report/"report.tex";t=p.read_text();abstract=t.split(r"\begin{abstract}",1)[1].split(r"\end{abstract}",1)[0]
+ p=report/"report.tex";t=p.read_text()
+ if r"\clearpage"+"\n"+r"\section{Conclusion}" not in t:
+  t=t.replace(r"\section{Conclusion}",r"\clearpage"+"\n"+r"\section{Conclusion}")
+ abstract=t.split(r"\begin{abstract}",1)[1].split(r"\end{abstract}",1)[0]
  assert hashlib.sha256(abstract.encode()).hexdigest()=="1d47cda2f100fe402dc838ef7ac73952eb2098412d69c0ffd5e1d543f1d657ef"
  conclusion=f"""The higher-loop extension uses the exact variable \\\\(z=L(d-2)\\\\) for the
 restricted coupled vacuum family. The trained equation selector and a
@@ -121,11 +157,14 @@ The separate-loop learned route has complete-time ratio
 {separate['ratio']:.3f} to the supplied full pool. Validation selects a
 simple mass-pair rule for deployment; its shared route has complete-time
 ratio {result['ratio']:.3f} to separate full-pool reductions.
-All 96 workflows pass exact checks. These results establish the stated
+Before Python startup and test-record archiving, the learned calculation
+has time ratio {calc["ratio"]:.3f}; time inside Kira has ratio
+{native["ratio"]:.3f}. All 96 workflows pass exact checks. These results establish the stated
 family-specific coefficient reuse and cost comparisons. General
 higher-loop native IBP generation remains outside this test domain
 \\\\cite{{KiraHigherLoopData}}.
 """.replace("\\\\","\\")
+ conclusion=polish(conclusion)
  marker="% BEGIN HIGHER LOOP CONCLUSION";end="% END HIGHER LOOP CONCLUSION"
  if marker not in t:t=t.replace(r"\clearpage"+"\n"+r"\renewcommand{\refname}{Citations}",marker+"\n"+conclusion+end+"\n\n"+r"\clearpage"+"\n"+r"\renewcommand{\refname}{Citations}")
  else:

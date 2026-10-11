@@ -81,3 +81,5 @@ The equation_selection section introduces the third probability model and its na
 The current equation-policy interface uses native seed and row choices in its measured sunrise domain. It disables equation filtering when an earlier learned policy is requested because the three-model composition was slower. The complete report-generation entry point is ML_model_equation_selection/s39_finish_report.sh.
 
 Equation-selection data commit: 63d87b1e863e9387eb821623ca09b1ae634884f7.
+
+The higher-loop extension describes exact coefficient reuse through z=L(d-2), learned equation choices, and matched controls for the restricted coupled vacuum family. It reports complete tests at loop orders one through twelve and exact applications at 13, 16, 24 and 32. The figures and conclusion distinguish the effect of learned choices from exact mathematical reuse and state the limits of these supplied-identity calculations.
