@@ -1055,7 +1055,7 @@ the native IBP-generation results retain their earlier scope
 % END PRE REDUCTION CONCLUSION
 
 % BEGIN POLYNOMIAL REUSE CONCLUSION
-The final extension shares the exact transformations for \(z=L(d-2)\)
+The polynomial-reuse extension shares the exact transformations for \(z=L(d-2)\)
 and the Taylor terms in the independent check. On eight new reserved
 batches, both changes together have calculation-time ratio 0.372 to
 the preceding direct route and full worker-time ratio 0.682.
@@ -1070,6 +1070,26 @@ previous model and ordering choice remain fixed. The supported domain
 remains the restricted coupled vacuum family, with native IBP-generation
 results retaining their earlier scope \cite{KiraPolynomialReuseData}.
 % END POLYNOMIAL REUSE CONCLUSION
+
+% BEGIN EXACT BACKEND CONCLUSION
+The final extension retains integer polynomial coefficients, compiles exact
+loop-order expansion and supplies lossless binary coefficient output.
+A 19-node regression tree learns batch strategies from 1,440 complete
+warm-worker measurements on 96 training batches. The first frozen test
+finds no established complete-time gain from the initial selected
+integer route once output reading is included. Compiling the binary
+reader then permits a new validation and independent test.
+Validation selects compiled expansion and binary output with a fixed recurrence rule. Its full process-time ratio to the preceding
+arithmetic is 0.850, and its ratio including output reading is 0.858,
+with descriptive interval \([0.800,0.914]\). The deployed persistent-worker ratio
+including reading is 0.725 across three disjoint test streams.
+All 948 reserved batch calculations across both studies pass exact
+checks. The learned-to-fixed time ratio is 1.017, with descriptive
+interval \([0.969,1.070]\). This interval includes one, so the reserved comparison does not establish a further time reduction from learned choices. The deployed default uses the fixed validation choice.
+The new tree, fixed-rule controls and earlier results remain preserved,
+and the supported domain remains the stated coupled vacuum family
+\cite{KiraExactBackendData}.
+% END EXACT BACKEND CONCLUSION
 
 \clearpage
 \renewcommand{\refname}{Citations}

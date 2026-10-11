@@ -76,12 +76,13 @@ arithmetic is EXTERNAL, and its ratio including output reading is ROUNDTRIP,
 with descriptive interval RCI. The deployed persistent-worker ratio
 including reading is STREAMREAD across three disjoint test streams.
 All ALLTOTAL reserved batch calculations across both studies pass exact
-checks. MODEL_FINDING
+checks. The learned-to-fixed time ratio is MODELFIXED, with descriptive
+interval MCI. MODEL_FINDING
 The new tree, fixed-rule controls and earlier results remain preserved,
 and the supported domain remains the stated coupled vacuum family
 \cite{KiraExactBackendData}.
 % END EXACT BACKEND CONCLUSION"""
- for k in ["SELECTED","EXTERNAL","ROUNDTRIP","RCI","STREAMREAD","ALLTOTAL","MODEL_FINDING"]:conclusion=conclusion.replace(k,values[k])
+ for k in ["SELECTED","EXTERNAL","ROUNDTRIP","RCI","STREAMREAD","ALLTOTAL","MODELFIXED","MCI","MODEL_FINDING"]:conclusion=conclusion.replace(k,values[k])
  p=ROOT/"report/report.tex";old=p.read_text().replace("The final extension shares the exact transformations","The polynomial-reuse extension shares the exact transformations")
  if "% BEGIN EXACT BACKEND CONCLUSION" in old:old=re.sub(r"% BEGIN EXACT BACKEND CONCLUSION.*?% END EXACT BACKEND CONCLUSION",lambda m:conclusion,old,flags=re.S)
  else:
@@ -89,7 +90,7 @@ and the supported domain remains the stated coupled vacuum family
  p.write_text(old)
  status=("The latest restricted vacuum-family route uses "+label+". Its complete-process time ratio is "+values["EXTERNAL"]+" and its ratio including output decoding is "+values["ROUNDTRIP"]+
  ", with descriptive interval ["+",".join(f(x) for x in selected["roundtrip_seconds"]["interval95"])+"]. The persistent-stream ratio including decoding is "+values["STREAMREAD"]+". "+
- values["ALLTOTAL"]+" reserved applications across the original and compiled-reader comparisons pass exact checks. Learned versus validation-selected fixed-rule time ratio is "+values["MODELFIXED"]+". "+finding+" These results retain the restricted vacuum-family scope; native IBP generation keeps its earlier supported domains.")
+ values["ALLTOTAL"]+" reserved applications across the original and compiled-reader comparisons pass exact checks. Learned versus validation-selected fixed-rule time ratio is "+values["MODELFIXED"]+", with interval ["+",".join(f(x) for x in model["interval95"])+"]. "+finding+" These results retain the restricted vacuum-family scope; native IBP generation keeps its earlier supported domains.")
  scripts="\n".join("- "+f.name+": "+f.read_text().splitlines()[0].strip('\"/') for f in sorted(HERE.glob("s*")) if f.suffix in [".py",".cpp"])
  (HERE/"README.md").write_text("""# Exact integer arithmetic and learned batch strategies
 

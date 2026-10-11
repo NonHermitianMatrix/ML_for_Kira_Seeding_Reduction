@@ -87,3 +87,7 @@ The higher-loop extension describes exact coefficient reuse through z=L(d-2), le
 <!-- polynomial-reuse-current -->
 polynomial_reuse.tex explains shared exact loop-order transformations, reused Taylor terms and persistent reduction workers. It records 48 validation applications, 352 reserved applications and all independent checks. Figures polynomial_reuse_times.pdf and polynomial_reuse_streams.pdf separate arithmetic and process reuse. The data citation is pinned when the release is published. The supplied abstract and previous results remain preserved.
 <!-- polynomial-reuse-current-end -->
+
+<!-- exact-backend-current -->
+exact_backend.tex explains retained integer polynomials, compiled exact expansion, lossless output, the runtime-trained batch tree and both frozen comparisons. It preserves the initial negative complete-time result, reports the fresh compiled-reader measurements and updates the conclusion. The supplied abstract remains unchanged. Source data are pinned by KiraExactBackendData.
+<!-- exact-backend-current-end -->

@@ -1,0 +1,171 @@
+\clearpage
+\subsection{Exact integer arithmetic and learned batch strategies}
+\label{sec:exact-backend}
+Section~\ref{sec:polynomial-reuse} reuses the transformations for
+\(z=L(d-2)\), but its implementation still converts coefficients between
+integer polynomials and separate rational numbers. It also writes each
+integer as decimal text. We now retain the common-denominator representation,
+compile the loop-order expansion, and test a compact exact output format.
+We then train a small model to choose a recurrence strategy for a whole
+target batch and compare its cost with fixed strategies.
+
+For a polynomial \(C(z)=D^{-1}\sum_{n=0}^{q}u_nz^n\), we store the integer
+vector \((u_0,\ldots,u_q)\) and positive denominator \(D\), with
+\(\gcd(D,u_0,\ldots,u_q)=1\). Both the selected recurrence and the independent
+Taylor construction return this form, so their exact comparison needs
+no conversion to separate fractions. The compiled expansion uses
+Eq.~\eqref{eq:reuse-transform} to obtain
+\begin{equation}
+ v_k=\sum_{n=k}^{q}T^{(L)}_{kn}u_n,\qquad
+ g_k=\gcd(|v_k|,D),\qquad
+ [d^k]C\bigl(L(d-2)\bigr)=\frac{v_k/g_k}{D/g_k}.
+ \label{eq:backend-integer}
+\end{equation}
+Here \(v_k\) is the integer numerator before cancellation, \(g_k\) is its
+greatest common divisor with \(D\), and \([d^k]\) extracts the coefficient
+of \(d^k\). The implementation uses integer operations from the GNU Multiple Precision
+Arithmetic Library (GMP); the installed
+library version is 6.0.0~\cite{GMPIntegerManual}. Every coefficient
+retains its exact reduced numerator and denominator.
+
+The compact format records the sign, byte length and base-256 digits of
+each integer, together with the target, master and loop-order indices.
+It therefore preserves the full symbolic and expanded coefficients.
+A supplied reader recovers the same coefficient arrays as the decimal
+format. We measure the cost of reading these arrays as well as the
+cost of producing and saving them, so the comparison includes the
+conversion needed by a consumer of the result. The same master basis,
+independent Taylor check and Kira fallback apply throughout.
+
+The learned strategy selects one of five rules for each batch.
+The first rule is the preceding extreme-power rule. Two further rules
+order denominator slots by their total powers across the targets,
+in increasing or decreasing order. Another rule selects the active
+mass pair with the largest absolute mass difference, and the last
+uses a fixed slot order. Each rule generates a terminating set of
+exact recurrence relations. The model can change which intermediate
+integrals occur and the sizes of the rational coefficients during
+substitution.
+
+For batch \(\mathcal B\) and rule \(s\), let \(T_{\mathcal B s r}\) be the
+measured time in repetition \(r\) of an already running worker.
+This time includes request reading, recurrence selection, exact
+arithmetic, the independent check and output writing. The training
+target and the rule selected by the model are
+\begin{equation}
+ y_{\mathcal B s}=
+ \log\!\left(\operatorname{median}_{r=1,2,3}T_{\mathcal B s r}\right),
+ \qquad
+ \widehat s(\mathcal B)=
+ \mathop{\operatorname{arg\,min}}_s f_s(x_{\mathcal B}),
+ \label{eq:backend-policy}
+\end{equation}
+where \(x_{\mathcal B}\) contains 49 input features and \(f_s\)
+is the tree prediction of the log time for rule \(s\).
+The features describe target powers, numbers of active denominators,
+loop orders, masses, mass differences, and shared integrals obtained by
+lowering one positive target power. We combine profile means and maxima
+into a fixed-length batch description. A multi-output regression tree
+with maximum depth four and at least six training batches per leaf learns
+these costs; the fitted tree has 19 nodes.
+The scores estimate runtime and carry no calibrated probability claim.
+
+Training uses 96 batches and 1,440 timed calculations. The first twelve validation
+batches provide 324 calculations that compare the preceding
+arithmetic, retained integer polynomials, compiled expansion with decimal
+output, compiled expansion with binary output, and the learned rule.
+The validation also compares every fixed recurrence rule with the compiled
+binary route. Each batch contains three profiles with two, three and four
+massive denominators. Total massive powers reach fourteen, requested
+target counts reach 96 per profile, and every profile includes loop orders
+one through twelve. The training, validation and reserved test stages
+use distinct targets and mass profiles.
+
+The first validation selects retained integer polynomials with decimal
+output. Its reserved comparison contains 504 batch calculations and
+passes every exact check. Its full-time ratio, including output reading,
+is 0.998 with descriptive interval \([0.867,1.162]\), so this comparison
+does not establish a complete-time improvement. The binary variants
+reduce production time, but their Python reader adds enough cost to
+remove the gain in the full comparison.
+
+We therefore compile the expanded-coefficient reader while retaining the
+same binary format, exact arithmetic and trained tree. This change follows
+the reader cost observed during validation. The original frozen comparison
+remains intact. The compiled reader passes 1,000 loop-output comparisons
+with the Python reader and rejects 250 truncated records. A new set of
+twelve validation batches supplies 324 further calculations, and a separate
+set of twelve test batches supplies the final reserved comparison.
+An incomplete reader comparison is excluded because its selection step
+referenced the earlier validation set. We preserve those 360 measurements,
+correct the stage references, and freeze the prescribed choice from the
+new validation set before generating results for fresh reserved targets.
+
+The second validation selects compiled expansion and binary output with a fixed recurrence rule using total process time plus
+output reading. A learned route must improve on the best fixed route by at least
+two percent to replace it. We freeze the implementation, tree, deployment
+choice and test inputs before the reserved comparison.
+Twelve new batches then provide 300 separate-process calculations,
+with five repetitions per method. The implementation comparison uses
+the same request interface and output writer for matched routes.
+
+The selected route has calculation-time ratio 0.522 to the preceding
+arithmetic. Its full process-time ratio is 0.850, with descriptive
+95\% interval \([0.785,0.909]\), and the ratio including output reading is
+0.858, with interval \([0.800,0.914]\).
+Retaining integer polynomials alone gives a ratio of 0.981 when
+output reading is included. Compiled expansion with decimal output gives
+0.933, and compiled expansion with binary output and the preceding
+rule gives 0.858. These comparisons separate arithmetic changes
+from the output format. The ratios use geometric means of within-batch
+median ratios; the descriptive intervals resample the twelve batches.
+Figure~\ref{fig:exact-backend-times} shows their measured times.
+
+The learned route has total-time ratio 0.873 to the preceding
+arithmetic and ratio 1.017 to the fixed rule selected by validation,
+both including output reading. The latter interval is \([0.969,1.070]\).
+This interval includes one, so the reserved comparison does not establish a further time reduction from learned choices. The deployed default uses the fixed validation choice.
+The model and its measurements remain available with the fixed-rule
+controls, including any extra inference cost.
+
+We also compare persistent workers on three disjoint streams of four
+reserved batches. Four recorded route labels and three repetitions give 36 stream runs
+containing 144 additional batch calculations. The selected route has
+stream-time ratio 0.702 to the preceding arithmetic, or
+0.725 when reading every output is included.
+Figure~\ref{fig:exact-backend-streams} separates these two costs.
+The compiled fixed-rule and deployed labels use the same settings and
+provide separately timed repetitions. These stream ratios describe the
+three specified sequences.
+A separate comparison of identical binary blocks gives compiled-to-Python
+reader-time ratio 0.147, using five repetitions per reader and batch.
+
+All 444 final reserved batch calculations pass exact comparisons,
+and the two comparisons together contain 948 such calculations.
+The independent audit checks 35472 expanded master-coefficient
+positions against the older loop-dependent formula and verifies equality
+between the two output formats. The compiled arithmetic also passes
+3,277 earlier exact checks. Additional interface checks cover changed
+physical inputs under a repeated identifier, invalid requests, the worker
+request limit, truncated output, and recovery through Kira after a
+deliberately failed independent check. These results apply to the
+restricted coupled vacuum family. The earlier native IBP-generation
+results retain their stated domains. The implementation, new tree,
+frozen inputs and measurements accompany the report~\cite{KiraExactBackendData}.
+
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=\linewidth]{figures/exact_backend_reader_times.pdf}
+ \caption{Reserved batch medians for the arithmetic and strategy variants.
+ Each point uses five repetitions. The right panel includes reading and
+ decoding the complete exact coefficient output.}
+ \label{fig:exact-backend-times}
+\end{figure}
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=\linewidth]{figures/exact_backend_reader_streams.pdf}
+ \caption{Complete times for three disjoint four-batch streams. Each bar
+ is the median of three repetitions. The right panel adds reading and
+ decoding every output. The deployed route follows the validation choice.}
+ \label{fig:exact-backend-streams}
+\end{figure}
