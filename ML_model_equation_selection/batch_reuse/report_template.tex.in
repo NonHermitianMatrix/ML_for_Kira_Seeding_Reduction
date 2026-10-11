@@ -37,9 +37,8 @@ ordering with the smallest predicted value. The 32 inputs describe the
 target count, number of massive denominators, total powers, the mean and mean squared power at each
 position of \(\pi\), the largest power, the fraction of targets with that
 denominator present, and pairwise mean minima and products of powers.
-These inputs describe sharing across the entire target set. The model
-does not predict a reduction coefficient or a probability of mathematical
-correctness. Two massive denominators admit a single pair, so those
+These inputs describe sharing across the entire target set. Each prediction estimates the reduction cost, while exact identities
+and Kira determine the reduction coefficients. Two massive denominators admit a single pair, so those
 requests bypass inference.
 
 The training set contains 420 target batches and 6,300 candidate orderings,
@@ -61,9 +60,8 @@ reduce loading and prediction cost. All 12,600 compared candidate scores
 agree exactly with the original tree evaluation. For the selected
 ensemble, compiled evaluation takes @INFERENCE_RATIO@ times the Python
 decision time over the training batches. Fresh complete-calculation
-validation then chooses the deployment backend; this comparison includes
-model loading and inference rather than using the isolated inference
-measurement as a runtime claim.
+validation then chooses the inference implementation used for production calculations; this comparison includes
+model loading and inference and measures the time of the complete calculation.
 
 \subsubsection{Sharing exact checks and Kira calls}
 The original shared reduction still expanded and checked the same
@@ -134,13 +132,13 @@ the model cost on both sides where the model is used.
 A second reserved set contains twelve further mass profiles, powers up
 to thirteen and up to 80 requested targets per profile. Eighty
 applications compare the preceding separate workflow, the updated
-combined simple rule, and both learned inference backends on the same
+combined simple rule, and both learned inference implementations on the same
 four groups. The compiled learned route has complete-time ratio
 @NATIVE@ to the preceding workflow, with interval @NATIVE_CI@, and
 ratio @NATIVE_CTRL@ to the combined simple rule, with interval
 @NATIVE_CTRL_CI@. Its ratio to Python inference in the otherwise
 identical learned workflow is @NATIVE_PY@, with interval
-@NATIVE_PY_CI@. The two learned backends produce identical selected
+@NATIVE_PY_CI@. The two learned implementations produce identical selected
 equation systems. @DEPLOYMENT@
 
 All 460 reserved applications pass exact checks without fallback.
@@ -167,7 +165,7 @@ the second combined comparison~\cite{KiraBatchReuseData}.
 These results support acceleration within the stated vacuum family and
 fixed mass profiles. The Taylor construction also supplies a direct
 analytic solution for this family; these comparisons concern the
-Kira-backed routes developed here. General scattering families,
+reductions performed through Kira here. General scattering families,
 native generation of high-loop IBP systems and a globally fastest
 reduction remain outside the evidence.
 

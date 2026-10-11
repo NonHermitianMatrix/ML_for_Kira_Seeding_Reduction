@@ -29,7 +29,7 @@ def main():
  text=(HERE/"report_template.tex.in").read_text()
  for k,v in tokens.items():text=text.replace("@"+k+"@",v)
  assert not re.search(r"@[A-Z_]+@",text)
- (ROOT/"report/batch_reuse.tex").write_text(text)
+ (ROOT/"report/batch_reuse.tex").write_text(text.replace("backend","inference implementation"))
  f=ROOT/"report/equation_selection.tex";text=f.read_text()
  if r"\input{batch_reuse}" not in text:f.write_text(text+"\n"+r"\input{batch_reuse}"+"\n")
  f=ROOT/"report/Makefile";text=f.read_text()

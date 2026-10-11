@@ -1024,6 +1024,22 @@ native IBP generation at higher loop orders remains outside this test domain
 \cite{KiraHigherLoopData}.
 % END HIGHER LOOP CONCLUSION
 
+% BEGIN BATCH REUSE CONCLUSION
+The next extension learns shared equation choices for entire target batches
+and reduces repeated exact checks in the common variable \(z\). Its
+four-tree cost model trains on 420 batches and 6,300 candidate orderings.
+Combining independent profiles in one Kira call preserves separate master
+bases and reduces repeated startup work. On the final twelve reserved
+profiles, the selected combined route has complete-time ratio 0.220
+to the preceding separate workflow, with descriptive interval
+\([0.171,0.270]\). All 460 reserved applications and the additional
+integration checks pass exact comparisons; the integration tests also
+verify the full-system fallback. Compiled and Python inference produce
+identical equation systems. The comparisons separate model decisions,
+shared exact arithmetic and shared Kira calls, and apply to the stated
+restricted vacuum family~\cite{KiraBatchReuseData}.
+% END BATCH REUSE CONCLUSION
+
 \clearpage
 \renewcommand{\refname}{Citations}
 \bibliographystyle{unsrt}
