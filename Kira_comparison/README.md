@@ -116,3 +116,9 @@ See [../ML_model_equation_selection/higher_loops/README.md](../ML_model_equation
 
 The latest restricted vacuum-family interface is [batch_reuse](../ML_model_equation_selection/batch_reuse/README.md). It trains a batch equation-cost model, shares exact coefficient checks across loop orders and combines independent systems in one Kira call. All 460 reserved applications pass exact checks. The selected combined route has complete-time ratio 0.220 to the preceding separate workflow. Matched simple-rule and inference-backend comparisons remain recorded. General high-loop native IBP generation is outside this scope.
 <!-- batch-reuse-end -->
+
+<!-- pre-reduction-current -->
+Validation selects the simple direct route. On 200 reserved applications, its calculation-time ratio to the preceding combined learned Kira route is 0.306, with descriptive interval [0.246,0.373]. The full-worker ratio is 0.430. All exact checks pass with zero reserved fallbacks. The earlier trained four-tree model remains available with unchanged weights; learned/direct versus simple/direct has calculation ratio 0.982. The comparison does not establish a further complete-time advantage from learned ordering over both direct controls. This is a checked shortcut for the restricted coupled vacuum family. Native IBP generation keeps its earlier supported domains.
+
+See [exact pre-reduction](../ML_model_equation_selection/pre_reduction/README.md).
+<!-- pre-reduction-current-end -->

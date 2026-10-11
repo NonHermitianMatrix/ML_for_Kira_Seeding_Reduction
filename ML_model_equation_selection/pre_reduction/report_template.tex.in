@@ -1,0 +1,129 @@
+\subsection{Exact pre-reduction and a checked direct path}
+\label{sec:pre-reduction}
+The combined workflow in Section~\ref{sec:batch-reuse} still spends much
+of its time in Kira after the model selects sufficient identities.
+For the restricted vacuum family, every selected identity lowers the total
+massive-denominator power. We can therefore evaluate the substitutions
+in increasing order of that power and return the completed result after
+an independent exact check. Kira remains available for comparison and
+as a fallback when this direct path fails its checks.
+
+Let \(\boldsymbol C_{\boldsymbol b}(z)\) be the vector of coefficients
+of the prescribed masters in \(W_{\boldsymbol b}^{(L)}\), with
+\(z=L(d-2)\) as defined earlier. For the master with index
+\(\boldsymbol e_j\), this vector is the unit vector
+\(\boldsymbol C_{\boldsymbol e_j}=\boldsymbol e_j\).
+The selected mass identity gives
+\begin{equation}
+ \boldsymbol C_{\boldsymbol b}(z)=
+ \frac{\boldsymbol C_{\boldsymbol b-\boldsymbol e_i}(z)
+       -\boldsymbol C_{\boldsymbol b-\boldsymbol e_j}(z)}
+      {\rho_i-\rho_j},
+ \qquad b_i,b_j>0.
+ \label{eq:pre-mass}
+\end{equation}
+Here \(\rho_i\) and \(\rho_j\) are the distinct positive mass ratios
+specified for the family. When only denominator \(j\) is present,
+the Euler identity gives
+\begin{equation}
+ \boldsymbol C_{k\boldsymbol e_j}(z)
+ =\frac{2(k-1)-z}{2(k-1)\rho_j}
+   \boldsymbol C_{(k-1)\boldsymbol e_j}(z),
+ \qquad k\geq 2.
+ \label{eq:pre-euler}
+\end{equation}
+Both formulas reduce \(B=\sum_j b_j\), so they terminate at the
+specified masters. Each distinct intermediate integral is evaluated once.
+
+The existing four-tree model selects the mass ordering before these
+substitutions, with unchanged weights and training examples.
+The learned direct route uses the previously checked compiled evaluator.
+Each polynomial coefficient is stored as integer coefficients over a
+positive common denominator, with their common divisor cancelled after
+an addition or scaling. This keeps the arithmetic exact and reduces
+repeated fraction normalization. The model selects the intermediate
+integrals that we visit, while Eqs.~\eqref{eq:pre-mass} and
+\eqref{eq:pre-euler} determine their coefficients.
+
+An independent Taylor partial-fraction construction checks the result.
+For an auxiliary dimensionless variable \(x\), define
+\begin{equation}
+ \prod_{i:b_i>0}(x+\rho_i)^{-b_i}
+ =\sum_{j:b_j>0}\sum_{k=1}^{b_j}\frac{a_{jk}}{(x+\rho_j)^k},
+ \qquad
+ a_{jk}=[t^{\,b_j-k}]
+       \prod_{\substack{i\ne j\\b_i>0}}
+       (\rho_i-\rho_j+t)^{-b_i}.
+ \label{eq:pre-taylor}
+\end{equation}
+Here \([t^n]\) means the coefficient of \(t^n\) in the Taylor series.
+The corresponding master coefficient is
+\begin{equation}
+ C_{\boldsymbol b j}(z)=
+ \sum_{k=1}^{b_j}a_{jk}
+ \prod_{h=1}^{k-1}\frac{2h-z}{2h\rho_j}.
+ \label{eq:pre-independent}
+\end{equation}
+An empty product equals one. This construction uses the same exact
+single-denominator relation and obtains the mixed-denominator
+coefficients independently of the selected pairs.
+We require equality of every polynomial coefficient before substituting
+\(z=L(d-2)\). A failed check retries the original request through the
+preceding Kira route and its existing full-system fallback.
+
+We compare five routes on identical targets. The preceding deployed route
+sends model-selected equations to Kira. A second route first evaluates
+the recurrence, then sends the completed target-to-master relations to
+Kira. Three direct routes return checked coefficients: one uses learned
+ordering, one uses simple extreme-power ordering, and one constructs
+the answer with Eq.~\eqref{eq:pre-independent} and checks it with the
+simple recurrence. The last route supplies an analytic control that
+includes an independent exact check.
+
+Six new three-profile batches provide 90 validation calculations.
+Their mass ratios lie outside the ranges used in earlier training and
+tests. Validation selects @@SELECTED@@ before evaluating eight
+further three-profile batches with masses in a separate range.
+Each profile has two, three or four massive denominators, the largest
+total power is fourteen, and every request includes loop orders one
+through twelve. Five repetitions of five routes give 200 reserved
+calculations, all of which pass exact checks without fallback.
+The independent audit checks @@COEFFICIENTS@@ expanded master-coefficient
+positions and compares @@RAW@@ raw Kira coefficient expressions with the
+earlier rational reader. Five further applications include loop orders
+1, 12, 16, 24 and 32 and a deliberately failed direct check that recovers
+through Kira.
+
+The selected route has calculation-time ratio @@RATIO@@ to the preceding
+combined learned workflow, with descriptive interval @@CI@@.
+Its full worker-time ratio is @@EXTERNAL@@, with interval @@ECI@@.
+Calculation time includes request reading, model loading and inference
+where used, preparation, exact algebra, checks, loop substitution and
+fallback. Full worker time also includes interpreter startup and saving
+the output. We take the median of five repetitions per batch and then
+the geometric mean of the eight batch ratios. The intervals resample
+those eight batches and describe this finite comparison.
+
+The learned direct route has calculation-time ratio @@LEARNED_SIMPLE@@
+to the simple direct route, with interval @@LSCI@@, and ratio
+@@LEARNED_ANALYTIC@@ to the analytic control, with interval @@LACI@@.
+@@MODEL_FINDING@@
+Pre-reduction followed by Kira has time ratio @@CONTRACT@@ to the
+preceding route. Figure~\ref{fig:pre-reduction-times} shows the batch times.
+The principal saving in the direct routes comes from finishing the exact
+triangular recurrence before a Kira invocation is needed.
+These measurements cover an outer reduction path for the stated vacuum
+family. Native IBP-generation policies retain their previously tested
+domains, and general high-loop families require separate comparisons.
+The implementation, fixed choices, raw outputs and checks accompany the
+measurements~\cite{KiraPreReductionData}.
+
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=\linewidth]{figures/pre_reduction_times.pdf}
+ \caption{Reserved batch times for the preceding Kira route,
+ pre-reduction followed by Kira, and three independently checked direct
+ routes. Each point is the median of five complete calculations.
+ The right panel includes startup and saving the output.}
+ \label{fig:pre-reduction-times}
+\end{figure}

@@ -1,0 +1,771 @@
+{
+  "all_exact": true,
+  "applications": 200,
+  "coefficient_audit": {
+    "all_exact": true,
+    "distinct_batch_coefficient_objects": 8,
+    "expanded_coefficient_positions": 30924,
+    "raw_kira_coefficients_compared": 25770,
+    "workflows": 200
+  },
+  "comparisons": {
+    "direct_analytic_vs_baseline": {
+      "complete_seconds": {
+        "groups": 8,
+        "interval95": [
+          0.2449010962893361,
+          0.36813080744548393
+        ],
+        "ratio": 0.3034320192225325
+      },
+      "external_seconds": {
+        "groups": 8,
+        "interval95": [
+          0.4008943129201343,
+          0.44436715255322934
+        ],
+        "ratio": 0.42160496259857294
+      }
+    },
+    "direct_extreme_vs_baseline": {
+      "complete_seconds": {
+        "groups": 8,
+        "interval95": [
+          0.24579818378009824,
+          0.3731915928081307
+        ],
+        "ratio": 0.3059886832960158
+      },
+      "external_seconds": {
+        "groups": 8,
+        "interval95": [
+          0.4144663971513921,
+          0.44596552206775797
+        ],
+        "ratio": 0.42966852558531854
+      }
+    },
+    "direct_model_vs_baseline": {
+      "complete_seconds": {
+        "groups": 8,
+        "interval95": [
+          0.24072015745723863,
+          0.3682274293665193
+        ],
+        "ratio": 0.3005590480354991
+      },
+      "external_seconds": {
+        "groups": 8,
+        "interval95": [
+          0.3926114945492534,
+          0.438348033488248
+        ],
+        "ratio": 0.41446003970245754
+      }
+    },
+    "direct_model_vs_direct_analytic": {
+      "complete_seconds": {
+        "groups": 8,
+        "interval95": [
+          0.9731291741707205,
+          1.0129199717101156
+        ],
+        "ratio": 0.9905317467998448
+      },
+      "external_seconds": {
+        "groups": 8,
+        "interval95": [
+          0.9597300968333318,
+          1.0022296661196506
+        ],
+        "ratio": 0.9830530389109332
+      }
+    },
+    "direct_model_vs_direct_extreme": {
+      "complete_seconds": {
+        "groups": 8,
+        "interval95": [
+          0.9711832301648534,
+          0.9970199267263484
+        ],
+        "ratio": 0.9822554376781836
+      },
+      "external_seconds": {
+        "groups": 8,
+        "interval95": [
+          0.9417574925946786,
+          0.9900775695377977
+        ],
+        "ratio": 0.9646041425488562
+      }
+    },
+    "model_vs_baseline": {
+      "complete_seconds": {
+        "groups": 8,
+        "interval95": [
+          0.8884427122992375,
+          0.9627020149220226
+        ],
+        "ratio": 0.9271453208899957
+      },
+      "external_seconds": {
+        "groups": 8,
+        "interval95": [
+          0.9295288998406959,
+          0.9831079591050733
+        ],
+        "ratio": 0.9578159829860432
+      }
+    }
+  },
+  "fallbacks": 0,
+  "groups": [
+    {
+      "input": "model_test/inputs/group0.json",
+      "max_power": 8,
+      "medians": {
+        "baseline": {
+          "complete_seconds": 0.4173241120297462,
+          "external_seconds": 0.5866883099661209
+        },
+        "direct_analytic": {
+          "complete_seconds": 0.07041027001105249,
+          "external_seconds": 0.21654445602325723
+        },
+        "direct_extreme": {
+          "complete_seconds": 0.0700182500295341,
+          "external_seconds": 0.2316739999805577
+        },
+        "direct_model": {
+          "complete_seconds": 0.06763588794274256,
+          "external_seconds": 0.21670498000457883
+        },
+        "model": {
+          "complete_seconds": 0.4022985930205323,
+          "external_seconds": 0.5715470490395091
+        }
+      },
+      "profiles": 3,
+      "stages": {
+        "baseline": {
+          "contraction_seconds": 0,
+          "kira_seconds": 0.3159694760106504,
+          "model_load_seconds": 0.005821880011353642,
+          "oracle_seconds": 0,
+          "parse_seconds": 0.014186751970555633,
+          "selection_seconds": 0.001287616032641381,
+          "substitution_seconds": 0.03685258701443672,
+          "verification_seconds": 0.023914057994261384
+        },
+        "direct_analytic": {
+          "contraction_seconds": 0.0045919460244476795,
+          "kira_seconds": 0,
+          "model_load_seconds": 2.469751052558422e-07,
+          "oracle_seconds": 0.023589735035784543,
+          "parse_seconds": 0,
+          "selection_seconds": 0.0012711709714494646,
+          "substitution_seconds": 0.0388934210059233,
+          "verification_seconds": 0.0006870180368423462
+        },
+        "direct_extreme": {
+          "contraction_seconds": 0.00460009794915095,
+          "kira_seconds": 0,
+          "model_load_seconds": 2.2799940779805183e-07,
+          "oracle_seconds": 0.023403206025250256,
+          "parse_seconds": 0,
+          "selection_seconds": 0.0012606150121428072,
+          "substitution_seconds": 0.03825362300267443,
+          "verification_seconds": 0.0006918750004842877
+        },
+        "direct_model": {
+          "contraction_seconds": 0.004227825033012778,
+          "kira_seconds": 0,
+          "model_load_seconds": 0.0003594399895519018,
+          "oracle_seconds": 0.02321797696640715,
+          "parse_seconds": 0,
+          "selection_seconds": 0.0013705500168725848,
+          "substitution_seconds": 0.0364930999930948,
+          "verification_seconds": 0.0006743860431015491
+        },
+        "model": {
+          "contraction_seconds": 0.004345224995631725,
+          "kira_seconds": 0.29362950299400836,
+          "model_load_seconds": 0.005948033998720348,
+          "oracle_seconds": 0.023495961038861424,
+          "parse_seconds": 0.014624278992414474,
+          "selection_seconds": 0.0013567040441557765,
+          "substitution_seconds": 0.0382981090224348,
+          "verification_seconds": 0.0012836619862355292
+        }
+      },
+      "targets": 72
+    },
+    {
+      "input": "model_test/inputs/group1.json",
+      "max_power": 11,
+      "medians": {
+        "baseline": {
+          "complete_seconds": 0.509674870991148,
+          "external_seconds": 0.7078836730215698
+        },
+        "direct_analytic": {
+          "complete_seconds": 0.12993523298064247,
+          "external_seconds": 0.28863273398019373
+        },
+        "direct_extreme": {
+          "complete_seconds": 0.13343366899061948,
+          "external_seconds": 0.2906940290122293
+        },
+        "direct_model": {
+          "complete_seconds": 0.12842841300880536,
+          "external_seconds": 0.27449170500040054
+        },
+        "model": {
+          "complete_seconds": 0.4725491179851815,
+          "external_seconds": 0.6676972190034576
+        }
+      },
+      "profiles": 3,
+      "stages": {
+        "baseline": {
+          "contraction_seconds": 0,
+          "kira_seconds": 0.33913527900585905,
+          "model_load_seconds": 0.00580663897562772,
+          "oracle_seconds": 0,
+          "parse_seconds": 0.021373038995079696,
+          "selection_seconds": 0.0014874250045977533,
+          "substitution_seconds": 0.06641475000651553,
+          "verification_seconds": 0.05551830097101629
+        },
+        "direct_analytic": {
+          "contraction_seconds": 0.008183074998669326,
+          "kira_seconds": 0,
+          "model_load_seconds": 2.3795291781425476e-07,
+          "oracle_seconds": 0.05239864101167768,
+          "parse_seconds": 0,
+          "selection_seconds": 0.0017526699812151492,
+          "substitution_seconds": 0.06567604700103402,
+          "verification_seconds": 0.0008650309755466878
+        },
+        "direct_extreme": {
+          "contraction_seconds": 0.008642621978651732,
+          "kira_seconds": 0,
+          "model_load_seconds": 2.4598557502031326e-07,
+          "oracle_seconds": 0.05339822598034516,
+          "parse_seconds": 0,
+          "selection_seconds": 0.0018223520019091666,
+          "substitution_seconds": 0.06687464099377394,
+          "verification_seconds": 0.0008723050123080611
+        },
+        "direct_model": {
+          "contraction_seconds": 0.007224305998533964,
+          "kira_seconds": 0,
+          "model_load_seconds": 0.0005217700381763279,
+          "oracle_seconds": 0.05157422804040834,
+          "parse_seconds": 0,
+          "selection_seconds": 0.0015998510061763227,
+          "substitution_seconds": 0.0647718440159224,
+          "verification_seconds": 0.0008548779878765345
+        },
+        "model": {
+          "contraction_seconds": 0.006861030007712543,
+          "kira_seconds": 0.29418038099538535,
+          "model_load_seconds": 0.005710260011255741,
+          "oracle_seconds": 0.05375888699200004,
+          "parse_seconds": 0.021414699032902718,
+          "selection_seconds": 0.0015172510175034404,
+          "substitution_seconds": 0.06815132399788126,
+          "verification_seconds": 0.0017196749686263502
+        }
+      },
+      "targets": 72
+    },
+    {
+      "input": "model_test/inputs/group2.json",
+      "max_power": 14,
+      "medians": {
+        "baseline": {
+          "complete_seconds": 0.6959065360133536,
+          "external_seconds": 0.9316152320243418
+        },
+        "direct_analytic": {
+          "complete_seconds": 0.21648643596563488,
+          "external_seconds": 0.39062491501681507
+        },
+        "direct_extreme": {
+          "complete_seconds": 0.2116333830053918,
+          "external_seconds": 0.3892310549854301
+        },
+        "direct_model": {
+          "complete_seconds": 0.20867275004275143,
+          "external_seconds": 0.3582879879977554
+        },
+        "model": {
+          "complete_seconds": 0.5699997310293838,
+          "external_seconds": 0.8198618239839561
+        }
+      },
+      "profiles": 3,
+      "stages": {
+        "baseline": {
+          "contraction_seconds": 0,
+          "kira_seconds": 0.4412063140189275,
+          "model_load_seconds": 0.005825646978337318,
+          "oracle_seconds": 0,
+          "parse_seconds": 0.02794239402282983,
+          "selection_seconds": 0.0026677799760363996,
+          "substitution_seconds": 0.10212856403086334,
+          "verification_seconds": 0.09224483999423683
+        },
+        "direct_analytic": {
+          "contraction_seconds": 0.01710801396984607,
+          "kira_seconds": 0,
+          "model_load_seconds": 2.5494955480098724e-07,
+          "oracle_seconds": 0.09073958999942988,
+          "parse_seconds": 0,
+          "selection_seconds": 0.003741120977792889,
+          "substitution_seconds": 0.10205932700773701,
+          "verification_seconds": 0.0010441350168548524
+        },
+        "direct_extreme": {
+          "contraction_seconds": 0.016368457989301533,
+          "kira_seconds": 0,
+          "model_load_seconds": 2.2997846826910973e-07,
+          "oracle_seconds": 0.08927307196427137,
+          "parse_seconds": 0,
+          "selection_seconds": 0.0035497320350259542,
+          "substitution_seconds": 0.09933935600565746,
+          "verification_seconds": 0.0010162069811485708
+        },
+        "direct_model": {
+          "contraction_seconds": 0.016069635981693864,
+          "kira_seconds": 0,
+          "model_load_seconds": 0.00038920302176848054,
+          "oracle_seconds": 0.08881329401629046,
+          "parse_seconds": 0,
+          "selection_seconds": 0.002652483992278576,
+          "substitution_seconds": 0.09814671002095565,
+          "verification_seconds": 0.0010030780103988945
+        },
+        "model": {
+          "contraction_seconds": 0.016040762013290077,
+          "kira_seconds": 0.2993382179993205,
+          "model_load_seconds": 0.005877859017346054,
+          "oracle_seconds": 0.09071417397353798,
+          "parse_seconds": 0.027977310004644096,
+          "selection_seconds": 0.0026267190114594996,
+          "substitution_seconds": 0.10488171596080065,
+          "verification_seconds": 0.0019743730081245303
+        }
+      },
+      "targets": 72
+    },
+    {
+      "input": "model_test/inputs/group3.json",
+      "max_power": 8,
+      "medians": {
+        "baseline": {
+          "complete_seconds": 0.48431926302146167,
+          "external_seconds": 0.6885392359690741
+        },
+        "direct_analytic": {
+          "complete_seconds": 0.12288380099926144,
+          "external_seconds": 0.27470784302568063
+        },
+        "direct_extreme": {
+          "complete_seconds": 0.12276492000091821,
+          "external_seconds": 0.29400270502083004
+        },
+        "direct_model": {
+          "complete_seconds": 0.12053036701399833,
+          "external_seconds": 0.27719575801165774
+        },
+        "model": {
+          "complete_seconds": 0.4879077920340933,
+          "external_seconds": 0.6802475480362773
+        }
+      },
+      "profiles": 3,
+      "stages": {
+        "baseline": {
+          "contraction_seconds": 0,
+          "kira_seconds": 0.32391470100264996,
+          "model_load_seconds": 0.005729019001591951,
+          "oracle_seconds": 0,
+          "parse_seconds": 0.02443739102454856,
+          "selection_seconds": 0.0013875750009901822,
+          "substitution_seconds": 0.06666851998306811,
+          "verification_seconds": 0.04388055898016319
+        },
+        "direct_analytic": {
+          "contraction_seconds": 0.006463217025157064,
+          "kira_seconds": 0,
+          "model_load_seconds": 2.3801112547516823e-07,
+          "oracle_seconds": 0.04312626499449834,
+          "parse_seconds": 0,
+          "selection_seconds": 0.0013329319772310555,
+          "substitution_seconds": 0.06787778699072078,
+          "verification_seconds": 0.001234512950759381
+        },
+        "direct_extreme": {
+          "contraction_seconds": 0.00628680904628709,
+          "kira_seconds": 0,
+          "model_load_seconds": 2.300366759300232e-07,
+          "oracle_seconds": 0.04229233897058293,
+          "parse_seconds": 0,
+          "selection_seconds": 0.0012815489899367094,
+          "substitution_seconds": 0.0674947960069403,
+          "verification_seconds": 0.0012108089867979288
+        },
+        "direct_model": {
+          "contraction_seconds": 0.0057361480430699885,
+          "kira_seconds": 0,
+          "model_load_seconds": 0.0004394669667817652,
+          "oracle_seconds": 0.042487645987421274,
+          "parse_seconds": 0,
+          "selection_seconds": 0.00144227099372074,
+          "substitution_seconds": 0.0673387969727628,
+          "verification_seconds": 0.00121691997628659
+        },
+        "model": {
+          "contraction_seconds": 0.005475837038829923,
+          "kira_seconds": 0.3092011359985918,
+          "model_load_seconds": 0.005862150981556624,
+          "oracle_seconds": 0.04554227303015068,
+          "parse_seconds": 0.02475061302538961,
+          "selection_seconds": 0.0014254419947974384,
+          "substitution_seconds": 0.07187538495054469,
+          "verification_seconds": 0.0023474700283259153
+        }
+      },
+      "targets": 131
+    },
+    {
+      "input": "model_test/inputs/group4.json",
+      "max_power": 11,
+      "medians": {
+        "baseline": {
+          "complete_seconds": 0.6885239640250802,
+          "external_seconds": 0.9280969009851106
+        },
+        "direct_analytic": {
+          "complete_seconds": 0.2438654269790277,
+          "external_seconds": 0.40961679100291803
+        },
+        "direct_extreme": {
+          "complete_seconds": 0.24622969701886177,
+          "external_seconds": 0.4239683900377713
+        },
+        "direct_model": {
+          "complete_seconds": 0.23823161597829312,
+          "external_seconds": 0.41132784000365064
+        },
+        "model": {
+          "complete_seconds": 0.6265608209650964,
+          "external_seconds": 0.8642916689859703
+        }
+      },
+      "profiles": 3,
+      "stages": {
+        "baseline": {
+          "contraction_seconds": 0,
+          "kira_seconds": 0.4062947820057161,
+          "model_load_seconds": 0.0059061539941467345,
+          "oracle_seconds": 0,
+          "parse_seconds": 0.038242142007220536,
+          "selection_seconds": 0.0024748629657551646,
+          "substitution_seconds": 0.12147068203194067,
+          "verification_seconds": 0.09539646102348343
+        },
+        "direct_analytic": {
+          "contraction_seconds": 0.014695526042487472,
+          "kira_seconds": 0,
+          "model_load_seconds": 2.3702159523963928e-07,
+          "oracle_seconds": 0.09414293296867982,
+          "parse_seconds": 0,
+          "selection_seconds": 0.0031847310019657016,
+          "substitution_seconds": 0.12620546703692526,
+          "verification_seconds": 0.0016604969860054553
+        },
+        "direct_extreme": {
+          "contraction_seconds": 0.015356698946561664,
+          "kira_seconds": 0,
+          "model_load_seconds": 2.5297049432992935e-07,
+          "oracle_seconds": 0.0975460649933666,
+          "parse_seconds": 0,
+          "selection_seconds": 0.0032351980335079134,
+          "substitution_seconds": 0.12545586400665343,
+          "verification_seconds": 0.0016813380061648786
+        },
+        "direct_model": {
+          "contraction_seconds": 0.014978292980231345,
+          "kira_seconds": 0,
+          "model_load_seconds": 0.0004539930378086865,
+          "oracle_seconds": 0.09464449097868055,
+          "parse_seconds": 0,
+          "selection_seconds": 0.0025046069640666246,
+          "substitution_seconds": 0.12188941496424377,
+          "verification_seconds": 0.0016896649613045156
+        },
+        "model": {
+          "contraction_seconds": 0.014599292015191168,
+          "kira_seconds": 0.31764875195221975,
+          "model_load_seconds": 0.005562464997638017,
+          "oracle_seconds": 0.094144442002289,
+          "parse_seconds": 0.03946430399082601,
+          "selection_seconds": 0.0024335149792023003,
+          "substitution_seconds": 0.12579314201138914,
+          "verification_seconds": 0.0030732390005141497
+        }
+      },
+      "targets": 144
+    },
+    {
+      "input": "model_test/inputs/group5.json",
+      "max_power": 14,
+      "medians": {
+        "baseline": {
+          "complete_seconds": 0.900561832007952,
+          "external_seconds": 1.2640472130151466
+        },
+        "direct_analytic": {
+          "complete_seconds": 0.39686686999630183,
+          "external_seconds": 0.5616029470111243
+        },
+        "direct_extreme": {
+          "complete_seconds": 0.4007916269474663,
+          "external_seconds": 0.5757893440313637
+        },
+        "direct_model": {
+          "complete_seconds": 0.3934607539558783,
+          "external_seconds": 0.5572094109957106
+        },
+        "model": {
+          "complete_seconds": 0.811051128024701,
+          "external_seconds": 1.2020229360205121
+        }
+      },
+      "profiles": 3,
+      "stages": {
+        "baseline": {
+          "contraction_seconds": 0,
+          "kira_seconds": 0.43022863002261147,
+          "model_load_seconds": 0.005887530976906419,
+          "oracle_seconds": 0,
+          "parse_seconds": 0.05490245099645108,
+          "selection_seconds": 0.002541881985962391,
+          "substitution_seconds": 0.1954860530095175,
+          "verification_seconds": 0.18197098904056475
+        },
+        "direct_analytic": {
+          "contraction_seconds": 0.01915476896101609,
+          "kira_seconds": 0,
+          "model_load_seconds": 2.7299392968416214e-07,
+          "oracle_seconds": 0.17490001703845337,
+          "parse_seconds": 0,
+          "selection_seconds": 0.003699071006849408,
+          "substitution_seconds": 0.19530069903703406,
+          "verification_seconds": 0.002003786968998611
+        },
+        "direct_extreme": {
+          "contraction_seconds": 0.019813249993603677,
+          "kira_seconds": 0,
+          "model_load_seconds": 2.4598557502031326e-07,
+          "oracle_seconds": 0.17747940600384027,
+          "parse_seconds": 0,
+          "selection_seconds": 0.0038659959682263434,
+          "substitution_seconds": 0.19418242602841929,
+          "verification_seconds": 0.002088095003273338
+        },
+        "direct_model": {
+          "contraction_seconds": 0.01783161098137498,
+          "kira_seconds": 0,
+          "model_load_seconds": 0.0003955140127800405,
+          "oracle_seconds": 0.17654105997644365,
+          "parse_seconds": 0,
+          "selection_seconds": 0.002666373969987035,
+          "substitution_seconds": 0.1916121839894913,
+          "verification_seconds": 0.0020154330413788557
+        },
+        "model": {
+          "contraction_seconds": 0.016595409018918872,
+          "kira_seconds": 0.3339481500443071,
+          "model_load_seconds": 0.005929121980443597,
+          "oracle_seconds": 0.17300113994861022,
+          "parse_seconds": 0.05385398300131783,
+          "selection_seconds": 0.0025310280034318566,
+          "substitution_seconds": 0.20120443298947066,
+          "verification_seconds": 0.0038571360055357218
+        }
+      },
+      "targets": 144
+    },
+    {
+      "input": "model_test/inputs/group6.json",
+      "max_power": 8,
+      "medians": {
+        "baseline": {
+          "complete_seconds": 0.6254242670256644,
+          "external_seconds": 0.858984000980854
+        },
+        "direct_analytic": {
+          "complete_seconds": 0.19227813102770597,
+          "external_seconds": 0.3603843290475197
+        },
+        "direct_extreme": {
+          "complete_seconds": 0.19906999001977965,
+          "external_seconds": 0.3590070779900998
+        },
+        "direct_model": {
+          "complete_seconds": 0.20434317202307284,
+          "external_seconds": 0.36360408703330904
+        },
+        "model": {
+          "complete_seconds": 0.5794552930165082,
+          "external_seconds": 0.8521735799731687
+        }
+      },
+      "profiles": 3,
+      "stages": {
+        "baseline": {
+          "contraction_seconds": 0,
+          "kira_seconds": 0.36950243200408295,
+          "model_load_seconds": 0.00604965997627005,
+          "oracle_seconds": 0,
+          "parse_seconds": 0.039836986048612744,
+          "selection_seconds": 0.0022538029588758945,
+          "substitution_seconds": 0.11392059701029211,
+          "verification_seconds": 0.07189789199037477
+        },
+        "direct_analytic": {
+          "contraction_seconds": 0.009842873958405107,
+          "kira_seconds": 0,
+          "model_load_seconds": 2.3300526663661003e-07,
+          "oracle_seconds": 0.0670152860111557,
+          "parse_seconds": 0,
+          "selection_seconds": 0.0021006199531257153,
+          "substitution_seconds": 0.10877730301581323,
+          "verification_seconds": 0.0020844540558755398
+        },
+        "direct_extreme": {
+          "contraction_seconds": 0.009987344034016132,
+          "kira_seconds": 0,
+          "model_load_seconds": 2.4901237338781357e-07,
+          "oracle_seconds": 0.06894090300193056,
+          "parse_seconds": 0,
+          "selection_seconds": 0.0022115519968792796,
+          "substitution_seconds": 0.11313995701493695,
+          "verification_seconds": 0.0021200310438871384
+        },
+        "direct_model": {
+          "contraction_seconds": 0.010263503005262464,
+          "kira_seconds": 0,
+          "model_load_seconds": 0.00035782495979219675,
+          "oracle_seconds": 0.07097276899730787,
+          "parse_seconds": 0,
+          "selection_seconds": 0.002358257945161313,
+          "substitution_seconds": 0.11494514002697542,
+          "verification_seconds": 0.0021763730328530073
+        },
+        "model": {
+          "contraction_seconds": 0.009739467001054436,
+          "kira_seconds": 0.3204040819546208,
+          "model_load_seconds": 0.005603914032690227,
+          "oracle_seconds": 0.06808291398920119,
+          "parse_seconds": 0.04057338502025232,
+          "selection_seconds": 0.0022017770097590983,
+          "substitution_seconds": 0.11093709000851959,
+          "verification_seconds": 0.0037535399897024035
+        }
+      },
+      "targets": 227
+    },
+    {
+      "input": "model_test/inputs/group7.json",
+      "max_power": 11,
+      "medians": {
+        "baseline": {
+          "complete_seconds": 0.9052957749809138,
+          "external_seconds": 1.2520005559781566
+        },
+        "direct_analytic": {
+          "complete_seconds": 0.3993237999966368,
+          "external_seconds": 0.6034341079648584
+        },
+        "direct_extreme": {
+          "complete_seconds": 0.40559266298078,
+          "external_seconds": 0.5780651950044557
+        },
+        "direct_model": {
+          "complete_seconds": 0.4005199479870498,
+          "external_seconds": 0.5944151700241491
+        },
+        "model": {
+          "complete_seconds": 0.8826537820277736,
+          "external_seconds": 1.263563601009082
+        }
+      },
+      "profiles": 3,
+      "stages": {
+        "baseline": {
+          "contraction_seconds": 0,
+          "kira_seconds": 0.4109104410163127,
+          "model_load_seconds": 0.00570302497362718,
+          "oracle_seconds": 0,
+          "parse_seconds": 0.06577117397682741,
+          "selection_seconds": 0.0024571549729444087,
+          "substitution_seconds": 0.21456018998287618,
+          "verification_seconds": 0.16990043298574165
+        },
+        "direct_analytic": {
+          "contraction_seconds": 0.016815193986985832,
+          "kira_seconds": 0,
+          "model_load_seconds": 2.3603206500411034e-07,
+          "oracle_seconds": 0.16065717401215807,
+          "parse_seconds": 0,
+          "selection_seconds": 0.0031280420371331275,
+          "substitution_seconds": 0.20565932802855968,
+          "verification_seconds": 0.002783527015708387
+        },
+        "direct_extreme": {
+          "contraction_seconds": 0.017268973984755576,
+          "kira_seconds": 0,
+          "model_load_seconds": 2.3795291781425476e-07,
+          "oracle_seconds": 0.16388656297931448,
+          "parse_seconds": 0,
+          "selection_seconds": 0.003169816976878792,
+          "substitution_seconds": 0.2055217350134626,
+          "verification_seconds": 0.002797558030579239
+        },
+        "direct_model": {
+          "contraction_seconds": 0.01449509704252705,
+          "kira_seconds": 0,
+          "model_load_seconds": 0.0003210119903087616,
+          "oracle_seconds": 0.16327297600219026,
+          "parse_seconds": 0,
+          "selection_seconds": 0.0024338700459338725,
+          "substitution_seconds": 0.2053517540334724,
+          "verification_seconds": 0.002721385972108692
+        },
+        "model": {
+          "contraction_seconds": 0.014649481978267431,
+          "kira_seconds": 0.35780016001081094,
+          "model_load_seconds": 0.005631009989883751,
+          "oracle_seconds": 0.16573779605096206,
+          "parse_seconds": 0.06543164298636839,
+          "selection_seconds": 0.002405200037173927,
+          "substitution_seconds": 0.23068051104201004,
+          "verification_seconds": 0.005112565006129444
+        }
+      },
+      "targets": 242
+    }
+  ],
+  "maximum_sampled_kira_rss_bytes": 21372928,
+  "model_retrained": false,
+  "pilot_applications": 8,
+  "scope": "coupled scalar vacuum with unit massless powers, 2-4 distinct positive mass ratios, supplied exact Euler and mass identities",
+  "selected": "direct_extreme",
+  "selection_frozen_before_test": true,
+  "validation_applications": 90
+}
