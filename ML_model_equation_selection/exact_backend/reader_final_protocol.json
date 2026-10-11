@@ -1,0 +1,33 @@
+{
+  "family": "coupled_vacuum_unit_massless",
+  "loops": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "max_total_massive_power": 14,
+  "model": "multi-output depth-four regression tree for log complete warm-worker runtime",
+  "policies": [
+    "extreme",
+    "ascending",
+    "descending",
+    "mass_gap",
+    "first"
+  ],
+  "test_batches": 12,
+  "test_repetitions": 5,
+  "training_batches_reused": 96,
+  "training_repetitions": 3,
+  "validation_batches": 12,
+  "validation_repetitions": 3,
+  "validation_rule": "Select fastest complete-time variant only if at least two percent faster than baseline; preserve simple policy unless learned route beats the best fixed policy by two percent. Freeze before reserved test."
+}

@@ -58,7 +58,13 @@ See [exact pre-reduction](pre_reduction/README.md).
 <!-- pre-reduction-current-end -->
 
 <!-- polynomial-reuse-current -->
-The current restricted vacuum-family interface shares exact loop-order transformations and Taylor factors, with an optional persistent worker. Validation selects both arithmetic changes and preserves the simple extreme ordering. Across eight reserved batches, calculation-time ratio to the preceding direct arithmetic is 0.372, and full-worker ratio is 0.682. Arithmetic plus persistent execution has full-time ratio 0.365 across three specified overlapping streams. All 352 reserved applications pass exact checks; 28860 expanded coefficient positions also match the older loop-dependent formula. These gains come from exact reuse and process startup. The unchanged learned model remains optional. General native high-loop IBP generation retains its earlier scope.
+The polynomial-reuse interface shares exact loop-order transformations and Taylor factors, with an optional persistent worker. Validation selects both arithmetic changes and preserves the simple extreme ordering. Across eight reserved batches, calculation-time ratio to the preceding direct arithmetic is 0.372, and full-worker ratio is 0.682. Arithmetic plus persistent execution has full-time ratio 0.365 across three specified overlapping streams. All 352 reserved applications pass exact checks; 28860 expanded coefficient positions also match the older loop-dependent formula. These gains come from exact reuse and process startup. The unchanged learned model remains optional. General native high-loop IBP generation retains its earlier scope.
 
 See [exact polynomial reuse](polynomial_reuse/README.md).
 <!-- polynomial-reuse-current-end -->
+
+<!-- exact-backend-current -->
+The latest restricted vacuum-family route uses compiled expansion and binary output with a fixed recurrence rule. Its complete-process time ratio is 0.850 and its ratio including output decoding is 0.858, with descriptive interval [0.800,0.914]. The persistent-stream ratio including decoding is 0.725. 948 reserved applications across the original and compiled-reader comparisons pass exact checks. Learned versus validation-selected fixed-rule time ratio is 1.017. This interval includes one, so the reserved comparison does not establish a further time reduction from learned choices. The deployed default uses the fixed validation choice. These results retain the restricted vacuum-family scope; native IBP generation keeps its earlier supported domains.
+
+See [exact arithmetic and batch strategies](exact_backend/README.md).
+<!-- exact-backend-current-end -->
