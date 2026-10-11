@@ -68,3 +68,7 @@ The latest restricted vacuum-family route uses compiled expansion and binary out
 
 See [exact arithmetic and batch strategies](exact_backend/README.md).
 <!-- exact-backend-current-end -->
+
+<!-- cumulative-results-begin -->
+The direct cumulative comparison uses eight new groups of three restricted vacuum mass profiles, loop orders 1--12, and five repetitions of three methods. All 120 workflows pass exact checks. Relative to the original saved Kira binary with the full supplied equation pool and separate loop reductions, the final route has total-time ratio 0.001839, speedup 543.815x (descriptive 95% interval 488.134--605.064), and 99.82% less time, including startup, saving and output reading. Against the earlier full-pool pipeline binary, the speedup is 81.170x. The selected final route uses a fixed recurrence and exact direct arithmetic. The result measures the complete restricted-family replacement; it does not establish a corresponding native general-IBP or ML-only speedup.
+<!-- cumulative-results-end -->

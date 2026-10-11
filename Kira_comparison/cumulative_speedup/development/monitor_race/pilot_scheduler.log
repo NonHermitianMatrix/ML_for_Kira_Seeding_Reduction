@@ -1,0 +1,25 @@
+declared eight reserved batches and one separate resource pilot
+Traceback (most recent call last):
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/Kira_comparison/cumulative_speedup/s03_study.py", line 55, in <module>
+    if __name__=="__main__":main()
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/Kira_comparison/cumulative_speedup/s03_study.py", line 49, in main
+    else:r=trial(inp,arm,rep,folder)
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/Kira_comparison/cumulative_speedup/s03_study.py", line 16, in trial
+    if tick%5==0:disk=max(disk,allocated(env["TMPDIR"]))
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/Kira_comparison/cumulative_speedup/s00_cumulative.py", line 21, in allocated
+    def allocated(p):return sum(f.stat().st_blocks*512 for f in Path(p).rglob("*") if f.is_file())
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/Kira_comparison/cumulative_speedup/s00_cumulative.py", line 21, in <genexpr>
+    def allocated(p):return sum(f.stat().st_blocks*512 for f in Path(p).rglob("*") if f.is_file())
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/pathlib.py", line 1180, in rglob
+    for p in selector.select_from(self):
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/pathlib.py", line 600, in _select_from
+    for starting_point in self._iterate_directories(parent_path, is_dir, scandir):
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/pathlib.py", line 590, in _iterate_directories
+    for p in self._iterate_directories(path, is_dir, scandir):
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/pathlib.py", line 590, in _iterate_directories
+    for p in self._iterate_directories(path, is_dir, scandir):
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/pathlib.py", line 590, in _iterate_directories
+    for p in self._iterate_directories(path, is_dir, scandir):
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/pathlib.py", line 579, in _iterate_directories
+    with scandir(parent_path) as scandir_it:
+FileNotFoundError: [Errno 2] No such file or directory: '/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/.tools/kira-cumulative/tmp/kira_high_zzbx5mqa/results/Tuserweight'
