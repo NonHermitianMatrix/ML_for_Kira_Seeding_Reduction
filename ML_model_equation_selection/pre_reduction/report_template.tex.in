@@ -33,14 +33,13 @@ the Euler identity gives
  \label{eq:pre-euler}
 \end{equation}
 Both formulas reduce \(B=\sum_j b_j\), so they terminate at the
-specified masters. Each distinct intermediate integral is evaluated once.
+specified masters. We evaluate each distinct intermediate integral once.
 
 The existing four-tree model selects the mass ordering before these
 substitutions, with unchanged weights and training examples.
 The learned direct route uses the previously checked compiled evaluator.
-Each polynomial coefficient is stored as integer coefficients over a
-positive common denominator, with their common divisor cancelled after
-an addition or scaling. This keeps the arithmetic exact and reduces
+We store each polynomial coefficient as integers over a positive common
+denominator and cancel their common divisor after each addition or scaling. This keeps the arithmetic exact and reduces
 repeated fraction normalization. The model selects the intermediate
 integrals that we visit, while Eqs.~\eqref{eq:pre-mass} and
 \eqref{eq:pre-euler} determine their coefficients.
