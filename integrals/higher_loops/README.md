@@ -33,3 +33,7 @@ The reduction checkpoint can be checked as soon as its training finishes with mo
 The original seed allocation reached its three-hour time limit during the final pass. The unchanged training calculation resumed its saved model, optimizer and partial pass in a new allocation. The checkpoint checker rejected the unfinished model before publication; training_validation_scheduler.log retains that earlier check, while training_validation_resume_scheduler.log records the check after resumed completion.
 
 The requested extension, twenty-pass training phases and frozen tests are complete. Both tests cover 114,382 held-out targets and include six plots. The 38-page report derives the added vacuum master bases and target construction, records both training phases, and gives the measured test results and scope. Its 24 tracked files match on Hoffman, GitHub and the local machine. request.json and report_update.json retain the checked artifact revisions, report hashes and completion record. Generated integral data and models remain on Hoffman and GitHub only.
+
+<!-- higher-loop-solver -->
+The generated scalar components can now use the [higher-loop Kira workflow](../../ML_model_equation_selection/higher_loops/README.md). Its request exporter reads existing family definitions and target components. The exact substitution z=L(d-2) shares coefficient reductions across loop orders within this restricted domain. The original family data and grouped split remain the training-data reference.
+<!-- higher-loop-solver-end -->

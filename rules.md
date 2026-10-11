@@ -115,3 +115,7 @@
 ## Equation preparation acceleration
 
 - Use trained System 1 models to reduce measured equation-preparation cost. Reuse an existing model folder when extending that model; create a new model folder for a distinct model. Integrate decisions before the algebraic work they can avoid, include all costs and exact fallback, compare complete reductions, and document the measured best supported configuration. Update READMEs, the report and its local copy, and publish completed work under the existing publication rules. A measured improvement does not prove globally minimal calculation time.
+
+## Higher-loop acceleration
+
+- Extend the acceleration study to every loop order in the existing one-through-twelve-loop collection and investigate formulas that support arbitrary positive loop order. Use trained System 1 policies where complete cost tests support their use. Separate gains from exact mathematical reuse from gains due to learned decisions. Distinguish supplied-identity reductions from native IBP generation and state the family restrictions. Preserve previous results, use independent tests, update the report and READMEs, publish completed work, and synchronize the local report under the existing resource limits.

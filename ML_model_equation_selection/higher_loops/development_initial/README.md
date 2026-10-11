@@ -1,0 +1,1 @@
+Preserved first development pass with the original symmetric features and symbolic coefficient reader. It contains three pilot and 144 validation workflows. These results do not select the final policy. Shared payloads remain in ../objects/. Source snapshots identify the implementation. The later integration adds ordered-index features and a checked exact polynomial reader.

@@ -37,3 +37,9 @@ On the configured cluster installation, s25_build_lazy.sh builds the final nativ
 s36_check_deployment.py verifies that the deployed choices match measured successful arms and disable unsupported combinations. s39_finish_report.sh generates plots, documentation and the report from checked measurements. s38_plot.py preserves the original plotting logic with compatibility for the installed Matplotlib version; the originally frozen s23_plot.py remains unchanged. s31_reduce.py and s11_reduce.py preserve preceding experimental interfaces.
 
 The resource plan permits one experiment trial at a time and bounds the complete project below 10 GB. Generated models, data and tests stay on Hoffman and GitHub. The complete report is also synchronized to the laptop.
+
+<!-- higher-loop-acceleration -->
+The higher-loop extension generates exact Euler and mass partial-fraction equations for the restricted coupled vacuum family, then uses Kira's user-defined-system solver. A shared variable z=L(d-2) supports every positive loop order mathematically. Tests cover L=1,...,12, with additional applications at 13, 16, 24 and 32. Across six reserved batches, the deployed route has complete-time ratio 0.155 (descriptive interval 0.132--0.184) to separate full-pool reductions. The learned separate-loop route has ratio 0.911 (descriptive interval 0.815--0.986) to the same full-pool baseline. Learned/shared versus rule/shared has ratio 0.968 (descriptive interval 0.927--1.003). Validation selects the extreme route. These are supplied-identity results, with exact coefficient checks and all runtime costs; they do not establish a generic high-loop native Kira speedup.
+
+See [higher_loops/README.md](higher_loops/README.md).
+<!-- higher-loop-acceleration-end -->

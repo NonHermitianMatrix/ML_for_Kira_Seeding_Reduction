@@ -1,0 +1,1 @@
+Training examples contain 2016 candidate actions in 546 exponent shapes. examples.json.gz stores indices, candidate pairs, features, teacher counts and labels. The maximum total power is nine. The reference minimizes a local union of recursively selected dependencies; no global optimum is claimed.

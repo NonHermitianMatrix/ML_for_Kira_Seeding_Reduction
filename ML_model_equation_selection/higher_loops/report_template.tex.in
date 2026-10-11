@@ -1,0 +1,147 @@
+\subsection{Equation selection and shared reductions at higher loop orders}
+\label{sec:higher-loop-acceleration}
+The preceding native comparisons cover specific two- and three-loop
+structures. To study the higher orders already present in the integral
+collection, we now use the coupled vacuum family in
+Eq.~\eqref{eq:coupled-vacuum}. This family has one power of each massless
+denominator and two to four distinct massive denominators that depend on
+the same momentum \(Q\). Its Euler identities and mass partial fractions
+remain valid for any positive integer number of loops. This structure
+allows us to test every order from one through twelve with an exact
+reference, while keeping the family restriction explicit.
+
+The dependence on the loop order suggests a further reduction in repeated
+work. Let \(B=\sum_j b_j\), retain the squared-mass scale \(\mu\), and define
+\begin{equation}
+ z=L(d-2),\qquad
+ W^{(L)}_{\boldsymbol b}=\mu^{B-1}V^{(L)}_{\boldsymbol b}.
+ \label{eq:loop-shared-variable}
+\end{equation}
+The rescaling gives every \(W^{(L)}_{\boldsymbol b}\) the same mass dimension
+as the masters \(M_j^{(L)}\). Equations~\eqref{eq:higher-loop-euler} and
+\eqref{eq:higher-loop-partial-fraction} then become
+\begin{align}
+ 0&=(z-2B)W^{(L)}_{\boldsymbol b}
+       +2\sum_j b_j\rho_j W^{(L)}_{\boldsymbol b+\boldsymbol e_j},
+ \label{eq:loop-shared-euler}\\
+ 0&=(\rho_i-\rho_j)W^{(L)}_{\boldsymbol b}
+       -W^{(L)}_{\boldsymbol b-\boldsymbol e_i}
+       +W^{(L)}_{\boldsymbol b-\boldsymbol e_j}.
+ \label{eq:loop-shared-mass}
+\end{align}
+Here \(\rho_j\) is the positive squared-mass ratio defined earlier, and the
+second identity requires \(b_i,b_j>0\).
+The coefficient equations depend on \(L\) only through \(z\). We can
+therefore solve one system over \(\mathbb Q(z)\) at fixed rational mass
+ratios and obtain
+\begin{equation}
+ V^{(L)}_{\boldsymbol b}
+ =\mu^{1-B}\sum_{j=1}^{R}
+ C_{\boldsymbol b j}\bigl(L(d-2);\boldsymbol\rho\bigr)M_j^{(L)}.
+ \label{eq:loop-shared-result}
+\end{equation}
+Each \(C_{\boldsymbol b j}\) is a polynomial in \(z\) with rational
+coefficients in the present domain. The master integrals retain their
+physical dependence on \(L\). The shared calculation supplies their
+reduction coefficients.
+
+We next reduce the number of identities passed to Kira. For a mixed
+integral, the model scores each allowed pair \((i,j)\) in
+Eq.~\eqref{eq:loop-shared-mass}. The selected identity replaces that integral
+with two integrals of total massive power \(B-1\). We repeat the choice for
+the resulting integrals and merge repeated dependencies across the target
+batch. An integral with only one massive denominator uses
+Eq.~\eqref{eq:loop-shared-euler} at the seed
+\((k-1)\boldsymbol e_j\) to reduce power \(k\). At \(B=1\), the integral
+belongs to the prescribed master basis. This decreasing total power
+proves termination and sufficiency for every allowed model choice. Mass
+partial fractions carry no IBP seed; the saved dependency choices also
+determine the actual single-denominator Euler seeds.
+
+The training reference counts the distinct nonmaster integrals in
+recursively chosen dependency sets. If \(\mathcal D(\boldsymbol b)\)
+denotes such a set, the candidate cost is
+\begin{equation}
+ c(\boldsymbol b;i,j)=
+ \left|\{\boldsymbol b\}\cup
+ \mathcal D(\boldsymbol b-\boldsymbol e_i)\cup
+ \mathcal D(\boldsymbol b-\boldsymbol e_j)\right|.
+ \label{eq:loop-choice-teacher}
+\end{equation}
+Every pair tied for the smallest candidate cost receives label one.
+The recursion fixes a valid local reference and does not establish the
+minimum cost for an entire target batch. We train small classification
+trees using the ordered massive powers, pair positions, active-denominator
+count and simple power summaries. There are 18 features, with no loop-order
+feature. The absence of \(L\) follows from
+Eqs.~\eqref{eq:loop-shared-euler}--\eqref{eq:loop-shared-mass}.
+A leaf score is an empirical training frequency. The runtime selects the
+highest score and uses exact identities for the algebra. For two active
+massive denominators, the single available pair is selected directly.
+
+@@TRAINING@@
+
+Kira solves each selected system through its user-defined-system
+interface~\cite{Kira2,Kira3}. We generate the Euler and mass identities
+within the measured workflow and use the same native elimination policy
+for every comparison arm. This experiment measures supplied-identity
+reductions. It does not measure Kira's native generation of a general
+higher-loop IBP system. The earlier native benchmarks retain that separate
+role.
+
+The integration reads the exported coefficients with bounded rational
+polynomial arithmetic and checks that polynomial division leaves zero
+remainder. Development comparisons against symbolic algebra check this
+reader independently. The final check uses the Taylor partial-fraction
+formula in Eq.~\eqref{eq:higher-loop-reference}, which does not follow the
+selected dependency path. The workflow rejects unresolved nonmaster
+integrals and retains a full-equation fallback. Timings include input and
+model loading, selection, equation construction, Kira, coefficient reading,
+substitution, verification and any fallback. We also report external
+process times, which include Python startup and evidence writing.
+Queue waiting time and offline training are excluded.
+
+@@DESIGN@@
+
+For each mass profile and target batch, we compare separate full-pool
+reductions at each \(L\), separate learned reductions, a shared full-pool
+reduction in \(z\), a shared rule-based reduction, and a shared learned
+reduction. The full pool contains Euler seeds through the largest target
+power and all mass-pair identities through one additional power. The
+rule-based control uses the rule selected on validation. All arms use the
+same project Kira binary with the earlier runtime improvements and native
+row choices. These controls separate the benefit of exact loop reuse from
+the benefit of selecting a smaller equation set.
+
+@@RESULTS@@
+
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=0.98\textwidth]{figures/higher_loop_complete_times.pdf}
+ \caption{Median external complete times for the twelve loop orders in
+ each reserved batch. Each bar includes the full cost of its stated
+ workflow. The shared methods solve once in \(z\) and check the substituted
+ coefficients separately at every requested loop order.}
+ \label{fig:higher-loop-complete-time}
+\end{figure}
+
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=0.98\textwidth]{figures/higher_loop_equations.pdf}
+ \caption{Separate-loop solver-time ratios and generated equation counts.
+ The left panel includes construction, prediction, Kira and coefficient
+ reading for each loop order; the complete workflow also includes the
+ checks shown in Fig.~\ref{fig:higher-loop-complete-time}. The intervals
+ describe variation across the six reserved batches.}
+ \label{fig:higher-loop-equations}
+\end{figure}
+
+@@AUDIT@@
+
+Equation~\eqref{eq:loop-shared-result} supports arbitrary positive \(L\)
+within this scalar family, and the finite tests check the stated loop
+orders. Generic multiloop scattering families have additional independent
+scalar products, numerator powers and kinematic variables. Their equation
+structure requires separate validation. The present timing gains therefore
+apply to the specified coupled vacuum family and supplied-identity
+workflow~\cite{KiraHigherLoopData}.

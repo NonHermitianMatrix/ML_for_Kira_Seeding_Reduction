@@ -103,3 +103,9 @@ The current early equation policy predicts which seed/operator identities to con
 
 See [early equation selection](../ML_model_equation_selection/early_generation/README.md).
 <!-- early-equation-release-end -->
+
+<!-- higher-loop-acceleration -->
+The higher-loop extension generates exact Euler and mass partial-fraction equations for the restricted coupled vacuum family, then uses Kira's user-defined-system solver. A shared variable z=L(d-2) supports every positive loop order mathematically. Tests cover L=1,...,12, with additional applications at 13, 16, 24 and 32. Across six reserved batches, the deployed route has complete-time ratio 0.155 (descriptive interval 0.132--0.184) to separate full-pool reductions. The learned separate-loop route has ratio 0.911 (descriptive interval 0.815--0.986) to the same full-pool baseline. Learned/shared versus rule/shared has ratio 0.968 (descriptive interval 0.927--1.003). Validation selects the extreme route. These are supplied-identity results, with exact coefficient checks and all runtime costs; they do not establish a generic high-loop native Kira speedup.
+
+See [../ML_model_equation_selection/higher_loops/README.md](../ML_model_equation_selection/higher_loops/README.md).
+<!-- higher-loop-acceleration-end -->
