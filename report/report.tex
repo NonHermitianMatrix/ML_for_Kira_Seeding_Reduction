@@ -1041,7 +1041,7 @@ restricted vacuum family~\cite{KiraBatchReuseData}.
 % END BATCH REUSE CONCLUSION
 
 % BEGIN PRE REDUCTION CONCLUSION
-The final extension evaluates selected triangular identities with exact
+The direct-reduction extension evaluates selected triangular identities with exact
 integer polynomial arithmetic and checks every master coefficient through
 an independent Taylor construction. Validation selects the simple direct route.
 On eight fresh three-profile batches, its calculation-time ratio to the
@@ -1053,6 +1053,23 @@ The direct saving follows mainly from the exact family-specific recurrence;
 the native IBP-generation results retain their earlier scope
 \cite{KiraPreReductionData}.
 % END PRE REDUCTION CONCLUSION
+
+% BEGIN POLYNOMIAL REUSE CONCLUSION
+The final extension shares the exact transformations for \(z=L(d-2)\)
+and the Taylor terms in the independent check. On eight new reserved
+batches, both changes together have calculation-time ratio 0.372 to
+the preceding direct route and full worker-time ratio 0.682.
+Keeping one process for several batches gives combined full-time ratio
+0.365 across the three specified request streams. These streams share
+inputs, so this last ratio describes those sequences.
+All 352 reserved applications pass exact checks, including an independent
+audit of 28860 expanded coefficient positions. The request-interface
+checks also pass, including recovery through Kira after an injected failure.
+The changes reuse exact mathematical work and process startup; the
+previous model and ordering choice remain fixed. The supported domain
+remains the restricted coupled vacuum family, with native IBP-generation
+results retaining their earlier scope \cite{KiraPolynomialReuseData}.
+% END POLYNOMIAL REUSE CONCLUSION
 
 \clearpage
 \renewcommand{\refname}{Citations}

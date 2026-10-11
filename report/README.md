@@ -83,3 +83,7 @@ The current equation-policy interface uses native seed and row choices in its me
 Equation-selection data commit: 63d87b1e863e9387eb821623ca09b1ae634884f7.
 
 The higher-loop extension describes exact coefficient reuse through z=L(d-2), learned equation choices, and matched controls for the restricted coupled vacuum family. It reports complete tests at loop orders one through twelve and exact applications at 13, 16, 24 and 32. The figures and conclusion distinguish the effect of learned choices from exact mathematical reuse and state the limits of these supplied-identity calculations.
+
+<!-- polynomial-reuse-current -->
+polynomial_reuse.tex explains shared exact loop-order transformations, reused Taylor terms and persistent reduction workers. It records 48 validation applications, 352 reserved applications and all independent checks. Figures polynomial_reuse_times.pdf and polynomial_reuse_streams.pdf separate arithmetic and process reuse. The data citation is pinned when the release is published. The supplied abstract and previous results remain preserved.
+<!-- polynomial-reuse-current-end -->
