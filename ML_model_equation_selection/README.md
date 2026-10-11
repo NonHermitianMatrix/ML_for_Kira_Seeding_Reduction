@@ -43,3 +43,10 @@ The higher-loop extension generates exact Euler and mass partial-fraction equati
 
 See [higher_loops/README.md](higher_loops/README.md).
 <!-- higher-loop-acceleration-end -->
+
+
+<!-- batch-reuse-begin -->
+## Learned equation reuse across target batches
+
+The latest restricted vacuum-family interface is [batch_reuse](batch_reuse/README.md). It trains a batch equation-cost model, shares exact coefficient checks across loop orders and combines independent systems in one Kira call. All 460 reserved applications pass exact checks. The selected combined route has complete-time ratio 0.220 to the preceding separate workflow. Matched simple-rule and inference-backend comparisons remain recorded. General high-loop native IBP generation is outside this scope.
+<!-- batch-reuse-end -->
