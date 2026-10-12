@@ -100,6 +100,10 @@ Small feasibility pilots establish that the symbolic inputs run
 within the resource limits. Some symbolic pilot targets also occur in
 the final batches; the pilots do not select a learned policy.
 
+Both methods use the same instrumented Kira 3.1 executable and the
+existing project runtime changes. The native control disables learned
+equation selection and retains native seed and row choices.
+
 Kira first discovers a reference basis with seed limits enlarged by
 one relative to the target's maximum denominator sum, numerator rank
 and number of additional propagator powers.

@@ -91,3 +91,8 @@ polynomial_reuse.tex explains shared exact loop-order transformations, reused Ta
 <!-- exact-backend-current -->
 exact_backend.tex explains retained integer polynomials, compiled exact expansion, lossless output, the runtime-trained batch tree and both frozen comparisons. It preserves the initial negative complete-time result, reports the fresh compiled-reader measurements and updates the conclusion. The supplied abstract remains unchanged. Source data are pinned by KiraExactBackendData.
 <!-- exact-backend-current-end -->
+
+
+<!-- generalization-report -->
+generalization.tex adds new scattering families, independent symbolic invariants and finite optimality certificates. It records the frozen model's complete fallback costs and the seven-operation minima for the two specified source pools. The data citation is pinned to 39661c02c28e288d650bac5d6c2841d07d73d8e4. The original abstract and earlier results remain unchanged.
+<!-- /generalization-report -->
