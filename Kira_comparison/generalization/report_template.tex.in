@@ -1,0 +1,256 @@
+\clearpage
+\section{Scattering families, symbolic kinematics and certified reduction paths}
+\label{sec:generalization}
+The preceding comparisons establish costs for specified native families and
+for a restricted vacuum construction. To extend the physical scope, we now
+reduce new four-point and five-point families and retain independent
+kinematic invariants as symbols. We also construct small IBP systems for
+which every allowed elimination path can be examined. These two extensions
+test different questions: whether a frozen learned filter transfers to
+new physical inputs, and whether a recorded reduction cost can be proved
+minimal within an explicit set of operations.
+
+\subsection{New physical families and independent invariants}
+We continue to use $I_{\boldsymbol a}$ for an indexed integral and
+$D_i=q_i^2+\mathrm{i}0$ for each massless denominator. The new two-loop
+family is the massless limit of the nonplanar four-point family
+\texttt{topo4} in Ref.~\cite{KiraOriginal}. Its ordered denominator momenta are
+\begin{align}
+ \boldsymbol q_{\mathrm{NP}}={}&
+ (\ell_1,\ell_2,p_1-\ell_1,p_2-\ell_2,
+ p_1+p_2-p_3-\ell_1,\nonumber\\
+ &p_1-\ell_1+\ell_2,p_1-p_3-\ell_1+\ell_2,
+ \ell_1-p_3,\ell_2-p_1-p_2).
+ \label{eq:general-np-momenta}
+\end{align}
+The first seven entries are physical propagators, and the last two
+complete the scalar-product basis and can appear as numerators.
+The momenta satisfy $p_1^2=p_2^2=p_3^2=0$ and
+$q=p_1+p_2-p_3$ with $q^2=0$. We define
+\begin{equation}
+ s=(p_1+p_2)^2,\qquad t=(p_1-p_3)^2,
+ \qquad
+ 2p_1\!\cdot p_2=s,\quad
+ 2p_1\!\cdot p_3=-t,\quad
+ 2p_2\!\cdot p_3=s+t.
+\end{equation}
+The symbolic reduction therefore takes place in $\mathbb Q(d,s,t)$.
+
+The new one-loop pentagon has five massless external momenta satisfying
+$\sum_{i=1}^{5}p_i=0$. Its denominator momenta are
+\begin{equation}
+ \boldsymbol q_{\mathrm{P}}=
+ (\ell,\ell-p_1,\ell-p_1-p_2,
+ \ell-p_1-p_2-p_3,\ell-p_1-p_2-p_3-p_4).
+ \label{eq:general-pentagon}
+\end{equation}
+All five entries are physical propagators. We retain the five adjacent
+invariants
+\[
+ s_{12}=(p_1+p_2)^2,\quad s_{23}=(p_2+p_3)^2,\quad
+ s_{34}=(p_3+p_4)^2,\quad s_{45}=(p_4+p_5)^2,\quad
+ s_{51}=(p_5+p_1)^2.
+\]
+Momentum conservation fixes the other scalar products. For example,
+$2p_1\cdot p_3=s_{45}-s_{12}-s_{23}$ and
+$2p_1\cdot p_4=s_{23}-s_{45}-s_{51}$.
+The coefficient field is
+$\mathbb Q(d,s_{12},s_{23},s_{34},s_{45},s_{51})$.
+
+A one-loop box supplies an additional test with an external virtuality.
+Its denominator momenta are
+$(\ell,\ell-p_1,\ell-p_1-p_2,\ell-p_3)$.
+Here $p_1,p_2,p_3$ are massless, while
+$v=q^2=(p_1+p_2-p_3)^2$ is an independent symbol.
+The definitions of $s$ and $t$ remain the same, and
+$2p_2\cdot p_3=s+t-v$. Thus its coefficients belong to
+$\mathbb Q(d,s,t,v)$. This family has massless internal lines and one
+external line with nonzero virtuality.
+
+The denominator coefficient matrices have ranks nine, five and four
+for the nonplanar box, pentagon and one-loop box, respectively.
+Each rank equals $L(L+1)/2+LE$, where $E$ is the number of independent
+external momenta. The external Gram determinants are nonzero as
+rational functions and at the specified numerical points.
+The calculations use generic kinematics away from singular denominators.
+They retain every listed independent invariant, with no replacement
+of a scale by one. Internal masses remain zero in these scattering tests.
+
+We first test two rational profiles of the nonplanar box and two of the
+pentagon, keeping $d$ symbolic. The box profiles are
+$(s,t)=(-149,-147)$ and $(-167,-157)$ in a common squared-momentum unit.
+The pentagon profiles are
+$(-51,-53,-57,-59,-63)$ and $(-71,-73,-77,-79,-83)$ in the displayed
+invariant order. We then test one fully symbolic instance of each of
+the three families. Targets start with the full-sector corner and
+each single additional propagator power, followed by auxiliary
+numerators and singly pinched sectors in a fixed index order.
+The four rational-profile batches contain sixteen targets each.
+The symbolic nonplanar box, pentagon and one-loop box contain ten,
+six and eight targets. The seven batches therefore contain 88 targets.
+Their definitions and target lists precede the timed comparisons.
+
+\subsection{Frozen model transfer and exact comparison}
+The experiment retains the preceding depth-twelve equation-selection
+tree, its weights and its retention threshold $0.01$.
+The tree sees seed, operator and target features before Kira constructs
+an identity. These scattering topologies were absent from its training
+collection. No new fit or threshold selection uses the new results.
+Small feasibility pilots establish that the symbolic inputs run
+within the resource limits. Some symbolic pilot targets also occur in
+the final batches; the pilots do not select a learned policy.
+
+Kira first discovers a reference basis with seed limits enlarged by
+one relative to the target's maximum denominator sum, numerator rank
+and number of additional propagator powers.
+The native control and experimental filter then start with the
+target limits and the same prescribed basis. An incomplete filtered
+attempt retries native equations, and an incomplete native attempt
+uses the enlarged region. The complete workflow includes each
+failed attempt, model evaluation, IBP generation, exact algebra,
+coefficient comparison and cleanup. Reference discovery occurs
+outside this timer. The comparison driver is already running.
+
+Five alternating repetitions of the two methods give seventy
+complete workflows. For each batch, we compare the median complete
+times. We also compare the coefficients as rational functions,
+repeat native reduction with seed limits enlarged by two, and
+substitute fresh rational kinematics into each symbolic result
+before comparing it with a separately generated native reduction.
+These specialization checks support the symbolic comparisons;
+they do not replace them. Kira's exact symbolic elimination
+determines the coefficients~\cite{Kira3}.
+
+@TRANSFER_RESULTS@
+
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=\textwidth]{figures/generalization_times.pdf}
+ \caption{Complete native and experimental learned-filter times on the
+ new scattering batches. Each point is a median of five repetitions.
+ The experimental time includes native fallback. Symbolic batches
+ retain all invariants specified in the text.}
+ \label{fig:generalization-times}
+\end{figure}
+The existing application guard retains native choices for these
+unsupported domains. The transfer measurements do not change the
+earlier speedup estimates or activate a new learned route.
+They provide explicit examples for later training on broader
+scattering inputs~\cite{KiraGeneralizationData}.
+
+\subsection{Physical IBP systems with a finite optimum}
+A reverse construction supplies a valid path, while an optimality
+claim also requires a defined cost and a complete comparison with
+the allowed alternatives. We carry out that comparison on two
+small systems with symbolic coefficients.
+For the massless one-loop bubble, define
+\begin{equation}
+ B_{a,b}=\int\frac{d^d\ell}{\mathrm{i}\pi^{d/2}}\,
+ \frac{1}{(\ell^2+\mathrm{i}0)^a
+ [(\ell-p)^2+\mathrm{i}0]^b},\qquad p^2=s.
+\end{equation}
+Differentiation with the vectors $\ell$ and $\ell-p$ gives
+\begin{align}
+ 0&=(d-2a-b)B_{a,b}-bB_{a-1,b+1}+bsB_{a,b+1},\\
+ 0&=(d-a-2b)B_{a,b}-aB_{a+1,b-1}+asB_{a+1,b}.
+ \label{eq:general-bubble-ibp}
+\end{align}
+The massless one-denominator integrals vanish in dimensional
+regularization. Selecting both operators at seed $(1,1)$, the first
+at $(2,1)$ and the second at $(1,2)$ gives the closed system
+\begin{equation}
+ \begin{pmatrix}
+ 0&s&0&d-3\\
+ s&0&0&d-3\\
+ d-5&-1&s&0\\
+ -1&d-5&s&0
+ \end{pmatrix}
+ \begin{pmatrix}B_{2,1}\\B_{1,2}\\B_{2,2}\\B_{1,1}\end{pmatrix}=0.
+ \label{eq:general-bubble-matrix}
+\end{equation}
+We protect $B_{1,1}$ as the master and reduce the other three integrals
+over $\mathbb Q(d,s)$. Their exact coefficients are
+\begin{equation}
+ B_{2,1}=B_{1,2}=\frac{3-d}{s}B_{1,1},\qquad
+ B_{2,2}=\frac{(d-6)(d-3)}{s^2}B_{1,1}.
+\end{equation}
+An independent check obtains the same ratios from the
+gamma-function expression for the bubble.
+
+For a one-loop massive tadpole, define
+\[
+ T_a=\int\frac{d^d\ell}{\mathrm{i}\pi^{d/2}}\,
+       (\ell^2-m^2+\mathrm{i}0)^{-a}.
+\]
+The IBP identity with vector $\ell$ is
+\begin{equation}
+ (d-2a)T_a-2am^2T_{a+1}=0.
+ \label{eq:general-tadpole-ibp}
+\end{equation}
+Seeds $a=1,2,3$ give three equations for $T_2,T_3,T_4$ with master
+$T_1$ over $\mathbb Q(d,m^2)$.
+Native Kira reductions generated from the physical denominators
+provide an additional check of both systems.
+
+At a matrix state $S$, an allowed action chooses any nonzero entry
+in an unprocessed row and an unprocessed nonmaster column.
+It moves that row to the next pivot position, normalizes it and
+eliminates the chosen column from every other row.
+The master column remains protected, and each action removes one
+nonmaster column from future pivot choices.
+There are three pivot stages in each system.
+
+We count one division for each nonzero nonpivot source entry when
+the pivot differs from one. Each update of a nonpivot source entry
+counts one multiplication and one subtraction.
+Assignments, comparisons, structural cancellation of the pivot,
+and polynomial operations inside a rational-function operation
+are outside this cost. Thus the objective measures specified
+coefficient operations, with no claim that each operation takes
+the same time.
+
+For this action set, define the remaining minimum cost by
+\begin{equation}
+ V(S)=\min_{a\in\mathcal A(S)}
+       \bigl[c(S,a)+V(S_a)\bigr],\qquad V(S_{\rm done})=0.
+ \label{eq:general-bellman}
+\end{equation}
+Here $\mathcal A(S)$ is the complete set of allowed pivots,
+$c(S,a)$ is the counted cost, and $S_a$ is the exact next matrix.
+We evaluate every alternative and retain the state graph,
+using the finite recurrence of dynamic programming~\cite{Bellman1952}.
+An independent checker reconstructs every row operation, checks
+all outgoing actions, verifies the cost recurrence, and checks
+the final master coefficients.
+Since each action reduces the number of remaining columns,
+induction from the terminal states proves the minimum for
+the full stated path space.
+
+To include initial equation selection, we also examine every subset
+$\mathcal E$ of the saved source pool whose nonmaster matrix has rank
+three. Each subset starts its own complete pivot search, giving
+\begin{equation}
+ C_{\rm pool}^{*}=
+ \min_{\substack{\mathcal E\subseteq\mathcal E_{\rm full}\\
+                 \operatorname{rank}A_{\mathcal E}=3}}
+ V(S_{\mathcal E}).
+ \label{eq:general-pool-optimum}
+\end{equation}
+Here $A_{\mathcal E}$ contains the nonmaster coefficients, and
+$S_{\mathcal E}$ is the starting matrix for that subset.
+Initial row selection carries no coefficient-operation cost in
+this objective. The certificate records every sufficient subset
+and every subsequent pivot choice.
+
+@OPTIMUM_RESULTS@
+
+The subset checks also certify the smallest sufficient equation count
+and the smallest number of distinct source-seed labels within each saved
+pool. These records give exact cost labels for later model tests.
+The certificates apply to the displayed systems, protected masters,
+allowed operations and cost definition. They do not establish an
+optimum over additional IBP identities, changes of master basis,
+other algebraic algorithms or unrestricted scattering reductions.
+General high-loop scattering and wall-time optimality therefore
+remain separate questions.
+\FloatBarrier

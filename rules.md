@@ -119,3 +119,8 @@
 ## Higher-loop acceleration
 
 - Extend the acceleration study to every loop order in the existing one-through-twelve-loop collection and investigate formulas that support arbitrary positive loop order. Use trained System 1 policies where complete cost tests support their use. Separate gains from exact mathematical reuse from gains due to learned decisions. Distinguish supplied-identity reductions from native IBP generation and state the family restrictions. Preserve previous results, use independent tests, update the report and READMEs, publish completed work, and synchronize the local report under the existing resource limits.
+
+
+## Scattering, symbolic kinematics and optimality
+
+- Extend the study to broader scattering families, independent symbolic kinematics and certified reduction paths. Keep new code, definitions, exact results, failures and READMEs on Hoffman and GitHub, and update and synchronize the report. State the tested physical domain. Optimality certificates must specify the finite source pool, protected masters, allowed operations and cost; a bounded certificate does not establish unrestricted IBP or wall-time optimality. Preserve the existing data, models, split assignments and resource limits.

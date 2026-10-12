@@ -1,0 +1,25 @@
+ValueError: Error from parse_expr with transformed code: "-Q /Integer (2 )+Symbol ('s' )/Integer (2 )+Symbol ('t' )/Integer (2 )"
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/Kira_comparison/generalization/s02_study.py", line 74, in <module>
+    if __name__=="__main__":main()
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/Kira_comparison/generalization/s02_study.py", line 50, in main
+    import s01_cases;s01_cases.main();freeze()
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/Kira_comparison/generalization/s01_cases.py", line 66, in main
+    cases.append(case(kind,True,0,"reserved",size))
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/Kira_comparison/generalization/s01_cases.py", line 60, in case
+    return dict(id=cid,split=split,group=cid,topology_group=kind,definition=d,targets=targets(d)[:size],audit=audit(d),size=size)
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/Kira_comparison/generalization/s01_cases.py", line 53, in audit
+    i=d["external_momenta"].index(x);j=d["external_momenta"].index(y);gram[i,j]=gram[j,i]=sp.sympify(v)
+  File "/u/home/r/rushil/.local/lib/python3.9/site-packages/sympy/core/sympify.py", line 495, in sympify
+    expr = parse_expr(a, local_dict=locals, transformations=transformations, evaluate=evaluate)
+  File "/u/home/r/rushil/.local/lib/python3.9/site-packages/sympy/parsing/sympy_parser.py", line 1087, in parse_expr
+    raise e from ValueError(f"Error from parse_expr with transformed code: {code!r}")
+  File "/u/home/r/rushil/.local/lib/python3.9/site-packages/sympy/parsing/sympy_parser.py", line 1078, in parse_expr
+    rv = eval_expr(code, local_dict, global_dict)
+  File "/u/home/r/rushil/.local/lib/python3.9/site-packages/sympy/parsing/sympy_parser.py", line 906, in eval_expr
+    expr = eval(
+  File "<string>", line 1, in <module>
+TypeError: bad operand type for unary -: 'AssumptionKeys'

@@ -1,0 +1,314 @@
+[
+  {
+    "system": "massless_bubble",
+    "symbols": [
+      "d",
+      "s"
+    ],
+    "columns": [
+      "B(2,1)",
+      "B(1,2)",
+      "B(2,2)",
+      "B(1,1)"
+    ],
+    "original_rows": [
+      [
+        "0",
+        "s",
+        "0",
+        "d - 3"
+      ],
+      [
+        "s",
+        "0",
+        "0",
+        "d - 3"
+      ],
+      [
+        "d - 5",
+        "-1",
+        "s",
+        "0"
+      ],
+      [
+        "-1",
+        "d - 5",
+        "s",
+        "0"
+      ]
+    ],
+    "seeds": [
+      "(1,1)",
+      "(1,1)",
+      "(2,1)",
+      "(1,2)"
+    ],
+    "operators": [
+      "l",
+      "l-p",
+      "l",
+      "l-p"
+    ],
+    "expected_coefficients": [
+      "(3 - d)/s",
+      "(3 - d)/s",
+      "(d - 6)*(d - 3)/s**2",
+      "1"
+    ],
+    "coefficient_field": "Q(d,s)",
+    "allowed_actions": "Choose any nonzero active nonmaster column in any unprocessed row; swap into next pivot row; normalize; remove the pivot from every other row. Protect the last master column.",
+    "cost": "One division for each nonpivot nonzero source entry when the pivot differs from one; one multiplication and one subtraction for every updated nonpivot source entry. Assignments, pivot cancellation, comparisons and polynomial internal work are excluded.",
+    "objective": "Reduce all three nonmaster integrals. No new equations or row combinations outside the stated Gauss-Jordan actions may be introduced.",
+    "root": 0,
+    "paths": {
+      "optimal": {
+        "cost": 13,
+        "path": [
+          {
+            "state": 0,
+            "row": 1,
+            "column": 0,
+            "cost": 5,
+            "child": 9,
+            "total": 13
+          },
+          {
+            "state": 9,
+            "row": 1,
+            "column": 1,
+            "cost": 5,
+            "child": 10,
+            "total": 8
+          },
+          {
+            "state": 10,
+            "row": 2,
+            "column": 2,
+            "cost": 3,
+            "child": 11,
+            "total": 3
+          }
+        ],
+        "final": 11
+      },
+      "fixed": {
+        "cost": 13,
+        "path": [
+          {
+            "state": 0,
+            "row": 1,
+            "column": 0,
+            "cost": 5,
+            "child": 9,
+            "total": 13
+          },
+          {
+            "state": 9,
+            "row": 1,
+            "column": 1,
+            "cost": 5,
+            "child": 10,
+            "total": 8
+          },
+          {
+            "state": 10,
+            "row": 2,
+            "column": 2,
+            "cost": 3,
+            "child": 11,
+            "total": 3
+          }
+        ],
+        "final": 11
+      },
+      "greedy": {
+        "cost": 13,
+        "path": [
+          {
+            "state": 0,
+            "row": 1,
+            "column": 0,
+            "cost": 5,
+            "child": 9,
+            "total": 13
+          },
+          {
+            "state": 9,
+            "row": 1,
+            "column": 1,
+            "cost": 5,
+            "child": 10,
+            "total": 8
+          },
+          {
+            "state": 10,
+            "row": 2,
+            "column": 2,
+            "cost": 3,
+            "child": 11,
+            "total": 3
+          }
+        ],
+        "final": 11
+      }
+    },
+    "minimum_equations": 3,
+    "minimum_seeds": 2,
+    "states": 39,
+    "complete_path_count": 76,
+    "seconds": 1.020578794181347,
+    "source_sha256": "43166b91048370b22c264be909ddcf53c844133cb2a9473e0508f6e9e6720ee8"
+  },
+  {
+    "system": "massive_tadpole",
+    "symbols": [
+      "d",
+      "m2"
+    ],
+    "columns": [
+      "T(2)",
+      "T(3)",
+      "T(4)",
+      "T(1)"
+    ],
+    "original_rows": [
+      [
+        "-2*m2",
+        "0",
+        "0",
+        "d - 2"
+      ],
+      [
+        "d - 4",
+        "-4*m2",
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "d - 6",
+        "-6*m2",
+        "0"
+      ]
+    ],
+    "seeds": [
+      "1",
+      "2",
+      "3"
+    ],
+    "operators": [
+      "l",
+      "l",
+      "l"
+    ],
+    "expected_coefficients": [
+      "(d - 2)/(2*m2)",
+      "(d - 4)*(d - 2)/(8*m2**2)",
+      "(d - 6)*(d - 4)*(d - 2)/(48*m2**3)",
+      "1"
+    ],
+    "coefficient_field": "Q(d,m2)",
+    "allowed_actions": "Choose any nonzero active nonmaster column in any unprocessed row; swap into next pivot row; normalize; remove the pivot from every other row. Protect the last master column.",
+    "cost": "One division for each nonpivot nonzero source entry when the pivot differs from one; one multiplication and one subtraction for every updated nonpivot source entry. Assignments, pivot cancellation, comparisons and polynomial internal work are excluded.",
+    "objective": "Reduce all three nonmaster integrals. No new equations or row combinations outside the stated Gauss-Jordan actions may be introduced.",
+    "root": 0,
+    "paths": {
+      "optimal": {
+        "cost": 7,
+        "path": [
+          {
+            "state": 0,
+            "row": 0,
+            "column": 0,
+            "cost": 3,
+            "child": 1,
+            "total": 7
+          },
+          {
+            "state": 1,
+            "row": 1,
+            "column": 1,
+            "cost": 3,
+            "child": 2,
+            "total": 4
+          },
+          {
+            "state": 2,
+            "row": 2,
+            "column": 2,
+            "cost": 1,
+            "child": 3,
+            "total": 1
+          }
+        ],
+        "final": 3
+      },
+      "fixed": {
+        "cost": 7,
+        "path": [
+          {
+            "state": 0,
+            "row": 0,
+            "column": 0,
+            "cost": 3,
+            "child": 1,
+            "total": 7
+          },
+          {
+            "state": 1,
+            "row": 1,
+            "column": 1,
+            "cost": 3,
+            "child": 2,
+            "total": 4
+          },
+          {
+            "state": 2,
+            "row": 2,
+            "column": 2,
+            "cost": 1,
+            "child": 3,
+            "total": 1
+          }
+        ],
+        "final": 3
+      },
+      "greedy": {
+        "cost": 9,
+        "path": [
+          {
+            "state": 0,
+            "row": 2,
+            "column": 2,
+            "cost": 1,
+            "child": 18,
+            "total": 7
+          },
+          {
+            "state": 18,
+            "row": 1,
+            "column": 0,
+            "cost": 3,
+            "child": 19,
+            "total": 8
+          },
+          {
+            "state": 19,
+            "row": 2,
+            "column": 1,
+            "cost": 5,
+            "child": 20,
+            "total": 5
+          }
+        ],
+        "final": 20
+      }
+    },
+    "minimum_equations": 3,
+    "minimum_seeds": 3,
+    "states": 24,
+    "complete_path_count": 15,
+    "seconds": 0.15278858691453934,
+    "source_sha256": "43166b91048370b22c264be909ddcf53c844133cb2a9473e0508f6e9e6720ee8"
+  }
+]

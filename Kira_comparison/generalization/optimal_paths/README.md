@@ -1,0 +1,11 @@
+# Certified optimal paths in finite physical IBP systems
+
+massless_bubble.json.gz and massive_tadpole.json.gz contain original symbolic IBP rows, source seeds and operators, master coefficients, every reachable matrix, every permitted pivot and exact operation costs. summary.json records full-pool controls and the joint optimum after source-subset selection. verification.json records an independent symbolic replay. native_*.json.gz contains additional native Kira checks from physical denominators.
+
+Each system has three nonmaster columns and one protected master. The bubble pool has four IBP rows; the tadpole has three. First choose any sufficient subset of this finite pool. Then choose any nonzero active pivot, normalize its row and eliminate its column from all other rows. A counted division applies to each nonzero nonpivot source coefficient when normalization is required; each nonpivot update counts one multiplication and one subtraction. Source selection, assignments, comparisons, structural pivot cancellation, polynomial internals and certificate-search time are excluded.
+
+Every allowed path is included. Both joint minima are seven coefficient operations. With every original equation retained, the minima are thirteen for the bubble and seven for the tadpole. The fixed first-column/first-row control attains those full-pool minima, while the immediate-cost greedy control uses nine operations for the tadpole. The smallest sufficient subsets contain three equations, from two distinct bubble seeds or three tadpole seeds.
+
+The proof checks all outgoing actions, every exact transition and the Bellman minimum at every state. It also enumerates all sufficient original-row subsets and checks the minimum over their roots. These are global minima for the stated finite action space and arithmetic objective. Additional identities, other master bases, other algebraic algorithms and wall-time optimality remain outside the proof.
+
+s04_optimal_paths.py builds the certificates; s05_verify_certificates.py checks them independently. s07_audit.py compares both physical systems with native Kira. fixed_pool/ preserves the preliminary certificates and code from before source-subset optimization; those archived scripts document that version and are not the active entry points. The main scripts reside one directory above.

@@ -1,0 +1,261 @@
+{
+  "cases": [
+    {
+      "case": "nonplanar_box_point2",
+      "symbolic": false,
+      "targets": 16,
+      "loops": 2,
+      "native_seconds": 5.382636837661266,
+      "learned_seconds": 5.9693203419446945,
+      "learned_to_native": 1.1089955577494133,
+      "fallback_workflows": {
+        "native": 0,
+        "learned": 5
+      },
+      "mean_skipped_calls": 8812
+    },
+    {
+      "case": "nonplanar_box_point3",
+      "symbolic": false,
+      "targets": 16,
+      "loops": 2,
+      "native_seconds": 4.60291650146246,
+      "learned_seconds": 5.352100923657417,
+      "learned_to_native": 1.1627629834164759,
+      "fallback_workflows": {
+        "native": 0,
+        "learned": 5
+      },
+      "mean_skipped_calls": 8812
+    },
+    {
+      "case": "pentagon_point2",
+      "symbolic": false,
+      "targets": 16,
+      "loops": 1,
+      "native_seconds": 0.844756655395031,
+      "learned_seconds": 1.1347599551081657,
+      "learned_to_native": 1.3432980348376438,
+      "fallback_workflows": {
+        "native": 0,
+        "learned": 5
+      },
+      "mean_skipped_calls": 859
+    },
+    {
+      "case": "pentagon_point3",
+      "symbolic": false,
+      "targets": 16,
+      "loops": 1,
+      "native_seconds": 0.843981459736824,
+      "learned_seconds": 1.1308763325214386,
+      "learned_to_native": 1.339930302348201,
+      "fallback_workflows": {
+        "native": 0,
+        "learned": 5
+      },
+      "mean_skipped_calls": 859
+    },
+    {
+      "case": "nonplanar_box_symbolic",
+      "symbolic": true,
+      "targets": 10,
+      "loops": 2,
+      "native_seconds": 5.438166484236717,
+      "learned_seconds": 6.320838421583176,
+      "learned_to_native": 1.16231057653439,
+      "fallback_workflows": {
+        "native": 0,
+        "learned": 5
+      },
+      "mean_skipped_calls": 9237
+    },
+    {
+      "case": "pentagon_symbolic",
+      "symbolic": true,
+      "targets": 6,
+      "loops": 1,
+      "native_seconds": 1.0318733304738998,
+      "learned_seconds": 1.3903319016098976,
+      "learned_to_native": 1.3473862154876814,
+      "fallback_workflows": {
+        "native": 0,
+        "learned": 5
+      },
+      "mean_skipped_calls": 875
+    },
+    {
+      "case": "one_mass_box_symbolic",
+      "symbolic": true,
+      "targets": 8,
+      "loops": 1,
+      "native_seconds": 0.7226111814379692,
+      "learned_seconds": 0.9576994925737381,
+      "learned_to_native": 1.3253316820644152,
+      "fallback_workflows": {
+        "native": 0,
+        "learned": 5
+      },
+      "mean_skipped_calls": 178
+    }
+  ],
+  "workflows": 70,
+  "targets": 88,
+  "geometric_mean_learned_to_native": 1.2518287546167155,
+  "total_case_median_native": 18.866942450404167,
+  "total_case_median_learned": 22.255927368998528,
+  "fallback_workflows": 35,
+  "rejected_attempts": 35,
+  "peak_rss_bytes": 64106496,
+  "peak_scratch_bytes": 1212416,
+  "deployment": "Frozen default remains unchanged; these transfer tests do not activate an unsupported learned route.",
+  "verification": {
+    "success": true,
+    "certificate_native_checks": [
+      {
+        "system": "massless_bubble",
+        "native_master_coefficients_verified": 3
+      },
+      {
+        "system": "massive_tadpole",
+        "native_master_coefficients_verified": 3
+      }
+    ],
+    "comparison_workflows": 70,
+    "exact_coefficient_pairs": 5600,
+    "unique_coefficient_pairs": 560,
+    "observed_symbols": {
+      "nonplanar_box_point2": [
+        "d"
+      ],
+      "nonplanar_box_point3": [
+        "d"
+      ],
+      "pentagon_point2": [
+        "d"
+      ],
+      "pentagon_point3": [
+        "d"
+      ],
+      "nonplanar_box_symbolic": [
+        "d",
+        "s",
+        "t"
+      ],
+      "pentagon_symbolic": [
+        "d",
+        "s12",
+        "s23",
+        "s34",
+        "s45",
+        "s51"
+      ],
+      "one_mass_box_symbolic": [
+        "d",
+        "q2",
+        "s",
+        "t"
+      ]
+    },
+    "expanded_seed_checks": [
+      {
+        "case": "nonplanar_box_point2",
+        "enlarged_seed_success": true,
+        "status": "completed",
+        "seconds": 67.46547719836235
+      },
+      {
+        "case": "nonplanar_box_point3",
+        "enlarged_seed_success": true,
+        "status": "completed",
+        "seconds": 66.36490511149168
+      },
+      {
+        "case": "pentagon_point2",
+        "enlarged_seed_success": true,
+        "status": "completed",
+        "seconds": 1.7337567955255508
+      },
+      {
+        "case": "pentagon_point3",
+        "enlarged_seed_success": true,
+        "status": "completed",
+        "seconds": 1.6031201351433992
+      },
+      {
+        "case": "nonplanar_box_symbolic",
+        "enlarged_seed_success": true,
+        "status": "completed",
+        "seconds": 66.39162909425795,
+        "specialization": {
+          "values": {
+            "s": -163,
+            "t": -167
+          },
+          "coefficient_pairs": 93,
+          "success": true
+        }
+      },
+      {
+        "case": "pentagon_symbolic",
+        "enlarged_seed_success": true,
+        "status": "completed",
+        "seconds": 1.920647768303752,
+        "specialization": {
+          "values": {
+            "s12": -163,
+            "s23": -167,
+            "s34": -173,
+            "s45": -179,
+            "s51": -181
+          },
+          "coefficient_pairs": 56,
+          "success": true
+        }
+      },
+      {
+        "case": "one_mass_box_symbolic",
+        "enlarged_seed_success": true,
+        "status": "completed",
+        "seconds": 0.9669778384268284,
+        "specialization": {
+          "values": {
+            "s": -163,
+            "t": -167,
+            "q2": -173
+          },
+          "coefficient_pairs": 21,
+          "success": true
+        }
+      }
+    ],
+    "all_expanded_seed_checks_pass": true
+  },
+  "certificates": {
+    "success": true,
+    "systems": [
+      {
+        "system": "massless_bubble",
+        "all_edges_verified": 234,
+        "terminal_states_verified": 12,
+        "minimum_cost": 13,
+        "joint_minimum_cost": 7,
+        "sufficient_subsets_verified": 5,
+        "joint_path_count": 152,
+        "all_actions_enumerated": true,
+        "exact_symbolic_residuals_zero": true
+      },
+      {
+        "system": "massive_tadpole",
+        "all_edges_verified": 32,
+        "terminal_states_verified": 6,
+        "minimum_cost": 7,
+        "joint_minimum_cost": 7,
+        "sufficient_subsets_verified": 1,
+        "joint_path_count": 15,
+        "all_actions_enumerated": true,
+        "exact_symbolic_residuals_zero": true
+      }
+    ]
+  }
+}

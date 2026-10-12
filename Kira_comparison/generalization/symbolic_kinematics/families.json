@@ -1,0 +1,593 @@
+[
+  {
+    "id": "nonplanar_box_symbolic",
+    "split": "reserved",
+    "group": "nonplanar_box_symbolic",
+    "topology_group": "nonplanar_box",
+    "definition": {
+      "name": "F",
+      "kind": "nonplanar_box",
+      "loop_momenta": [
+        "k1",
+        "k2"
+      ],
+      "external_momenta": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "physical_propagators": 7,
+      "propagators": [
+        {
+          "momentum": "k1",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k2",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "p1-k1",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "p2-k2",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "p1+p2-p3-k1",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "p1-k1+k2",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "p1-p3-k1+k2",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k1-p3",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k2-p1-p2",
+          "mass_squared": "0"
+        }
+      ],
+      "invariants": [
+        [
+          "s",
+          2
+        ],
+        [
+          "t",
+          2
+        ]
+      ],
+      "scalarproduct_rules": [
+        [
+          [
+            "p1",
+            "p1"
+          ],
+          "0"
+        ],
+        [
+          [
+            "p1",
+            "p2"
+          ],
+          "s/2"
+        ],
+        [
+          [
+            "p1",
+            "p3"
+          ],
+          "-t/2"
+        ],
+        [
+          [
+            "p2",
+            "p2"
+          ],
+          "0"
+        ],
+        [
+          [
+            "p2",
+            "p3"
+          ],
+          "s/2 + t/2"
+        ],
+        [
+          [
+            "p3",
+            "p3"
+          ],
+          "0"
+        ]
+      ],
+      "top_level_sectors": [
+        127
+      ],
+      "coefficient_field": "Q(d,s,t)",
+      "parameters": {
+        "symbolic": true,
+        "values": {}
+      }
+    },
+    "targets": [
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        2,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        2,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        2,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        -1,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        -1
+      ]
+    ],
+    "audit": {
+      "scalar_products": 9,
+      "rank": 9,
+      "external_gram_determinant": "-s*t*(s + t)/4"
+    },
+    "size": 10
+  },
+  {
+    "id": "pentagon_symbolic",
+    "split": "reserved",
+    "group": "pentagon_symbolic",
+    "topology_group": "pentagon",
+    "definition": {
+      "name": "F",
+      "kind": "pentagon",
+      "loop_momenta": [
+        "k1"
+      ],
+      "external_momenta": [
+        "p1",
+        "p2",
+        "p3",
+        "p4"
+      ],
+      "physical_propagators": 5,
+      "propagators": [
+        {
+          "momentum": "k1",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k1-p1",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k1-p1-p2",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k1-p1-p2-p3",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k1-p1-p2-p3-p4",
+          "mass_squared": "0"
+        }
+      ],
+      "invariants": [
+        [
+          "s12",
+          2
+        ],
+        [
+          "s23",
+          2
+        ],
+        [
+          "s34",
+          2
+        ],
+        [
+          "s45",
+          2
+        ],
+        [
+          "s51",
+          2
+        ]
+      ],
+      "scalarproduct_rules": [
+        [
+          [
+            "p1",
+            "p1"
+          ],
+          "0"
+        ],
+        [
+          [
+            "p1",
+            "p2"
+          ],
+          "s12/2"
+        ],
+        [
+          [
+            "p1",
+            "p3"
+          ],
+          "-s12/2 - s23/2 + s45/2"
+        ],
+        [
+          [
+            "p1",
+            "p4"
+          ],
+          "s23/2 - s45/2 - s51/2"
+        ],
+        [
+          [
+            "p2",
+            "p2"
+          ],
+          "0"
+        ],
+        [
+          [
+            "p2",
+            "p3"
+          ],
+          "s23/2"
+        ],
+        [
+          [
+            "p2",
+            "p4"
+          ],
+          "-s23/2 - s34/2 + s51/2"
+        ],
+        [
+          [
+            "p3",
+            "p3"
+          ],
+          "0"
+        ],
+        [
+          [
+            "p3",
+            "p4"
+          ],
+          "s34/2"
+        ],
+        [
+          [
+            "p4",
+            "p4"
+          ],
+          "0"
+        ]
+      ],
+      "top_level_sectors": [
+        31
+      ],
+      "coefficient_field": "Q(d,s12,s23,s34,s45,s51)",
+      "parameters": {
+        "symbolic": true,
+        "values": {}
+      }
+    },
+    "targets": [
+      [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        2,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        2,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        2
+      ]
+    ],
+    "audit": {
+      "scalar_products": 5,
+      "rank": 5,
+      "external_gram_determinant": "(s12**2*s23**2 - 2*s12**2*s23*s51 + s12**2*s51**2 - 2*s12*s23**2*s34 + 2*s12*s23*s34*s45 + 2*s12*s23*s34*s51 + 2*s12*s23*s45*s51 + 2*s12*s34*s45*s51 - 2*s12*s45*s51**2 + s23**2*s34**2 - 2*s23*s34**2*s45 + 2*s23*s34*s45*s51 + s34**2*s45**2 - 2*s34*s45**2*s51 + s45**2*s51**2)/16"
+    },
+    "size": 6
+  },
+  {
+    "id": "one_mass_box_symbolic",
+    "split": "reserved",
+    "group": "one_mass_box_symbolic",
+    "topology_group": "one_mass_box",
+    "definition": {
+      "name": "F",
+      "kind": "one_mass_box",
+      "loop_momenta": [
+        "k1"
+      ],
+      "external_momenta": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "physical_propagators": 4,
+      "propagators": [
+        {
+          "momentum": "k1",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k1-p1",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k1-p1-p2",
+          "mass_squared": "0"
+        },
+        {
+          "momentum": "k1-p3",
+          "mass_squared": "0"
+        }
+      ],
+      "invariants": [
+        [
+          "s",
+          2
+        ],
+        [
+          "t",
+          2
+        ],
+        [
+          "q2",
+          2
+        ]
+      ],
+      "scalarproduct_rules": [
+        [
+          [
+            "p1",
+            "p1"
+          ],
+          "0"
+        ],
+        [
+          [
+            "p1",
+            "p2"
+          ],
+          "s/2"
+        ],
+        [
+          [
+            "p1",
+            "p3"
+          ],
+          "-t/2"
+        ],
+        [
+          [
+            "p2",
+            "p2"
+          ],
+          "0"
+        ],
+        [
+          [
+            "p2",
+            "p3"
+          ],
+          "-q2/2 + s/2 + t/2"
+        ],
+        [
+          [
+            "p3",
+            "p3"
+          ],
+          "0"
+        ]
+      ],
+      "top_level_sectors": [
+        15
+      ],
+      "coefficient_field": "Q(d,s,t,q2)",
+      "parameters": {
+        "symbolic": true,
+        "values": {}
+      }
+    },
+    "targets": [
+      [
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        2,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        2,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        2,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        2
+      ],
+      [
+        0,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        2,
+        1,
+        1
+      ],
+      [
+        0,
+        1,
+        2,
+        1
+      ]
+    ],
+    "audit": {
+      "scalar_products": 4,
+      "rank": 4,
+      "external_gram_determinant": "s*t*(q2 - s - t)/4"
+    },
+    "size": 8
+  }
+]
