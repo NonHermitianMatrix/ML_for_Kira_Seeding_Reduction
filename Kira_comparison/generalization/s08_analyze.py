@@ -24,6 +24,7 @@ def main():
   deployment="Frozen default remains unchanged; these transfer tests do not activate an unsupported learned route.",
   verification=json.loads((HERE/"verification.json").read_text()),
   certificates=json.loads((HERE/"optimal_paths/verification.json").read_text()))
+ if (HERE/"application/verification.json").exists():summary["application_checks"]=json.loads((HERE/"application/verification.json").read_text())
  (HERE/"summary.json").write_text(json.dumps(summary,indent=2)+"\n")
  import os;os.environ["MPLCONFIGDIR"]=str(ROOT/".tools/cache/kira-cost-plots")
  import matplotlib;matplotlib.use("Agg")
@@ -33,7 +34,7 @@ def main():
  ax.plot([x["native_seconds"] for x in result],ys,"o",label="Native")
  ax.plot([x["learned_seconds"] for x in result],ys,"s",label="Frozen filter + fallback")
  ax.set_yticks(ys);ax.set_yticklabels(labels);ax.invert_yaxis();ax.set_xscale("log");ax.set_xlabel("Median complete time (s), five repetitions")
- ax.grid(axis="x",alpha=.25);ax.legend(fontsize=9)
+ ax.set_xticks([.7,1,2,4,6]);ax.set_xticklabels(["0.7","1","2","4","6"]);ax.minorticks_off();ax.grid(axis="x",alpha=.25);ax.legend(fontsize=9)
  fig.savefig(ROOT/"report/figures/generalization_times.pdf");plt.close(fig)
  print(json.dumps({k:v for k,v in summary.items() if k not in ["cases","verification","certificates"]}),flush=True)
 if __name__=="__main__":main()

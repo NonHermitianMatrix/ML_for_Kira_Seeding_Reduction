@@ -1,6 +1,6 @@
 # Scattering, symbolic kinematics and certified paths
 
-The extension contains seven new scattering batches with 88 targets and 70 exact comparison workflows. It includes a nonplanar two-loop box, a one-loop pentagon with five independent symbolic invariants, and a one-loop box with an independent external virtuality. The frozen equation filter has a complete-time ratio of 1.251829 to native choices, including all 35 native fallbacks. The existing native guard remains active for these unsupported inputs. Separate exact certificates enumerate every sufficient source subset and every allowed pivot path for a bubble and a tadpole. Each has a joint minimum of seven counted coefficient operations, within its specified finite pool. These certificates do not prove unrestricted IBP or wall-time optimality.
+The extension contains seven new scattering batches with 88 targets and 70 exact comparison workflows. It includes a nonplanar two-loop box, a one-loop pentagon with five independent symbolic invariants, and a one-loop box with an independent external virtuality. The frozen equation filter has a complete-time ratio of 1.251829 to native choices, including all 35 native fallbacks. The new symbolic-capable application defaults to native choices for these inputs. Separate exact certificates enumerate every sufficient source subset and every allowed pivot path for a bubble and a tadpole. Each has a joint minimum of seven counted coefficient operations, within its specified finite pool. These certificates do not prove unrestricted IBP or wall-time optimality.
 
 ## Contents and physical scope
 
@@ -31,5 +31,10 @@ Run scientific commands only in scheduled jobs with node-local TMPDIR.
 4. Submit s09_audit_job.sh after comparisons. It runs s07_audit.py and s08_analyze.py for independent coefficient checks and a timing plot.
 5. s11_finish.sh regenerates and verifies the final joint equation/pivot certificates, then refreshes the summary. The original fixed-pool certificates and code remain in optimal_paths/fixed_pool/.
 6. Run s10_document.py to update READMEs. After publishing the data commit, use --data-commit COMMIT to update the LaTeX, bibliography and conclusion. Build with make -C report and synchronize the complete report locally.
+
+7. s12_reduce.py is the answer-free application. Supply --case CASE (from cases.json), --masters-file PATH and --output PATH. The output must be new and inside this study folder. The saved bases/ files contain masters only. The default uses native choices; --experimental-filter explicitly enables the frozen filter and its exact native fallback. --family-file accepts the same physical case schema for a new input, subject to the recorded limits.
+8. s13_application_check.py verifies seven native and three experimental applications with target answers withheld until after execution. s14_application_job.sh schedules these checks and refreshes the summary.
+
+Example inside a scheduled job: .tools/seed-model/venv/bin/python Kira_comparison/generalization/s12_reduce.py --case pentagon_symbolic --masters-file Kira_comparison/generalization/symbolic_kinematics/bases/pentagon_symbolic.json --output Kira_comparison/generalization/application/user_pentagon.json.gz
 
 Scientific records stay on Hoffman and GitHub. The report also stays locally. resource_plan.json gives a conservative combined ceiling of 9,958,476,224 bytes, below the 10 GB limit. Each native attempt has a 150-second limit, a 2400 MiB address-space limit, a 2100 MiB sampled process-tree RSS limit and a 32 MiB scratch limit. Only one scientific job runs at once. The fresh storage audit found 8,676,072,960 allocated bytes remotely and 392,683,520 locally before this extension.

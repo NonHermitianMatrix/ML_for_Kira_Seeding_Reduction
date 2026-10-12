@@ -15,7 +15,7 @@ def main():
  short=(f'The extension contains seven new scattering batches with 88 targets and 70 exact comparison workflows. '
  f'It includes a nonplanar two-loop box, a one-loop pentagon with five independent symbolic invariants, and a one-loop box with an independent external virtuality. '
  f'The frozen equation filter has a complete-time ratio of {r["geometric_mean_learned_to_native"]:.6f} to native choices, including all 35 native fallbacks. '
- 'The existing native guard remains active for these unsupported inputs. '
+ 'The new symbolic-capable application defaults to native choices for these inputs. '
  'Separate exact certificates enumerate every sufficient source subset and every allowed pivot path for a bubble and a tadpole. Each has a joint minimum of seven counted coefficient operations, within its specified finite pool. '
  'These certificates do not prove unrestricted IBP or wall-time optimality.')
  readme=f"""# Scattering, symbolic kinematics and certified paths
@@ -52,6 +52,11 @@ Run scientific commands only in scheduled jobs with node-local TMPDIR.
 5. s11_finish.sh regenerates and verifies the final joint equation/pivot certificates, then refreshes the summary. The original fixed-pool certificates and code remain in optimal_paths/fixed_pool/.
 6. Run s10_document.py to update READMEs. After publishing the data commit, use --data-commit COMMIT to update the LaTeX, bibliography and conclusion. Build with make -C report and synchronize the complete report locally.
 
+7. s12_reduce.py is the answer-free application. Supply --case CASE (from cases.json), --masters-file PATH and --output PATH. The output must be new and inside this study folder. The saved bases/ files contain masters only. The default uses native choices; --experimental-filter explicitly enables the frozen filter and its exact native fallback. --family-file accepts the same physical case schema for a new input, subject to the recorded limits.
+8. s13_application_check.py verifies seven native and three experimental applications with target answers withheld until after execution. s14_application_job.sh schedules these checks and refreshes the summary.
+
+Example inside a scheduled job: .tools/seed-model/venv/bin/python Kira_comparison/generalization/s12_reduce.py --case pentagon_symbolic --masters-file Kira_comparison/generalization/symbolic_kinematics/bases/pentagon_symbolic.json --output Kira_comparison/generalization/application/user_pentagon.json.gz
+
 Scientific records stay on Hoffman and GitHub. The report also stays locally. resource_plan.json gives a conservative combined ceiling of {9958476224:,} bytes, below the 10 GB limit. Each native attempt has a 150-second limit, a 2400 MiB address-space limit, a 2100 MiB sampled process-tree RSS limit and a 32 MiB scratch limit. Only one scientific job runs at once. The fresh storage audit found 8,676,072,960 allocated bytes remotely and 392,683,520 locally before this extension.
 """
  (HERE/"README.md").write_text(readme)
@@ -83,6 +88,14 @@ The proof checks all outgoing actions, every exact transition and the Bellman mi
 
 s04_optimal_paths.py builds the certificates; s05_verify_certificates.py checks them independently. s07_audit.py compares both physical systems with native Kira. fixed_pool/ preserves the preliminary certificates and code from before source-subset optimization; those archived scripts document that version and are not the active entry points. The main scripts reside one directory above.
 """)
+ (HERE/"application/README.md").write_text("""# Symbolic reduction application
+
+s12_reduce.py in the parent folder accepts physical family definitions, indexed targets and a prescribed master list. It receives no target coefficients. Native choices are the default for the new domains; an explicit experimental flag tests the unchanged equation filter with native fallback.
+
+freeze.json records the application source and ten fixed checks. Seven native applications and three explicitly requested experimental applications use the same family/target inputs as the comparison. verification.json compares their coefficients with the reference only after execution. The gzip files retain every attempt and the native input/output. This is an implementation check, not a new independent performance sample.
+
+Run the entry point and scheduler wrapper as described in ../README.md. Generated output must stay in this study folder, on Hoffman and GitHub.
+""")
  for file,link in [("README.md","Kira_comparison/generalization/"),("Kira_comparison/README.md","generalization/"),("ML_model_equation_selection/README.md","../Kira_comparison/generalization/")]:
   replace_block(ROOT/file,"generalization-results",short+f"\n\nCode, definitions, exact results and certificates: [{link}]({link}).")
  rules=ROOT/"rules.md";text=rules.read_text()
@@ -99,7 +112,7 @@ s04_optimal_paths.py builds the certificates; s05_verify_certificates.py checks 
  for c in r["cases"]:
   if c["symbolic"]:
    transfer+=f'The {names[c["case"]]} has median times {c["native_seconds"]:.3f} and {c["learned_seconds"]:.3f} seconds for native and experimental reductions, respectively. '
- transfer+=f'The largest sampled process-tree memory in the comparison is {r["peak_rss_bytes"]/1024**2:.2f} MiB, and the largest sampled solver scratch space is {r["peak_scratch_bytes"]/1024**2:.2f} MiB. These measurements include the unsuccessful filtered attempts.'
+ transfer+=f'The largest sampled memory of Kira and its child processes is {r["peak_rss_bytes"]/1024**2:.2f} MiB, and the largest sampled solver scratch space is {r["peak_scratch_bytes"]/1024**2:.2f} MiB. These measurements include the unsuccessful filtered attempts.'
  opts=[]
  for c in certs:
   jc=c["joint_optimum"];cv=next(x for x in r["certificates"]["systems"] if x["system"]==c["system"])
@@ -118,7 +131,10 @@ with two distinct bubble seeds and three tadpole seeds.
 All exact state transitions and terminal coefficients pass
 independent checks, and six native Kira master coefficients agree
 with the two symbolic systems."""
+ if "application_checks" in r:
+  transfer+=f' A separate application receives only the family, targets and prescribed masters. All {r["application_checks"]["applications"]} application checks agree with the reference coefficients after execution, including the explicitly requested experimental-filter cases. These checks do not supply target answers to the reducer.'
  text=(HERE/"report_template.tex.in").read_text().replace("@TRANSFER_RESULTS@",transfer).replace("@OPTIMUM_RESULTS@",optimum)
+ text=text.replace("across 1 sufficient source subsets","across one sufficient source subset")
  assert "@" not in text
  (ROOT/"report/generalization.tex").write_text(text)
  p=ROOT/"report/report.tex";text=p.read_text()
@@ -126,6 +142,7 @@ with the two symbolic systems."""
  assert hashlib.sha256(abstract.encode()).hexdigest()=="1d47cda2f100fe402dc838ef7ac73952eb2098412d69c0ffd5e1d543f1d657ef"
  if r"\input{generalization}" not in text:text=text.replace("\\clearpage\n\\section{Conclusion}", "\\input{generalization}\n\n\\clearpage\n\\section{Conclusion}")
  text=text.replace(r"\date{October 10, 2026}",r"\date{October 12, 2026}")
+ text=text.replace("The final extension retains integer polynomial coefficients","The compiled-arithmetic extension retains integer polynomial coefficients")
  old="sets. General multiscale coefficients, broader high-loop families and\nglobally minimal reduction paths remain outside the demonstrated scope."
  new=r"""sets. Those native timing comparisons retain their fixed-kinematic scope.
 Section~\ref{sec:generalization} extends the tests to new scattering
@@ -137,7 +154,7 @@ over unrestricted identity pools remain open."""
  conclusion=(r"\section{Conclusion}" in text)
  block=(r"\noindent The scattering extension adds new nonplanar four-point and five-point inputs and exact reductions with independent symbolic invariants. "
  f'All seventy comparison workflows pass, while the frozen equation filter requires native fallback in all thirty-five learned workflows and has complete-time ratio {r["geometric_mean_learned_to_native"]:.3f} to native choices. '
- r'The application therefore retains its existing native guard for these domains. '
+ r'The new symbolic-capable application therefore defaults to native choices for these domains. '
  r'Separate complete certificates prove seven-operation minima for two small physical systems when equation-subset selection and the stated pivot actions are allowed. '
  r'The certificates cover finite source pools with three nonmaster columns; their costs and native coefficient checks provide exact reference labels without asserting a general minimum for scattering reductions~\cite{KiraGeneralizationData}.')
  start="% BEGIN GENERALIZATION CONCLUSION";end="% END GENERALIZATION CONCLUSION"
