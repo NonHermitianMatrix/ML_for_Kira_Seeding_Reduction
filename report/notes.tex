@@ -1,0 +1,1112 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=25mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{hyperref}
+\hypersetup{hidelinks,
+  pdftitle={Notes on Machine Learning for Kira IBP Reduction},
+  pdfsubject={Feynman integrals, IBP reduction, seed, row and target-dependent equation selection}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\setlength{\emergencystretch}{2em}
+\title{\textbf{Notes on Machine Learning for Kira IBP Reduction}\\
+  \large Seed selection, elimination ordering and equation selection}
+\author{}
+\date{October 12, 2026}
+
+\begin{document}
+\maketitle
+\vspace{-1em}
+
+\begin{abstract}
+Feynman integral calculations are an important component of multiloop amplitude calculations in quantum field theory. In Quantum Chromodynamics (QCD), multiloop amplitudes and their associated Feynman integrals arise in higher-order perturbative calculations and can become increasingly complex at higher loop orders. Recent progress has automated these calculations to some extent using the framework Kira, which organizes target integrals into integral families and sectors, generate algebraic relations among the integrals by using integration by parts (IBP) identities, and reduce the resulting system to expressions in terms of a finite set of master integrals. We aim to explore the application of System 1 machine learning models to accelerate the IBP reduction process by investigating if lightweight learned models can improve seed selection. These models can predict the most useful integrals from which to generate IBP relations while minimizing redundant calculations. We will also explore System 1 models for learning efficient reduction and elimination sequences to minimize the number of algebraic operations required to express target integrals in terms of master integrals. Because the machine learning models will serve as decision-makers while the underlying IBP reduction and verification remain exact, these models can improve computational efficiency without compromising the correctness of the resulting reductions.
+\end{abstract}
+
+\clearpage
+\input{background}
+
+\section{ML for seed selection and elimination ordering}
+\label{sec:ml-roles}
+We first study two System 1
+models: one for seed selection and one for elimination ordering.
+Here a System 1 model is a small machine learning model that learns
+from recorded reductions and assigns scores to choices available at
+the current step. Training requires targets with known master
+expansions, the seeds that supply their equations and the steps used
+to reduce them. The implemented models and their completed training
+appear in Sections~\ref{sec:seed-model} and
+\ref{sec:reduction-model}, followed by their held-out tests.
+Section~\ref{sec:equation-selection} then adds a third model that
+selects identities generated from the retained seeds for the requested targets.
+
+The present experiments test seed-reference agreement, whether
+the stored identities from the predicted seeds suffice inside Kira,
+and reduction of a target coefficient row. We then compare complete
+symbolic reductions with Kira's existing strategies. A native adapter
+converts predicted seeds into sector bounds for equation generation,
+while the row adapter applies exact symbolic target-row updates before
+Kira finishes the reduction. Section~\ref{sec:cost-comparison} measures
+their costs. Section~\ref{sec:live-matrix} then places the row model
+inside Kira's evolving matrix, and Section~\ref{sec:native-acceleration}
+tests direct seed filtering and a compiled row policy with lower
+prediction costs.
+
+\subsection{Selecting seeds before equation generation}
+The first model receives the family definition, the target terms and
+their index vectors $\boldsymbol a$, the chosen master basis and a
+candidate seed list within stated sectors and index bounds. It
+assigns each candidate a separate probability of belonging to the
+target's recorded sufficient seed set, which allows several seeds
+to receive label one.
+
+During training, we pair each target with the seeds used by its
+checked reference reduction. Different reductions can use different
+sufficient sets, and the stored labels identify the selected reference
+set. They do not establish that every omitted seed is unnecessary.
+For use inside Kira, we supply the stored equations associated with
+the predicted seeds and check whether they suffice in the chosen
+master basis. An unresolved target requires further identities.
+Section~\ref{sec:seed-test-results} measures recovery of the recorded
+sets and then tests their algebraic sufficiency through symbolic
+Kira reductions. The second test also checks the full candidate
+pool as a fallback.
+
+\subsection{Choosing elimination steps within the solver}
+The second model receives the current coefficient matrix and the
+supplied allowed row operations. It assigns a probability to each
+operation, selects one operation and reports the selected
+probability as its confidence. An exact row update then applies
+Eq.~\eqref{eq:row-update}. The next state supplies the information
+for the next choice.
+
+Each training example specifies the matrix before the choice, the
+allowed pivots, and the recorded source row and integral to eliminate.
+The retained later steps permit checks of the complete path and its
+arithmetic count, while predictive features use the current state
+and supplied actions. In the present data, the source identities stay
+fixed and one target row changes during reduction. The native
+integration follows Kira's integral ordering and supplies allowed
+choices from the current evolving equations. This changes the states
+seen by the model and requires separate exact and runtime checks.
+
+The computational benefit depends on the total work: preparing
+features and evaluating the model must cost less than the algebraic
+work that its choices save. The tests therefore record complete-path
+arithmetic and timing as well as next-step agreement. The comparison in Section~\ref{sec:cost-comparison} measures
+complete symbolic reductions with the selected operations.
+
+\subsection{Integral data required for training and testing}
+To train and test both models, we need family denominators, kinematic
+parameters, targets and a master basis together with the exact
+coefficients in Eq.~\eqref{eq:reduction}. For a target containing
+several integrals, these coefficients specify the master expansion
+of the complete expression. Each example also identifies its source
+equations, actual IBP seeds and derivative operators. Algebraic
+identities, including mass partial fractions, remain separately
+identified because they carry no IBP seed.
+
+We construct targets from known master combinations and retain the
+operations used to form each target and reduce it back to the same
+basis. The elimination records give the coefficients before and after
+each step, all allowed source rows, the selected pivot and the
+operation counts. These records connect seed selection to the
+equations available for elimination.
+
+The known master coefficients provide a reference for checking
+complete reduction in the chosen basis, as described in
+Section~\ref{sec:ibp-reduction}~\cite{Kira3}. We keep these answers,
+the selected labels and future construction histories separate from
+the information used to predict a choice.
+Section~\ref{sec:integrals-generation} explains how we obtain the
+bases, construct the targets and check their seed and elimination
+records.
+\section{Target Integral Generation for Machine Learning}
+\label{sec:integrals-generation}
+To train and test the two models described in Section~\ref{sec:ml-roles},
+we constructed targets from master bases while retaining their source
+identities, seeds and algebraic steps. The initial collection contains
+49 master entries and 1,662 targets across 16 families. We then
+extended the collection to 1,000 families, giving 9,678 master
+entries and 240,472 targets with checked reference
+reductions~\cite{MasterIntegralData,TargetIntegralData,ExpandedIntegralData}.
+We first added 100 restricted coupled-vacuum mass profiles at each
+loop order from two through twelve, then 1,250 further profiles at each
+order from one through twelve. The complete collection contains
+17,100 family instances, 57,979 master entries and 2,301,272 targets.
+The following subsections define the earlier construction and then
+derive the added vacuum bases and reverse targets.
+Every target retains its exact symbolic definition and master
+expansion.
+
+\subsection{Initial one-loop families and their kinematics}
+We use the integral definition and normalization in
+Eq.~\eqref{eq:family}, with $d=4-2\epsilon$ and inverse propagators
+$D_i=q_i^2-m_i^2+\mathrm{i}0$. For each family, we specify the internal
+momenta $q_i$, the masses $m_i$ and the scalar products of the external
+momenta, so every index vector defines a particular integral. In the
+equations below we suppress the common $\mathrm{i}0$ prescription.
+We write $\mu=m^2$ for a common nonzero squared mass and
+$\mu_1=m_1^2$, $\mu_2=m_2^2$ for two independent nonzero squared masses.
+The symbols $x_s$ and $x_t$ denote momentum invariants and remain
+distinct from the index sums $s$ and $t$ in
+Eq.~\eqref{eq:complexities}.
+
+The one-loop collection begins with a massive tadpole, whose single
+inverse propagator is $D_1=\ell_1^2-\mu$ and which has no external
+momentum. We then include four bubble families with external momentum
+$p$ and inverse propagators
+\begin{equation}
+ D_1=\ell_1^2-m_1^2,\qquad
+ D_2=(\ell_1-p)^2-m_2^2,\qquad p^2=x_s.
+ \label{eq:generated-bubble-family}
+\end{equation}
+The squared-mass pairs are $(0,0)$, $(\mu,0)$, $(\mu,\mu)$ and
+$(\mu_1,\mu_2)$, corresponding to a massless bubble, a bubble with one
+massive line, an equal-mass bubble and an unequal-mass bubble.
+We keep $x_s$ as an independent nonzero scale, with the massive
+families defined at generic values of their independent parameters.
+
+To include three-point integrals, we define triangle families by
+\begin{equation}
+ \begin{aligned}
+ D_1&=\ell_1^2-m_1^2,&
+ D_2&=(\ell_1-p_1)^2-m_2^2,&
+ D_3&=(\ell_1-p_1-p_2)^2-m_3^2,\\
+ p_1^2&=u_1,&p_2^2&=u_2,&(p_1+p_2)^2&=u_3.
+ \end{aligned}
+ \label{eq:generated-triangle-family}
+\end{equation}
+Here $u_1,u_2,u_3$ are the squared external momenta, also called
+external virtualities, and
+$p_1\cdot p_2=(u_3-u_1-u_2)/2$ fixes the remaining external scalar
+product. We use three massless families with
+$(u_1,u_2,u_3)=(0,0,x_s)$, $(0,x_2,x_3)$ and $(x_1,x_2,x_3)$.
+The parameters $x_1,x_2,x_3$ denote independent nonzero virtualities.
+We also use two families with $m_1^2=m_2^2=m_3^2=\mu$ and
+virtualities $(0,0,x_s)$ and $(x_1,x_2,x_3)$. Thus the five triangle
+families vary both the internal masses and the number of nonzero
+external virtualities.
+
+For four-point integrals, we use three massless box families with
+$p_4=-p_1-p_2-p_3$ and
+\begin{equation}
+ \begin{aligned}
+ D_1&=\ell_1^2,&D_2&=(\ell_1-p_1)^2,\\
+ D_3&=(\ell_1-p_1-p_2)^2,&
+ D_4&=(\ell_1-p_1-p_2-p_3)^2,\\
+ x_s&=(p_1+p_2)^2,&x_t&=(p_2+p_3)^2.
+ \end{aligned}
+ \label{eq:generated-box-family}
+\end{equation}
+Writing $u_i=p_i^2$ for $i=1,\ldots,4$, we fix the independent
+external scalar products through
+\begin{equation}
+ p_1\cdot p_2=\frac{x_s-u_1-u_2}{2},\qquad
+ p_2\cdot p_3=\frac{x_t-u_2-u_3}{2},\qquad
+ p_1\cdot p_3=\frac{u_4+u_2-x_s-x_t}{2}.
+ \label{eq:generated-box-kinematics}
+\end{equation}
+The virtuality choices are $(0,0,0,0)$, $(0,0,0,x_4)$ and
+$(x_1,x_2,x_3,x_4)$, where $x_4$ is the fourth nonzero virtuality
+parameter. These choices give boxes with zero, one and four off-shell
+legs; in this classification an on-shell external leg has $p_i^2=0$.
+We treat the remaining invariants as independent subject to the stated
+relations. These definitions give 13 one-loop families, which we
+extend with the following three two-loop families.
+
+\subsection{Initial two-loop families and auxiliary expressions}
+The two-loop families use loop momenta $\ell_1,\ell_2$. For a massless
+two-point integral with external momentum $p$ and $p^2=x_s$, we take
+\begin{equation}
+ (D_1,D_2,D_3,D_4,D_5)
+ =\bigl(\ell_1^2,\ell_2^2,(\ell_1-\ell_2)^2,
+        (\ell_1-p)^2,(\ell_2-p)^2\bigr).
+ \label{eq:generated-two-loop-propagator}
+\end{equation}
+These five expressions determine the five loop-dependent scalar
+products $\ell_1^2,\ell_2^2,\ell_1\cdot\ell_2,\ell_1\cdot p$ and
+$\ell_2\cdot p$. Varying their indices therefore includes numerator
+insertions as well as repeated propagators.
+
+For the equal-mass sunrise with the same external invariant, we use
+\begin{equation}
+ \begin{aligned}
+ D_1&=\ell_1^2-\mu,&D_2&=\ell_2^2-\mu,&
+ D_3&=(p-\ell_1-\ell_2)^2-\mu,\\
+ D_4&=(p-\ell_1)^2,&D_5&=(p-\ell_2)^2,&
+ a_4,a_5&\leq0.
+ \end{aligned}
+ \label{eq:generated-sunrise-family}
+\end{equation}
+The first three expressions are the physical inverse propagators.
+The auxiliary expressions $D_4,D_5$ complete the five scalar products
+needed to express the derivatives in the IBP identities. Their
+nonpositive indices restrict them to numerator factors or their
+absence, so the top sector contains only $D_1,D_2,D_3$ as
+denominators. We keep $x_s$ and $\mu$ independent.
+
+The final family is the equal-mass two-loop vacuum sunset, which has
+no external momentum and uses
+\begin{equation}
+ D_1=\ell_1^2-\mu,\qquad D_2=\ell_2^2-\mu,\qquad
+ D_3=(\ell_1-\ell_2)^2-\mu.
+ \label{eq:generated-vacuum-family}
+\end{equation}
+These three expressions determine all loop scalar products for this
+vacuum family. For every family, we include the sector containing all
+physical propagators and all its subsectors, so the resulting basis
+also accounts for integrals with removed propagators. The number of
+physical propagators in this top sector is denoted by $t_{\rm top}$.
+It is one, two, three and four for the tadpole, bubble, triangle and
+box families, respectively, five for the massless two-loop propagator,
+and three for the sunrise and vacuum families. This number sets the
+initial range of identities used to identify the masters.
+
+\subsection{Identification and checks of the master bases}
+\label{sec:master-basis-checks}
+For each initial family, we used Kira 3.1 to generate IBP relations together
+with the applicable Lorentz-invariance and symmetry relations.
+Kira removes scaleless sectors and uses finite-field elimination
+to identify the integrals that remain independent in the equations
+needed for a selected integral range~\cite{KiraOriginal,Kira3}.
+We used Kira's integral ordering~1 throughout, which orders sectors
+by their labels and prefers numerator insertions over extra
+denominator powers when selecting representatives within a
+sector~\cite{Kira12}. Keeping this ordering fixed gives a specified
+basis against which to compare later calculations.
+
+We first generated identities from seeds satisfying
+\begin{equation}
+ r\leq t_{\rm top}+2,\qquad s\leq2,\qquad
+ n_{\rm dot}\leq2,
+ \label{eq:master-discovery-seeds}
+\end{equation}
+and selected integrals to probe the basis within
+\begin{equation}
+ r\leq t_{\rm top}+1,\qquad s\leq1,\qquad
+ n_{\rm dot}\leq1.
+ \label{eq:master-discovery-probes}
+\end{equation}
+Here $r$ is the sum of positive indices, $s$ is minus the sum of
+negative indices and $n_{\rm dot}=r-t$ is the number of extra
+denominator powers, as defined in Eq.~\eqref{eq:complexities}.
+Both sets of limits apply to the top sector and its subsectors.
+The probe integrals specify the range for which Kira must identify
+the required masters, while the wider seed range supplies relations
+that can eliminate the additional integrals introduced by index
+shifts. These probes serve the basis calculation; the ML examples
+come from the subsequent reverse construction.
+
+Kira evaluated the coefficients of these relations over a finite
+field using the substitution in Eq.~\eqref{eq:modular-selection}.
+For the first calculation we used the prime $P_1=2147483647$ and
+dimension value $d_1=37$. To specify the kinematic substitutions,
+define the ordered parameter list
+\begin{equation}
+ \boldsymbol z=(x_s,x_t,x_1,x_2,x_3,x_4,\mu,\mu_1,\mu_2).
+ \label{eq:master-sample-parameters}
+\end{equation}
+The first sample was
+\begin{equation}
+ \boldsymbol z^{(1)}=(-13,-19,-11,-17,-29,-43,7,7,23),
+ \label{eq:master-first-sample}
+\end{equation}
+using only the entries present in each family and retaining all
+zeros and equal-mass conditions in its definition. We interpret
+these assignments modulo $P_1$ when evaluating the identity
+coefficients. The dimension sample corresponds to
+$\epsilon_1=(4-d_1)/2$ in the same field. These substitutions
+test algebraic relations; the master labels continue to refer to
+integrals at symbolic $\boldsymbol x,\epsilon$.
+
+We then enlarged the seed and probe ranges to check whether the
+initial basis remained sufficient:
+\begin{equation}
+ \begin{aligned}
+ \text{seeds:}\quad&
+ r\leq t_{\rm top}+3,\qquad s\leq3,\qquad n_{\rm dot}\leq3,\\
+ \text{probes:}\quad&
+ r\leq t_{\rm top}+2,\qquad s\leq2,\qquad n_{\rm dot}\leq2.
+ \end{aligned}
+ \label{eq:master-expanded-bounds}
+\end{equation}
+We repeated the calculation first at the original sample and then
+at a second sample with prime $P_2=1000000007$, dimension $d_2=41$
+and
+\begin{equation}
+ \boldsymbol z^{(2)}=(-31,-47,-23,-37,-53,-71,11,11,29).
+ \label{eq:master-second-sample}
+\end{equation}
+Changing the prime, the dimension and the independent kinematic
+parameters provides a second check of the linear dependencies,
+since particular substitutions can lower the rank of the
+symbolic coefficient matrix~\cite{Kant}.
+
+In both enlarged calculations, we supplied the original masters as
+the preferred basis and enabled Kira's check for additional or
+unused masters~\cite{Kira3}. We required the complete list of
+master index vectors to agree in all three calculations, and
+also checked each vector against its family definition and sector
+label. All 16 families satisfied these requirements, giving
+48 completed master-identification calculations. The agreement
+provides evidence for basis stability over the tested index ranges
+and sample points. Completeness for arbitrary integer indices
+would require further relations or an independent argument, and
+special kinematic limits can change the basis.
+
+We stopped each calculation after master identification. This stage
+determines which symbolic integrals form the starting basis within
+the checked domains. We then obtained rational reduction coefficients
+for the constructed targets through the algebraic procedure described
+below. The numerical values and $\epsilon$ expansions of the
+master integrals remain separate from this basis determination.
+
+\subsection{Resulting bases and the starting coefficients}
+The massive tadpole gave one master. The massless, one-mass,
+equal-mass and unequal-mass bubbles gave one, two, two and three
+masters, respectively. The massive bubble bases include the
+necessary tadpole subsectors, with two distinct tadpoles when
+the internal masses differ.
+
+The massless triangles with one, two and three nonzero external
+virtualities gave one, two and four masters, respectively.
+For the first two families, Kira chose bubble integrals in
+subsectors as the masters. The three-virtuality family also
+retained a triangle integral. The equal-mass triangles with
+one and three nonzero virtualities gave three and five masters.
+The massless boxes with zero, one and four off-shell legs gave
+three, four and eleven masters, respectively, including the
+required lower sectors in each count.
+
+The massless two-loop propagator gave two masters, the equal-mass
+sunrise gave three, and the equal-mass vacuum sunset gave two.
+For the denominator order in
+Eq.~\eqref{eq:generated-sunrise-family}, the sunrise basis is
+\begin{equation}
+ M_1=I_{(1,1,0,0,0)},\qquad
+ M_2=I_{(1,1,1,0,0)},\qquad
+ M_3=I_{(1,1,1,-2,0)}.
+ \label{eq:generated-sunrise-basis}
+\end{equation}
+The first integral factorizes into a product of two massive
+tadpoles because removing $D_3$ separates the loop integrations.
+The other two integrals retain all three sunrise propagators,
+and $M_3$ contains the numerator factor $D_4^2$. This example
+shows how the chosen ordering can retain a numerator integral
+as a master.
+
+The counts sum to 49 master entries across these 16 initial families.
+We count each basis within its own family, so shared tadpole
+and bubble subsectors can appear in more than one family.
+The complete family definitions and master index vectors are
+available with the accompanying data~\cite{MasterIntegralData}.
+Each entry specifies the denominators, kinematics, index vector,
+sector and mass dimension. With the normalization in
+Eq.~\eqref{eq:family}, the latter is
+\begin{equation}
+ [I_{\boldsymbol a}]_{\rm mass}
+ =L d-2\sum_{i=1}^{N}a_i,
+ \label{eq:generated-mass-dimension}
+\end{equation}
+where $[I_{\boldsymbol a}]_{\rm mass}$ is the power of mass
+carried by the integral. Each loop measure contributes $d$
+powers and each factor $D_i^{-a_i}$ contributes $-2a_i$.
+This dimension constrains the coefficients used to combine
+integrals in the target construction.
+
+For that construction, we kept the identified masters symbolic
+and initialized each master as itself. If
+$\boldsymbol\mu^{(m)}$ is the index vector of master $M_m$,
+the starting coefficients are
+\begin{equation}
+ M_m=I_{\boldsymbol\mu^{(m)}},
+ \qquad
+ C_{\boldsymbol\mu^{(m)}n}=\delta_{mn},
+ \qquad m,n=1,\ldots,n_M.
+ \label{eq:master-initialization}
+\end{equation}
+Here $n_M$ is the number of masters in the selected family,
+and $\delta_{mn}$ is one when $m=n$ and zero otherwise.
+Thus each master has coefficient one for itself and zero
+for the others. We held the family definition and basis fixed
+while constructing its targets, starting with these masters and
+extending the collection through the identities below. Each accepted
+target therefore has a specified reference basis and an exact master
+expansion.
+
+\subsection{Source identities and the reference integral order}
+To extend the starting masters into targets, we first generated
+relations among the integrals of each family. We used the IBP identity
+in Eq.~\eqref{eq:ibp} with seeds in every nonempty physical sector
+within the bounds of Eq.~\eqref{eq:master-discovery-seeds}.
+The auxiliary sunrise indices remained nonpositive. We fixed this
+candidate seed set before constructing targets, and retained each
+equation with its seed $\boldsymbol\sigma$, differentiated loop
+momentum $\ell_k$ and vector $v$~\cite{ChetyrkinTkachov,KiraOriginal}.
+The resulting equations can contain integrals beyond the seed bounds
+because differentiation shifts the indices.
+
+The vectors $v$ included loop momenta, external momenta and propagator
+momenta $q_i$. Each propagator momentum is a fixed linear combination
+of loop and external momenta, so its IBP equation is the corresponding
+linear combination of the usual IBP equations at the same seed.
+We retained this decomposition to specify how each equation follows
+from its source operators. We also obtained symmetry relations by
+explicit changes of loop variables whose loop transformation matrix
+has determinant $+1$ or $-1$. We accepted a transformation when it
+permuted the inverse propagators with their masses unchanged and
+preserved the physical and auxiliary index positions.
+
+To give the constructions a reduction order, we protected the chosen
+masters from elimination and ordered every other integral by
+\begin{equation}
+ \bigl(S(\boldsymbol a),\,n_{\rm dot}(\boldsymbol a),\,
+       s(\boldsymbol a),\,r(\boldsymbol a),\,\boldsymbol a\bigr).
+ \label{eq:target-reference-order}
+\end{equation}
+Here $S$ is the sector number in Eq.~\eqref{eq:sector}, and the remaining
+quantities are the index sums in Eq.~\eqref{eq:complexities}.
+We compare the entries in the displayed order, using the first
+unequal entry to decide which integral is larger. We compare the
+components of $\boldsymbol a$ in the same way when all earlier entries
+agree. The leading integral of an equation is its largest integral
+outside the master basis. This reference order specifies the
+construction and recorded reductions; adapting the elimination model
+to Kira will require its actual ordering and available pivot choices.
+
+\subsection{Reverse construction from combinations of masters}
+To obtain target expressions with known answers, we selected subsets
+of masters from the same family and replaced their terms through the
+source identities. Let $\mathcal J=\{m_1,\ldots,m_h\}$ be the selected
+master labels, where $h$ is the number of chosen masters. The initial
+expression is
+\begin{equation}
+ \mathcal T_0=\sum_{m\in\mathcal J}c_m(\boldsymbol x,d)M_m,
+ \qquad 1\leq h\leq\min(3,n_M).
+ \label{eq:generated-combination}
+\end{equation}
+The coefficients are rational functions of the independent kinematic
+parameters and $d=4-2\epsilon$, with no dependence on the loop momenta.
+Writing them in terms of $d$ is equivalent to writing them in terms
+of $\epsilon$. Their mass dimensions must compensate for differences
+between the chosen masters so that every term in $\mathcal T_0$ has
+the same dimension.
+
+For this purpose, let $B_m=\sum_i\mu_i^{(m)}$ be the sum of the indices
+of master $M_m$, and set $A=B_{m_1}$. For a fixed nonzero squared mass
+or momentum invariant $Q^2$ in the family, we used
+\begin{equation}
+ c_{m_j}=u_j(d)(Q^2)^{B_{m_j}-A},
+ \qquad
+ [\mathcal T_0]_{\rm mass}=Ld-2A.
+ \label{eq:target-initial-weights}
+\end{equation}
+Here $j=1,\ldots,h$ identifies a selected master and $u_j$ is
+dimensionless. We varied the weights through the three forms
+\begin{equation}
+ \begin{aligned}
+ u_j(d)&\in\left\{\eta_j,\,
+          \eta_j\frac{d-2}{d-4},\,
+          \eta_j\frac{j+1}{d-2}\right\},\\
+ \eta_j&\in\{-3,-2,-1,1,2,3\}.
+ \end{aligned}
+ \label{eq:target-dimensionless-weights}
+\end{equation}
+Here $\eta_j$ is a nonzero integer weight. For each sequence we chose
+one of these three forms and varied the integer weights and selected
+masters. The power of $Q^2$ in
+Eq.~\eqref{eq:target-initial-weights} gives $c_m$ mass dimension
+$2(B_m-A)$, so Eq.~\eqref{eq:generated-mass-dimension} gives the
+stated common dimension.
+
+To replace a term, write the current expression and a source
+IBP identity as
+\begin{equation}
+ \mathcal T_n=\sum_{\boldsymbol b}w_{\boldsymbol b}^{(n)}
+                         I_{\boldsymbol b},
+ \qquad
+ R=\sum_{\boldsymbol b}r_{\boldsymbol b}I_{\boldsymbol b}=0.
+ \label{eq:target-source-row}
+\end{equation}
+Here $n$ is the number of completed replacements, while
+$w_{\boldsymbol b}^{(n)}$ and $r_{\boldsymbol b}$ are the coefficients
+of integral $I_{\boldsymbol b}$ in the expression and identity.
+The sums contain their finitely many nonzero terms. For a present
+term $I_{\boldsymbol a}$, we selected an identity generated at seed
+$\boldsymbol a$ with $r_{\boldsymbol a}\ne0$, and formed
+\begin{equation}
+ \mathcal T_{n+1}
+ =\mathcal T_n-\frac{w_{\boldsymbol a}^{(n)}}{r_{\boldsymbol a}}R.
+ \label{eq:target-reverse-substitution}
+\end{equation}
+This operation cancels the chosen term and introduces other family
+integrals. Since $R=0$, the resulting expression has the same master
+expansion as $\mathcal T_0$. We required the identity to introduce
+a leading integral larger than every integral already present, so
+the recorded steps can be reversed through the order in
+Eq.~\eqref{eq:target-reference-order}.
+
+For the initial collection, we attempted 24 sequences per family,
+with at most four replacements
+per sequence, and retained accepted intermediate expressions.
+A sequence stopped when no admissible replacement was found within
+the construction limits. We removed identical target expressions and
+retained only nonzero targets with complete reference reductions.
+When the final expression contained one integral with coefficient
+$q\ne0$, we divided the expression and its master coefficients by
+$q$ and recorded this normalization. Expressions containing several
+index vectors remain targets for reduction of the complete sum.
+To obtain further individual integrals, we also applied the source
+identities in the following way.
+
+\subsection{Constructing individual integrals from known reductions}
+Starting from Eq.~\eqref{eq:master-initialization}, we searched for a
+source identity whose leading integral was the only term without a
+known master expansion. Such an identity has the form
+\begin{equation}
+ h_0 I_{\boldsymbol b}
+ +\sum_{j=1}^{n_R}h_j I_{\boldsymbol a^{(j)}}=0,
+ \qquad h_0\ne0,
+ \label{eq:generation-identity}
+\end{equation}
+where $I_{\boldsymbol b}$ is the new integral, $n_R$ is the number
+of other terms and $h_0,h_j$ are the identity coefficients.
+Substituting the known reductions of the other terms gives
+\begin{equation}
+ I_{\boldsymbol b}
+ =\sum_{m=1}^{n_M}C_{\boldsymbol b m}M_m,
+ \qquad
+ C_{\boldsymbol b m}
+ =-\sum_{j=1}^{n_R}\frac{h_j}{h_0}
+                    C_{\boldsymbol a^{(j)}m}.
+ \label{eq:generated-integral-reduction}
+\end{equation}
+We added each resulting expansion to the known set so later identities
+could use it. If all its master coefficients vanished, we retained the
+zero-integral proof as a dependency for subsequent constructions.
+The target collection contains the accepted nonzero examples.
+
+For the initial collection, we made at most five passes through the
+source equations and allowed at most 64 new nonzero constructions
+of this type per family.
+An equation with several still-unknown integrals became usable only
+after other identities supplied the missing expansions. Solving
+remaining coupled systems would extend this construction beyond the
+individual integrals obtained here. Both this procedure and the
+reverse replacements above preserve the source equations and their
+dependencies, which determine the seed and elimination records.
+
+\subsection{Seed records and elimination sequences}
+For each accepted target, we retained its exact master coefficients
+together with the source identities used to obtain them. An IBP
+identity contributes its seed and derivative operator, while a
+symmetry identity contributes its loop-variable transformation and
+integral mapping. Dependencies carry the earlier identities needed
+to reduce intermediate integrals or establish that they vanish.
+For an IBP step of the form in Eq.~\eqref{eq:generation-identity},
+the sufficient seed set therefore obeys
+\begin{equation}
+ \mathcal S_{\boldsymbol b}
+ =\{\boldsymbol\sigma\}\,\cup\!
+   \bigcup_{j=1}^{n_R}\mathcal S_{\boldsymbol a^{(j)}},
+ \qquad
+ \mathcal S_{\boldsymbol\mu^{(m)}}=\varnothing.
+ \label{eq:generated-seed-record}
+\end{equation}
+Here $\mathcal S_{\boldsymbol a}$ is the seed set recorded for
+$I_{\boldsymbol a}$, $\boldsymbol\sigma$ is the seed of the current
+IBP identity and $\varnothing$ is the empty set. Symmetry steps retain
+the dependency sets and their symmetry record. For reverse
+constructions, the seed set is the union of the seeds of the identities
+used along the recorded path.
+
+We retained the full candidate seed set alongside each family so the
+seed model can compare possible choices. The recorded subset supplies
+enough equations for the known reduction, and seeds outside it can
+still contribute to other valid reductions. For the model inputs,
+we stored the family, basis, target coefficients and index information,
+including the sector and $t,r,s,n_{\rm dot}$. We kept the exact answer,
+construction history and reference seed choices separately.
+
+To obtain elimination examples, we represented the target as a row
+of coefficients $T_{\boldsymbol b}$ multiplying $I_{\boldsymbol b}$.
+At each step, we selected its largest remaining integral outside the
+master basis, denoted by $I_{\boldsymbol a}$. The available pivot rows
+were the retained source identities with leading integral
+$I_{\boldsymbol a}$ and a nonzero coefficient for that integral.
+For the chosen row $R$, the update was
+\begin{equation}
+ T_{\boldsymbol b}\ \longleftarrow\
+ T_{\boldsymbol b}
+ -\frac{T_{\boldsymbol a}}{r_{\boldsymbol a}}r_{\boldsymbol b}.
+ \label{eq:target-elimination-update}
+\end{equation}
+This cancels $I_{\boldsymbol a}$ from the target and can introduce only
+smaller integrals or masters. Repeating the recorded choices gives
+the target's known master expansion. The source equations remain
+unchanged during this target-row reduction, so the current row,
+source equations and reference order specify the state seen by
+the elimination model.
+
+For every step, we retained the row before and after the update,
+all available pivot rows, the selected equation and integral, the
+multiplier, and the numbers of new and cancelled nonzero entries.
+We kept the coefficients as exact rational functions and also stored
+numerical row states over a finite field. The first sample in
+Eq.~\eqref{eq:master-first-sample}, with $P_1=2147483647$ and $d_1=37$,
+supplied these numerical states. Substituting parameters into the
+coefficient functions leaves the integrals symbolic and uses exact
+modular arithmetic for the row operations~\cite{Kira2}.
+
+For a selected source row with $n_{\rm row}$ nonzero terms, we counted
+one finite-field division and $n_{\rm row}$ multiplications and
+subtractions. Summing these counts gives the cost of the recorded
+target-row sequence. Equation generation, forming combined IBP
+operators, symbolic simplification, model inference and reconstruction
+fall outside this count. The construction gives a valid reference
+path and an upper bound on the minimum cost under these rules.
+Establishing a minimum would require a separate argument covering
+alternative seed sets and elimination paths.
+
+\subsection{Initial target collection and consistency checks}
+The initial collection contains 1,662 accepted targets across its 16 families,
+with 309 individual integrals, 1,353 integral expressions and 5,138
+recorded elimination steps~\cite{TargetIntegralData}. We divided the
+examples by complete families into 1,290 training targets, 185
+validation targets and 187 test targets. Validation targets belong
+to the unequal-mass bubble and massless triangle with three off-shell
+legs. Test targets belong to the massless box with four off-shell
+legs and the equal-mass sunrise. These held-out targets contain terms
+in the full physical sector, while their basis definitions still
+include the required lower sectors.
+
+In this initial collection, the validation set consists entirely of integral
+expressions, and the test set contains one individual integral and 186
+expressions. These initial counts motivate the additional held-out
+individual constructions described below.
+This initial collection covers the specified one-loop and two-loop
+families and the stated construction bounds. The following sections
+describe seed-model training and its held-out comparison on the
+expanded collection. Section~\ref{sec:reduction-model} describes the reduction model.
+Section~\ref{sec:reduction-test} measures complete target-row sequences
+and their selection costs. Section~\ref{sec:cost-comparison} compares complete symbolic reductions, including native Kira seeding.
+
+Before accepting the collection, we rederived all 55,654 stored source
+equations from their family definitions and checked the recorded
+symmetry transformations. We also checked 2,699 used IBP equations
+by independently differentiating the original quadratic expressions
+for the propagators in terms of loop scalar products. We then replayed
+every target construction and elimination sequence with exact rational
+functions, including intermediate zero-integral dependencies and final
+normalizations. Each final result agreed with its stored master
+expansion, and the checks also confirmed mass dimensions, seed
+records and allowed pivots.
+
+To check the sampled coefficients, we repeated every elimination
+sequence at three finite-field points. The first two were the samples
+in Eqs.~\eqref{eq:master-first-sample} and
+\eqref{eq:master-second-sample}, with the primes and dimension values
+specified there. The third used $P_3=1000000009$, $d_3=43$ and
+\begin{equation}
+ \boldsymbol z^{(3)}
+ =(-59,-73,-41,-61,-83,-101,17,17,47),
+ \label{eq:target-third-sample}
+\end{equation}
+in the parameter order of Eq.~\eqref{eq:master-sample-parameters}.
+Each family used its own parameters and retained its prescribed
+zeros and equal masses. All required divisions were defined at the
+three points, and every sampled reduction reproduced the reference
+coefficients.
+
+The exact symbolic checks establish the recorded reductions from
+their source identities at generic parameters, while the three-point
+checks verify the numerical data supplied with them. This construction
+already provides the symbolic coefficient functions, so obtaining the
+reference answers requires no rational-function reconstruction.
+The accompanying data contain the targets, equations, construction
+histories, sufficient seeds and elimination records needed to train
+and test the two proposed models~\cite{TargetIntegralData}.
+
+
+\subsection{Extension to different mass and kinematic conditions}
+To supply examples across a wider range of parameter conditions, we
+added 984 one-loop families with four physical propagators. For these
+families, we write
+\begin{equation}
+ D_i=(\ell_1-Q_i)^2-\mu_{\alpha_i}+\mathrm{i}0,
+ \qquad i=1,\ldots,4,\qquad Q_1=0.
+ \label{eq:expanded-denominators}
+\end{equation}
+Here $Q_2,Q_3,Q_4$ are three independent external momentum vectors,
+$\mu_0=0$ and $\mu_1,\mu_2,\mu_3$ are independent nonzero squared
+masses. Each label $\alpha_i\in\{0,1,2,3\}$ assigns the squared mass
+of the corresponding propagator. Repeated positive labels impose
+equal masses.
+
+We specify the external kinematics through the six squared differences
+between the propagator shifts:
+\begin{equation}
+ \Delta_{ij}=(Q_i-Q_j)^2=y_{\beta_{ij}},
+ \qquad 1\leq i<j\leq4.
+ \label{eq:expanded-distances}
+\end{equation}
+Here $y_0=0$, $y_1,y_2,y_3$ are independent nonzero momentum invariants,
+and $\beta_{ij}\in\{0,1,2,3\}$. Repeated labels impose equality between
+the corresponding invariants. The mass parameters and momentum
+invariants remain independent of one another, and a family uses only
+the parameters that occur in its assignments.
+
+These distances determine the external scalar products:
+\begin{equation}
+ G^{\rm ext}_{ij}=Q_i\cdot Q_j
+ =\frac{\Delta_{1i}+\Delta_{1j}-\Delta_{ij}}{2},
+ \qquad i,j=2,3,4,\qquad \Delta_{ii}=0.
+ \label{eq:expanded-gram}
+\end{equation}
+The matrix $G^{\rm ext}$ is the external Gram matrix. We required it
+to be nonsingular at all three recorded sample points, which also
+excludes a determinant that vanishes identically under the stated
+parameter conditions. Each family then defines a symbolic integral
+problem through its particular zero and equality relations.
+
+To remove equivalent definitions, we compared the assignments under
+all 24 permutations of the four propagators, together with independent
+relabelling of the nonzero mass and momentum-invariant parameters.
+The enumeration found 1,673 inequivalent profiles satisfying the
+parameter and sample requirements after excluding the existing
+massless box definitions. A fixed ordering selected 984 of these
+profiles~\cite{ExpandedIntegralData}. Together with the original
+families, this earlier collection contained 997 one-loop and three two-loop
+families. The added profiles share the four-propagator box topology,
+so the family count describes different mass and kinematic conditions
+within this topology.
+
+We identified and checked a master basis separately for every added
+family using the three calculations in
+Subsection~\ref{sec:master-basis-checks}.
+The four-propagator families have $t_{\rm top}=4$, so the first seed
+range has $r\leq6$, $s\leq2$ and $n_{\rm dot}\leq2$. We then enlarged
+the seed and probe ranges, supplied the first masters as the preferred
+basis and repeated the basis check at a second point and prime.
+All 1,000 families passed their three basis calculations, giving
+3,000 completed checks within the recorded domains.
+
+For the added families, define
+\begin{equation}
+ \boldsymbol w=(y_1,y_2,y_3,\mu_1,\mu_2,\mu_3).
+ \label{eq:expanded-parameters}
+\end{equation}
+We used the same three primes and dimension values specified above,
+with the parameter assignments
+\begin{equation}
+ \begin{aligned}
+ \boldsymbol w^{(1)}&=(-11,-19,-29,7,13,23),\\
+ \boldsymbol w^{(2)}&=(-31,-47,-61,11,17,29),\\
+ \boldsymbol w^{(3)}&=(-41,-67,-83,17,23,37).
+ \end{aligned}
+ \label{eq:expanded-samples}
+\end{equation}
+Each family uses only its present parameters and retains all specified
+zeros and equalities. The first two points supply the basis checks,
+while the target validation uses all three.
+
+\subsection{Expanded targets and their verified reductions}
+Using the added bases, we applied the reverse construction in
+Eq.~\eqref{eq:target-reverse-substitution} with 48 attempted sequences
+per family and at most four replacements per sequence. We also allowed
+up to 96 nonzero individual-integral constructions per added family,
+using at most five passes through the source identities. The initial
+master weights retain the rational functions and mass-dimension
+conditions in Eqs.~\eqref{eq:target-initial-weights} and
+\eqref{eq:target-dimensionless-weights}.
+
+When the first construction produced no accepted targets, we extended
+the candidate equations to every retained IBP identity containing the
+selected current integral. Its seed $\boldsymbol\sigma$ can then differ
+from that integral's index vector $\boldsymbol a$. The substitution
+still uses the coefficient of $I_{\boldsymbol a}$ in the selected
+identity and preserves the known master expansion. This extension
+allows a reverse path to enter a higher sector through an identity
+generated there, including cases whose masters all lie in lower
+sectors. We retain the actual seed, require the new leading integral
+to increase under the reference order, and check every step in the
+resulting reduction.
+
+To add individual integrals to the held-out sets, we also used the
+checked construction proofs to select integrals whose four indices
+are all nonzero and include at least one negative index. Each selected
+integral already has a known master expansion. We retained it as a
+separate target and rebuilt its elimination trace from the recorded
+identities. This step added 384 individual targets. Each has
+one denominator factor and three numerator factors, with their powers
+specified by the index vector. The complete four-expression definition
+therefore enters the target, while its positive indices place it in a
+one-propagator sector.
+
+Before the higher-loop extension, the collection contained 9,678 master entries and
+240,472 targets: 55,768 individual integrals and 184,704
+integral expressions~\cite{ExpandedIntegralData}. We count master entries
+within each family, so related lower-sector integrals can
+occur in several bases. Every target has its complete master expansion,
+source identities, sufficient seeds and recorded elimination path.
+
+For the added families, we kept each complete kinematic zero and
+equality pattern in one data split across all mass assignments.
+This grouping also respects the original training box profiles.
+We assigned the original validation bubble and triangle examples to
+the combined training set because those integral families also occur
+as lower sectors of the added training families. The new grouped
+families supply the expanded validation set.
+The original data-generation split contained 771 training families with
+198,527 targets, 106 validation families with 19,600 targets,
+and 123 test families with 22,345 targets. The reverse sequences
+require validation and test expressions to contain terms in their full
+physical sectors. The additional individual targets instead require
+all four family expressions to occur, including those in the numerator.
+Shared lower-sector masters remain part of the family definitions.
+The complete family profile is held out, while some lower-sector
+reduction structure can also occur in training.
+
+The original data-generation validation set contained 183 individual integrals and
+19,417 integral expressions, while the corresponding test set contained 202
+individual integrals and 22,143 expressions. These counts describe
+the original construction samples. The grouped model division
+described below replaces this three-way data-generation division. The added individual targets
+supply tests of numerator integrals in one-propagator sectors.
+The higher-loop construction below supplies additional individual targets and expressions in coupled vacuum families. Sections~\ref{sec:seed-test-results} and \ref{sec:reduction-test}
+measure the two models on the current grouped split.
+
+We rederived 3,299,902 source equations and checked 227,330
+used IBP equations by independent differentiation across this earlier
+collection. We replayed all 240,472 target constructions and 832,924
+recorded elimination steps with exact rational functions.
+Every reduction reproduced its reference master coefficients, and
+the three finite-field replays checked the corresponding numerical
+rows. We also checked family equivalence, the grouping of data splits
+and the correspondence between every saved target and its records.
+The accompanying collection provides the family definitions, bases,
+targets and complete reduction data~\cite{ExpandedIntegralData}.
+
+
+\input{higher_loops}
+
+\input{seed_model}
+\input{seed_model_test}
+\input{reduction_model}
+\input{reduction_test}
+\input{kira_comparison}
+\input{kira_live_matrix}
+\input{kira_acceleration}
+\input{kira_fast_expression}
+
+\input{kira_multiloop_methods}
+\input{kira_multiloop_results}
+
+\input{kira_integrated_methods}
+\input{kira_integrated_results}
+
+\input{kira_integrated_pair}
+
+\input{kira_shared_evaluation}
+
+\input{kira_parallel_inference}
+
+\input{equation_selection}
+
+\input{generalization}
+
+\clearpage
+\section{Conclusion}
+\label{sec:conclusion}
+We integrated seed and source-row policies with exact native Kira reduction
+and reduced their evaluation cost while retaining the same decisions.
+The latest seed implementation evaluates independent neural outputs together,
+and the row implementation combines Euclid's modular inverse with direct
+integer evaluation and shared coefficient storage.
+All probability vectors agree in the thirty-six development contexts.
+Checks on 100,000 inverses and 1,000 sparse-row groups also agree.
+
+The new seed component has a time ratio of 0.423 to the preceding shared implementation. The row-feature component has a ratio of 0.803. These component savings require separate complete-reduction measurements because model evaluation is only one part of the calculation.
+
+The seed method has a complete-time ratio of 0.990 to its preceding implementation, with descriptive interval $[0.977,1.003]$. Its ratio to the new native control is 1.096, with interval $[0.963,1.275]$.
+
+The row method has a complete-time ratio of 0.990 to its preceding implementation, with descriptive interval $[0.971,1.010]$. Its ratio to the new native control is 0.982, with interval $[0.959,1.003]$.
+
+The combined method has a complete-time ratio of 0.984 to its preceding implementation, with descriptive interval $[0.965,1.007]$. Its ratio to the new native control is 1.100, with interval $[0.966,1.279]$.
+
+The descriptive complete-time intervals include one for all three comparisons with the preceding implementation. Component evaluation is faster, and the complete-workflow gain remains uncertain at this sample size. The seed and combined methods still have aggregate costs above the native control. The row-only comparison with native choices also includes one in its interval.
+
+All 144 validation workflows and 640 confirmation workflows pass the exact
+checks and preserve the recorded decisions and operation counts. These times
+include IBP generation, model evaluation, exact algebra, checks and fallback.
+The implementation comparison reuses eight physical
+profiles and retains the weights, thresholds and routing selected before
+confirmation~\cite{KiraParallelInferenceData}.
+
+
+The data construction provides 17,100 family instances, 57,979 family-local
+master entries and 2,301,272 targets with recorded identities and reduction
+paths. These paths provide valid reference constructions and costs.
+On 690,382 held-out targets, the seed model reaches 96.318\% $F_1$, and its
+predicted stored equations supply complete master-span reductions for
+94.515\% of targets. The full candidate pool supplies the remaining reductions.
+These label and sufficiency measures require separate runtime tests; the
+earlier cost comparisons and their negative results remain part of the
+study~\cite{HigherLoopIntegralData,SeedModelTestData,KiraSeedSufficiencyData,KiraCostComparisonData}.
+
+For production use, the interface needs a prescribed master basis and can
+calculate target coefficients without their reference answers. Native exact
+IBP operations determine the coefficients, and explicit output-basis admission
+detects incomplete seed sets. Eight application checks pass independent
+coefficient comparisons after execution with reference answers withheld
+from the reducer. The report keeps this native algebraic assurance separate
+from the additional reference comparisons used in the benchmark.
+
+The original collection through twelve loops uses restricted coupled vacuum
+families. The native performance comparisons cover physical two- and
+three-loop inputs at fixed rational kinematics with symbolic $d$.
+The ladder topology is absent from that row-policy training and validation
+sets. Those native timing comparisons retain their fixed-kinematic scope.
+Section~\ref{sec:generalization} extends the tests to new scattering
+topologies and independent symbolic invariants and supplies finite
+optimality certificates. General high-loop scattering and optimality
+over unrestricted identity pools remain open.
+
+
+
+
+
+
+
+% BEGIN EQUATION CONCLUSION
+The third model selects generated identities for the requested targets.
+The broad test found that incomplete vacuum filters added fallback cost.
+A restricted route was then fixed and tested on six fresh sunrise profiles.
+It gives a complete-time ratio of 0.994, with descriptive interval $[0.991,0.997]$
+and an equation-preparation ratio of 0.785, with descriptive interval $[0.776,0.794]$.
+All 162 confirmation comparisons, 36 checks with the two earlier models
+and six applications pass exact coefficient checks. The preceding deployed equation
+policy uses the recorded 21-target sunrise domain and retains native
+choices elsewhere~\cite{KiraEquationSelectionData}.
+The measured three-model composition is slower, with time ratio 1.317 to the earlier two-model configuration. That preceding interface therefore retains native equation choices when either earlier learned policy is active.
+% END EQUATION CONCLUSION
+
+
+% BEGIN EARLY EQUATION CONCLUSION
+Later training moves the equation decision before coefficient construction.
+The trees use 17 seed, operator and target features and train on
+153,124 native candidates in eight physical profiles.
+Validation selects early filtering with native seed and row choices for
+the recorded double-box, vacuum and ladder batches and retains the earlier
+sunrise route. On eight fresh profiles, the deployed policy gives a
+complete-time ratio of 0.943 to native choices, with descriptive interval
+$[0.915,0.970]$, and a preparation ratio of 0.638, with interval
+$[0.546,0.734]$. Its complete-time ratio to the preceding release is
+0.943. All 280 comparisons and eight basis-only applications pass
+independent exact checks. These results include inference and fallback costs
+and support the measured fixed-kinematic domain. The validation comparisons
+with the seed and row models remain recorded, and their added costs keep
+those combinations out of the selected route~\cite{KiraEarlyEquationData}.
+% END EARLY EQUATION CONCLUSION
+
+% BEGIN HIGHER LOOP CONCLUSION
+The higher-loop extension uses the exact variable \(z=L(d-2)\) for the
+restricted coupled vacuum family. The trained equation selector and a
+shared symbolic reduction cover every tested order from one through
+twelve, with exact applications at 13, 16, 24 and 32.
+The learned route with separate reductions at each loop order has complete-time ratio
+0.911 to the supplied full pool. Validation selects a
+simple rule for the mass pair for deployment; its shared route has complete-time
+ratio 0.155 to separate reductions with the full equation pool.
+Before Python startup and test-record archiving, the learned calculation
+has time ratio 0.943; time inside Kira has ratio
+0.965. All 96 workflows pass exact checks. These results establish the stated
+coefficient reuse within this family and cost comparisons. General
+native IBP generation at higher loop orders remains outside this test domain
+\cite{KiraHigherLoopData}.
+% END HIGHER LOOP CONCLUSION
+
+% BEGIN BATCH REUSE CONCLUSION
+The next extension learns shared equation choices for entire target batches
+and reduces repeated exact checks in the common variable \(z\). Its
+four-tree cost model trains on 420 batches and 6,300 candidate orderings.
+Combining independent profiles in one Kira call preserves separate master
+bases and reduces repeated startup work. On the final twelve reserved
+profiles, the selected combined route has complete-time ratio 0.220
+to the preceding separate workflow, with descriptive interval
+\([0.171,0.270]\). All 460 reserved applications and the additional
+integration checks pass exact comparisons; the integration tests also
+verify the full-system fallback. Compiled and Python inference produce
+identical equation systems. The comparisons separate model decisions,
+shared exact arithmetic and shared Kira calls, and apply to the stated
+restricted vacuum family~\cite{KiraBatchReuseData}.
+% END BATCH REUSE CONCLUSION
+
+% BEGIN PRE REDUCTION CONCLUSION
+The direct-reduction extension evaluates selected triangular identities with exact
+integer polynomial arithmetic and checks every master coefficient through
+an independent Taylor construction. Validation selects the simple direct route.
+On eight fresh three-profile batches, its calculation-time ratio to the
+preceding combined workflow is 0.306, with descriptive interval
+\([0.246,0.373]\). The full worker-time ratio is 0.430.
+All 200 reserved calculations pass exact checks, and an injected failure
+recovers through Kira. The comparison does not establish a further complete-time advantage from learned ordering over both direct controls.
+The direct saving follows mainly from the exact family-specific recurrence;
+the native IBP-generation results retain their earlier scope
+\cite{KiraPreReductionData}.
+% END PRE REDUCTION CONCLUSION
+
+% BEGIN POLYNOMIAL REUSE CONCLUSION
+The polynomial-reuse extension shares the exact transformations for \(z=L(d-2)\)
+and the Taylor terms in the independent check. On eight new reserved
+batches, both changes together have calculation-time ratio 0.372 to
+the preceding direct route and full worker-time ratio 0.682.
+Keeping one process for several batches gives combined full-time ratio
+0.365 across the three specified request streams. These streams share
+inputs, so this last ratio describes those sequences.
+All 352 reserved applications pass exact checks, including an independent
+audit of 28860 expanded coefficient positions. The request-interface
+checks also pass, including recovery through Kira after an injected failure.
+The changes reuse exact mathematical work and process startup; the
+previous model and ordering choice remain fixed. The supported domain
+remains the restricted coupled vacuum family, with native IBP-generation
+results retaining their earlier scope \cite{KiraPolynomialReuseData}.
+% END POLYNOMIAL REUSE CONCLUSION
+
+% BEGIN EXACT BACKEND CONCLUSION
+The compiled-arithmetic extension retains integer polynomial coefficients, compiles exact
+loop-order expansion and supplies lossless binary coefficient output.
+A 19-node regression tree learns batch strategies from 1,440 complete
+warm-worker measurements on 96 training batches. The first frozen test
+finds no established complete-time gain from the initial selected
+integer route once output reading is included. Compiling the binary
+reader then permits a new validation and independent test.
+Validation selects compiled expansion and binary output with a fixed recurrence rule. Its full process-time ratio to the preceding
+arithmetic is 0.850, and its ratio including output reading is 0.858,
+with descriptive interval \([0.800,0.914]\). The deployed persistent-worker ratio
+including reading is 0.725 across three disjoint test streams.
+All 948 reserved batch calculations across both studies pass exact
+checks. The learned-to-fixed time ratio is 1.017, with descriptive
+interval \([0.969,1.070]\). This interval includes one, so the reserved comparison does not establish a further time reduction from learned choices. The deployed default uses the fixed validation choice.
+The new tree, fixed-rule controls and earlier results remain preserved,
+and the supported domain remains the stated coupled vacuum family
+\cite{KiraExactBackendData}.
+% END EXACT BACKEND CONCLUSION
+
+% BEGIN CUMULATIVE CONCLUSION
+The direct cumulative comparison uses the saved original Kira executable and the final deployed route on identical restricted vacuum targets at every loop order from one through twelve. Eight independent mass-profile groups and five repetitions of three methods give 120 complete workflows. Including process startup, output saving and output reading, the final-to-original time ratio is 0.001839, corresponding to 543.815 times faster execution and 99.82\% less time. The descriptive 95\% speedup interval is \([488.134,605.064]\). All matched outputs agree exactly, and the independent audit checks 27960 nonzero target--master coefficient polynomials after loop-order substitution. This directly measures the cumulative change without multiplying earlier ratios. The gain includes shared symbolic reductions, direct checked recurrences, compiled arithmetic and output changes. The selected route uses a fixed recurrence rule and makes no Kira call on these successful cases, so the result retains the restricted supplied-identity scope \cite{KiraCumulativeData}.
+% END CUMULATIVE CONCLUSION
+
+% BEGIN GENERALIZATION CONCLUSION
+\noindent The scattering extension adds new nonplanar four-point and five-point inputs and exact reductions with independent symbolic invariants. All seventy comparison workflows pass, while the frozen equation filter requires native fallback in all thirty-five learned workflows and has complete-time ratio 1.252 to native choices. The new symbolic-capable application therefore defaults to native choices for these domains. Separate complete certificates prove seven-operation minima for two small physical systems when equation-subset selection and the stated pivot actions are allowed. The certificates cover finite source pools with three nonmaster columns; their costs and native coefficient checks provide exact reference labels without asserting a general minimum for scattering reductions~\cite{KiraGeneralizationData}.
+% END GENERALIZATION CONCLUSION
+
+\clearpage
+\renewcommand{\refname}{Citations}
+\bibliographystyle{unsrt}
+\bibliography{references}
+
+\end{document}

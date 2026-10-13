@@ -44,14 +44,14 @@
 - Keep a rendered PDF of the report alongside its LaTeX source, and rebuild the PDF when the report changes.
 - After each report update, synchronize the complete report/ folder across Hoffman, GitHub and /home/physics/projects/ML_for_Kira_SeedReduction/report on the local machine. Keep the local folder linked to the same repository through a shallow, partial Git checkout containing report/, rules.md and .gitignore. Preserve conflicting local edits before synchronization. This report-copy requirement is an explicit exception to the restriction on local generated data; do not download integral datasets or model-training data.
 - Describe completed work as a physics and mathematics report or paper, with connected explanations of the method and results. Keep code organization, commands, job identifiers and execution logs out of the scientific narrative. Distinguish completed calculations from proposed later stages.
-- Preserve text verbatim when the user explicitly requests exact wording, including the supplied abstract.
+- Preserve explicitly requested verbatim text in the archived notes, including the original supplied abstract. The new paper has its own results-based abstract, as requested on October 13, 2026.
 - Write explanations in clear, coherent paragraphs using simple language, consistent notation, and equations where useful. Keep the theoretical background general. When documenting completed calculations, specify the actual families, kinematics, mathematical procedure, checks and results needed to explain and reproduce them.
 - Organize the report as a concise, connected narrative: introduce where Feynman integrals arise and why they matter, then their mathematical form, then reduction methods and Kira. Give each section and subsection a clear purpose and connect it naturally to the preceding and following discussion; avoid disconnected lists and repeated explanations.
 - Make the report accessible to readers who do not routinely work with Feynman integrals. Put equations beside the concepts they explain, define every new symbol and technical term at first use, and introduce prerequisites before relying on them. Audit the whole report for missing or delayed definitions rather than only fixing the passage identified by the user.
 - Cite studies where their results or methods are used. Maintain a `.bib` bibliography and a citations section at the end of the report.
 - Use the report's established prose style for report additions and revisions: simple, precise language in connected explanatory paragraphs, with equations and local definitions. The ASD-STE100 requirements for chat do not impose sentence-length limits on the report.
 - Use descriptive section titles and state the purpose directly in the opening paragraph, for example, "To train and test the two models...". Specify what we will generate or record and how we will use it.
-- Keep Section 5 focused on how the two ML models would operate and the integral data they require, including seeds, source identities, construction steps, elimination steps and exact master expansions. Explain the generation of those targets and records in Section 6, using equations with local definitions and connected prose. Follow the proposed construction from known master integrals through linear combinations and integral identities, recording the operations as targets are formed.
+- The new paper follows the current requested structure: abstract; Kira and the reduction problem; three opportunities for acceleration; each model and its results; overall results; conclusion; derivation appendices; external bibliography. Earlier section-number requirements apply only to the archived notes.
 
 ## Tone and style
 
@@ -124,3 +124,12 @@
 ## Scattering, symbolic kinematics and optimality
 
 - Extend the study to broader scattering families, independent symbolic kinematics and certified reduction paths. Keep new code, definitions, exact results, failures and READMEs on Hoffman and GitHub, and update and synchronize the report. State the tested physical domain. Optimality certificates must specify the finite source pool, protected masters, allowed operations and cost; a bounded certificate does not establish unrestricted IBP or wall-time optimality. Preserve the existing data, models, split assignments and resource limits.
+
+## Paper and archived notes (October 13, 2026)
+
+- Preserve the previous detailed report as report/notes.tex and report/notes.pdf with its existing supporting sections, figures and bibliography.
+- Maintain a separate concise research paper as report/report.tex and report/report.pdf, with its own external bibliography and publication figures. Keep both documents on Hoffman, GitHub and locally.
+- Cite external factual and methodological claims or provide the derivation. Put equation derivations in appendices. Identify original measurements as results of this study with a reproducible evidence record. Do not cite the user's GitHub repository in the new paper.
+- Present each of the three models and its results. Omit learned row selection from the retained method because it gives no reliable complete-time gain; retain seed and equation selection only in their separately validated domains. Do not imply an unmeasured combined gain.
+- Each paper plot must convey a stated result, use readable labels and a justified visible axis range, preserve equal-time references, and show only uncertainty supported by the measurements.
+- Rebuild, inspect and publish both PDFs and all affected sources, bibliography, figure code, evidence metadata and READMEs. Report work does not authorize new training or benchmarks.

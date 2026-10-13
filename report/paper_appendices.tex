@@ -1,0 +1,185 @@
+\section{IBP relations and exact elimination}
+\label{app:ibp}
+Write $P_{\boldsymbol\sigma}=\prod_iD_i^{-\sigma_i}$ and $\partial_k^\mu=\partial/\partial\ell_{k\mu}$. Applying the product rule to the integrand in Eq.~\eqref{eq:ibp} gives
+\begin{align}
+ \partial_k^\mu(v_\mu P_{\boldsymbol\sigma})
+ &= (\partial_k\cdot v)P_{\boldsymbol\sigma}
+       +v\cdot\partial_k P_{\boldsymbol\sigma},\\
+ v\cdot\partial_k P_{\boldsymbol\sigma}
+ &=-\sum_i\sigma_i(v\cdot\partial_kD_i)
+       D_i^{-\sigma_i-1}\prod_{j\ne i}D_j^{-\sigma_j}.
+ \label{eq:ibp-expanded}
+\end{align}
+For $v=\ell_h$, $\partial_k\cdot v=d\delta_{kh}$; for an external momentum it is zero. The integrated derivative vanishes in a convergent domain and defines the dimensionally regulated identity by analytic continuation~\cite{ChetyrkinTkachov,Weinzierl2022}. This use of dimensional regularization includes its treatment of scaleless sectors.
+
+With a complete scalar-product basis, the scalar numerator $v\cdot\partial_kD_i$ can be written as $u_i+\sum_j v_{ij}D_j$. The coefficients $u_i$ and $v_{ij}$ depend on masses, invariants and the chosen momentum routing. Substituting in Eq.~\eqref{eq:ibp-expanded} gives
+\begin{equation}
+ 0=\delta_v I_{\boldsymbol\sigma}
+ -\sum_i\sigma_i u_i I_{\boldsymbol\sigma+\boldsymbol e_i}
+ -\sum_{i,j}\sigma_i v_{ij}
+       I_{\boldsymbol\sigma+\boldsymbol e_i-\boldsymbol e_j},
+ \label{eq:ibp-shifts}
+\end{equation}
+where $\delta_v=\partial_k\cdot v$ and $\boldsymbol e_i$ increments index $i$ by one. Thus differentiation produces linear relations with shifted integer indices. Auxiliary denominators or separately supplied algebraic relations handle dependent representations; the restricted family in Appendix~\ref{app:vacuum} uses explicit mass partial fractions.
+
+Suppose row $q$ of such a system satisfies $\sum_jA_{qj}I_j=0$ and $A_{qk}\ne0$. Solving this row for the pivot integral gives
+\begin{equation}
+ I_k=-\sum_{j\ne k}\frac{A_{qj}}{A_{qk}}I_j.
+ \label{eq:pivot}
+\end{equation}
+For a second identity row, or a target coefficient row $r$, subtract $(A_{rk}/A_{qk})$ times the zero identity. The resulting coefficients are
+\begin{equation}
+ A'_{rj}=A_{rj}-\frac{A_{rk}}{A_{qk}}A_{qj},
+ \qquad A'_{rk}=0.
+ \label{eq:row}
+\end{equation}
+The target retains its value because the subtracted expression is zero. A different permitted source row changes the intermediate expressions but preserves this argument. Iterating until every unprotected column vanishes yields Eq.~\eqref{eq:master}. A nonzero pivot condition applies over the rational-function field; special kinematic points where denominators vanish require separate treatment.
+
+\section{Reverse construction and the meaning of reference labels}
+\label{app:construction}
+For each checked source identity $E_q$, its coefficients sum to zero when evaluated as integrals. Substituting these identities into Eq.~\eqref{eq:reverse} gives
+\begin{equation}
+ T-\sum_mr_mM_m=\sum_q\lambda_qE_q=0.
+ \label{eq:reverse-check}
+\end{equation}
+This establishes the master coefficients of the constructed expression. Expanding each $E_q$ in indexed integrals and collecting equal indices defines the input target. The reverse operations, source rows and their seed--operator labels supply a reproducible path back to the masters. The coefficients $\lambda_q$ and $r_m$ can be rational functions; constants form a special case. Mass partial-fraction identities have no IBP seed label.
+
+Adding another zero identity changes the construction history without changing the integral expression. This explains why a recorded sufficient seed set need not be unique. It also explains why a reference elimination path need not minimize the number of operations. Our binary labels mean membership in one checked reference set. Our action labels mean the next recorded step. Neither label supplies an unrestricted optimality certificate. The target's final master coefficients and later construction steps remain outside the features used at inference.
+
+\section{Model specification and training objectives}
+\label{app:models}
+For seed selection, a fixed signed token-count map encodes coefficient expressions into 64 components, including individual tokens and consecutive groups of two and three tokens. Different groups can share a component, so this representation does not establish symbolic equality. Integral indices, complexity counts and the stored term position supplement these features. A shared hyperbolic-tangent map gives a term vector $\boldsymbol h_u\in\mathbb R^{32}$. Family symbols, master indices and candidate seed indices give 32-component family, basis and seed representations.
+
+The ordered-pair summary is
+\begin{equation}
+ \boldsymbol h_{\rm pair}=
+ \frac{1}{n_T(n_T-1)}\sum_{u\ne v}
+ \psi_\theta([\boldsymbol h_u,\boldsymbol h_v,
+       \boldsymbol h_u-\boldsymbol h_v,
+       \boldsymbol h_u\odot\boldsymbol h_v]),
+ \label{eq:pair}
+\end{equation}
+where $n_T$ is the number of terms, square brackets concatenate vectors, $\odot$ multiplies components and $\psi_\theta$ returns 32 components. For $n_T=1$, the summary is zero. This definition covers ordered pairs, not all larger term subsets. The candidate vector $\boldsymbol u_b$ weights target terms through scaled dot-product attention~\cite{AttentionIsAllYouNeed}:
+\begin{equation}
+ w_{bu}=\frac{\exp(\boldsymbol u_b\cdot\boldsymbol h_u/\sqrt{32})}
+ {\sum_v\exp(\boldsymbol u_b\cdot\boldsymbol h_v/\sqrt{32})},
+ \qquad \boldsymbol v_b=\sum_u w_{bu}\boldsymbol h_u.
+\end{equation}
+The output map joins the mean and maximum term vectors, pair vector, family vector, basis vector, seed vector and weighted-term vector. A 64-component hidden layer produces the logit $g_\theta$ in Eq.~\eqref{eq:seed}. Shared maps and aggregation follow the set-based construction of Ref.~\cite{DeepSets}; stored positions retain term order in this implementation. Candidate reordering only reorders the outputs.
+
+If $y_b\in\{0,1\}$ is recorded seed membership, a Bernoulli model assigns label likelihood $p_b^{y_b}(1-p_b)^{1-y_b}$. Taking its negative logarithm gives $-y_b\log p_b-(1-y_b)\log(1-p_b)$. Averaging within each candidate list and then across targets gives the implemented loss
+\begin{equation}
+ \mathcal L_s=-\frac{1}{|\mathcal D_s|}\sum_{T\in\mathcal D_s}
+ \frac{1}{|\Cset(T)|}\sum_{b\in\Cset(T)}
+ [y_b\log p_b+(1-y_b)\log(1-p_b)].
+ \label{eq:seed-loss}
+\end{equation}
+Here $\mathcal D_s$ is the training-target set. This objective treats each target equally and does not claim that true seed dependencies are statistically independent. Training uses AdamW~\cite{AdamW} with learning rate $10^{-3}$, weight decay $10^{-4}$, gradient norm limit one and up to 32 targets per update. The threshold $1/2$ stays fixed during the expanded label test.
+
+For row selection, let $\mathcal A$ be the current allowed action list and $\boldsymbol f_a\in\mathbb R^{132}$ its feature vector for action $a$. The encoder is $\boldsymbol h_a=\tanh(W\boldsymbol f_a+\boldsymbol b)$ with 32 components. Concatenating $\boldsymbol h_a$ with the mean and componentwise maximum over $\mathcal A$ gives the input to a 64-component hidden layer. Its scalar output $g_a$ defines
+\begin{equation}
+ p(a\mid A,\mathcal A)=\frac{e^{g_a}}{\sum_{b\in\mathcal A}e^{g_b}},
+ \qquad
+ \mathcal L_r=-\frac{1}{|\mathcal D_r|}
+       \sum_{(A,\mathcal A,a^*)\in\mathcal D_r}\log p(a^*\mid A,\mathcal A).
+ \label{eq:row-loss}
+\end{equation}
+Here $A$ is the matrix, $a^*$ is the recorded action and $\mathcal D_r$ contains states with an actual choice. The denominator normalizes the probabilities; taking the negative logarithm of the categorical reference likelihood gives the loss. Single-action states have zero loss. Training uses the same AdamW learning rate, decay and norm limit as seed training, with 256 states per update. Finite-field trial updates supply cancellation features; a modular residue's numerical size does not represent a real coefficient magnitude.
+
+The equation tree uses the seed, operator and target features described in Section~\ref{sec:equations}. Training gives each physical profile equal total weight, and leaf frequencies supply smoothed scores. The depth-eight and depth-twelve candidates require at least 24 and eight rows per child, respectively. Classification-tree splits and pruning principles follow Ref.~\cite{CART1984}; the specified depths, features and thresholds define our fitted policies. Support-membership scores do not certify that a selected system is complete. A prescribed-basis check and native fallback therefore remain part of each application.
+
+\section{Exact reuse for the restricted vacuum family}
+\label{app:vacuum}
+To state the domain of the cumulative comparison, define a Euclidean vacuum family with positive, distinct squared masses $\mu_j=\rho_j\mu$:
+\begin{equation}
+ V^{(L)}_{\boldsymbol b}=
+ \int\prod_{h=1}^L\frac{d^d\ell_h}{\pi^{d/2}}
+ \frac{1}{\ell_1^2\cdots\ell_L^2}
+ \prod_{j=1}^{R}(Q^2+\mu_j)^{-b_j},
+ \qquad Q=\sum_{h=1}^L\ell_h.
+ \label{eq:vacuum}
+\end{equation}
+Here $b_j$ is a nonnegative integer, $B=\sum_jb_j\geq1$, $R$ is the number of massive denominators, $\mu$ is a common squared-mass scale and $\rho_j$ is a positive mass ratio. Each massless denominator has power one. All massive denominators share $Q$, so this family has special algebraic dependencies. Its prescribed masters are $M_j^{(L)}=V^{(L)}_{\boldsymbol e_j}$. The comparison uses $R=2,3,4$ and $\mu=1$ in the selected units.
+
+Let $f$ be the integrand without the measure. The simultaneous Euler derivative gives $\sum_h\ell_h\cdot\partial_{\ell_h}(\ell_i^2)^{-1}=-2(\ell_i^2)^{-1}$ for each massless factor. Also, $\sum_h\ell_h\cdot\partial_{\ell_h}Q^2=2Q^2$. Therefore
+\begin{equation}
+ \sum_h\partial_{\ell_h}\cdot(\ell_h f)
+ =\left[Ld-2L-2\sum_jb_j\frac{Q^2}{Q^2+\mu_j}\right]f.
+\end{equation}
+Use $Q^2=(Q^2+\mu_j)-\mu_j$ and integrate the derivative as in Appendix~\ref{app:ibp}. This gives
+\begin{equation}
+ 0=[L(d-2)-2B]V^{(L)}_{\boldsymbol b}
+       +2\sum_j b_j\mu_jV^{(L)}_{\boldsymbol b+\boldsymbol e_j}.
+ \label{eq:euler-vac}
+\end{equation}
+For two present massive denominators, the integrand identity
+$(Q^2+\mu_i)-(Q^2+\mu_j)=\mu_i-\mu_j$ separately gives
+\begin{equation}
+ (\mu_i-\mu_j)V_{\boldsymbol b}^{(L)}
+   =V_{\boldsymbol b-\boldsymbol e_i}^{(L)}
+    -V_{\boldsymbol b-\boldsymbol e_j}^{(L)}.
+ \label{eq:mass-vac}
+\end{equation}
+This second relation is an algebraic partial fraction, so it introduces no additional IBP seed.
+
+Define $z=L(d-2)$ and $W_{\boldsymbol b}^{(L)}=\mu^{B-1}V_{\boldsymbol b}^{(L)}$. The factor of $\mu$ gives $W$ the masters' mass dimension. Substituting in Eqs.~\eqref{eq:euler-vac} and \eqref{eq:mass-vac} removes the common scale. If $\boldsymbol C_{\boldsymbol b}(z)$ is the vector of master coefficients of $W_{\boldsymbol b}^{(L)}$, then
+\begin{align}
+ \boldsymbol C_{\boldsymbol b}(z)
+ &=\frac{\boldsymbol C_{\boldsymbol b-\boldsymbol e_i}(z)
+          -\boldsymbol C_{\boldsymbol b-\boldsymbol e_j}(z)}{\rho_i-\rho_j},
+       &&b_i,b_j>0,\label{eq:mass-rec}\\
+ \boldsymbol C_{k\boldsymbol e_j}(z)
+ &=\frac{2(k-1)-z}{2(k-1)\rho_j}
+         \boldsymbol C_{(k-1)\boldsymbol e_j}(z),
+       &&k\geq2.\label{eq:euler-rec}
+\end{align}
+The initial vector is $\boldsymbol C_{\boldsymbol e_j}=\boldsymbol e_j$. Every recurrence lowers $B$, so it terminates at the prescribed masters. Its coefficients depend on $L$ only through $z$. Induction on $B$ shows that they are polynomials in $z$ with rational coefficients at fixed rational $\rho_j$. One calculation can therefore supply all requested loop orders by substituting $z=L(d-2)$.
+
+We independently check the mixed-denominator reduction through Taylor partial fractions. For a dimensionless auxiliary variable $x$, write
+\begin{equation}
+ \prod_i(x+\rho_i)^{-b_i}
+   =\sum_{j:b_j>0}\sum_{k=1}^{b_j}\frac{a_{jk}}{(x+\rho_j)^k}.
+\end{equation}
+At the pole $x=-\rho_j$, set $t=x+\rho_j$. Multiplying by $t^{b_j}$ and expanding the regular factors shows that the principal-part coefficient is
+\begin{equation}
+ a_{jk}=[t^{b_j-k}]\prod_{i\ne j}(\rho_i-\rho_j+t)^{-b_i}.
+ \label{eq:taylor}
+\end{equation}
+Here $[t^n]$ extracts Taylor coefficient $n$ and factors with $b_i=0$ are one. Applying Eq.~\eqref{eq:euler-rec} repeatedly to each pole term gives
+\begin{equation}
+ C_{\boldsymbol b j}(z)=\sum_{k=1}^{b_j}a_{jk}
+       \prod_{h=1}^{k-1}\frac{2h-z}{2h\rho_j},
+ \qquad
+ V^{(L)}_{\boldsymbol b}
+ =\mu^{1-B}\sum_j C_{\boldsymbol b j}(L(d-2))M_j^{(L)}.
+ \label{eq:checked-vacuum}
+\end{equation}
+An empty product is one. The Taylor calculation avoids the selected pair-recurrence path and checks every returned polynomial coefficient before substitution. The derivation assumes distinct $\rho_j$, unit massless powers and the shared momentum $Q$; it supplies no formula for arbitrary multiloop scattering families.
+
+\section{Measurement definitions and evidence}
+\label{app:timing}
+For seed labels, let TP count selected reference seeds, FP count selected seeds absent from the reference set, and FN count omitted reference seeds. Precision is $P=\mathrm{TP}/(\mathrm{TP}+\mathrm{FP})$ and recall is $R=\mathrm{TP}/(\mathrm{TP}+\mathrm{FN})$. Defining $F_1$ as their harmonic mean gives
+\begin{equation}
+ F_1=\frac{2}{P^{-1}+R^{-1}}=\frac{2PR}{P+R}
+     =\frac{2\mathrm{TP}}{2\mathrm{TP}+\mathrm{FP}+\mathrm{FN}}.
+\end{equation}
+Set agreement instead counts targets whose entire predicted set equals the recorded set. Algebraic sufficiency counts targets that reduce to the prescribed basis with the selected source equations. These definitions explain why the three quantities in Figure~\ref{fig:seed} can differ.
+
+For timing, let $T_{abr}$ be the measured time for method $a$, batch $b$ and repetition $r$. We use $\widetilde T_{ab}=\operatorname{median}_{r=1,\ldots,5}T_{abr}$. For the later native comparisons, if physical group $g$ contains batches $B_g$, define the equal-group mean logarithmic ratio
+\begin{equation}
+ \overline\ell=\frac1G\sum_{g=1}^G\frac1{|B_g|}
+ \sum_{b\in B_g}\log\frac{\widetilde T_{ab}}{\widetilde T_{cb}},
+ \qquad R_{a/c}=e^{\overline\ell}.
+ \label{eq:ratio}
+\end{equation}
+Here $c$ identifies the control and $G$ is the number of physical groups. Exponentiating the mean log ratio gives the geometric mean; ratios below one indicate lower time. Reversing numerator and denominator changes $\overline\ell$ to $-\overline\ell$, so speedup is $S=1/R_{a/c}$ and the time reduction is $100(1-R_{a/c})\%$. The cumulative study uses one batch per group. The supplied-equation seed comparison instead gives each complete paired batch equal weight; its interval resamples six related kinematic groups. Reported descriptive 95\% intervals resample complete groups 10,000 times while retaining paired methods and repetitions. They describe case-to-case variation in these experiments. We do not infer new uncertainty intervals for figures whose source summaries provide only point estimates.
+
+The supplied-equation seed test includes target preparation, inference, early basis checking, reduction, result checking and fallback. It excludes original IBP-pool generation. It rotates methods within each family and target batch on the same node, and includes only complete paired batches in its ratio summary while preserving incomplete and skipped trials in the accounting.
+
+The native equation and transfer tests include input preparation, model loading and evaluation, Kira startup, native IBP generation, elimination, basis and coefficient checks, cleanup and every fallback. The comparison driver is already running. Independent reference discovery, the later audit and evidence compression lie outside the timer. In the equation test, the native and learned arms receive the same executable-level improvements. The eight reserved profiles test new masses and invariants within known structures; the seven transfer cases additionally test new structures and symbolic invariants.
+
+The cumulative test includes fresh-worker startup, input loading, supplied Euler and mass-identity construction, algebra, verification, output saving and complete output reading. Eight groups use maximum massive powers 8, 10, 12 or 14, with two groups at each bound. They request 16, 32, 48 or 64 targets per profile, capped by availability. Each group contains three mass profiles and all loop orders 1--12. Four workers bind to distinct physical cores on one scheduled Hoffman node, and matched trials remain on the same core. Method order is shuffled within repetition blocks. Filesystem caches remain ordinary, and each method recomputes the reduction. Queue time, offline training and the later independent audit remain outside all reported production times.
+
+The initial live-matrix comparison uses three repetitions of four methods on seven physical cases, giving 84 workflows. Its complete ratio is the geometric mean of the seven paired median ratios and carries no reported uncertainty interval. The later native implementation comparison uses five repetitions and sixteen batches; it repeats earlier physical profiles to measure the implementation change.
+
+Every quantitative statement in Sections~\ref{sec:data}--\ref{sec:overall} reports this study's recorded measurements. The accompanying figure source data identify the original result files and their SHA-256 hashes, and the figure script reads those files directly. The evidence separates the expanded label test, supplied-equation seed comparison, live-row comparison, later native comparison, early-equation comparison, new-family transfer test and direct cumulative test. This separation prevents a change of baseline or workload from entering a claimed combined model speedup. The archived notes retain the earlier experiments and their negative results.

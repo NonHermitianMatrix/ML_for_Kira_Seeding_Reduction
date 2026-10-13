@@ -1,3 +1,7 @@
+<!-- paper-and-notes -->
+The concise research paper is [report/report.pdf](report/report.pdf), with [LaTeX source](report/report.tex). The previous detailed report is preserved as [report/notes.pdf](report/notes.pdf), with [LaTeX source](report/notes.tex). Build and evidence instructions are in [report/README.md](report/README.md). The paper retains seed and equation selection in their separately validated domains and omits learned row selection because its complete-time improvement is not established.
+<!-- /paper-and-notes -->
+
 # ML for Kira seed selection and reduction
 
 This project studies lightweight models for selecting IBP seeds, equations and allowed elimination steps while exact arithmetic retains responsibility for the reductions.
