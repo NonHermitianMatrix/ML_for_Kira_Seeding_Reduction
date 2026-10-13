@@ -133,3 +133,10 @@
 - Present each of the three models and its results. Omit learned row selection from the retained method because it gives no reliable complete-time gain; retain seed and equation selection only in their separately validated domains. Do not imply an unmeasured combined gain.
 - Each paper plot must convey a stated result, use readable labels and a justified visible axis range, preserve equal-time references, and show only uncertainty supported by the measurements.
 - Rebuild, inspect and publish both PDFs and all affected sources, bibliography, figure code, evidence metadata and READMEs. Report work does not authorize new training or benchmarks.
+
+## Scientific paper and folder documentation (October 13, 2026)
+
+- Keep the paper focused on physics, integral definitions, the machine learning methods, derivations, measured results and their limits. Define every integral family used in the reported comparisons and its kinematic assumptions. Cite external methods and claims; derive original equations in appendices. State clearly when a result is a measurement from this study.
+- Put file hashes, code layout, commands, environment setup, file formats and other software maintenance details in folder READMEs. Keep these details out of the scientific paper. Retain the training definitions and timing conditions needed to interpret the scientific results.
+- Maintain a human-readable README.md in every repository folder. Explain each folder's purpose, code files, required inputs, outputs, execution order, dependencies and relevant limits. For data-only folders, explain the data and link to the producer and reader instructions. Do not duplicate data through training or testing links.
+- Write README prose and instructions in ASD-STE100 Simplified Technical English. Use short sentences, active voice, consistent terms and one instruction per step. Define necessary physics and software terms. Keep exact commands and file names unchanged.

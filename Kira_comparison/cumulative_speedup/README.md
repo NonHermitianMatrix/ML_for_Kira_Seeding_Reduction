@@ -1,33 +1,376 @@
-# Cumulative speedup comparison
+# cumulative speedup
 
-This study compares the original saved Kira 3.1 binary, the full-equation baseline used before the higher-loop improvements, and the unchanged final deployed route. Every method receives the same restricted coupled vacuum integrals, fixed positive mass ratios, masters and loop orders one through twelve.
+This folder compares three complete reductions of the restricted vacuum family.
+The methods use the saved original Kira, the later full-pool control and the specialized recurrence method.
+Every method receives the same targets, mass profiles and loop orders.
+All 120 measured workflows pass exact checks.
+The geometric mean speedup is 543.815 relative to the original control.
+This result includes exact recurrence reuse and implementation changes.
+It is not an isolated machine learning gain.
 
-Both Kira controls generate the complete Euler and mass partial-fraction pool and reduce each mass profile and loop order separately. The controls differ only in the executable. The final route uses the previously selected fixed recurrence, shared exact arithmetic, compiled expansion and binary output. All returned coefficients remain exact. This compares supplied-identity reductions; it does not benchmark native generation of general multiloop IBP systems.
+`s01_cases.py` defines eight groups with three mass profiles each.
+Each group requests loop orders one through twelve.
+`s02_worker.py` runs one complete request.
+`s03_study.py` controls preparation, freezing and tests.
+`s10_parallel.py` assigns matched groups to four scheduled CPU slots.
 
-Eight new groups each contain three mass profiles with two, three and four massive denominators. The four total-power bounds are 8, 10, 12 and 14. Five repetitions of three arms give 120 planned complete workflows. A distinct upper-bound pilot precedes the frozen comparison. No model is retrained and no policy is selected from these measurements.
+Use the scheduler wrapper with four slots and distinct cores:
 
-s00_cumulative.py provides resource limits and imports the preserved implementations. s01_cases.py declares requests. s02_worker.py generates, reduces, verifies and saves one request. s03_study.py runs the pilot, freezes all dependencies and executes randomized paired blocks. s04_run.sh is the single-job scheduler wrapper.
+```bash
+qsub -pe shared 4 -binding env linear:4 Kira_comparison/cumulative_speedup/s04_run.sh pipeline
+```
 
-The completed pilot uses the prepare stage. The reserved run uses s04_run.sh pipeline with -pe shared 4 -binding env linear:4; it freezes inputs, runs the pinned comparisons, audits the results and builds the report. Pilot and test directories remain distinct. The primary metric includes process startup, loading, equation preparation, exact reduction and checks, output saving, and complete output reading. Separate calculation times omit outer worker startup, final output saving and reading, while including every Kira startup within the baseline reduction. Timings include diagnostic evidence created inside the worker; queue waiting and the separate final audit are excluded. Original raw Kira exports are saved by content hash, while source choices and generated systems retain hashes. All successful outputs must have identical canonical expanded coefficients.
+This command repeats a completed study.
+Use it only for a deliberate new reproduction.
+Keep the existing results and freeze record.
+Each worker has a 2,400 MiB address-space limit and a 1,200-second limit.
+Each worker has a 64 MiB scratch limit.
+Complete time includes fresh-process startup, input, identities, exact algebra, checks, output writing and output reading.
+Queue waiting, offline training and the later independent audit remain outside the timer.
 
-Only one experiment job runs at a time. A worker has a 2400 MiB address-space limit, a 1200-second bound, a 2200 MiB sampled process-tree RSS bound, and a 64 MiB scratch bound. Each Kira call retains its earlier 90-second and 1500 MiB RSS bounds. New retained data are limited to 32 MB, and the conservative combined project bound in resource_plan.json remains below 10 GB.
+## Code use
 
-Status: complete. Scientific data stay on Hoffman and GitHub; the complete report is also synchronized locally.
+Run scientific calculations on Hoffman in a scheduled job.
+Load the Python 3.9.6 module and use the existing project environment.
+The usual interpreter is `.tools/seed-model/venv/bin/python` from the project root.
+Build scripts state their compiler and native Kira requirements.
+Keep each script's memory, time and storage limits.
+Keep existing model and test files before a new run.
+Scripts that write reports describe earlier document names; review their destinations before use.
 
-The first launcher stopped before case generation because a common module name collided with a preserved dependency. development/import_collision/ retains that source and log; the corrected launcher uses s00_cumulative.py. No timing trial ran in that attempt.
+## Code files
 
-The next pilot stopped when a temporary solver directory disappeared during storage sampling. development/monitor_race/ retains the source, log and partial output. The observer now tolerates normal directory removal and terminates its worker on an unexpected monitoring error. No reserved timing trial ran before this correction.
+The entries below follow file-name order.
+Each entry gives its purpose and the input or output interface available in the source.
 
-The network-scratch pilot completed the original-binary arm but stopped in temporary-directory cleanup during the second arm. Those measurements are excluded and retained in development/network_scratch/. Both controls now use the same scheduler-provided job-local scratch, with the same 64 MiB bound. The reference targets, binaries and final policy remain unchanged.
+[s00_cumulative.py](s00_cumulative.py)
 
-s10_parallel.py assigns independent group pairs to four allocated CPU slots in one scheduler job, with each worker bound to a distinct physical core. Each reduction stays single-threaded, and every matched block stays on one core. The resource plan reserves four simultaneous 64 MiB scratch areas and 12 GiB of allocated memory. This amendment was declared after the successful resource pilot and before any reserved trial. Submit the pipeline with -pe shared 4 -binding env linear:4; the worker checks require four allocated slots and distinct available physical cores.
+The file provides shared paths, frozen provenance, bounded resources and coefficient output.
 
-The first reserved launcher froze its inputs but stopped before any timing trial because the scheduler exposed the full node affinity mask. development/binding_request/ preserves that freeze and the affected source. The final launcher uses the scheduler binding hint when available and otherwise selects four distinct permitted physical cores, then pins each worker with taskset. It assumes neither an exclusive node nor exclusive core use by other users. The actual per-worker affinity is recorded and audited.
+The module defines these callable interfaces:
 
-All 120 timing runs and the independent audit completed before plotting stopped on an unsupported Matplotlib keyword. development/plot_compatibility/ preserves the original plotting source, and study_scheduler.log preserves the error. The compatible plotting keyword changes no measurement or statistic. Only plotting, documentation and the report build were then resumed.
+```python
 
-<!-- cumulative-results-begin -->
-The direct cumulative comparison uses eight new groups of three restricted vacuum mass profiles, loop orders 1--12, and five repetitions of three methods. All 120 workflows pass exact checks. Relative to the original saved Kira binary with the full supplied equation pool and separate loop reductions, the final route has total-time ratio 0.001839, speedup 543.815x (descriptive 95% interval 488.134--605.064), and 99.82% less time, including startup, saving and output reading. Against the earlier full-pool pipeline binary, the speedup is 81.170x. The selected final route uses a fixed recurrence and exact direct arithmetic. The result measures the complete restricted-family replacement; it does not establish a corresponding native general-IBP or ML-only speedup.
-<!-- cumulative-results-end -->
+def read(p)
+def write(p, x)
+def sha(p)
+def digest(x)
+def allocated(p)
+def guard()
+def check_freeze()
+def frozen_files()
+def packed(rows)
+def limits()
+def process_ids(pid)
+def stop_tree(pid)
 
-s05_audit.py verifies every saved coefficient, regenerates each unique baseline system and independently reads selected raw Kira coefficients with SymPy. s06_analyze.py reports matched ratios, descriptive batch-bootstrap intervals and absolute times. s07_plot.py writes the standalone comparison figure. s08_document.py updates the report and READMEs; s09_finish.sh runs the final audit, analysis and report build. test/environment.json records the node and executable versions. test/summary.json contains every batch median, metric and aggregate. The pilot is excluded from reported speedups. No older policy, training record or checkpoint is changed.
+```
+
+The imported project modules are `s00_backend`, `s02_engine`, `s14_reader`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+EXACT = ROOT / 'ML_model_equation_selection/exact_backend'
+HIGH = ROOT / 'ML_model_equation_selection/higher_loops'
+OBJECTS = HERE / 'objects'
+BINARIES = {'original_kira': ROOT / '.tools/kira/bin/kira', 'chain_baseline': ROOT / '.tools/kira-early-generation/kira'}
+
+```
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+Path(p).read_text()
+Path(p).read_bytes()
+(t / 'children').read_text()
+
+```
+
+[s01_cases.py](s01_cases.py)
+
+The program declares independent matched requests without fitting any policy.
+
+The module defines these callable interfaces:
+
+```python
+
+def make_group(index, maximum, count, pilot=False)
+def main()
+
+```
+
+The imported project modules are `s00_cumulative`.
+
+This entry point uses the paths and options set in its source.
+
+[s02_worker.py](s02_worker.py)
+
+The program runs a complete matched reduction and save lossless exact coefficients.
+
+The module defines these callable interfaces:
+
+```python
+
+def original(requests, arm, archive_logs=False)
+def main()
+
+```
+
+The imported project modules are `s00_cumulative`.
+
+The command accepts these parser options:
+
+- `'--input'`: type=Path; required=True.
+- `'--output'`: type=Path; required=True.
+- `'--arm'`: choices=ARMS; required=True.
+- `'--archive-logs'`: action='store_true'.
+
+[s03_study.py](s03_study.py)
+
+The program executes paired frozen comparisons with resource monitoring.
+
+The module defines these callable interfaces:
+
+```python
+
+def trial(inp, arm, rep, folder)
+def main()
+
+```
+
+The imported project modules are `s00_cumulative`.
+
+The command accepts these parser options:
+
+- `'stage'`: choices=['pilot', 'freeze', 'test', 'shard'].
+- `'--shard'`: type=int.
+
+These calls show the stored input and output interface:
+
+```python
+
+Path('/proc/cpuinfo').read_text()
+
+```
+
+[s04_run.sh](s04_run.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraCumulative
+#$ -l h_rt=03:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load git/2.40.0 python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2867200
+ulimit -c 0
+PYTHON=.tools/seed-model/venv/bin/python
+BASE=Kira_comparison/cumulative_speedup
+if [ "$1" = "prepare" ]; then
+ "$PYTHON" "$BASE/s01_cases.py"
+ "$PYTHON" "$BASE/s03_study.py" pilot
+elif [ "$1" = "pipeline" ]; then
+ "$PYTHON" "$BASE/s03_study.py" freeze
+ "$PYTHON" "$BASE/s10_parallel.py"
+ bash "$BASE/s09_finish.sh"
+else
+ "$PYTHON" "$BASE/s03_study.py" "$1"
+fi
+
+```
+
+[s05_audit.py](s05_audit.py)
+
+The program audits every saved coefficient, paired input system and frozen dependency.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `sympy`.
+
+The imported project modules are `s00_cumulative`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(OBJECTS / (a['raw_export_sha256'] + '.txt.gz')).read_bytes()
+
+```
+
+[s06_analyze.py](s06_analyze.py)
+
+The program reports direct cumulative ratios and absolute times on the same cases.
+
+The module defines these callable interfaces:
+
+```python
+
+def compare(groups, left, right, metric)
+def main()
+
+```
+
+The imported project modules are `s00_cumulative`.
+
+This entry point uses the paths and options set in its source.
+
+[s07_plot.py](s07_plot.py)
+
+The program creates standalone scientific plots of the direct cumulative comparison.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `matplotlib`.
+
+The imported project modules are `s00_cumulative`.
+
+This entry point uses the paths and options set in its source.
+
+[s08_document.py](s08_document.py)
+
+The program writes measured cumulative results into the scientific report and READMEs.
+
+The module defines these callable interfaces:
+
+```python
+
+def replace_block(text, start, end, body)
+def main()
+
+```
+
+The imported project modules are `s00_cumulative`.
+
+The command accepts these parser options:
+
+- `'--data-commit'`: The parser accepts a value..
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'report_template.tex.in').read_text()
+(ROOT / 'report/cumulative_speedup.tex').write_text(template)
+p.read_text()
+p.write_text(text)
+citation.read_text()
+citation.write_text(replace_block(bib, '% cumulative-data-begin', '% cumulative-data-end', body))
+
+```
+
+[s09_finish.sh](s09_finish.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraCumFinish
+#$ -l h_rt=00:30:00,h_data=3G,h_vmem=4G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load git/2.40.0 python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2867200
+ulimit -c 0
+PYTHON=.tools/seed-model/venv/bin/python
+BASE=Kira_comparison/cumulative_speedup
+"$PYTHON" "$BASE/s05_audit.py"
+"$PYTHON" "$BASE/s06_analyze.py"
+"$PYTHON" "$BASE/s07_plot.py"
+"$PYTHON" "$BASE/s08_document.py" "$@"
+make -C report
+
+```
+
+[s10_parallel.py](s10_parallel.py)
+
+The program runs independent paired groups on four explicitly allocated physical cores.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s00_cumulative`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(p / 'physical_package_id').read_text()
+(p / 'core_id').read_text()
+
+```
+
+## Data and supporting files
+
+- [freeze.json](freeze.json): This file identifies the fixed inputs and method for the completed test.
+
+- [pilot_scheduler.log](pilot_scheduler.log): This file contains saved program messages.
+
+- [protocol.json](protocol.json): This file contains structured records from the parent calculation.
+
+- [report_build.log](report_build.log): This file contains saved program messages.
+
+- [report_template.tex.in](report_template.tex.in): This file supports the calculation described in the parent guide.
+
+- [resource_plan.json](resource_plan.json): This file sets storage, memory and execution limits.
+
+- [study_scheduler.log](study_scheduler.log): This file contains saved program messages.
+
+## Child folders
+
+- [development](development/README.md).
+
+- [objects](objects/README.md).
+
+- [pilot](pilot/README.md).
+
+- [test](test/README.md).

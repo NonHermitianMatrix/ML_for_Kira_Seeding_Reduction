@@ -1,5 +1,29 @@
-The current application entry point is s31_reduce.py, with trained_model/deployment_confirmed.json. It applies the third model only to the recorded 21-target two-loop sunrise domain and uses native equation choices elsewhere. Run it inside a scheduled Hoffman job with node-local TMPDIR; the same family/master/output arguments and --base choices as s11_reduce.py apply. s11_reduce.py and deployment.json preserve the broader initial experimental route.
+# confirmation
 
-The broad 280-workflow test found incomplete vacuum filters and extra fallback cost. These negative results remain in model_test/. The narrower policy was fixed before testing six fresh profiles. In model_test/confirmation/, 162 main comparisons give complete-time ratio 0.9942, interval [0.9912948654378096, 0.9970062760952034], and preparation ratio 0.7848, interval [0.7763148590933325, 0.7941014613492257]. All exact checks pass. A further 36 workflows compare all three models with the earlier two-model configuration; six applications omit reference target coefficients.
+This folder contains reserved test inputs, outputs or checks.
+Keep these records outside model fitting and threshold selection.
 
-s30_confirmation.py defines and freezes the new profiles before execution and performs independent rational checks. s32_confirm.sh runs that study, and s33_confirm_document.py creates its plots and report section. The original frozen test files remain unchanged. The confirmation studies a restricted physical domain and does not establish a general multiloop speedup.
+Read [the parent guide](../README.md) for the stage and data flow.
+
+The producing and reading code is described in [the stage guide](../../README.md).
+
+## Data and supporting files
+
+This folder contains 166 data entries.
+The names identify the family, case, target or repetition used by the parent reader.
+
+- `.json`: 4 entries.
+
+- `.json.gz`: 162 entries.
+
+Use the local manifest or the parent case list to match identifiers.
+Keep compressed files in their stored format.
+Read one record at a time with the parent reader.
+
+## Child folders
+
+- [application](application/README.md).
+
+- [composition](composition/README.md).
+
+- [plots](plots/README.md).

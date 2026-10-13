@@ -1,5 +1,23 @@
 # vacuum_L03_profile580
 
-Coupled 3-loop vacuum integral, mass profile 580. This restricted Euclidean family has 3 loops and 2 masters. Massless propagator powers equal one; massive powers vary within the stored bounds.
+This folder contains the target integrals for family `vacuum_L03_profile580`.
 
-definition.json and masters.json in the matching master folder define the integral and basis. The target folder stores 128 targets. The relation folder stores source identities, separate IBP seed labels, exact reverse constructions, scalar proofs, reference master coefficients and elimination traces at three finite-field samples. Algebraic partial fractions carry no IBP seed. Reference paths are sufficient; minimality is not established. See integrals/expansion_1000/README.md.
+The family has 3 loops and 2 distinct massive denominators.
+
+The massless powers equal one. The massive denominators share the total loop momentum.
+
+[Family definition and masters](../../../master_integrals/families/vacuum_L03_profile580/README.md).
+
+[Target integrals](README.md).
+
+[Relations and reduction steps](../../../master_to_target/families/vacuum_L03_profile580/README.md).
+
+The same family and target identifiers connect these records.
+
+Reference paths are sufficient. Their minimum cost is not established.
+
+A partial-fraction relation carries no IBP seed label.
+
+Read the data with [the integral reader guide](../../../README.md).
+
+- [inputs.jsonl.xz](inputs.jsonl.xz): This file contains structured records from the parent calculation.

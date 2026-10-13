@@ -1,51 +1,151 @@
-# Shared model calculations
+# fast evaluation
 
-The current production entry point is ../s88_reduce.py. It uses the unchanged seed weights and row weights, unchanged seed thresholds, and unchanged validation-selected routing rule. The older s81_reduce.py interface and its binary remain available.
+This folder supports the calculation described in the parent guide.
 
-The seed implementation reuses target-context and target-pair affine prefixes while preserving float32 addition order. All probability vectors are bitwise identical in 36 development contexts. The row implementation evaluates each unordered equation pair once, caches fixed flags, skips zero score coefficients and calculates confidence when a requested record uses it. All six cancellation features match the preceding implementation in 1,000 checks, including invalid expressions and poles.
+Read [the parent guide](../README.md) for the stage and data flow.
 
-All 800 implementation-confirmation workflows and 180 validation workflows complete with exact coefficient and decision parity. New/preceding complete-time ratios for seed, row, both and automatic execution are 0.982155, 1.005713, 0.996704, 0.982498. These ratios retain all fallback attempts. Separate comparisons with the new native control appear in confirmation_summary.json; an implementation gain does not itself establish a general ML advantage.
+## Code use
 
-The confirmation reuses eight physical profiles and sixteen batches from the preceding release. It supplies five repeated reductions per method and implementation. It adds no independent families and selects no model weights or thresholds. Native, seed, row, both and automatic modes receive matched input, basis, exact checks and resource settings. Every recorded old/new pair agrees on probability vectors, seed masks, row-choice digests, operations, attempt outcomes and native exports.
+Run scientific calculations on Hoffman in a scheduled job.
+Load the Python 3.9.6 module and use the existing project environment.
+The usual interpreter is `.tools/seed-model/venv/bin/python` from the project root.
+Build scripts state their compiler and native Kira requirements.
+Keep each script's memory, time and storage limits.
+Keep existing model and test files before a new run.
+Scripts that write reports describe earlier document names; review their destinations before use.
 
-Timing begins with workflow preparation and ends after exact reference comparison and cleanup. It includes model loading, feature calculation, prediction, fresh IBP generation, elimination, back substitution and fallback. Reference preparation, interpreter launch, top-level policy lookup and evidence compression remain outside that boundary. Summary intervals resample physical profiles, keeping related batches together. Read all ratios and descriptive intervals before interpreting a gain.
+## Code files
 
-Production use requires a family definition, targets and prescribed master indices. It does not require known target coefficients. Native exact IBP algebra determines the result; exported-basis admission detects incomplete reductions and triggers the fixed fallback. Optional reference mode adds independent coefficient comparisons. Eight shared_application_checks/ runs supply master indices only, then pass independent postrun coefficient checks.
+The entries below follow file-name order.
+Each entry gives its purpose and the input or output interface available in the source.
 
-A production call within the bounded scheduled environment is:
+[reduction_shared.patch](reduction_shared.patch)
 
-    .tools/seed-model/venv/bin/python Kira_comparison/integrated_runtime/s88_reduce.py --family-file CASE.json --masters-file MASTERS.json --size 32 --policy auto --verify-release --output Kira_comparison/integrated_runtime/application_shared/CASE.json.gz
+This patch records changes to the native Kira source.
 
-Use one arithmetic worker and node TMPDIR. The scheduled wrapper must permit the native 2400 MiB address-space limit: the current native-check wrapper uses h_data=3G, h_vmem=6G and an outer address-space limit of 2800 MiB. At most two reductions run concurrently, each with 128 MiB scratch. resource_plan.json reserves 9,769,875,456 combined working bytes; this folder shares the parent's 32 MiB retained limit. Tool executables stay under .tools/ and outside Git. Rebuilding produces new binary hashes and needs a new freeze.
+The changed source paths are `b/src/kira/reduction.cpp`.
 
-The normal sequence is parent s89_build_shared.sh, s91_validate_shared.sh, s97_freeze_shared.sh, s94_confirm_shared.sh and s102_finalize_shared.sh. The last wrapper uses the correct native-process memory allocation for both application checks and the independent audit. The frozen s96_finalize_shared.sh is the earlier 2 GiB wrapper; it can recheck existing application records, but must not launch fresh native application checks. Use s102 for a fresh final audit.
+Use the matching build script in the parent stage. Keep the required Kira source version.
 
-Parent script roles:
-- s86_run_shared.py runs one bounded exact native attempt.
-- s87_workflow_shared.py executes the fixed fallback and retains all attempts.
-- s88_reduce.py exposes native, seed, row, both and automatic execution.
-- s89_build_shared.sh builds both optimized components and checks them.
-- s90_compare_shared.py rotates old/new complete comparisons.
-- s91_validate_shared.sh runs the three validation profiles with at most two workers.
-- s92_summarize_shared.py checks parity and computes paired statistics.
-- s93_freeze_shared.py fixes all tested code, binaries, models and inputs.
-- s94_confirm_shared.sh runs the eight-profile implementation confirmation.
-- s95_audit_shared.py independently parses exports and checks rational coefficients and model use.
-- s96_finalize_shared.sh preserves the earlier final-check allocation; use s102 for fresh application checks.
-- s97_freeze_shared.sh summarizes validation and applies the predefined adoption conditions.
-- s98_check_shared_application.py checks basis-only production calls.
-- s99_document_shared.py generates the scientific text from completed summaries.
-- s100_plot_shared.py draws complete-cost comparisons.
-- s101_build_shared_report.sh builds the figure and rendered report.
-- s102_finalize_shared.sh performs application checks and final audits with native-compatible memory limits.
-- s103_document_shared_readmes.py updates these guides and the release record.
-- s104_prepare_shared_report.sh checks completed jobs and resource bounds, publishes checked data, and builds the revised report for review.
+[s00_check_pairs.cpp](s00_check_pairs.cpp)
 
-Folder checks:
-- s00_check_pairs.cpp compares ordered and unordered pair features.
-- s01_check_seed.py checks bitwise seed inference and records component costs.
-- s02_initial_freeze_generator.py preserves the initial freeze generator as a historical snapshot. Do not execute it here.
-- adoption_initial.json preserves the original three-repeat proposal. adoption.json increases confirmation repeats to five before confirmation while retaining the original validation conditions.
-- freeze_initial.json preserves the manifest before correcting the textual repetition count. freeze.json records the correction; numeric repetitions, models, methods and inputs were already unchanged.
-- shared_validation/ and shared_confirmation/ store complete workflow records. Their attempt records and losslessly shared fields live in the parent folder. Read them with parent s03_records.read_record.
-- verification.json and application_verification.json contain the independent checks.
+The program compares all six modular features with the original ordered-pair calculation.
+
+The required headers are `string`, `vector`, `algorithm`, `iostream`, `random`, `stdexcept`, `s15_shared_modular.h`.
+
+The matching build script compiles this file into an executable.
+
+Use the parent stage guide for the build order and input records.
+
+[s01_check_seed.py](s01_check_seed.py)
+
+The program checks bitwise probabilities and masks against the preceding compiled network.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s03_records`, `s04_compiled_seed`, `s07_seed`, `s12_shared_seed`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+EXP = HERE.parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'seed_parity.json').write_text(json.dumps(data, indent=2) + '\n')
+(EXP / 'families.json').read_text()
+(ROOT / 'ML_model_seed_selection/runtime_inference/compiled_weights.bin').read_bytes()
+(ROOT / '.tools/kira-shared-inference/libseed.so').read_bytes()
+
+```
+
+[s02_initial_freeze_generator.py](s02_initial_freeze_generator.py)
+
+The program freezes implementation-only changes after exact and timing validation.
+
+The module defines these callable interfaces:
+
+```python
+
+def sha(p)
+def verify()
+def main()
+
+```
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+EXP = HERE / 'fast_evaluation'
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(EXP / 'freeze.json').write_text(json.dumps(f, indent=2) + '\n')
+(EXP / 'freeze.json').read_text()
+(EXP / 'validation_summary.json').read_text()
+(EXP / 'row_feature_check.json').read_text()
+p.read_bytes()
+(EXP / 'seed_parity.json').read_text()
+
+```
+
+## Data and supporting files
+
+- [adoption.json](adoption.json): This file contains structured records from the parent calculation.
+
+- [adoption_initial.json](adoption_initial.json): This file contains structured records from the parent calculation.
+
+- [application_verification.json](application_verification.json): This file records checks of the corresponding calculation.
+
+- [build.json](build.json): This file contains structured records from the parent calculation.
+
+- [confirmation_summary.json](confirmation_summary.json): This file contains structured records from the parent calculation.
+
+- [freeze.json](freeze.json): This file identifies the fixed inputs and method for the completed test.
+
+- [freeze_initial.json](freeze_initial.json): This file contains structured records from the parent calculation.
+
+- [release.json](release.json): This file contains structured records from the parent calculation.
+
+- [report_values.json](report_values.json): This file contains structured records from the parent calculation.
+
+- [resource_plan.json](resource_plan.json): This file sets storage, memory and execution limits.
+
+- [row_feature_check.json](row_feature_check.json): This file records checks of the corresponding calculation.
+
+- [seed_parity.json](seed_parity.json): This file records seed information or seed checks.
+
+- [validation_summary.json](validation_summary.json): This file contains structured records from the parent calculation.
+
+- [verification.json](verification.json): This file records the independent checks.
+
+## Child folders
+
+- [shared_application_checks](shared_application_checks/README.md).
+
+- [shared_confirmation](shared_confirmation/README.md).
+
+- [shared_validation](shared_validation/README.md).

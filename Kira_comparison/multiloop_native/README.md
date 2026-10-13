@@ -1,77 +1,1254 @@
-# Complete native multiloop reductions
+# multiloop native
 
-This experiment gives Kira physical denominators and indexed targets and includes IBP generation in each timed calculation. It has six training cases, three validation cases and six reserved cases. The families are two-loop sunrise and boxes, fully coupled three-loop vacua, and three-loop propagator ladders. The ladder topology is absent from training and validation. Kinematics are rational numbers in a fixed squared-momentum unit; the dimension remains symbolic.
+This folder supports the calculation described in the parent guide.
 
-The original integral collection and neural checkpoints remain unchanged. Targets follow a fixed sector, dot and numerator enumeration. There is no claim of globally optimal seed sets or elimination paths.
+Read [the parent guide](../README.md) for the stage and data flow.
 
-## Completed experiment
+## Code use
 
-The fixed complete-generation experiment has 324 planned workflows, 324 measured workflows and 324 exact completions.
+Run scientific calculations on Hoffman in a scheduled job.
+Load the Python 3.9.6 module and use the existing project environment.
+The usual interpreter is `.tools/seed-model/venv/bin/python` from the project root.
+Build scripts state their compiler and native Kira requirements.
+Keep each script's memory, time and storage limits.
+Keep existing model and test files before a new run.
+Scripts that write reports describe earlier document names; review their destinations before use.
 
-The selected seed policy's complete-time ratio to responsive stock Kira is 0.741945 (12 paired batches).
+## Code files
 
-Seed-to-stock time ratios are 0.563457 for two-loop boxes, 1.265710 for three-loop vacua, 0.572691 for three-loop ladders. The aggregate seed time interval includes one; gains are specific to the tested family classes. The row-time interval also includes one.
+The entries below follow file-name order.
+Each entry gives its purpose and the input or output interface available in the source.
 
-The cost-trained row policy's complete-time ratio to instrumented native Kira is 1.007901 (12 paired batches); its forward coefficient-operation ratio is 1.003162 (12 paired batches).
+[s00_storage.sh](s00_storage.sh)
 
-These are paired, three-repeat comparisons at rational kinematics with symbolic d. Results include inference, native generation, exact algebra, verification and fallback. The common reference basis is prepared separately.
+This shell script runs the recorded commands for this stage.
 
-The independent audit passed. Family-level results and completion counts must accompany aggregate ratios; none establishes a universal speedup.
+This is a scheduler job script. Submit it with `qsub` from the project root.
 
-All 140 final validation workflows passed. The selected seed policy had a validation time ratio of 1.118283 to native Kira. freeze.json fixed its threshold, all weights, executables and scientific settings before reserved tests.
+The exact command sequence is:
 
-scheduler_interruption.json records a scheduler address-space interruption. Its completed records were preserved, and missing workflows resumed with the same physical-memory, elapsed-time and scratch limits. This event is separate from measured workflow outcomes.
+```bash
 
-summary.json and trials.csv contain every planned outcome. verification.json records independent exact polynomial checks. report_values.json maps report values to their evidence. model_test/plots/ contains the three PDF figures.
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraStorage
+#$ -l h_rt=00:20:00,h_data=1G,h_vmem=2G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C
+python - <<'PY'
+import json,subprocess,time
+from pathlib import Path
+p=Path('Kira_comparison/multiloop_native/storage_audit.json')
+begin=time.time()
+r=subprocess.run(['du','-s','-B1','.'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,timeout=1000)
+out=dict(elapsed_seconds=time.time()-begin,returncode=r.returncode,stdout=r.stdout,stderr=r.stderr[-3000:],local_observed_bytes=262680576,local_allowance_bytes=400000000)
+if r.returncode==0:out['cluster_allocated_bytes']=int(r.stdout.split()[0])
+p.write_text(json.dumps(out,indent=2)+'\n')
+print(json.dumps(out))
+PY
 
-## Procedure
+```
 
-- s00_storage.sh performed the one-time allocated-storage audit. Its result and resource_plan.json define the storage allowance. Repeated full-project scans are unnecessary.
-- s01_families.py defines families.json and refuses to overwrite an existing split.
-- s02_run.py generates a native job, applies limits, restores identities for explicitly declared master targets, and checks exact coefficients.
-- s03_pilot.sh runs initial small checks. pilot/ and pilot_v2/ preserve earlier driver failures; pilot_v3/ contains the corrected pilot.
-- s04_records.py shares repeated payloads by SHA-256. Atomic writes and a shared lock protect concurrent results and the retained cap. Use its read_record function to resolve shared compressed records.
-- s05_development.py and s06_development.sh collect exact local insertion costs.
-- s07_seed.py scores a finite seed region with the unchanged seed network. Optional deterministic coverage retains corners, required integrals and seeds with at most one dot or numerator power in total.
-- s08_workflow.py supplies complete fallback sequences and optional groups of 32 targets.
-- s09_validate.py and s10_validate.sh preserve the first workflow validation.
-- s11_rollouts.py and s12_rollouts.sh measure exact continuations after a forced source choice. Records retain state signatures, candidate features, prefix counts and remaining operation counts.
-- s13_audit_families.py checks that denominators span the independent loop scalar products.
-- s14_worker.py and s15_fresh.py measure fresh processes and bound the full process tree, including model loading and verification.
-- s16_validate_fresh.py and s17_validate_fresh.sh run policies in separate validation processes. validation_seed_safe/ and validation_row/ retain earlier implementations; validation_final/ selects final settings with the cost tree and bounded seed caches.
-- s18_freeze.py selects seed settings from validation and records the reserved protocol.
-- s19_reserved.py and s20_reserved.sh execute the frozen comparison and expanded-bound reference checks.
-- s21_seed_loader.py reads the unchanged weight archive once. s22_install_runtime.py installs it and two-entry per-process caches.
-- s23_prepare.sh installs the saved tree and runs s24_check_runtime.py, which verifies seed probabilities and native tree decisions against Python.
-- s25_analyze.py summarizes every outcome and paired complete-time comparisons.
-- s26_verify.py independently parses exports, cross-multiplies rational polynomials over Q(d), and audits continuation labels and frozen hashes.
-- s27_analyze.sh schedules final analysis and independent checks.
-- s28_freeze.sh schedules the fixed-protocol manifest.
-- s29_plot.py and s30_plot.sh create standalone complete-time, operation-count and completion figures from the checked results.
-- s31_document.py writes result prose and report_values.json from summary.json and verification.json.
-- s32_build_report.sh renders the full LaTeX report using its bounded Makefile.
-- s33_baseline_diagnostic.py and s34_baseline_diagnostic.sh compare smaller-region failure logs from stock and instrumented native Kira on a validation case after the primary comparison. They do not change frozen policies or add performance samples.
+[s01_families.py](s01_families.py)
 
-The existing Kira toolchain and seed-gate build described in ../acceleration/ are prerequisites. New binaries, objects and scheduler logs remain under ignored .tools/ directories. Published patches and build metadata identify them.
+The program defines native integral families and independent targets before experiments.
 
-references/, training/, rollouts/, runtime_checks/ and validation directories preserve development evidence. Final references belong in reserved_references/, larger-bound checks in reference_checks/, and measured workflows in model_test/. Each workflow links to individual attempts. shared/ stores configurations, predictions and expansions once.
+The module defines these callable interfaces:
 
-## Timing and interpretation
+```python
 
-Complete times include a fresh process, preparation, model loading and prediction, IBP generation, equation selection, exact algebra, failed attempts, fallback and coefficient checks. Compression follows the stop time. The common reference calculation is reported separately. Each policy uses the same prescribed master basis within a case and batch.
+def definition(kind, parameters)
+def targets(d)
+def main()
 
-The stock control uses the responsive Fermat shutdown. The instrumented native control uses the same source hook as the model while retaining native choices. Smaller deterministic regions and matched coverage subsets isolate gains that do not require ML. The count 1 + 2 * source_nonzeros per insertion estimates coefficient work; it excludes Fermat's internal polynomial operations and back substitution.
+```
 
-Three repeats are planned for each reserved policy and batch. Failures and skipped repeats remain explicit. Paired ratios require three exact completions from both policies for each included batch. Descriptive intervals resample physical cases, not repeated timings.
+These source constants locate inputs and outputs:
 
-## Post-comparison baseline diagnostic
+```python
 
-The 128-target validation box failed with std::bad_alloc in both the responsive stock and instrumented native executables when using the smaller seed region under identical solver limits. This failure therefore also occurs without the row-policy hook. baseline_diagnostic/ retains both records and their summary. This check concerns the failure mechanism, uses validation inputs only and supplies no new performance comparison. Frozen reserved inputs remain unchanged.
+HERE = pathlib.Path(__file__).resolve().parent
 
-## Resources
+```
 
-Keep data and models on Hoffman and GitHub. Only the report is synchronized to the laptop. The managed-storage upper bound is 9,803,429,888 bytes against the 10,000,000,000-byte ceiling. At most three trials run concurrently, each with 128 MiB scratch, one calculation thread, a 2,400 MiB solver address-space limit and a 2,100 MiB solver-tree RSS limit. The enclosing worker also has time and memory limits. The ledger includes tools, publication copies, reports and temporary indexes.
+This entry point uses the paths and options set in its source.
 
-Reserved results must not select thresholds, models, stopping rules or family definitions. Report gains and failures within the stated rational-kinematic, two- and three-loop domain.
+These calls show the stored input and output interface:
 
-One reference calculation at a time may use 256 MiB of scratch while other production trials retain 128 MiB each. A further 128 MiB allowance covers monitoring and write headroom. The common reference is outside the paired production timing.
+```python
+
+p.write_text(json.dumps(plan, indent=2) + '\n')
+p.read_bytes()
+
+```
+
+[s02_run.py](s02_run.py)
+
+The program runs one bounded complete Kira reduction, retaining compact exact evidence.
+
+The module defines these callable interfaces:
+
+```python
+
+def sha(p)
+def label(a)
+def limits()
+def disk(path)
+def process_rss(pid)
+def parse_export(text)
+def run(case, size, policy, output, timeout=300, margin=1, reference=None, weights=None, records=True, archive=True, check_masters=False, force=None, scratch_cap=None)
+def main()
+
+```
+
+The imported external packages are `sympy`.
+
+The imported project modules are `s04_records`, `s07_seed`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+MODEL = ROOT / 'ML_model_reduction/cost_training'
+
+```
+
+The command accepts these parser options:
+
+- `'case'`: The parser accepts a value..
+- `'--size'`: type=int; default=8.
+- `'--policy'`: default='stock'.
+- `'--timeout'`: type=int; default=300.
+- `'--margin'`: type=int; default=1.
+- `'--output'`: type=pathlib.Path; required=True.
+- `'--reference'`: type=pathlib.Path.
+- `'--weights'`: type=pathlib.Path.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'resource_plan.json').read_text()
+(scratch / 'config/integralfamilies.yaml').write_text(json.dumps(config))
+(scratch / 'config/kinematics.yaml').write_text(json.dumps(dict(kinematics=kin)))
+(scratch / 'targets').write_text(''.join((label(a) + '\n' for a in target)))
+(scratch / 'jobs.yaml').write_text(json.dumps(jobs))
+(scratch / 'run.log').read_text(errors='replace')
+(scratch / 'masters').write_text(''.join((label(a) + '\n' for a in basis)))
+(scratch / 'seeds.txt').write_text(''.join((label(a) + '\n' for a in selected)))
+(scratch / 'choices.jsonl').read_text()
+paths[0].read_text()
+(HERE / 'families.json').read_text()
+p.read_bytes()
+(scratch / 'seed_audit.json').read_text()
+(base / 'status').read_text()
+(scratch / 'metrics.jsonl').read_text()
+(thread / 'children').read_text()
+
+```
+
+[s03_pilot.sh](s03_pilot.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraCostPilot
+#$ -l h_rt=00:30:00,h_data=3G,h_vmem=4G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+.tools/seed-model/venv/bin/python Kira_comparison/multiloop_native/s02_run.py training_00_sunrise --policy stock --output Kira_comparison/multiloop_native/pilot_v3/sunrise_stock.json.gz
+.tools/seed-model/venv/bin/python Kira_comparison/multiloop_native/s02_run.py training_00_sunrise --policy collect --reference Kira_comparison/multiloop_native/pilot_v3/sunrise_stock.json.gz --output Kira_comparison/multiloop_native/pilot_v3/sunrise_collect.json.gz
+.tools/seed-model/venv/bin/python Kira_comparison/multiloop_native/s02_run.py training_02_double_box --policy stock --output Kira_comparison/multiloop_native/pilot_v3/box_stock.json.gz
+.tools/seed-model/venv/bin/python Kira_comparison/multiloop_native/s02_run.py training_04_vacuum3 --policy stock --output Kira_comparison/multiloop_native/pilot_v3/vacuum_stock.json.gz
+
+```
+
+[s04_records.py](s04_records.py)
+
+The program shares scientific evidence with atomic writes and a storage bound.
+
+The module defines these callable interfaces:
+
+```python
+
+def payload(value)
+def retained()
+def put(path, data)
+def write_record(path, record)
+def read_record(path)
+
+```
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'resource_plan.json').read_text()
+
+```
+
+[s05_development.py](s05_development.py)
+
+The program collects cost labels only from the fixed training and validation cases.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s02_run`, `s04_records`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+
+```
+
+The command accepts these parser options:
+
+- `'case'`: type=int.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'families.json').read_text()
+
+```
+
+[s06_development.sh](s06_development.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraCostData
+#$ -l h_rt=00:25:00,h_data=3G,h_vmem=4G
+#$ -t 1-9
+#$ -tc 3
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+.tools/seed-model/venv/bin/python Kira_comparison/multiloop_native/s05_development.py "$((SGE_TASK_ID-1))"
+
+```
+
+[s07_seed.py](s07_seed.py)
+
+The program applies the saved seed model to a finite native Laporta seed region.
+
+The module defines these callable interfaces:
+
+```python
+
+def distribute(total, n)
+def _candidates(n, physical, r, s, d)
+def candidates(definition, r, s, d)
+def choose(definition, masters, targets, spec, closure=False, use_model=True, threshold=0.01)
+
+```
+
+The imported external packages are `numpy`.
+
+The imported project modules are `s21_seed_loader`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+Import this helper module from the stage that uses it.
+
+[s08_workflow.py](s08_workflow.py)
+
+The program completes native workflows with bounded fallback and exact reference checks.
+
+The module defines these callable interfaces:
+
+```python
+
+def execute(case, size, policy, output, reference, timeout=360, weights=None, trace=False, start=None)
+
+```
+
+The imported project modules are `s02_run`, `s04_records`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+reference.read_bytes()
+weights.read_bytes()
+
+```
+
+[s09_validate.py](s09_validate.py)
+
+The program measures closed-loop validation costs before reserving final test results.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s02_run`, `s04_records`, `s08_workflow`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+The command accepts these parser options:
+
+- `'case'`: type=int.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'families.json').read_text()
+
+```
+
+[s10_validate.sh](s10_validate.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraCostValid
+#$ -l h_rt=03:30:00,h_data=3G,h_vmem=4G
+#$ -t 1-3
+#$ -tc 3
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+.tools/seed-model/venv/bin/python Kira_comparison/multiloop_native/s09_validate.py "$((SGE_TASK_ID-1))"
+
+```
+
+[s11_rollouts.py](s11_rollouts.py)
+
+The program measures downstream algebraic work after one alternative native source choice.
+
+The module defines these callable interfaces:
+
+```python
+
+def main(index)
+
+```
+
+The imported project modules are `s02_run`, `s04_records`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'families.json').read_text()
+
+```
+
+[s12_rollouts.sh](s12_rollouts.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraCostRoll
+#$ -l h_rt=01:30:00,h_data=3G,h_vmem=4G
+#$ -t 1-9
+#$ -tc 2
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+.tools/seed-model/venv/bin/python Kira_comparison/multiloop_native/s11_rollouts.py "$((SGE_TASK_ID-1))"
+
+```
+
+[s13_audit_families.py](s13_audit_families.py)
+
+The program checks that denominators span the independent loop scalar products.
+
+The module defines these callable interfaces:
+
+```python
+
+def audit()
+
+```
+
+The imported external packages are `sympy`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+p.write_text(json.dumps(dict(cases=results, all_passed=True), indent=2) + '\n')
+(HERE / 'families.json').read_text()
+
+```
+
+[s14_worker.py](s14_worker.py)
+
+The file provides one fresh measured workflow process; evidence writing follows the stop time.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s08_workflow`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+The command accepts these parser options:
+
+- `'case'`: The parser accepts a value..
+- `'size'`: type=int.
+- `'policy'`: The parser accepts a value..
+- `'output'`: type=pathlib.Path.
+- `'reference'`: type=pathlib.Path.
+- `'--timeout'`: type=float; default=360.
+- `'--trace'`: action='store_true'.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'families.json').read_text()
+
+```
+
+[s15_fresh.py](s15_fresh.py)
+
+The program bounds the complete process, including model loading and exact verification.
+
+The module defines these callable interfaces:
+
+```python
+
+def descendants(pid)
+def limits()
+def execute_fresh(case, size, policy, output, reference, timeout=360, trace=False)
+
+```
+
+The imported project modules are `s02_run`, `s04_records`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+
+```
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+(t / 'children').read_text()
+
+```
+
+[s16_validate_fresh.py](s16_validate_fresh.py)
+
+The program compares frozen candidate workflows in fresh validation processes.
+
+The module defines these callable interfaces:
+
+```python
+
+def main(index)
+
+```
+
+The imported project modules are `s02_run`, `s04_records`, `s15_fresh`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE.parents[1] / 'ML_model_reduction/cost_training/trained_model.json').read_text()
+(HERE / 'runtime_check.json').read_text()
+(HERE / 'families.json').read_text()
+
+```
+
+[s17_validate_fresh.sh](s17_validate_fresh.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraCostFresh
+#$ -l h_rt=03:00:00,h_data=3G,h_vmem=4G
+#$ -t 1-3
+#$ -tc 3
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+.tools/seed-model/venv/bin/python Kira_comparison/multiloop_native/s16_validate_fresh.py "$((SGE_TASK_ID-1))"
+
+```
+
+[s18_freeze.py](s18_freeze.py)
+
+The program selects seed settings on validation and freeze all final scientific inputs.
+
+The module defines these callable interfaces:
+
+```python
+
+def sha(p)
+def main()
+
+```
+
+The imported project modules are `s04_records`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+out.write_text(json.dumps(record, indent=2) + '\n')
+(HERE / 'runtime_check.json').read_text()
+p.read_bytes()
+(model / 'trained_model.json').read_text()
+
+```
+
+[s19_reserved.py](s19_reserved.py)
+
+The program runs the fixed, independent native multiloop comparison.
+
+The module defines these callable interfaces:
+
+```python
+
+def reference_run(*args, **kwargs)
+def main(index)
+
+```
+
+The imported project modules are `s02_run`, `s04_records`, `s15_fresh`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'resource_plan.json').read_text()
+(HERE / 'freeze.json').read_text()
+(HERE / 'families.json').read_text()
+(ROOT / name).read_bytes()
+
+```
+
+[s20_reserved.sh](s20_reserved.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraCostTest
+#$ -l h_rt=06:00:00,h_data=3G,h_vmem=4G
+#$ -t 1-6
+#$ -tc 3
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+.tools/seed-model/venv/bin/python Kira_comparison/multiloop_native/s19_reserved.py "$((SGE_TASK_ID-1))"
+
+```
+
+[s21_seed_loader.py](s21_seed_loader.py)
+
+The program loads unchanged NumPy weights with one filesystem read per archive.
+
+The module defines these callable interfaces:
+
+```python
+
+class NativeSeed
+
+```
+
+The imported external packages are `numpy`.
+
+The imported project modules are `s01_fast_seed`.
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+(EXPORT / 'seed_export.json').read_bytes()
+(EXPORT / 'seed_weights.npz').read_bytes()
+
+```
+
+[s22_install_runtime.py](s22_install_runtime.py)
+
+The program installs bounded per-workflow seed caches after the earlier validation jobs end.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+p.read_text()
+p.write_text(t)
+
+```
+
+[s23_prepare.sh](s23_prepare.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraCostReady
+#$ -l h_rt=00:15:00,h_data=3G,h_vmem=4G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+.tools/seed-model/venv/bin/python ML_model_reduction/cost_training/s12_promote_tree.py
+.tools/seed-model/venv/bin/python Kira_comparison/multiloop_native/s22_install_runtime.py
+.tools/seed-model/venv/bin/python Kira_comparison/multiloop_native/s24_check_runtime.py
+
+```
+
+[s24_check_runtime.py](s24_check_runtime.py)
+
+The program checks unchanged seed probabilities and C++/Python tree decisions.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `numpy`.
+
+The imported project modules are `s01_fast_seed`, `s02_run`, `s04_records`, `s07_seed`, `s08_train_tree`, `s21_seed_loader`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'runtime_check.json').write_text(json.dumps(result, indent=2) + '\n')
+(ROOT / 'ML_model_reduction/cost_training/trained_model.json').read_text()
+(HERE / 'families.json').read_text()
+
+```
+
+[s25_analyze.py](s25_analyze.py)
+
+The program summarizes every reserved outcome and form paired descriptive comparisons.
+
+The module defines these callable interfaces:
+
+```python
+
+def median(a)
+def comparison(records, left, right, size=None, metric='complete_seconds')
+def main()
+
+```
+
+The imported external packages are `numpy`.
+
+The imported project modules are `s04_records`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
+(HERE / 'freeze.json').read_text()
+interruption.read_text()
+path.read_bytes()
+
+```
+
+[s26_verify.py](s26_verify.py)
+
+The program parses exported reductions and verify exact rational coefficients.
+
+The module defines these callable interfaces:
+
+```python
+
+def rational(text)
+def parse(record)
+def main()
+
+```
+
+The imported external packages are `sympy`.
+
+The imported project modules are `s04_records`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'verification.json').write_text(json.dumps(result, indent=2) + '\n')
+(HERE / 'freeze.json').read_text()
+(HERE / 'baseline_diagnostic/summary.json').read_text()
+(ROOT / 'ML_model_reduction/cost_training/trained_model.json').read_text()
+(HERE / 'summary.json').read_text()
+(HERE / 'runtime_check.json').read_text()
+(ROOT / name).read_bytes()
+(HERE / name).read_bytes()
+
+```
+
+[s27_analyze.sh](s27_analyze.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraCostAudit
+#$ -l h_rt=01:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+.tools/seed-model/venv/bin/python Kira_comparison/multiloop_native/s25_analyze.py
+.tools/seed-model/venv/bin/python Kira_comparison/multiloop_native/s26_verify.py
+
+```
+
+[s28_freeze.sh](s28_freeze.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraCostFreeze
+#$ -l h_rt=00:05:00,h_data=1G,h_vmem=2G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+.tools/seed-model/venv/bin/python Kira_comparison/multiloop_native/s18_freeze.py
+
+```
+
+[s29_plot.py](s29_plot.py)
+
+The program plots complete times, algebraic counts and completion including fallback.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `matplotlib`, `numpy`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'summary.json').read_text()
+(HERE / 'freeze.json').read_text()
+(HERE / 'families.json').read_text()
+
+```
+
+[s30_plot.sh](s30_plot.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraCostPlots
+#$ -l h_rt=00:10:00,h_data=2G,h_vmem=3G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+.tools/seed-model/venv/bin/python Kira_comparison/multiloop_native/s29_plot.py
+
+```
+
+[s31_document.py](s31_document.py)
+
+The program writes result prose and numeric provenance from checked, frozen comparisons.
+
+The module defines these callable interfaces:
+
+```python
+
+def load(name)
+def num(v)
+def ratio(c)
+def main()
+def write_readmes(s, v, f)
+def write_conclusion(s, f)
+
+```
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(ROOT / 'report/kira_multiloop_results.tex').write_text(text)
+(HERE / 'report_values.json').write_text(json.dumps(values, indent=2) + '\n')
+p.read_text()
+p.write_text(text)
+p.write_text(text.rstrip() + '\n\n' + marker + '\n## Reserved outcomes\n\n' + block + '\n' + end + '\n')
+p.write_text(old)
+(HERE / name).read_text()
+p.write_text(s0)
+(HERE / 'summary.json').read_bytes()
+(HERE / 'verification.json').read_bytes()
+(HERE / 'freeze.json').read_bytes()
+(HERE / 'baseline_diagnostic/summary.json').read_bytes()
+
+```
+
+[s32_build_report.sh](s32_build_report.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraCostReport
+#$ -l h_rt=00:10:00,h_data=2G,h_vmem=3G
+#$ -j y
+set -euo pipefail
+export LC_ALL=C LANG=C OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+make -C report
+
+```
+
+[s33_baseline_diagnostic.py](s33_baseline_diagnostic.py)
+
+The file provides post-comparison diagnostic of stock and instrumented smaller-region failures.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s02_run`, `s04_records`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(out / 'summary.json').write_text(json.dumps(record, indent=2) + '\n')
+(HERE / 'families.json').read_text()
+
+```
+
+[s34_baseline_diagnostic.sh](s34_baseline_diagnostic.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraCostDiag
+#$ -l h_rt=00:15:00,h_data=3G,h_vmem=6G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+.tools/seed-model/venv/bin/python Kira_comparison/multiloop_native/s33_baseline_diagnostic.py
+
+```
+
+## Data and supporting files
+
+- [concurrency_amendment.json](concurrency_amendment.json): This file contains structured records from the parent calculation.
+
+- [families.json](families.json): This file defines the families in this collection.
+
+- [family_audit.json](family_audit.json): This file records checks of the corresponding calculation.
+
+- [freeze.json](freeze.json): This file identifies the fixed inputs and method for the completed test.
+
+- [reference_resource_amendment.json](reference_resource_amendment.json): This file contains structured records from the parent calculation.
+
+- [report_values.json](report_values.json): This file contains structured records from the parent calculation.
+
+- [resource_plan.json](resource_plan.json): This file sets storage, memory and execution limits.
+
+- [runtime_check.json](runtime_check.json): This file records checks of the corresponding calculation.
+
+- [scheduler_interruption.json](scheduler_interruption.json): This file contains structured records from the parent calculation.
+
+- [storage_audit.json](storage_audit.json): This file records checks of the corresponding calculation.
+
+- [storage_rebase.json](storage_rebase.json): This file contains structured records from the parent calculation.
+
+- [summary.json](summary.json): This file contains the result counts and summary measurements.
+
+- [trials.csv](trials.csv): This file supports the calculation described in the parent guide.
+
+- [verification.json](verification.json): This file records the independent checks.
+
+## Child folders
+
+- [baseline_diagnostic](baseline_diagnostic/README.md).
+
+- [model_test](model_test/README.md).
+
+- [pilot](pilot/README.md).
+
+- [pilot_v2](pilot_v2/README.md).
+
+- [pilot_v3](pilot_v3/README.md).
+
+- [reference_checks](reference_checks/README.md).
+
+- [references](references/README.md).
+
+- [reserved_references](reserved_references/README.md).
+
+- [rollouts](rollouts/README.md).
+
+- [runtime_checks](runtime_checks/README.md).
+
+- [shared](shared/README.md).
+
+- [training](training/README.md).
+
+- [validation_final](validation_final/README.md).
+
+- [validation_row](validation_row/README.md).
+
+- [validation_seed](validation_seed/README.md).
+
+- [validation_seed_safe](validation_seed_safe/README.md).

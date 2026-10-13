@@ -1,1 +1,19 @@
-Preserved first development pass with the original symmetric features and symbolic coefficient reader. It contains three pilot and 144 validation workflows. These results do not select the final policy. Shared payloads remain in ../objects/. Source snapshots identify the implementation. The later integration adds ordered-index features and a checked exact polynomial reader.
+# development initial
+
+This folder retains an earlier stage, development check or saved comparison.
+Use its records to interpret that stage.
+Use the current parent application for a new calculation.
+
+Read [the parent guide](../README.md) for the stage and data flow.
+
+The producing and reading code is described in [the stage guide](../README.md).
+
+## Child folders
+
+- [source](source/README.md).
+
+- [trained_model](trained_model/README.md).
+
+- [training](training/README.md).
+
+- [validation](validation/README.md).

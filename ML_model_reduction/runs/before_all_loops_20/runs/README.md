@@ -1,7 +1,29 @@
-# Reduction-model training run
+# runs
 
-Training completed thirty epochs on the existing training states. The additional twenty epochs continued both weights and optimizer from epochs_10_snapshot/. latest.pt retains the current optimizer, history.json contains all thirty epochs, and status.json records training completion. extra_20_epochs/ records the continuation, and ../model_test/ evaluates the resulting frozen model.
+This folder retains an earlier stage, development check or saved comparison.
+Use its records to interpret that stage.
+Use the current parent application for a new calculation.
 
-The current test and report replace the ten-epoch evaluation. Original weights and optimizer checkpoints remain in epochs_10_snapshot/, while commit c2ba11c579c8851a22c69132e36a03f9ba4aa8b7 retains the previous tests and report. Training metadata with testing-deferred or published-false fields describe the state when training ended; the current evaluation and publication records document later steps.
+Read [the parent guide](../README.md) for the stage and data flow.
 
-The scheduler.log and report_build.log files in this directory record the initial training stage. Current evaluation and report-build logs are in ../model_test/.
+The producing and reading code is described in [the stage guide](../README.md).
+
+## Data and supporting files
+
+- [example_prediction.json](example_prediction.json): This file contains structured records from the parent calculation.
+
+- [example_state.json](example_state.json): This file contains structured records from the parent calculation.
+
+- [history.json](history.json): This file records training progress or training inputs.
+
+- [latest.pt](latest.pt): This file contains a saved model or its description.
+
+- [preparation_support_check.log](preparation_support_check.log): This file records checks of the corresponding calculation.
+
+- [report_build.log](report_build.log): This file contains saved program messages.
+
+- [report_values.json](report_values.json): This file contains structured records from the parent calculation.
+
+- [scheduler.log](scheduler.log): This file contains saved program messages.
+
+- [status.json](status.json): This file records the execution state.

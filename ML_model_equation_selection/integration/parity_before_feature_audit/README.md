@@ -1,3 +1,15 @@
-# Feature stability check
+# parity before feature audit
 
-Independent native runs can print equivalent coefficient expressions with different lengths. The first parity check caught differences in feature 16. Two predicted probabilities differed; the retained masks and exact reductions agreed. The final tree excludes feature 16 from training and decisions; saved records retain it only as a diagnostic. The other 23 features and all probabilities must agree in the repeated implementation check.
+This folder retains an earlier stage, development check or saved comparison.
+Use its records to interpret that stage.
+Use the current parent application for a new calculation.
+
+Read [the parent guide](../README.md) for the stage and data flow.
+
+The producing and reading code is described in [the stage guide](../README.md).
+
+## Data and supporting files
+
+- [parity_validation_00_sunrise_n21_kira-fast.json.gz](parity_validation_00_sunrise_n21_kira-fast.json.gz): This file contains structured records from the parent calculation.
+
+- [parity_validation_00_sunrise_n21_kira.json.gz](parity_validation_00_sunrise_n21_kira.json.gz): This file contains structured records from the parent calculation.

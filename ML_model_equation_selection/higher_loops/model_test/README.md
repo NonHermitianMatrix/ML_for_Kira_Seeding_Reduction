@@ -1,3 +1,32 @@
-The higher-loop extension generates exact Euler and mass partial-fraction equations for the restricted coupled vacuum family, then uses Kira's user-defined-system solver. A shared variable z=L(d-2) supports every positive loop order mathematically. Tests cover L=1,...,12, with additional applications at 13, 16, 24 and 32. Across six reserved batches, the deployed route has complete-time ratio 0.155 (descriptive interval 0.132--0.184) to separate full-pool reductions. The learned separate-loop route has ratio 0.911 (descriptive interval 0.815--0.986) to the same full-pool baseline. Learned/shared versus rule/shared has ratio 0.968 (descriptive interval 0.927--1.003). Validation selects the extreme route. These are supplied-identity results, with exact coefficient checks and all runtime costs; they do not establish a generic high-loop native Kira speedup.
+# model test
 
-summary.json gives six batch medians, complete ratios, per-loop solver ratios, equation counts and resource use. verification.json checks 90 comparisons and six additional applications against an independent partial-fraction formula. The primary set covers all loop orders one through twelve. Extra applications cover 13, 16, 24 and 32. Ratios use geometric means of batch median ratios; descriptive intervals resample six batches. See inputs/, results/, extrapolation/ and plots/.
+This folder contains reserved test inputs, outputs or checks.
+Keep these records outside model fitting and threshold selection.
+
+Read [the parent guide](../README.md) for the stage and data flow.
+
+The producing and reading code is described in [the stage guide](../README.md).
+
+## Data and supporting files
+
+- [integration_scheduler.log](integration_scheduler.log): This file contains saved program messages.
+
+- [release_check.json](release_check.json): This file records checks of the corresponding calculation.
+
+- [summary.json](summary.json): This file contains the result counts and summary measurements.
+
+- [test_complete.json](test_complete.json): This file contains structured records from the parent calculation.
+
+- [verification.json](verification.json): This file records the independent checks.
+
+## Child folders
+
+- [extrapolation](extrapolation/README.md).
+
+- [inputs](inputs/README.md).
+
+- [integration](integration/README.md).
+
+- [plots](plots/README.md).
+
+- [results](results/README.md).

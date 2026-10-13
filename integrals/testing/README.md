@@ -1,12 +1,20 @@
-# Testing integrals
+# testing
 
-This folder contains 690382 targets from 5137 complete families in the seed model's test split.
+This folder contains reserved test inputs, outputs or checks.
+Keep these records outside model fitting and threshold selection.
 
-The master_integrals/, target_integrals/ and master_to_target/ folders contain relative directory links to the existing family files. These links form a separate, non-overlapping view; each integral file remains stored once. Each family belongs to exactly one model split. Full box kinematic profiles remain together across mass assignments. Added vacuum mass profiles stay together across loop orders.
+Read [the parent guide](../README.md) for the stage and data flow.
 
-manifest.json lists the family records and paths, relative to integrals/. Stored records retain their original canonical file links and historical split labels. This manifest and the model's split_manifest.json define the current 70:30 model division.
+The producing and reading code is described in [the stage guide](../README.md).
 
-These targets are reserved for frozen-model testing. Training does not read these examples or update parameters from them.
+## Data and supporting files
 
-<!-- expanded-model-use -->
-Both models completed twenty passes over the fixed expanded training division. The frozen test covers all 690,382 targets in the separate testing division. Model outputs and exact checks are stored in each model's model_test/ folder. Training used no held-out labels.
+- [manifest.json](manifest.json): This file lists the records and their identifiers.
+
+## Child folders
+
+- [master_integrals](master_integrals/README.md).
+
+- [master_to_target](master_to_target/README.md).
+
+- [target_integrals](target_integrals/README.md).

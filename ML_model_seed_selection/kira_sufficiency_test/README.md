@@ -1,72 +1,1331 @@
-# Predicted-seed sufficiency in Kira
+# kira sufficiency test
 
-This experiment tests whether the frozen model's selected seeds supply enough stored identities to express each reserved target through its specified masters. It covers 690,382 targets in 5,137 test families at loop orders one through twelve. The threshold stays at 0.5. The model, candidate pools and grouped split stay fixed.
+This folder supports the calculation described in the parent guide.
 
-The exact Kira sufficiency test is complete for 690,382 reserved targets in 5,137 families. Predicted seeds suffice for 652,517 targets (94.515%). The full candidate pool suffices for 690,382 (100.000%), and background identities without IBP seeds suffice for 26,915 (3.899%). All symbolic decisions agree with three independent finite-field row-space checks. The model and threshold remain unchanged. This test checks existence of a reduction within the stored identity pools; it does not reconstruct all master coefficients or measure a native Kira speedup.
+Read [the parent guide](../README.md) for the stage and data flow.
 
-## Mathematical test
+## Code use
 
-For each target, the selected equations include every stored IBP identity from each predicted seed. Stored partial-fraction and symmetry identities remain available as background equations. The finite source pool contains the constraints used during family generation.
+Run scientific calculations on Hoffman in a scheduled job.
+Load the Python 3.9.6 module and use the existing project environment.
+The usual interpreter is `.tools/seed-model/venv/bin/python` from the project root.
+Build scripts state their compiler and native Kira requirements.
+Keep each script's memory, time and storage limits.
+Keep existing model and test files before a new run.
+Scripts that write reports describe earlier document names; review their destinations before use.
 
-Let V be the formal vector space of integrals over Q(x,d), R(S) the span of the supplied identities, and M the span of the specified master vectors. A target T has a complete reduction to these masters precisely when its coefficient vector lies in R(S)+M. Equivalently, T represents zero in V/(R(S)+M).
+## Code files
 
-Kira 3.1 tests this condition through its documented user-defined-equation interface and Fermat's symbolic algebra. A public target-definition equation introduces an auxiliary variable for the weighted target expression. One unit row for each master defines the formal quotient. These rows identify master vectors with zero only in the test space; they make no assertion that physical master integrals vanish. A zero target remainder establishes sufficiency. A nonzero remainder establishes that more equations are needed. This test establishes existence of rational master coefficients without reconstructing every coefficient.
+The entries below follow file-name order.
+Each entry gives its purpose and the input or output interface available in the source.
 
-Reference seed labels, construction paths and reference master coefficients supply no equations. Different selected sets use separate copies of all variables. Targets with identical selected sets share a system within their family. Only components disconnected from every target term are removed.
+[s00_check_kira.py](s00_check_kira.py)
 
-Three policies use the same background identities: predicted seeds, all candidate seeds, and no IBP seeds. Independent sparse elimination reconstructs the row space from original identities at three finite-field samples and checks every symbolic membership decision. Each nonzero symbolic remainder also has an exact nonzero sample witness at regular parameter values. The sample coordinates enter after Kira finishes. The pilot additionally compares 765 policy decisions with explicit master-coefficient reductions.
+The file provides small exact Kira fixtures before testing predicted seed sets.
 
-The full candidate set tests the fallback for insufficient predictions. The experiment does not determine the smallest necessary addition or tune predictions from test results. Reference sets can be nonunique and need not be minimal.
+The module defines these callable interfaces:
 
-The higher-loop families have dependent massive denominators. Importing the stored equations tests sufficiency within Kira's actual algebraic solver. An insufficient result refers to the stored equation pool; native generation can supply additional valid operators at the same seeds. Native Kira topology generation, unrestricted high-loop scattering families and total runtime comparisons with native seeding remain outside this experiment.
+```python
 
-## Files and execution
+def main()
 
-s00_check_kira.py and s01_run_fixtures.sh check sufficient and insufficient small systems and independent variable copies.
+```
 
-s02_common.py reads frozen data, selects all identities from the predicted seeds and provides bounded rational arithmetic. s03_kira_adapter.py exports the disjoint systems, runs Kira and reads symbolic remainders. All coefficient text is compacted before import, including public target coefficients.
+These source constants locate inputs and outputs:
 
-s04_run_pilot.py and s05_run_pilot.sh preserve the explicit master-coefficient pilot. s06_evaluate.py freezes the protocol and evaluates the complete reserved division. s07_run_evaluation.sh supplies sixteen independent single-CPU scheduler tasks. s08_verify.py checks sparse row-space membership and nonzero witnesses. s09_check_import.py and s10_run_import_checks.sh preserve the coefficient-import regression check.
+```python
 
-s11_summarize.py and s12_run_summary.sh verify frozen hashes, source files, predictions, raw exports, policy masks, witnesses and target coverage. They create results.json, validation.json and family_results.csv only after every family completes without unresolved errors. s32_verify_export.py regenerates every actual input from the public target terms and selected source identities, verifies that all connected selected identities are present, and matches the exact input hash. input_regeneration_pilot.json records its initial checks on 211 saved systems. s13_plot_results.py and s14_run_plots.sh draw the checked figures and copy their PDFs to report/. s15_update_report.py updates the scientific text from the checked results and an immutable data-release commit.
+ROOT = Path(__file__).resolve().parents[2]
+HERE = Path(__file__).resolve().parent
+WORK = ROOT / '.tools/kira-seed-sufficiency'
 
-s16_check_target_order.py and s17_run_ordering_check.sh preserve a diagnostic ordering trial. s18_check_master_span.py and s19_run_span_check.sh run three representative quotient-space pilots. s20_validate_span_pilot.py and s21_run_span_validation.sh independently verify their input regeneration, raw output hashes, 4,827 sample decisions and 765 explicit-coefficient decisions. s23_check_quotient_order.py and s24_run_quotient_order.sh preserve an alternative ordering diagnostic. That ordering left some auxiliary variables unexported and is not used in the evaluation. s25_finalize_readmes.py updates folder descriptions from checked counts, and s26_validate_reader.py reproduces the reader checks. s27_retry_small_batches.py and s28_run_small_batch_pilot.sh validate a complete 283-target box family that exceeded the initial per-file limit. Its 209 individual systems give 233 sufficient predicted sets and 283 sufficient full sets; their raw records are retained once under results/worker_14/. s29_resume_small_batches.py, s30_run_small_batches.sh and s31_pack_small_batches.py resume missing families with bounded grouped systems.
+```
 
-s22_coefficient_reader.py supplies a bounded nonrecursive reader for large rational expressions; reader_validation.json records comparisons with the previous evaluator.
+This entry point uses the paths and options set in its source.
 
-From the project root, load the existing Python module and use the installed environment. The normal sequence for this frozen experiment is:
+These calls show the stored input and output interface:
 
-    qsub ML_model_seed_selection/kira_sufficiency_test/s19_run_span_check.sh
-    qsub ML_model_seed_selection/kira_sufficiency_test/s21_run_span_validation.sh
-    PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 .tools/seed-model/venv/bin/python ML_model_seed_selection/kira_sufficiency_test/s06_evaluate.py --freeze
-    qsub ML_model_seed_selection/kira_sufficiency_test/s30_run_small_batches.sh
-    qsub ML_model_seed_selection/kira_sufficiency_test/s41_run_remaining.sh
-    qsub ML_model_seed_selection/kira_sufficiency_test/s46_run_large_output.sh
-    qsub ML_model_seed_selection/kira_sufficiency_test/s12_run_summary.sh
-    qsub ML_model_seed_selection/kira_sufficiency_test/s14_run_plots.sh
+```python
 
-Complete and check each stage before the next, or use scheduler dependencies. The evaluation resumes hashed completed families. Box-family execution now uses s30_run_small_batches.sh after the validated small-batch trial. s29_resume_small_batches.py preserves the same model, identities and mathematical criterion, while s31_pack_small_batches.py groups at most four independent systems with at most sixteen targets per system. execution_overrides.json and packing_validation.json record the exact source hashes and verify identical equations, targets and policy assignments. Changed scientific inputs require a new frozen experiment. Reader-only execution revisions preserve earlier code, protocol and hashes of retained results in archive_span_reader_v1/. archive_span_large_batches/ retains the states from the larger-batch execution. Resource-limit cases remain unresolved until their checked retry completes.
+(HERE / 'fixture_runs.json').write_text(json.dumps(results, indent=2) + '\n')
+(w / 'system.kira').write_text(system + '\n')
+(w / 'targets').write_text('\n'.join(selected) + '\n')
+(w / 'masters').write_text('\n'.join(masters) + '\n')
+p.read_text(errors='replace')
+(w / 'run.log').read_text(errors='replace')
 
-results/worker_XX/ stores compressed family summaries, batch manifests and raw Kira exports. Manifests record selected seed positions, source-equation IDs, weight-to-integral mappings, target definitions, unit master rows, input hashes and execution bounds. They regenerate the exact full input from the frozen canonical data without duplicating the integral collection. Raw .kira.gz exports and symbolic remainder witnesses support independent inspection.
+```
 
-span_pilot/, pilot/, import_checks/ and fixture_runs.json hold validation evidence. archive_coefficient_reductions/ retains the bounded initial full-coefficient attempt. Some of its harder boxes exceeded the runtime limit, which motivated the equivalent master-span criterion. A timeout or reader failure is an unresolved computation and is never recorded as seed insufficiency. ordering_pilot/ retains its separate ordering diagnostic. worker_XX.json and scheduler/ record progress and execution errors.
+[s01_run_fixtures.sh](s01_run_fixtures.sh)
 
-## Resource bounds
+This shell script runs the recorded commands for this stage.
 
-Each worker uses one CPU, reserves 3 GiB of scheduler memory and limits each process to 1.5 GiB of virtual memory. Each Kira case has a 600-second timeout and 64 MiB scratch limit. Temporary databases use the compute node and are removed after saving results. The initial workers have a 24 MiB compressed-output budget. Resumptions allow up to 32 MiB per worker. resource_limits.json reserves the additional output and Git copies while keeping the combined maximum at 9,925,125,760 bytes. s33_output_budget.py enforces the allowance, and s34_resume_output_budget.py with s35_run_output_resume.sh resumes finished shards without overlapping writers. s36_resume_unfinished.py and s37_run_remaining.sh finish only shards with missing results; completed shards require no repeated calculation. Coefficient parsing has a 2 MiB expression bound. The initial frozen protocol reserved 9,656,690,304 bytes combined, including the local report, worker scratch, outputs, publication copies and report work. No model training runs during this test.
+This is a scheduler job script. Submit it with `qsub` from the project root.
 
-Generated tests stay on Hoffman and GitHub. The report also stays on the local machine. The frozen model SHA-256 is b8fb9cc088bd4e0cbbe1168d1e5fbd733ebea361fd41d3de48827672732ed977. The split SHA-256 is 317c5167fb69424ee39b34c80290e9ed20b0ac6f208eb0adea5c681a494a5bff.
+The exact command sequence is:
 
-The [official Kira documentation](https://www.physik.hu-berlin.de/de/pep/tools/kira/kira-release-notes-1.2.pdf) describes user-defined systems. The [Kira 3 paper](https://arxiv.org/abs/2505.20197) describes the solver.
+```bash
 
-The final resource continuation uses s38_output_budget_48.py through s41_run_remaining.sh. resource_limits_v2.json raises the compressed allowance to 48 MiB per worker and limits the continuation to eight concurrent workers. The output and Git increase equals the released scratch reserve, so the combined bound remains 9,925,125,760 bytes. The continuation waits for preceding workers and skips every completed shard. It preserves all scientific inputs and all completed results.
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraSeedFixture
+#$ -l h_rt=00:30:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o ML_model_seed_selection/kira_sufficiency_test/fixture_scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 65536
+ulimit -c 0
+.tools/seed-model/venv/bin/python ML_model_seed_selection/kira_sufficiency_test/s00_check_kira.py
 
-s42_resume_ready.py and s43_run_ready.sh use two spare slots for finished shards while at most six preceding tasks continue. They skip any shard that still has an active writer. The final continuation waits for this job as well and resolves every deferred shard. ready_resume_schedule.json records the source hashes and combined concurrency bound.
+```
 
-Final resource accounting reserves 128 MiB for solver tools and nonworker artifacts, including a publication copy of those artifacts. This raises the final conservative combined bound to 9,992,234,624 bytes. resource_limits_v2.json records 52,996,096 bytes of solver tools and 32,153,600 bytes of nonworker test artifacts at the accounting check. The solver inputs and per-worker output bounds remain unchanged.
+[s02_common.py](s02_common.py)
 
-resource_limits_v3.json redistributes unused output reservations from completed workers 0, 1, 3, 13 and 15 to worker 10. Their saved files fit 32 MiB each, except worker 15 at 24 MiB. Worker 10 can use 80 MiB; the other unfinished workers retain 48 MiB. The total worker-output reserve falls to 712 MiB, and the combined bound falls to 9,874,794,112 bytes. s44_output_budget_80.py through s46_run_large_output.sh enforce and record this continuation after its preceding writer finishes. No scientific inputs change.
+The file provides frozen inputs, bounded exact rational arithmetic, and seed-filtered systems.
 
-After the preceding active tasks fell to three, the scheduler allowance for s43_run_ready.sh increased from two to five tasks. ready_resume_schedule.json records this override; at most eight evaluation tasks remain active together.
+The module defines these callable interfaces:
 
-The completed results are in results.json, family_results.csv and results/; validation.json verifies coverage and hashes. figures/ contains the two PDF figures and PNG previews. s25_finalize_readmes.py updates folder descriptions from the checked result counts.
+```python
+
+def read(p)
+def sha(p)
+def write(p, v)
+def rows(p)
+def family_file(fid, name)
+def index_key(a)
+def load_family(meta, prediction_entry, limit=None)
+def literal(n)
+def validate_expression(s)
+def add(a, b, sign=1)
+def mul(a, b)
+def power(a, n)
+def normalize(a, b)
+def rational(s)
+def exact_equal(left, right)
+def exact_zero(s)
+def clear_caches()
+def selected_blocks(family)
+
+```
+
+The imported external packages are `numpy`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = Path(__file__).resolve().parent
+MODEL = HERE.parent
+DATA = ROOT / 'integrals'
+WORK = ROOT / '.tools/kira-seed-sufficiency'
+
+```
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+tmp.write_text(json.dumps(v, indent=2, sort_keys=True, allow_nan=False) + '\n', encoding='utf-8')
+Path(p).read_text(encoding='utf-8')
+
+```
+
+[s03_kira_adapter.py](s03_kira_adapter.py)
+
+The program exports disjoint seed selections and read Kira's exact symbolic reductions.
+
+The module defines these callable interfaces:
+
+```python
+
+def allocated(p)
+def batches(blocks, limit=50000)
+def export(family, blocks, w, quotient=True)
+def run_once(w, timeout=600, scratch_limit=67108864)
+def run_kira(w, timeout=600, scratch_limit=67108864)
+def parse_output(path)
+def assess(family, manifest, output, reference_by_id)
+def assess_span(family, manifest, output, reference_by_id)
+
+```
+
+The imported project modules are `s02_common`, `s08_verify`, `s22_coefficient_reader`.
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+(w / 'targets').write_text(''.join(('%d\n' % i for i in targetmap)))
+(w / 'masters').write_text(''.join(('%d\n' % i for i in basis)))
+(w / 'jobs.yaml').write_text(JOBS)
+(w / 'run.log').read_text(errors='replace')
+
+```
+
+[s04_run_pilot.py](s04_run_pilot.py)
+
+The program runs bounded mathematical checks and representative held-out Kira reductions.
+
+The module defines these callable interfaces:
+
+```python
+
+def arithmetic_checks()
+def main()
+
+```
+
+The imported external packages are `sympy`.
+
+The imported project modules are `s03_kira_adapter`, `s08_verify`.
+
+This entry point uses the paths and options set in its source.
+
+[s05_run_pilot.sh](s05_run_pilot.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraSeedPilot
+#$ -l h_rt=02:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o ML_model_seed_selection/kira_sufficiency_test/pilot_scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 65536
+ulimit -c 0
+export KIRA_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-seed-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python ML_model_seed_selection/kira_sufficiency_test/s04_run_pilot.py
+
+```
+
+[s06_evaluate.py](s06_evaluate.py)
+
+The program freezes the solver protocol and evaluate disjoint held-out systems on Hoffman.
+
+The module defines these callable interfaces:
+
+```python
+
+def protocol()
+def output_allocated(folder)
+def bounded_gzip(path, binary=False)
+def save_gz(path, value)
+def process(meta, prediction_entry, dest, scratch)
+def worker(index)
+
+```
+
+The imported project modules are `s03_kira_adapter`, `s08_verify`.
+
+The command accepts these parser options:
+
+- `'--freeze'`: action='store_true'.
+- `'--worker'`: type=int.
+
+These calls show the stored input and output interface:
+
+```python
+
+Path('/proc/meminfo').read_text()
+
+```
+
+[s07_run_evaluation.sh](s07_run_evaluation.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraSeedEval
+#$ -l h_rt=12:00:00,h_data=3G,h_vmem=4G
+#$ -t 1-16
+#$ -tc 16
+#$ -j y
+#$ -o ML_model_seed_selection/kira_sufficiency_test/scheduler/
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 65536
+ulimit -c 0
+export KIRA_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-seed-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python ML_model_seed_selection/kira_sufficiency_test/s06_evaluate.py --worker "$((SGE_TASK_ID-1))"
+
+```
+
+[s08_verify.py](s08_verify.py)
+
+The file provides independent finite-field checks, using a nonrecursive rational-expression reader.
+
+The module defines these callable interfaces:
+
+```python
+
+def evaluate(expression, variables, prime)
+def check_records(records, references)
+def nonzero_witness(expression, samples)
+def reduced(row, basis)
+def insert_row(row, basis)
+def check_span_records(family, blocks, records, references)
+
+```
+
+The imported project modules are `s02_common`, `s22_coefficient_reader`.
+
+Import this helper module from the stage that uses it.
+
+[s09_check_import.py](s09_check_import.py)
+
+The program checks supported symbolic-system import modes on the small legacy-family pilot.
+
+The imported project modules are `s03_kira_adapter`.
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+(w / 'system.kira').read_text()
+(w / 'system.kira').write_text(content)
+(w / 'jobs.yaml').write_text(JOBS.replace('otf: false', 'otf: true'))
+
+```
+
+[s10_run_import_checks.sh](s10_run_import_checks.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraImportCheck
+#$ -l h_rt=02:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o ML_model_seed_selection/kira_sufficiency_test/import_scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 65536
+ulimit -c 0
+export KIRA_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-seed-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python ML_model_seed_selection/kira_sufficiency_test/s09_check_import.py
+
+```
+
+[s11_summarize.py](s11_summarize.py)
+
+The program validates saved solver records, then summarize exact target completion.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s06_evaluate`, `s08_verify`, `s32_verify_export`.
+
+This entry point uses the paths and options set in its source.
+
+[s12_run_summary.sh](s12_run_summary.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraSeedSummary
+#$ -l h_rt=02:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o ML_model_seed_selection/kira_sufficiency_test/summary_scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 65536
+ulimit -c 0
+export KIRA_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-seed-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python ML_model_seed_selection/kira_sufficiency_test/s11_summarize.py
+
+```
+
+[s13_plot_results.py](s13_plot_results.py)
+
+The program plots exact seed sufficiency and the selected candidate fractions.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `matplotlib`, `numpy`.
+
+The imported project modules are `s02_common`.
+
+This entry point uses the paths and options set in its source.
+
+[s14_run_plots.sh](s14_run_plots.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraSeedPlots
+#$ -l h_rt=02:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o ML_model_seed_selection/kira_sufficiency_test/plot_scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 65536
+ulimit -c 0
+export KIRA_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-seed-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python ML_model_seed_selection/kira_sufficiency_test/s13_plot_results.py
+
+```
+
+[s15_update_report.py](s15_update_report.py)
+
+The program updates the scientific report from the completed Kira sufficiency test.
+
+The module defines these callable interfaces:
+
+```python
+
+def main(commit)
+
+```
+
+The imported project modules are `s02_common`.
+
+The command accepts these parser options:
+
+- `'--data-commit'`: required=True.
+
+These calls show the stored input and output interface:
+
+```python
+
+main.read_text()
+(out / 'seed_kira_test.tex').write_text(METHOD + results)
+p.read_text()
+p.write_text(text)
+main.write_text(s)
+bib.read_text()
+bib.write_text(text)
+
+```
+
+[s16_check_target_order.py](s16_check_target_order.py)
+
+The program checks direct target ordering without changing seeds or source identities.
+
+The imported project modules are `s03_kira_adapter`.
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+(w / 'system.kira').write_text('\n'.join(lines) + '\n')
+(w / 'masters').write_text(''.join((str(permutation[i]) + '\n' for i in oldmasters)))
+(w / 'targets').write_text(''.join((str(permutation[i]) + '\n' for i in oldtargets)))
+(w / 'system.kira').read_text()
+
+```
+
+[s17_run_ordering_check.sh](s17_run_ordering_check.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraTargetOrder
+#$ -l h_rt=02:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o ML_model_seed_selection/kira_sufficiency_test/ordering_scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 65536
+ulimit -c 0
+export KIRA_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-seed-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python ML_model_seed_selection/kira_sufficiency_test/s16_check_target_order.py
+
+```
+
+[s18_check_master_span.py](s18_check_master_span.py)
+
+The program tests exact membership in the span of identities and specified masters.
+
+The imported project modules are `s03_kira_adapter`.
+
+Import this helper module from the stage that uses it.
+
+[s19_run_span_check.sh](s19_run_span_check.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraMasterSpan
+#$ -l h_rt=02:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o ML_model_seed_selection/kira_sufficiency_test/span_scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 65536
+ulimit -c 0
+export KIRA_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-seed-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python ML_model_seed_selection/kira_sufficiency_test/s18_check_master_span.py
+
+```
+
+[s20_validate_span_pilot.py](s20_validate_span_pilot.py)
+
+The program validates exact master-span decisions independently before the full run.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s06_evaluate`.
+
+This entry point uses the paths and options set in its source.
+
+[s21_run_span_validation.sh](s21_run_span_validation.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraSpanValidate
+#$ -l h_rt=02:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o ML_model_seed_selection/kira_sufficiency_test/span_validation_scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 65536
+ulimit -c 0
+export KIRA_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-seed-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python ML_model_seed_selection/kira_sufficiency_test/s20_validate_span_pilot.py
+
+```
+
+[s22_coefficient_reader.py](s22_coefficient_reader.py)
+
+The file provides bounded, nonrecursive parsing of Kira rational expressions.
+
+The module defines these callable interfaces:
+
+```python
+
+def parse(expression)
+def small_parse(expression)
+def tokens(expression)
+def validate_output(expression)
+def modular(expression, variables, prime)
+
+```
+
+These source constants locate inputs and outputs:
+
+```python
+
+TOKEN = re.compile('\\s*(\\*\\*|[()+*/^-]|[0-9]+|[A-Za-z][A-Za-z_0-9]*)')
+OPS = {'+': 1, '-': 1, '*': 2, '/': 2, 'u+': 3, 'u-': 3, '**': 4}
+
+```
+
+Import this helper module from the stage that uses it.
+
+[s23_check_quotient_order.py](s23_check_quotient_order.py)
+
+The file provides bounded diagnostic of equivalent target-first quotient ordering.
+
+The imported project modules are `s03_kira_adapter`, `s08_verify`.
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+(w / 'system.kira').write_text('\n'.join(lines) + '\n')
+(w / 'masters').write_text(''.join((str(permutation[i]) + '\n' for i in oldmasters)))
+(w / 'targets').write_text(''.join((str(permutation[i]) + '\n' for i in oldtargets)))
+(w / 'system.kira').read_text()
+
+```
+
+[s24_run_quotient_order.sh](s24_run_quotient_order.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraMasterSpan
+#$ -l h_rt=02:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o ML_model_seed_selection/kira_sufficiency_test/quotient_ordering_scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 65536
+ulimit -c 0
+export KIRA_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-seed-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python ML_model_seed_selection/kira_sufficiency_test/s23_check_quotient_order.py
+
+```
+
+[s25_finalize_readmes.py](s25_finalize_readmes.py)
+
+The program writes completion descriptions only from independently validated test results.
+
+The imported project modules are `s02_common`.
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+path.read_text()
+path.write_text(text)
+
+```
+
+[s26_validate_reader.py](s26_validate_reader.py)
+
+The program checks the large-expression reader against the archived independent evaluator.
+
+The imported project modules are `s02_common`, `s22_coefficient_reader`.
+
+Import this helper module from the stage that uses it.
+
+[s27_retry_small_batches.py](s27_retry_small_batches.py)
+
+The program retries unresolved symbolic systems with independent, smaller target batches.
+
+The module defines these callable interfaces:
+
+```python
+
+def small_batches(blocks)
+def main(fid)
+
+```
+
+The imported project modules are `s06_evaluate`.
+
+The command accepts these parser options:
+
+- `'--family'`: default='box_profile_0168'.
+
+[s28_run_small_batch_pilot.sh](s28_run_small_batch_pilot.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraSmallBatch
+#$ -l h_rt=02:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o ML_model_seed_selection/kira_sufficiency_test/small_batch_scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 65536
+ulimit -c 0
+export KIRA_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-seed-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python ML_model_seed_selection/kira_sufficiency_test/s27_retry_small_batches.py
+
+```
+
+[s29_resume_small_batches.py](s29_resume_small_batches.py)
+
+The program resumes the same frozen test with smaller box-family execution batches.
+
+The module defines these callable interfaces:
+
+```python
+
+def process(meta, entry, dest, scratch)
+def main(index)
+
+```
+
+The imported project modules are `s06_evaluate`, `s31_pack_small_batches`.
+
+The command accepts these parser options:
+
+- `'--worker'`: type=int; required=True.
+
+[s30_run_small_batches.sh](s30_run_small_batches.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraSeedSplit
+#$ -l h_rt=12:00:00,h_data=3G,h_vmem=4G
+#$ -t 1-16
+#$ -tc 16
+#$ -j y
+#$ -o ML_model_seed_selection/kira_sufficiency_test/scheduler/
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 65536
+ulimit -c 0
+export KIRA_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-seed-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python ML_model_seed_selection/kira_sufficiency_test/s29_resume_small_batches.py --worker "$((SGE_TASK_ID-1))"
+
+```
+
+[s31_pack_small_batches.py](s31_pack_small_batches.py)
+
+The program packs at most four independent small systems while preserving all equations.
+
+The module defines these callable interfaces:
+
+```python
+
+def packed_batches(blocks)
+
+```
+
+The imported project modules are `s27_retry_small_batches`.
+
+Import this helper module from the stage that uses it.
+
+[s32_verify_export.py](s32_verify_export.py)
+
+The program regenerates each actual Kira input from public targets and selected identities.
+
+The module defines these callable interfaces:
+
+```python
+
+def prepare(meta)
+def verify(state, manifest)
+
+```
+
+The imported project modules are `s02_common`.
+
+Import this helper module from the stage that uses it.
+
+[s33_output_budget.py](s33_output_budget.py)
+
+The program bounds compressed writes to a documented 32 MiB worker allowance.
+
+The module defines these callable interfaces:
+
+```python
+
+def bounded_gzip(path, binary=False)
+
+```
+
+The imported project modules are `s06_evaluate`.
+
+Import this helper module from the stage that uses it.
+
+[s34_resume_output_budget.py](s34_resume_output_budget.py)
+
+The program resumes completed or stopped shards within the revised storage reserve.
+
+The module defines these callable interfaces:
+
+```python
+
+def main(index)
+
+```
+
+The imported project modules are `s06_evaluate`, `s29_resume_small_batches`, `s33_output_budget`.
+
+The command accepts these parser options:
+
+- `'--worker'`: type=int; required=True.
+
+These calls show the stored input and output interface:
+
+```python
+
+Path('/proc/meminfo').read_text()
+
+```
+
+[s35_run_output_resume.sh](s35_run_output_resume.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraSeedResume
+#$ -l h_rt=12:00:00,h_data=3G,h_vmem=4G
+#$ -t 1-16
+#$ -tc 16
+#$ -j y
+#$ -o ML_model_seed_selection/kira_sufficiency_test/scheduler/
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 65536
+ulimit -c 0
+export KIRA_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-seed-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python ML_model_seed_selection/kira_sufficiency_test/s34_resume_output_budget.py --worker "$((SGE_TASK_ID-1))"
+
+```
+
+[s36_resume_unfinished.py](s36_resume_unfinished.py)
+
+The program finishes only shards left incomplete after the preceding execution.
+
+The module defines these callable interfaces:
+
+```python
+
+def main(index)
+
+```
+
+The imported project modules are `s02_common`, `s34_resume_output_budget`.
+
+The command accepts these parser options:
+
+- `'--worker'`: required=True; type=int.
+
+[s37_run_remaining.sh](s37_run_remaining.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraRemaining
+#$ -l h_rt=12:00:00,h_data=3G,h_vmem=4G
+#$ -t 1-16
+#$ -tc 16
+#$ -j y
+#$ -o ML_model_seed_selection/kira_sufficiency_test/scheduler/
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 65536
+ulimit -c 0
+export KIRA_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-seed-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python ML_model_seed_selection/kira_sufficiency_test/s36_resume_unfinished.py --worker "$((SGE_TASK_ID-1))"
+
+```
+
+[s38_output_budget_48.py](s38_output_budget_48.py)
+
+The program bounds compressed writes to a documented 48 MiB worker allowance.
+
+The module defines these callable interfaces:
+
+```python
+
+def bounded_gzip(path, binary=False)
+
+```
+
+The imported project modules are `s06_evaluate`.
+
+Import this helper module from the stage that uses it.
+
+[s39_resume_output_48.py](s39_resume_output_48.py)
+
+The program resumes completed or stopped shards within the revised storage reserve.
+
+The module defines these callable interfaces:
+
+```python
+
+def main(index)
+
+```
+
+The imported project modules are `s06_evaluate`, `s29_resume_small_batches`, `s38_output_budget_48`.
+
+The command accepts these parser options:
+
+- `'--worker'`: type=int; required=True.
+
+These calls show the stored input and output interface:
+
+```python
+
+Path('/proc/meminfo').read_text()
+
+```
+
+[s40_finish_remaining.py](s40_finish_remaining.py)
+
+The program finishes only shards left incomplete after the preceding execution.
+
+The module defines these callable interfaces:
+
+```python
+
+def main(index)
+
+```
+
+The imported project modules are `s02_common`, `s39_resume_output_48`.
+
+The command accepts these parser options:
+
+- `'--worker'`: required=True; type=int.
+
+[s41_run_remaining.sh](s41_run_remaining.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraFinalCases
+#$ -l h_rt=12:00:00,h_data=3G,h_vmem=4G
+#$ -t 1-16
+#$ -tc 8
+#$ -j y
+#$ -o ML_model_seed_selection/kira_sufficiency_test/scheduler/
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 65536
+ulimit -c 0
+export KIRA_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-seed-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python ML_model_seed_selection/kira_sufficiency_test/s40_finish_remaining.py --worker "$((SGE_TASK_ID-1))"
+
+```
+
+[s42_resume_ready.py](s42_resume_ready.py)
+
+The program uses spare slots for finished shards while other earlier shards continue.
+
+The module defines these callable interfaces:
+
+```python
+
+def main(index)
+
+```
+
+The imported project modules are `s02_common`, `s40_finish_remaining`.
+
+The command accepts these parser options:
+
+- `'--worker'`: required=True; type=int.
+
+[s43_run_ready.sh](s43_run_ready.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraReadyCases
+#$ -l h_rt=12:00:00,h_data=3G,h_vmem=4G
+#$ -t 1-16
+#$ -tc 2
+#$ -j y
+#$ -o ML_model_seed_selection/kira_sufficiency_test/scheduler/
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 65536
+ulimit -c 0
+export KIRA_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-seed-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python ML_model_seed_selection/kira_sufficiency_test/s42_resume_ready.py --worker "$((SGE_TASK_ID-1))"
+
+```
+
+[s44_output_budget_80.py](s44_output_budget_80.py)
+
+The program bounds compressed writes to a documented 80 MiB worker allowance.
+
+The module defines these callable interfaces:
+
+```python
+
+def bounded_gzip(path, binary=False)
+
+```
+
+The imported project modules are `s06_evaluate`.
+
+Import this helper module from the stage that uses it.
+
+[s45_resume_large_output.py](s45_resume_large_output.py)
+
+The program resumes completed or stopped shards within the revised storage reserve.
+
+The module defines these callable interfaces:
+
+```python
+
+def main(index)
+
+```
+
+The imported project modules are `s06_evaluate`, `s29_resume_small_batches`, `s44_output_budget_80`.
+
+The command accepts these parser options:
+
+- `'--worker'`: type=int; required=True.
+
+These calls show the stored input and output interface:
+
+```python
+
+Path('/proc/meminfo').read_text()
+
+```
+
+[s46_run_large_output.sh](s46_run_large_output.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraLargeOutput
+#$ -l h_rt=12:00:00,h_data=3G,h_vmem=4G
+#$ -t 11-11
+#$ -tc 1
+#$ -j y
+#$ -o ML_model_seed_selection/kira_sufficiency_test/scheduler/
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 65536
+ulimit -c 0
+export KIRA_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-seed-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python ML_model_seed_selection/kira_sufficiency_test/s45_resume_large_output.py --worker "$((SGE_TASK_ID-1))"
+
+```
+
+## Data and supporting files
+
+- [execution_overrides.json](execution_overrides.json): This file contains structured records from the parent calculation.
+
+- [family_results.csv](family_results.csv): This file supports the calculation described in the parent guide.
+
+- [fixture_runs.json](fixture_runs.json): This file contains structured records from the parent calculation.
+
+- [fixture_scheduler.log](fixture_scheduler.log): This file contains saved program messages.
+
+- [import_scheduler.log](import_scheduler.log): This file contains saved program messages.
+
+- [input_regeneration_pilot.json](input_regeneration_pilot.json): This file contains structured records from the parent calculation.
+
+- [ordering_scheduler.log](ordering_scheduler.log): This file contains saved program messages.
+
+- [packing_validation.json](packing_validation.json): This file contains structured records from the parent calculation.
+
+- [pilot_scheduler.log](pilot_scheduler.log): This file contains saved program messages.
+
+- [plot_scheduler.log](plot_scheduler.log): This file contains saved program messages.
+
+- [protocol.json](protocol.json): This file contains structured records from the parent calculation.
+
+- [quotient_ordering_scheduler.log](quotient_ordering_scheduler.log): This file contains saved program messages.
+
+- [reader_validation.json](reader_validation.json): This file contains structured records from the parent calculation.
+
+- [ready_resume_schedule.json](ready_resume_schedule.json): This file contains structured records from the parent calculation.
+
+- [resource_limits.json](resource_limits.json): This file contains structured records from the parent calculation.
+
+- [resource_limits_v2.json](resource_limits_v2.json): This file contains structured records from the parent calculation.
+
+- [resource_limits_v3.json](resource_limits_v3.json): This file contains structured records from the parent calculation.
+
+- [results.json](results.json): This file contains structured records from the parent calculation.
+
+- [small_batch_scheduler.log](small_batch_scheduler.log): This file contains saved program messages.
+
+- [span_scheduler.log](span_scheduler.log): This file contains saved program messages.
+
+- [span_validation_scheduler.log](span_validation_scheduler.log): This file contains saved program messages.
+
+- [summary_scheduler.log](summary_scheduler.log): This file contains saved program messages.
+
+- [validation.json](validation.json): This file records the completed validation checks.
+
+- [worker_00.json](worker_00.json): This file contains structured records from the parent calculation.
+
+- [worker_01.json](worker_01.json): This file contains structured records from the parent calculation.
+
+- [worker_02.json](worker_02.json): This file contains structured records from the parent calculation.
+
+- [worker_03.json](worker_03.json): This file contains structured records from the parent calculation.
+
+- [worker_04.json](worker_04.json): This file contains structured records from the parent calculation.
+
+- [worker_05.json](worker_05.json): This file contains structured records from the parent calculation.
+
+- [worker_06.json](worker_06.json): This file contains structured records from the parent calculation.
+
+- [worker_07.json](worker_07.json): This file contains structured records from the parent calculation.
+
+- [worker_08.json](worker_08.json): This file contains structured records from the parent calculation.
+
+- [worker_09.json](worker_09.json): This file contains structured records from the parent calculation.
+
+- [worker_10.json](worker_10.json): This file contains structured records from the parent calculation.
+
+- [worker_11.json](worker_11.json): This file contains structured records from the parent calculation.
+
+- [worker_12.json](worker_12.json): This file contains structured records from the parent calculation.
+
+- [worker_13.json](worker_13.json): This file contains structured records from the parent calculation.
+
+- [worker_14.json](worker_14.json): This file contains structured records from the parent calculation.
+
+- [worker_15.json](worker_15.json): This file contains structured records from the parent calculation.
+
+## Child folders
+
+- [archive_coefficient_reductions](archive_coefficient_reductions/README.md).
+
+- [archive_output_allowance](archive_output_allowance/README.md).
+
+- [archive_output_allowance_v2](archive_output_allowance_v2/README.md).
+
+- [archive_output_allowance_v3](archive_output_allowance_v3/README.md).
+
+- [archive_span_large_batches](archive_span_large_batches/README.md).
+
+- [archive_span_reader_v1](archive_span_reader_v1/README.md).
+
+- [figures](figures/README.md).
+
+- [import_checks](import_checks/README.md).
+
+- [ordering_pilot](ordering_pilot/README.md).
+
+- [pilot](pilot/README.md).
+
+- [results](results/README.md).
+
+- [scheduler](scheduler/README.md).
+
+- [small_batch_pilot](small_batch_pilot/README.md).
+
+- [span_pilot](span_pilot/README.md).

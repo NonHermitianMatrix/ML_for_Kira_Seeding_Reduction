@@ -1,0 +1,13 @@
+# preparation profile
+
+This folder supports the calculation described in the parent guide.
+
+Read [the parent guide](../README.md) for the stage and data flow.
+
+The producing and reading code is described in [the stage guide](../README.md).
+
+## Data and supporting files
+
+- [cpu.json.gz](cpu.json.gz): This file contains structured records from the parent calculation.
+
+- [strace.json.gz](strace.json.gz): This file contains structured records from the parent calculation.

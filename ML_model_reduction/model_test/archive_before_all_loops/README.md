@@ -1,75 +1,352 @@
-# Reduction-model test
+# archive before all loops
 
-This folder tests the saved thirty-epoch reduction-propagation model on the existing reserved families. It preserves the trained parameters, grouped split, feature definition, action rule and returned probabilities. The test performs zero optimizer updates and fits no confidence map.
+This folder retains an earlier stage, development check or saved comparison.
+Use its records to interpret that stage.
+Use the current parent application for a new calculation.
 
-The same reserved set previously evaluated the ten-epoch model. This is a repeated evaluation after a user-specified twenty-epoch continuation with unchanged training settings. The test records remain excluded from gradient updates. The previous evaluation is preserved at commit c2ba11c579c8851a22c69132e36a03f9ba4aa8b7; active results and figures refer to the thirty-epoch weights.
+Read [the parent guide](../README.md) for the stage and data flow.
 
-The inputs comprise 307 families and 72,142 targets from integrals/testing/. The current split_manifest.json in ML_model_seed_selection/ is authoritative; original split labels in older target records describe earlier dataset divisions. The held-out set has 306 one-loop families and one massless two-loop propagator family. Shared lower-sector structure and repeated box topology limit the scope of the family-transfer claim.
+## Code use
 
-## What the test measures
+Run scientific calculations on Hoffman in a scheduled job.
+Load the Python 3.9.6 module and use the existing project environment.
+The usual interpreter is `.tools/seed-model/venv/bin/python` from the project root.
+Build scripts state their compiler and native Kira requirements.
+Keep each script's memory, time and storage limits.
+Keep existing model and test files before a new run.
+Scripts that write reports describe earlier document names; review their destinations before use.
 
-At every recorded state, the model receives the current target row and the complete stored candidate list. The test records every action probability and compares the chosen equation with the recorded equation. Main accuracy, top-three, top-five, reciprocal rank, Brier score, negative log probability and confidence-bin results exclude forced states. Equality of the sampled next row is a separate metric because different equations can have the same effect. All-state results and forced counts remain available.
+## Code files
 
-A softmax tie uses the trained interface's fixed equation-ID order. tie_metrics.json also reports the expected top-one agreement if tied maxima were selected uniformly. This is an additional descriptive metric; it does not change predictions or paths.
+The entries below follow file-name order.
+Each entry gives its purpose and the input or output interface available in the source.
 
-For complete reductions, each policy starts from the target row and receives its own updated row after every action. The pivot is its largest remaining nonmaster integral under the recorded integral order. Candidate rows come from the full stored identity pool with that leading integral and a valid sampled pivot. The test checks that this rule reconstructs the recorded candidate lists. No later reference state or master coefficients enter the policy.
+[s00_test_common.py](s00_test_common.py)
 
-The fixed local comparison rule tries each candidate and minimizes, in order, the resulting nonmaster term count, total nonzero count, source-row operation count and equation ID. The learned and local policies use the same initial rows, masters, equation pools and pivot order. They run in alternating order by target. A path can complete, run out of allowed equations or exceed fixed row, input or step limits. There is no reference-path fallback.
+The file provides shared held-out metrics, bounded outputs and exact sample arithmetic.
 
-Each chosen row operation is checked by exact cross multiplication. Its sequence of identities is then replayed from the original symbolic target and identity coefficients at all three stored points and primes. A successful target must complete and reproduce the saved master coefficients at every sample. Singular source pivots count as unverified. These finite-field checks do not reconstruct a symbolic answer or prove a globally minimum path.
+The module defines these callable interfaces:
 
-Committed cost counts one division plus one multiplication and subtraction per nonzero source coefficient. Candidate trial updates contribute a separately recorded cost. total_field_operations sums those two counts; it excludes network arithmetic, bookkeeping and extra verification. Operation plots compare the same targets successfully completed by both policies, excluding zero reference-cost targets.
+```python
 
-Runtime includes current-state construction, candidate selection, exact updates and per-step row checks. It excludes file access, building the source pool and the later three-sample replays. Mean and median times include unsuccessful attempts. This is a measured comparison of the current target-row implementations, not a Kira benchmark.
+def test_config()
+def status(stage, **extra)
+def signature()
+def write_npz(path, **arrays)
+def write_gzip(path, objects)
+def csv_write(path, records)
+def parsed(text)
+def literal_int(node)
+def coefficient(text, point, prime)
+def eval_terms(terms, point, prime)
+def exact_row_check(before, source, pivot, after, p)
+def ordered_indices(probabilities, ids)
+def classify(probabilities, reference, ids)
+def reliability(confidence, correct, bins=10)
+def metric_summary(data)
+def merge_arrays(parts)
+def ratio_summary(records, policy)
 
-## Files
+```
 
-- test_config.json: fixed weights hash, test definitions, confidence bins and bounds.
-- evaluation_request.json: checkpoint epoch, earlier commit and repeated-test provenance.
-- checkpoint_validation.json: current model, optimizer checkpoint and training-history consistency checks.
-- families/<family>/predictions.npz: every recorded-state probability and metric.
-- families/<family>/trajectories.jsonl.gz: chosen equations, confidence, exact final rows, three-point checks and costs for every complete or unsuccessful attempt.
-- families/<family>/summary.json: family counts, metrics and source/artifact hashes.
-- test_results.json: aggregate state, target, loop-order, cost and time results.
-- family_metrics.json and family_metrics.csv: per-family results.
-- target_metrics.jsonl.gz: compact target results; full paths remain in family archives.
-- additional_sample_failures.json: completed local-rule paths that failed additional sample checks.
-- confidence_reliability.csv and tie_metrics.json: confidence and tie analysis.
-- paired_comparison.json: common successful-target cost comparison.
-- validation.json and metric_checks.json: independent replay and metric checks.
-- figures/: six PDF and PNG plots. Matching PDFs are copied into report/figures/.
-- figure_manifest.json and figure_values.csv: figure hashes and summary values.
-- report_template.tex and report_values.json: scientific text and the values inserted into report/reduction_test.tex.
-- report_validation.json: report and figure hashes and build checks.
-- status.json, scheduler.log and finalize.log: progress and scheduler output.
-- pilot.json: two-family bounded trial under the unchanged full-test protocol.
+The imported external packages are `numpy`.
 
-The NPZ probability arrays use offsets to delimit one action list per state. action_ids and probabilities share this flattened order. reference and predicted index that state's action list. target_number indexes target_ids, and step_number identifies the recorded step. same_row compares the selected result with the recorded next sampled row. probabilities are float32; IDs are Unicode arrays. Open archives with allow_pickle=False.
+The imported project modules are `s00_common`, `s01_state`, `s05_predict`.
 
-Every trajectory record contains model and greedy results. Each path step retains its equation, pivot, confidence (model only), candidate count, row sizes and committed/trial operation counts. final_row and sample_checks retain the coefficients needed to inspect success or failure. Reference costs are known valid upper bounds under the stated convention; the test does not call them optimal.
+These source constants locate inputs and outputs:
 
-## Scripts and execution
+```python
 
-1. s00_test_common.py: fixed provenance, bounded output, exact coefficient evaluation and metric definitions.
-2. s01_policies.py: candidate pools, fixed local comparison rule, autonomous paths and three-sample replay.
-3. s02_evaluate.py: frozen recorded-state predictions and complete-path evaluation; resumes unchanged completed family outputs.
-4. s03_check_metrics.py: analytic probability and finite-field checks.
-5. s04_run_test.sh: bounded scheduler wrapper for the checks, two-family pilot and complete held-out evaluation.
-6. s05_validate_outputs.py: independently recompute metrics, replay all chosen paths with Fermat inversion, verify source and artifact hashes, and repeat representative frozen predictions.
-7. s06_plot_results.py: create the six figures and paired comparison.
-8. s07_update_report.py: insert validated measurements into the report and READMEs; --validate-build checks the rendered report.
-9. s08_finalize_report.sh: scheduler wrapper for validation, plots, report generation and PDF build.
-10. s09_validate_checkpoint.py: verify the thirty-epoch model against its saved optimizer checkpoint and training provenance.
+TEST = pathlib.Path(__file__).resolve().parent
 
-From the project root:
+```
 
-    qsub ML_model_reduction/model_test/s04_run_test.sh
-    qsub -hold_jid <evaluation-job-id> ML_model_reduction/model_test/s08_finalize_report.sh
+Import this helper module from the stage that uses it.
 
-The finalizer requires complete evaluation and fails if required outputs are absent. The evaluator checks hashes before reusing a completed family. Changes to the model, input split, encoder, predictor, test configuration or producer scripts require a separately identified evaluation; existing results are never silently accepted under changed provenance.
+These calls show the stored input and output interface:
 
-Both jobs request one CPU and 4 GiB. They cap virtual memory at 3 GiB and a single output file at 128 MiB. A family output has an additional 64 MiB limit. Reduction paths have at most 4,096 steps and 4,096 current-row nonzeros. The existing model and combined project storage guards remain active. Keep these records on Hoffman and GitHub only; synchronize only the report and its figures to the local report folder.
+```python
 
-<!-- test-results:start -->
-The frozen thirty-epoch reduction model was tested on 72,142 targets in 307 held-out families. It matched 94.716% of recorded choices on 194,347 states with at least two actions. Complete learned paths matched all three sampled master expansions for 72,088 targets; the fixed local rule passed 71,463. Mean attempted reduction times were 10.0639 ms and 0.4643 ms, respectively. Reference paths are valid without a proof of minimality. These are target-row tests; no full Kira speedup was measured.
-<!-- test-results:end -->
+np.savez_compressed(f, **arrays)
+
+```
+
+[s01_policies.py](s01_policies.py)
+
+The file provides autonomous target-row policies and exact checks at independent stored samples.
+
+The module defines these callable interfaces:
+
+```python
+
+def pools(identities, masters, prime, n)
+def current_state(before, pivot, allowed, identities, family, masters, prime)
+def greedy_choice(before, pivot, allowed, identities, masters, p)
+def rollout(start, identities, pool, family, masters, prime, predictor, policy, cfg)
+def sample_check(target, path, identities, master_columns, sample, cache)
+
+```
+
+The imported project modules are `s00_test_common`.
+
+Import this helper module from the stage that uses it.
+
+[s02_evaluate.py](s02_evaluate.py)
+
+The file provides frozen held-out reference-state and autonomous reduction evaluation.
+
+The module defines these callable interfaces:
+
+```python
+
+def family_evaluate(meta, predictor, cfg, sig)
+def aggregate(summaries, cfg, sig, seconds)
+def main()
+
+```
+
+The imported external packages are `torch`.
+
+The imported project modules are `s00_test_common`, `s01_policies`.
+
+The command accepts these parser options:
+
+- `'--limit'`: type=int.
+
+[s03_check_metrics.py](s03_check_metrics.py)
+
+The file provides independent analytical checks before evaluating held-out families.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s00_test_common`.
+
+This entry point uses the paths and options set in its source.
+
+[s04_run_test.sh](s04_run_test.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -S /bin/bash
+#$ -N KiraReductionTest
+#$ -l h_rt=02:00:00,h_data=4G
+#$ -j y
+#$ -o ML_model_reduction/model_test/scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 3145728
+ulimit -f 131072
+ulimit -c 0
+TEST_PYTHON=.tools/seed-model/venv/bin/python
+"$TEST_PYTHON" ML_model_reduction/model_test/s03_check_metrics.py
+"$TEST_PYTHON" ML_model_reduction/model_test/s02_evaluate.py --limit 2
+"$TEST_PYTHON" ML_model_reduction/model_test/s02_evaluate.py
+
+```
+
+[s05_validate_outputs.py](s05_validate_outputs.py)
+
+The file provides independent checks of saved predictions and complete finite-field trajectories.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s00_test_common`, `s01_policies`, `s05_predict`.
+
+This entry point uses the paths and options set in its source.
+
+[s06_plot_results.py](s06_plot_results.py)
+
+The program generates six report figures from fixed saved held-out results.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `matplotlib`.
+
+The imported project modules are `s00_test_common`.
+
+This entry point uses the paths and options set in its source.
+
+[s07_update_report.py](s07_update_report.py)
+
+The program writes the test section and documentation from validated fixed results.
+
+The module defines these callable interfaces:
+
+```python
+
+def replace_text(path, old, new)
+def marker(path, name, text)
+def main()
+
+```
+
+The imported project modules are `s00_test_common`.
+
+The command accepts these parser options:
+
+- `'--validate-build'`: action='store_true'.
+
+These calls show the stored input and output interface:
+
+```python
+
+path.read_text(encoding='utf-8')
+path.write_text(body, encoding='utf-8')
+(TEST / 'report_template.tex').read_text(encoding='utf-8')
+(ROOT / 'report/reduction_test.tex').write_text(template, encoding='utf-8')
+bib.read_text(encoding='utf-8')
+path.write_text(text.replace(old, new), encoding='utf-8')
+(ROOT / 'report/report.log').read_text(encoding='utf-8', errors='replace')
+bib.write_text(content.rstrip() + '\n' + entries, encoding='utf-8')
+report.read_text(encoding='utf-8')
+
+```
+
+[s08_finalize_report.sh](s08_finalize_report.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -S /bin/bash
+#$ -N KiraReductionTestReport
+#$ -l h_rt=02:00:00,h_data=4G
+#$ -j y
+#$ -o ML_model_reduction/model_test/finalize.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 3145728
+ulimit -f 131072
+ulimit -c 0
+TEST_PYTHON=.tools/seed-model/venv/bin/python
+"$TEST_PYTHON" ML_model_reduction/model_test/s09_validate_checkpoint.py
+"$TEST_PYTHON" ML_model_reduction/model_test/s05_validate_outputs.py
+"$TEST_PYTHON" ML_model_reduction/model_test/s06_plot_results.py
+"$TEST_PYTHON" ML_model_reduction/model_test/s07_update_report.py
+make -C report
+"$TEST_PYTHON" ML_model_reduction/model_test/s07_update_report.py --validate-build
+
+```
+
+[s09_validate_checkpoint.py](s09_validate_checkpoint.py)
+
+The program checks the current continued checkpoint without training or changing test outputs.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `numpy`, `torch`.
+
+The imported project modules are `s00_test_common`, `s01_state`, `s05_predict`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+torch.load(MODEL / 'trained_model.pt', map_location='cpu', weights_only=False)
+torch.load(MODEL / 'runs/latest.pt', map_location='cpu', weights_only=False)
+
+```
+
+## Data and supporting files
+
+- [additional_sample_failures.json](additional_sample_failures.json): This file contains structured records from the parent calculation.
+
+- [checkpoint_validation.json](checkpoint_validation.json): This file records checks of the corresponding calculation.
+
+- [confidence_reliability.csv](confidence_reliability.csv): This file supports the calculation described in the parent guide.
+
+- [evaluation_request.json](evaluation_request.json): This file contains structured records from the parent calculation.
+
+- [family_metrics.csv](family_metrics.csv): This file supports the calculation described in the parent guide.
+
+- [family_metrics.json](family_metrics.json): This file contains structured records from the parent calculation.
+
+- [figure_manifest.json](figure_manifest.json): This file lists related records and their identifiers.
+
+- [figure_values.csv](figure_values.csv): This file supports the calculation described in the parent guide.
+
+- [finalize.log](finalize.log): This file contains saved program messages.
+
+- [launch.json](launch.json): This file contains structured records from the parent calculation.
+
+- [metric_checks.json](metric_checks.json): This file records checks of the corresponding calculation.
+
+- [paired_comparison.json](paired_comparison.json): This file contains structured records from the parent calculation.
+
+- [pilot.json](pilot.json): This file contains structured records from the parent calculation.
+
+- [report_template.tex](report_template.tex): This file contains a LaTeX document or document section.
+
+- [report_validation.json](report_validation.json): This file contains structured records from the parent calculation.
+
+- [report_values.json](report_values.json): This file contains structured records from the parent calculation.
+
+- [scheduler.log](scheduler.log): This file contains saved program messages.
+
+- [status.json](status.json): This file records the execution state.
+
+- [target_metrics.jsonl.gz](target_metrics.jsonl.gz): This file records the target definitions or target identifiers.
+
+- [test_config.json](test_config.json): This file contains structured records from the parent calculation.
+
+- [test_results.json](test_results.json): This file contains structured records from the parent calculation.
+
+- [tie_metrics.json](tie_metrics.json): This file contains structured records from the parent calculation.
+
+- [validation.json](validation.json): This file records the completed validation checks.
+
+- [validation_status.json](validation_status.json): This file records the execution state.
+
+- [visual_review.json](visual_review.json): This file contains structured records from the parent calculation.
+
+## Child folders
+
+- [families](families/README.md).
+
+- [figures](figures/README.md).

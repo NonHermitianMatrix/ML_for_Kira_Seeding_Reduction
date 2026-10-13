@@ -1,19 +1,170 @@
-# Paper and research notes
+# report
 
-`report.tex` and `report.pdf` contain the concise research paper, **Learned selection for exact Feynman integral reduction with Kira**. It presents the three model roles, their measured results, the retained seed/equation methods, the exclusion of learned row selection, the overall results and a conclusion. `paper_appendices.tex` contains the IBP, row-operation, target-construction, model-loss, vacuum-recurrence and timing derivations. `paper_references.bib` contains external references only. The paper does not cite this project's GitHub repository.
+This folder contains the research paper and the detailed notes.
+`report.tex` and `report.pdf` contain the paper.
+`paper_appendices.tex` contains the integral definitions and derivations.
+`paper_references.bib` contains the paper's external references.
+The paper does not cite the project repository.
 
-`notes.tex` and `notes.pdf` preserve the previous detailed report. Its original abstract, technical sections, figures, negative results and bibliography remain available. `references.bib`, the existing section files and `figures/` belong to these notes. `notes_README.md` preserves the earlier documentation history; its historical references to `report.tex` or `report.pdf` describe the document now named `notes`.
+`notes.tex` and `notes.pdf` preserve the earlier detailed report.
+The other section files, `references.bib` and `figures/` support the notes.
+`notes_README.md` explains the archived document and its earlier names.
+The notes retain earlier experiments and negative results.
 
-The retained seed and equation models have separate validated domains. The supplied-equation seed result and native equation result are not a measured simultaneous two-model gain. The native equation route retains native seed and row choices. The specialized vacuum speedup also includes exact mathematical reuse and implementation changes; it is not an ML-only result.
+Run `make` in this folder to build both PDFs.
+Run `make report.pdf` to build the paper only.
+The Makefile uses the existing Tectonic installation and bounded memory.
+The tracked figures permit a build without the scientific datasets.
 
-## Build and verification
+Run `s00_make_paper_figures.py` on Hoffman to regenerate the five paper figures.
+Use the existing environment at `../.tools/seed-model/venv/bin/python`.
+The script reads the recorded result summaries.
+It does not train a model or repeat a reduction.
+`paper_figure_data.json` records plotted values, source paths and SHA-256 file checks.
 
-Run `make` here to build both PDFs with the existing bounded Tectonic installation. `make report.pdf` builds the paper, and `make notes.pdf` builds the notes. The build uses the tracked figures and therefore works in the local report-only checkout without scientific datasets.
+Run `python s01_check_paper.py` to check the paper files.
+The check covers citations, cross-references, figures, PDF headers and compilation errors.
+It also checks the original notes text and its supporting files.
+`paper_validation.json` records these file checks.
+`notes_preservation.json` identifies the preserved notes files.
+A file hash checks file identity; it does not prove a reduction.
 
-Run `../.tools/seed-model/venv/bin/python s00_make_paper_figures.py` on Hoffman to regenerate the five vector-PDF paper figures. The script reads existing result summaries, checks the headline measurements, and writes `paper_figure_data.json` with source paths, SHA-256 hashes and plotted values. It does not train models or rerun reductions. `paper_figures/` contains only the publication figures. Each caption states the result, baseline, scope and uncertainty convention. Zoomed axes show labelled limits and an equal-time reference; the cumulative time plot uses a labelled logarithmic scale.
+The paper gives family definitions and generated index ranges.
+The full target records remain in the integral folders.
+The report does not print all 2,301,272 target records.
+The READMEs contain code, commands, storage and file-check details.
+Both PDFs and their sources stay on Hoffman, GitHub and the local machine.
 
-Run `python s01_check_paper.py` to check citations, cross-references, self-repository exclusion, figure availability, PDF signatures, compilation logs and the preserved notes abstract. It writes `paper_validation.json`. This report audit does not rerun scientific experiments.
+## Code files
 
-`notes_preservation.json` records the original source/PDF hashes and the preserved abstract hash. The original PDF remains in Git history; the current notes PDF differs only through the notes title and rebuilt PDF metadata. All previous datasets, weights and result files retain their original locations and content.
+The entries below follow file-name order.
+Each entry gives its purpose and the input or output interface available in the source.
 
-The complete folder is synchronized between Hoffman, GitHub and the local report folder. Raw integral data and model data stay on Hoffman and GitHub.
+[Makefile](Makefile)
+
+This Makefile builds the paper and notes.
+
+```make
+
+SHELL := /bin/bash
+TECTONIC ?= ../.tools/tectonic/tectonic
+
+.PHONY: all
+.DELETE_ON_ERROR:
+all: report.pdf notes.pdf
+
+report.pdf: report.tex paper_appendices.tex paper_references.bib $(wildcard paper_figures/*.pdf)
+	ulimit -v 1572864; ulimit -f 131072; XDG_CACHE_HOME="$(abspath ../.tools/cache)" timeout 180s "$(TECTONIC)" --keep-logs --outdir . report.tex
+
+NOTES_SECTIONS := $(filter-out report.tex notes.tex paper_appendices.tex,$(wildcard *.tex))
+notes.pdf: notes.tex references.bib $(NOTES_SECTIONS) $(wildcard figures/*.pdf)
+	ulimit -v 1572864; ulimit -f 131072; XDG_CACHE_HOME="$(abspath ../.tools/cache)" timeout 180s "$(TECTONIC)" --keep-logs --outdir . notes.tex
+
+```
+
+[s00_make_paper_figures.py](s00_make_paper_figures.py)
+
+The program creates paper figures from frozen result summaries; it does not train models or run reductions.
+
+The module defines these callable interfaces:
+
+```python
+
+def read(name)
+def style()
+def finish(fig, name)
+def ratio_axis(ax, limits)
+def point(ax, value, y, interval=None, color=BLUE, marker='o', label=None)
+def main()
+
+```
+
+The imported external packages are `matplotlib`, `numpy`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent
+OUT = HERE / 'paper_figures'
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+p.read_bytes()
+(HERE / 'paper_figure_data.json').write_text(json.dumps(payload, indent=2) + '\n')
+p.read_text()
+
+```
+
+[s01_check_paper.py](s01_check_paper.py)
+
+The file provides bounded checks of the paper and preserved notes, with no research reruns.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = Path(__file__).resolve().parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'paper_references.bib').read_text()
+(HERE / 'notes.tex').read_text()
+(HERE / 'paper_validation.json').write_text(json.dumps(result, indent=2) + '\n')
+(HERE / 'notes_preservation.json').read_text()
+(HERE / 'paper_figure_data.json').read_text()
+(HERE / n).read_text()
+log.read_text(errors='replace')
+(HERE / f).read_bytes()
+(HERE / (name + '.pdf')).read_bytes()
+(HERE / n).read_bytes()
+path.read_bytes()
+(HERE / (n + '.pdf')).read_bytes()
+
+```
+
+## Data and supporting files
+
+This folder contains 47 data entries.
+The names identify the family, case, target or repetition used by the parent reader.
+
+- `.bib`: 2 entries.
+
+- `.json`: 3 entries.
+
+- `.md`: 1 entries.
+
+- `.pdf`: 2 entries.
+
+- `.tex`: 39 entries.
+
+Use the local manifest or the parent case list to match identifiers.
+Keep compressed files in their stored format.
+Read one record at a time with the parent reader.
+
+## Child folders
+
+- [figures](figures/README.md).
+
+- [paper_figures](paper_figures/README.md).

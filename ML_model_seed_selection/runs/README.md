@@ -1,21 +1,65 @@
-# Expansion in progress
+# runs
 
-The next phase adds 250 mass profiles at every loop order from one through twelve, preserves all previous assignments, and will train twenty additional full passes. The previous completed model and optimizer remain in runs/before_expansion_250/. Active trained_model.pt and model_test results still belong to the preceding release until their replacements pass validation. No new training or testing has completed yet.
+This folder supports the calculation described in the parent guide.
 
-# Seed-model training runs
+Read [the parent guide](../README.md) for the stage and data flow.
 
-The current phase completed twenty complete passes over 266,890 targets from 1,463 training families spanning loop orders one through twelve. all_loops_latest.pt holds its model, optimizer, random state and resume position. all_loops_history.json records completed passes, training_status.json records current progress, and all_loops_scheduler.log records the compute job. The compact inference model is stored in ../trained_model.pt.
+The producing and reading code is described in [the stage guide](../README.md).
 
-before_all_loops_20/ preserves the exact preceding snapshot used to start this phase. Its lineage records nineteen completed passes on the smaller dataset and 70,000 targets in the next pass. The previous continuation's later files remain separately preserved in this directory and extra_20_epochs/. The current phase uses its own epoch and update counters.
+## Data and supporting files
 
-batch_equivalence.json records comparisons of batched scores, losses and gradients with the original prediction interface. batch_pilot.json records the bounded execution pilot. Neither uses held-out labels. The expanded training uses only ../data/ and its fixed manifest.
+- [all_loops_first_allocation.txt](all_loops_first_allocation.txt): This file supports the calculation described in the parent guide.
 
-latest.pt, training.jsonl, scheduler.log and the older snapshots describe earlier training phases. Use all_loops_latest.pt for the current expanded-data resume. The active trainer verifies configuration, data and source hashes before it resumes. Current frozen tests and plots occupy ../model_test/, with earlier tests archived there.
+- [all_loops_history.json](all_loops_history.json): This file records training progress or training inputs.
 
-s18_validate_mixed_batches.py, run with s19_run_batch_validation.sh, compares batched and individual scores, losses and gradients on training batches containing both one-term and multi-term targets. Its result is mixed_batch_validation.json. It reads a checkpoint snapshot in memory and performs no optimizer update.
+- [all_loops_latest.pt](all_loops_latest.pt): This file contains a saved model or its description.
 
-The initial sample-selection log, mixed_batch_initial_selection.log, records a setup attempt whose selected family lacked both target types. The final mixed_batch_validation.json uses suitable training families and passed. Neither attempt updated model weights.
+- [all_loops_resume_scheduler.log](all_loops_resume_scheduler.log): This file contains saved program messages.
 
-The first expanded-data allocation reached its original three-hour scheduler wall-time limit during pass twenty. all_loops_first_allocation.txt records the scheduler reason. The unchanged trainer resumes the saved weights, optimizer, random state and partial pass in a one-hour allocation. scheduler_resume.json records the checkpoint and allocation lineage; all_loops_resume_scheduler.log records the continuation. The completed history still covers exactly twenty full passes.
+- [all_loops_scheduler.log](all_loops_scheduler.log): This file contains saved program messages.
 
-For a resumed allocation, s15_run_all_loops.sh skips feature regeneration when the checkpoint exists. The trainer checks the original feature manifest and source fingerprints before continuing, which preserves the training inputs and saved position.
+- [batch_equivalence.json](batch_equivalence.json): This file contains structured records from the parent calculation.
+
+- [batch_pilot.json](batch_pilot.json): This file contains structured records from the parent calculation.
+
+- [batch_pilot_scheduler.log](batch_pilot_scheduler.log): This file contains saved program messages.
+
+- [expansion_1000_scheduler.log](expansion_1000_scheduler.log): This file contains saved program messages.
+
+- [feature_status.json](feature_status.json): This file records the execution state.
+
+- [input_checks.json](input_checks.json): This file records checks of the corresponding calculation.
+
+- [latest.pt](latest.pt): This file contains a saved model or its description.
+
+- [launch.json](launch.json): This file contains structured records from the parent calculation.
+
+- [mixed_batch_initial_selection.log](mixed_batch_initial_selection.log): This file contains saved program messages.
+
+- [mixed_batch_validation.json](mixed_batch_validation.json): This file contains structured records from the parent calculation.
+
+- [mixed_batch_validation.log](mixed_batch_validation.log): This file contains saved program messages.
+
+- [scheduler.log](scheduler.log): This file contains saved program messages.
+
+- [scheduler_resume.json](scheduler_resume.json): This file contains structured records from the parent calculation.
+
+- [storage_scan_resume_scheduler.log](storage_scan_resume_scheduler.log): This file contains saved program messages.
+
+- [training.jsonl](training.jsonl): This file records training progress or training inputs.
+
+- [training_status.json](training_status.json): This file records training progress or training inputs.
+
+## Child folders
+
+- [before_all_loops_20](before_all_loops_20/README.md).
+
+- [before_expansion_250](before_expansion_250/README.md).
+
+- [epochs_10_snapshot](epochs_10_snapshot/README.md).
+
+- [extra_20_epochs](extra_20_epochs/README.md).
+
+- [resource_check](resource_check/README.md).
+
+- [storage_scan_resume](storage_scan_resume/README.md).

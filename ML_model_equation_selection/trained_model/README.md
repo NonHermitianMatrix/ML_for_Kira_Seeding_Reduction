@@ -1,5 +1,28 @@
-model.json contains the 233-node CART tree and feature definitions. weights.txt stores the same tree for native C++ inference. deployment.json stores validation-selected thresholds and routes; freeze.json records SHA-256 hashes before the first test. Probabilities estimate the native support-membership label. They are not calibrated probabilities of sufficiency or optimality.
+# trained model
 
-The current restricted route is deployment_confirmed.json, frozen by confirmation_freeze.json before six fresh profiles were reduced. deployment.json remains the original broad-test route. Both use the same tree and weights.
+This folder contains saved model parameters or candidate methods.
+Use the parent validation record to identify the selected method.
 
-Current use: s35_reduce.py reads deployment_final.json. deployment_verification.json checks agreement with measured successful arms. The equation model stays off when an earlier seed or row model is requested, because the measured composition was slower. Both original freezes and preceding configurations remain unchanged.
+Read [the parent guide](../README.md) for the stage and data flow.
+
+The producing and reading code is described in [the stage guide](../README.md).
+
+## Data and supporting files
+
+- [confirmation_freeze.json](confirmation_freeze.json): This file contains structured records from the parent calculation.
+
+- [deployment.json](deployment.json): This file contains structured records from the parent calculation.
+
+- [deployment_confirmed.json](deployment_confirmed.json): This file contains structured records from the parent calculation.
+
+- [deployment_final.json](deployment_final.json): This file contains structured records from the parent calculation.
+
+- [deployment_report_values.json](deployment_report_values.json): This file contains structured records from the parent calculation.
+
+- [deployment_verification.json](deployment_verification.json): This file records checks of the corresponding calculation.
+
+- [freeze.json](freeze.json): This file identifies the fixed inputs and method for the completed test.
+
+- [model.json](model.json): This file contains a saved model or its description.
+
+- [weights.txt](weights.txt): This file contains a saved model or its description.

@@ -1,21 +1,137 @@
-# Historical continuation on the earlier dataset
+# extra 20 epochs
 
-This directory records the completed continuation to thirty passes before the expanded loop-order phase. The current model uses twenty further passes over the expanded dataset; see ../README.md and ../../README.md.
+This folder supports the calculation described in the parent guide.
 
-# Twenty additional training epochs
+Read [the parent guide](../README.md) for the stage and data flow.
 
-This continuation resumes the published ten-epoch weights and optimizer state and stops at thirty total epochs. It uses the same 693 training families, architecture, objective, learning rate and remaining settings. No held-out test is run and no Git command publishes the updates.
+## Code use
 
-../epochs_10_snapshot/ preserves the original compact model, optimizer checkpoint, configuration and metadata. Commit c2ba11c579c8851a22c69132e36a03f9ba4aa8b7 retains the ten-epoch test and report. The current model_test/ evaluates the thirty-epoch model under a later user instruction.
+Run scientific calculations on Hoffman in a scheduled job.
+Load the Python 3.9.6 module and use the existing project environment.
+The usual interpreter is `.tools/seed-model/venv/bin/python` from the project root.
+Build scripts state their compiler and native Kira requirements.
+Keep each script's memory, time and storage limits.
+Keep existing model and test files before a new run.
+Scripts that write reports describe earlier document names; review their destinations before use.
 
-request.json records the initial hashes, original settings and requested total. s00_continue.py verifies the starting model and optimizer and runs the continuation. s01_run.sh supplies scheduler and resource limits. jobs.json identifies each execution, scheduler.log records progress, and preflight.json records the checkpoint checks.
+## Code files
 
-Run from the project root with:
+The entries below follow file-name order.
+Each entry gives its purpose and the input or output interface available in the source.
 
-    qsub ML_model_reduction/runs/extra_20_epochs/s01_run.sh
+[s00_continue.py](s00_continue.py)
 
-The job requests one CPU and 4 GiB, caps virtual memory at 3 GiB and any single output file at 128 MiB, and retains the existing project storage guard. If its bounded training time expires, it can submit a successor to continue from the last checkpoint, with at most three jobs for this request. Other failures stop explicitly.
+The program continues the published reduction weights and optimizer for twenty epochs.
 
-The epoch goal overrides only the training schedule. The original configuration and data-preparation files remain unchanged. The active optimizer checkpoint is ../latest.pt and the compact model is ../../trained_model.pt. The compact model is replaced after epoch thirty. Training progress remains in ../status.json and ../history.json.
+The module defines these callable interfaces:
 
-The user subsequently authorized testing, report updates and GitHub publication for this reduction model. The separate seed-model continuation remains on Hoffman.
+```python
+
+def main()
+
+```
+
+The imported external packages are `numpy`, `torch`.
+
+The imported project modules are `s00_common`, `s03_model`, `s04_train`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+WORK = pathlib.Path(__file__).resolve().parent
+
+```
+
+The command accepts these parser options:
+
+- `'--resume'`: action='store_true'.
+- `'--epochs'`: type=int; default=30.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'README.md').read_text(encoding='utf-8')
+(HERE / 'README.md').write_text(text, encoding='utf-8')
+torch.load(latest, map_location='cpu', weights_only=False)
+torch.load(HERE / 'runs/epochs_10_snapshot/trained_model.pt', map_location='cpu', weights_only=False)
+
+```
+
+[s01_run.sh](s01_run.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -S /bin/bash
+#$ -N KiraReductionExtra20
+#$ -l h_rt=12:00:00,h_data=4G
+#$ -j y
+#$ -o ML_model_reduction/runs/extra_20_epochs/scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 3145728
+ulimit -f 131072
+ulimit -c 0
+TRAIN_PYTHON=.tools/seed-model/venv/bin/python
+"$TRAIN_PYTHON" - <<'PY'
+import json,os,pathlib,platform,shutil,time
+p=pathlib.Path("ML_model_reduction/runs/extra_20_epochs")
+plan=json.loads((p/"request.json").read_text())
+history=json.loads((p/"jobs.json").read_text()) if (p/"jobs.json").exists() else []
+assert len(history)<plan["max_attempts"],"Continuation attempt limit reached"
+assert shutil.disk_usage(".").free>2000000000,"Less than 2 GB free"
+history.append(dict(job_id=os.environ.get("JOB_ID"),host=platform.node(),started_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),cpu_slots=1,requested_memory_gib=4,virtual_memory_limit_kib=3145728))
+(p/"jobs.json").write_text(json.dumps(history,indent=2)+"\n")
+print(json.dumps(history[-1]),flush=True)
+PY
+if timeout --signal=TERM --kill-after=60s 39600s "$TRAIN_PYTHON" ML_model_reduction/runs/extra_20_epochs/s00_continue.py --resume --epochs 30; then
+  exit 0
+else
+  TRAIN_EXIT=$?
+fi
+if [[ "$TRAIN_EXIT" == 124 ]]; then
+  "$TRAIN_PYTHON" - <<'PY'
+import json,pathlib,subprocess,time
+p=pathlib.Path("ML_model_reduction/runs/extra_20_epochs")
+plan=json.loads((p/"request.json").read_text())
+history=json.loads((p/"jobs.json").read_text())
+assert len(history)<plan["max_attempts"],"Maximum automatic continuation attempts reached"
+reply=subprocess.check_output(["qsub","ML_model_reduction/runs/extra_20_epochs/s01_run.sh"],text=True)
+(p/"resubmission.json").write_text(json.dumps(dict(reason="bounded_walltime_reached",reply=reply,utc=time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime())),indent=2)+"\n")
+print(reply,flush=True)
+PY
+  exit 0
+fi
+exit "$TRAIN_EXIT"
+
+```
+
+## Data and supporting files
+
+- [jobs.json](jobs.json): This file contains structured records from the parent calculation.
+
+- [launch.json](launch.json): This file contains structured records from the parent calculation.
+
+- [preflight.json](preflight.json): This file contains structured records from the parent calculation.
+
+- [request.json](request.json): This file contains structured records from the parent calculation.
+
+- [run.lock](run.lock): This file supports the calculation described in the parent guide.
+
+- [scheduler.log](scheduler.log): This file contains saved program messages.
+
+- [setup_validation.json](setup_validation.json): This file contains structured records from the parent calculation.
+
+- [status.json](status.json): This file records the execution state.

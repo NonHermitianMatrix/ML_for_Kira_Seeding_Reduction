@@ -1,31 +1,323 @@
-# Seed-selection model test
+# archive before all loops
 
-The completed test evaluates the frozen trained_model.pt on all 72,142 held-out targets from 307 families. The model receives public target, family, master-basis and candidate-seed information. Recorded sufficient seed sets enter the comparison only. The test keeps the trained parameters and the 0.5 threshold fixed, performs no optimizer updates and does not call Kira.
+This folder retains an earlier stage, development check or saved comparison.
+Use its records to interpret that stage.
+Use the current parent application for a new calculation.
 
-The test covers 33,828,275 candidate labels, including 201,885 recorded seeds. Pooled candidate accuracy is 99.940%, precision is 95.734%, recall is 94.112% and F1 is 94.916%. Assigning zero to every candidate would give 99.403% accuracy and zero recall. The predicted set exactly matches the reference for 81.916% of targets. The twenty highest-ranked candidates contain the full reference set for 99.831% of targets with nonempty reference sets.
+Read [the parent guide](../README.md) for the stage and data flow.
 
-Most test targets belong to one-loop families. The sole two-loop family has 144 targets and gives 11.290% precision, 41.553% recall and no exact reference-set matches at the fixed threshold. These results do not establish general high-loop performance. Agreement refers to one recorded sufficient seed set; alternative valid seeds can receive reference label zero. No minimal-seed, exact-reduction or Kira-speedup result is claimed.
+## Code use
 
-The six [figures](figures/) cover training loss, candidate classifications, pooled precision and recall, ranked reference-seed recovery, confidence calibration and family variation. Each figure is available as PDF and PNG. Matching PDF figures are included in report/figures/ and the rendered report.
+Run scientific calculations on Hoffman in a scheduled job.
+Load the Python 3.9.6 module and use the existing project environment.
+The usual interpreter is `.tools/seed-model/venv/bin/python` from the project root.
+Build scripts state their compiler and native Kira requirements.
+Keep each script's memory, time and storage limits.
+Keep existing model and test files before a new run.
+Scripts that write reports describe earlier document names; review their destinations before use.
 
-test_results.json contains pooled counts and metrics, equal-target averages, equal-family averages, groups by target kind and loop count, timing and provenance. family_metrics.json and family_metrics.csv contain all 307 family results. per_target_metrics.jsonl.gz contains one row per target. Denominators are recorded explicitly: recall and average precision exclude the two empty-reference targets; target precision excludes targets with no selected seed. Exact-set agreement includes every target.
+## Code files
 
-predictions/ contains one compressed NPZ file per family. Each file stores float32 probabilities, uint8 reference labels, exact target IDs and kinds, integer seed vectors, binary cross-entropy and timing arrays. The row order follows target_ids, and each probability column corresponds to the matching seeds row. Labels are present for reproducible comparison only. The archives store the model and split SHA256 identifiers. prediction_manifest.json gives archive hashes and counts. Load these arrays with numpy.load(path, allow_pickle=False).
+The entries below follow file-name order.
+Each entry gives its purpose and the input or output interface available in the source.
 
-curves.json contains the score histograms and calibration summaries. The pooled precision-recall curve uses 4,096 bins and therefore approximates the full threshold curve. The confusion counts at 0.5 and target-level average precision use exact probabilities. Average precision groups tied scores; finite-k selections resolve ties by lexicographic seed indices. Confidence compares the returned class probability with observed reference-label agreement separately for labels zero and one. The test does not select a new threshold or fit a calibration transform.
+[s00_metrics.py](s00_metrics.py)
 
-s00_metrics.py defines the metrics, bounded curve accumulation and analytical metric checks. s01_evaluate.py verifies the saved model and split hashes, reads only held-out examples, evaluates them and saves results. It can reuse complete per-family prediction archives after an interruption when their model and split hashes match. s02_run_test.sh runs this evaluation on one Hoffman CPU with 4 GiB requested memory and a 3 GiB address-space limit.
+The file provides reference-seed metrics at the fixed 0.5 threshold, with explicit empty-set handling.
 
-s03_plot_results.py creates the six figures and their CSV data without rerunning the model. s04_validate_outputs.py independently recomputes every confusion count from the stored probabilities, checks target coverage and archive hashes, verifies that the model remains unchanged and compares the report figure copies. s05_make_figures.sh runs plotting and validation with the same bounded resources. s06_update_report.py fills report_section_template.tex from the completed results and writes report/seed_model_test.tex. s07_build_report.sh renders the updated report.
+The module defines these callable interfaces:
 
-Run from the repository root:
+```python
 
-    qsub ML_model_seed_selection/model_test/s02_run_test.sh
-    # After evaluation finishes:
-    qsub ML_model_seed_selection/model_test/s05_make_figures.sh
-    python3 ML_model_seed_selection/model_test/s06_update_report.py
-    qsub ML_model_seed_selection/model_test/s07_build_report.sh
+def divide(a, b)
+def micro_metrics(tn, fp, fn, tp)
+def target_metrics(p, y, seeds)
+class Aggregate
+class Curves
+def self_check()
 
-The evaluation job was 15039780 and the figure/validation job was 15039804. metric_checks.json records analytical boundary cases; validation.json records the independent archive checks. test_status.json gives completion status. Logs remain in this folder. The metric and inference scripts record their hashes; the trained model SHA256 is 931ec67c287af4edbea3e6525e2cc1f8a95e04f164c24d262855986e44c3f589.
+```
 
-The full predictions and test records stay on Hoffman and GitHub. Only the report and its figure copies are synchronized to the local machine. The completed test reports reference-set agreement on the fixed family-grouped split.
+The imported external packages are `numpy`.
+
+Import this helper module from the stage that uses it.
+
+[s01_evaluate.py](s01_evaluate.py)
+
+The program evaluates the frozen trained model on every held-out target and save reproducible predictions.
+
+The module defines these callable interfaces:
+
+```python
+
+def sha(path)
+def write_json(path, data)
+def main()
+
+```
+
+The imported external packages are `numpy`, `torch`.
+
+The imported project modules are `s00_metrics`, `s01_data`, `s02_model`, `s04_predict`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+MODEL = HERE.parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+temp.write_text(json.dumps(data, indent=2, sort_keys=True, allow_nan=False) + '\n', encoding='utf-8')
+
+```
+
+[s02_run_test.sh](s02_run_test.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -S /bin/bash
+#$ -N KiraSeedTest
+#$ -l h_rt=02:00:00,h_data=4G
+#$ -j y
+#$ -o ML_model_seed_selection/model_test/scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+export MPLCONFIGDIR="$PWD/.tools/seed-model/matplotlib"
+mkdir -p "$MPLCONFIGDIR"
+ulimit -v 3145728
+ulimit -f 131072
+ulimit -c 0
+timeout 6900s .tools/seed-model/venv/bin/python ML_model_seed_selection/model_test/s01_evaluate.py
+
+```
+
+[s03_plot_results.py](s03_plot_results.py)
+
+The program creates report figures from completed evaluation records without changing or rerunning the model.
+
+The module defines these callable interfaces:
+
+```python
+
+def read(p)
+def csv_write(name, rows)
+def main()
+
+```
+
+The imported external packages are `matplotlib`, `numpy`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+MODEL = HERE.parent
+REPORT = MODEL.parent / 'report'
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'figure_manifest.json').write_text(json.dumps(dict(figures=saved, formats=['pdf', 'png'], report_copies='report/figures', matplotlib_version=matplotlib.__version__), indent=2) + '\n', encoding='utf-8')
+p.read_text(encoding='utf-8')
+(MODEL / 'runs/training.jsonl').read_text(encoding='utf-8')
+
+```
+
+[s04_validate_outputs.py](s04_validate_outputs.py)
+
+The program checks saved prediction counts, confusion counts, hashes and graph files.
+
+The module defines these callable interfaces:
+
+```python
+
+def read(p)
+def sha(p)
+def main()
+
+```
+
+The imported external packages are `numpy`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'validation.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
+p.read_text(encoding='utf-8')
+
+```
+
+[s05_make_figures.sh](s05_make_figures.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -S /bin/bash
+#$ -N KiraTestFigures
+#$ -l h_rt=00:30:00,h_data=4G
+#$ -j y
+#$ -o ML_model_seed_selection/model_test/figures.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+export MPLCONFIGDIR="$PWD/.tools/seed-model/matplotlib"
+mkdir -p "$MPLCONFIGDIR"
+ulimit -v 3145728
+ulimit -f 131072
+ulimit -c 0
+timeout 600s .tools/seed-model/venv/bin/python ML_model_seed_selection/model_test/s03_plot_results.py
+timeout 600s .tools/seed-model/venv/bin/python ML_model_seed_selection/model_test/s04_validate_outputs.py
+
+```
+
+[s06_update_report.py](s06_update_report.py)
+
+The program writes the scientific test-results section from the frozen evaluation summary.
+
+The module defines these callable interfaces:
+
+```python
+
+def read(p)
+def main()
+
+```
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'report_section_template.tex').read_text(encoding='utf-8')
+(report / 'seed_model_test.tex').write_text(text, encoding='utf-8')
+(HERE / 'report_values.json').write_text(json.dumps(values, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+p.read_text(encoding='utf-8')
+
+```
+
+[s07_build_report.sh](s07_build_report.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -S /bin/bash
+#$ -N KiraTestReport
+#$ -l h_rt=00:10:00,h_data=2G
+#$ -j y
+#$ -o ML_model_seed_selection/model_test/report_build.log
+set -euo pipefail
+ulimit -v 1572864
+ulimit -f 131072
+ulimit -c 0
+make -C report
+
+```
+
+## Data and supporting files
+
+- [confidence_reliability.csv](confidence_reliability.csv): This file supports the calculation described in the parent guide.
+
+- [curves.json](curves.json): This file contains structured records from the parent calculation.
+
+- [family_metrics.csv](family_metrics.csv): This file supports the calculation described in the parent guide.
+
+- [family_metrics.json](family_metrics.json): This file contains structured records from the parent calculation.
+
+- [figure_manifest.json](figure_manifest.json): This file lists related records and their identifiers.
+
+- [figures.log](figures.log): This file contains saved program messages.
+
+- [metric_checks.json](metric_checks.json): This file records checks of the corresponding calculation.
+
+- [per_target_metrics.jsonl.gz](per_target_metrics.jsonl.gz): This file records the target definitions or target identifiers.
+
+- [prediction_manifest.json](prediction_manifest.json): This file lists related records and their identifiers.
+
+- [probability_reliability.csv](probability_reliability.csv): This file supports the calculation described in the parent guide.
+
+- [ranked_seed_recovery.csv](ranked_seed_recovery.csv): This file records seed information or seed checks.
+
+- [report_build.log](report_build.log): This file contains saved program messages.
+
+- [report_section_template.tex](report_section_template.tex): This file contains a LaTeX document or document section.
+
+- [report_validation.json](report_validation.json): This file contains structured records from the parent calculation.
+
+- [report_values.json](report_values.json): This file contains structured records from the parent calculation.
+
+- [scheduler.log](scheduler.log): This file contains saved program messages.
+
+- [test_results.json](test_results.json): This file contains structured records from the parent calculation.
+
+- [test_status.json](test_status.json): This file records the execution state.
+
+- [training_history.csv](training_history.csv): This file records training progress or training inputs.
+
+- [validation.json](validation.json): This file records the completed validation checks.
+
+## Child folders
+
+- [figures](figures/README.md).
+
+- [predictions](predictions/README.md).

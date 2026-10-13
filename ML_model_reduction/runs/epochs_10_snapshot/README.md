@@ -1,5 +1,23 @@
-# Published ten-epoch checkpoint
+# epochs 10 snapshot
 
-These files preserve the model and optimizer before twenty additional epochs on Hoffman. Commit c2ba11c579c8851a22c69132e36a03f9ba4aa8b7 contains the tests and report for these weights. Current model_test/ results and the current report evaluate the thirty-epoch model.
+This folder supports the calculation described in the parent guide.
 
-The archived validation and example-prediction files in this folder refer to the ten-epoch checkpoint. The original test outputs also remain in an ignored archive on Hoffman; Git history retains the published copy.
+Read [the parent guide](../README.md) for the stage and data flow.
+
+The producing and reading code is described in [the stage guide](../../README.md).
+
+## Data and supporting files
+
+- [config.json](config.json): This file sets the model or calculation options.
+
+- [report_validation.json](report_validation.json): This file contains structured records from the parent calculation.
+
+- [trained_model.json](trained_model.json): This file contains a saved model or its description.
+
+- [trained_model.pt](trained_model.pt): This file contains a saved model or its description.
+
+- [validation.json](validation.json): This file records the completed validation checks.
+
+## Child folders
+
+- [runs](runs/README.md).

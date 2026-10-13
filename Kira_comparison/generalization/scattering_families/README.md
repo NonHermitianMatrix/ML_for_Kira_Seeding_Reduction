@@ -1,7 +1,15 @@
-# Broader scattering families
+# scattering families
 
-families.json contains two rational profiles of a massless nonplanar two-loop four-point family and two profiles of a one-loop pentagon. Each batch has sixteen targets; d remains symbolic. The nonplanar propagator list follows the massless limit of topo4 in the original Kira paper. All target indices, scalar-product rules and rank checks are explicit.
+This folder supports the calculation described in the parent guide.
 
-../references/ contains bases and master expansions. ../model_test/ contains native and frozen-filter timings and exact source inputs. Match records through the case ID. These tests do not change the original integral collection or its training split. The frozen filter needs native fallback on each profile; the current application guard retains native decisions.
+Read [the parent guide](../README.md) for the stage and data flow.
 
-Run the numbered workflow in ../README.md. Preserve existing records and the resource limits.
+The producing and reading code is described in [the stage guide](../README.md).
+
+## Data and supporting files
+
+- [families.json](families.json): This file defines the families in this collection.
+
+## Child folders
+
+- [bases](bases/README.md).

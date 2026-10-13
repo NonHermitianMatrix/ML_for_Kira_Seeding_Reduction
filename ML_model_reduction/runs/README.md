@@ -1,13 +1,45 @@
-# Expansion in progress
+# runs
 
-The next phase adds 250 mass profiles at every loop order from one through twelve, preserves all previous assignments, and will train twenty additional full passes. The previous completed model and optimizer remain in runs/before_expansion_250/. Active trained_model.pt and model_test results still belong to the preceding release until their replacements pass validation. No new training or testing has completed yet.
+This folder supports the calculation described in the parent guide.
 
-# Reduction-model training runs
+Read [the parent guide](../README.md) for the stage and data flow.
 
-The current phase completed twenty complete passes over the expanded training choice states from 266,890 targets in 1,463 families. all_loops_latest.pt stores the model, optimizer, random state and resume position. all_loops_history.json records completed passes; status.json records preparation or training progress; all_loops_scheduler.log records the compute job. The final compact model is stored in ../trained_model.pt.
+The producing and reading code is described in [the stage guide](../README.md).
 
-before_all_loops_20/ preserves the preceding thirty-pass model and optimizer used to start this phase. Those thirty passes used the smaller dataset. The twenty new passes use every represented loop order from one through twelve, with a separate epoch counter and preserved optimizer lineage.
+## Data and supporting files
 
-latest.pt, history.json, scheduler.log, extra_20_epochs/ and epochs_10_snapshot/ retain earlier phases. Use all_loops_latest.pt for the expanded-data resume. The active trainer verifies the current preparation manifest, configuration and source hashes before resuming.
+- [all_loops_history.json](all_loops_history.json): This file records training progress or training inputs.
 
-Only choice states contribute ranking loss. Forced states remain in the exact replay checks and have action probability one. Training reads no held-out labels. Current frozen tests and plots occupy ../model_test/, and its archive_before_all_loops/ folder preserves the preceding evaluation.
+- [all_loops_latest.pt](all_loops_latest.pt): This file contains a saved model or its description.
+
+- [all_loops_scheduler.log](all_loops_scheduler.log): This file contains saved program messages.
+
+- [example_prediction.json](example_prediction.json): This file contains structured records from the parent calculation.
+
+- [example_state.json](example_state.json): This file contains structured records from the parent calculation.
+
+- [expansion_1000_scheduler.log](expansion_1000_scheduler.log): This file contains saved program messages.
+
+- [history.json](history.json): This file records training progress or training inputs.
+
+- [latest.pt](latest.pt): This file contains a saved model or its description.
+
+- [preparation_support_check.log](preparation_support_check.log): This file records checks of the corresponding calculation.
+
+- [report_build.log](report_build.log): This file contains saved program messages.
+
+- [report_values.json](report_values.json): This file contains structured records from the parent calculation.
+
+- [scheduler.log](scheduler.log): This file contains saved program messages.
+
+- [status.json](status.json): This file records the execution state.
+
+## Child folders
+
+- [before_all_loops_20](before_all_loops_20/README.md).
+
+- [before_expansion_250](before_expansion_250/README.md).
+
+- [epochs_10_snapshot](epochs_10_snapshot/README.md).
+
+- [extra_20_epochs](extra_20_epochs/README.md).

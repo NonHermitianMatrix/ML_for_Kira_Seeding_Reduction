@@ -1,5 +1,27 @@
 # vacuum_L02_profile100
 
-Coupled 2-loop vacuum integral, mass profile 100. This restricted Euclidean family has 2 loops and 2 masters. Massless propagator powers equal one; massive powers vary within the stored bounds.
+This folder contains the definition and master basis for family `vacuum_L02_profile100`.
 
-definition.json and masters.json in the matching master folder define the integral and basis. The target folder stores 128 targets. The relation folder stores source identities, separate IBP seed labels, exact reverse constructions, scalar proofs, reference master coefficients and elimination traces at three finite-field samples. Algebraic partial fractions carry no IBP seed. Reference paths are sufficient; minimality is not established. See integrals/higher_loops/README.md.
+The family has 2 loops and 2 distinct massive denominators.
+
+The massless powers equal one. The massive denominators share the total loop momentum.
+
+[Family definition and masters](README.md).
+
+[Target integrals](../../../target_integrals/families/vacuum_L02_profile100/README.md).
+
+[Relations and reduction steps](../../../master_to_target/families/vacuum_L02_profile100/README.md).
+
+The same family and target identifiers connect these records.
+
+Reference paths are sufficient. Their minimum cost is not established.
+
+A partial-fraction relation carries no IBP seed label.
+
+Read the data with [the integral reader guide](../../../README.md).
+
+- [definition.json](definition.json): This file defines loop momenta, external momenta, denominators and scalar products.
+
+- [masters.json](masters.json): This file gives master indices and their family information.
+
+- [masters.txt](masters.txt): This file gives the master index list in text form.

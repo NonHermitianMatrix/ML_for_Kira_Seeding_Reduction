@@ -1,86 +1,710 @@
-# Seed-selection model
+# ML model seed selection
 
-The model gives each supplied candidate seed a separate reference-membership probability, a binary label at p>=0.5 and the probability of the returned label. Several seeds can receive label one. It uses the symbolic target terms, every ordered pair of distinct terms, public family information and the chosen master indices. It has 28,097 parameters.
+This model assigns a separate membership probability to each supplied candidate seed.
+Several seeds can receive label one.
+The label test uses a probability threshold of 0.5.
+The model has 28,097 parameters.
+Its input contains target terms, ordered term pairs, family information, master indices and candidate indices.
+Reference coefficients and future reduction steps remain outside the input.
 
-The current checkpoint completed twenty new passes over 1,610,890 training targets from 11,963 complete families. Every loop order from one through twelve occurs in training. The fixed test division contains 690,382 targets from 5137 families. New mass profiles remain in one split across all loop orders; earlier assignments are preserved. The higher-loop families are restricted coupled vacuum integrals. Both splits share some lower-sector physics and every loop order. Reference seed sets and paths are sufficient; their minimality is not proved.
+`trained_model.pt` contains the current prediction model.
+`runs/all_loops_latest.pt` retains the optimizer and resume position.
+`data/` contains encoded training inputs.
+`model_test/` contains the frozen model tests.
+`kira_sufficiency_test/` checks whether predicted sets supply enough equations.
 
-The active sequence is s12_prepare_features.py (training-only encoded features), s13_batch.py (masked batch calculation and comparisons with the original score function), s14_train_all_loops.py (twenty-pass continuation), s15_run_all_loops.sh (bounded scheduler wrapper), s16_validate_all_loops.py (checkpoint and source validation), s17_run_batch_pilot.sh (bounded execution pilot), and s18_validate_mixed_batches.py with s19_run_batch_validation.sh (mixed-target score and derivative comparisons). Earlier scripts s00 through s11 preserve the initial preparation and training workflow.
+The current training sequence uses `s12_prepare_features.py`, `s13_batch.py` and `s14_train_all_loops.py`.
+`s15_run_all_loops.sh` provides the scheduled job.
+`s16_validate_all_loops.py` checks the saved training result.
+Scripts `s00` through `s11` retain the initial workflow.
 
-trained_model.pt stores the current inference model; trained_model.json records measured training results. runs/all_loops_latest.pt retains the optimizer and exact resume position, and runs/all_loops_history.json records all twenty new passes. runs/before_expansion_250/ preserves the preceding weights, optimizer, metadata and source. The saved lineage records the earlier dataset progress separately. validation.json and release_manifest.json verify the current model. data/ contains only encoded training examples, with source hashes and the held-out count recorded separately.
+The current model completed twenty additional passes over 1,610,890 training targets.
+AdamW uses learning rate 0.001 and weight decay 0.0001.
+The gradient norm limit is one.
+Training uses up to 32 targets per update.
+The model accepts at most sixteen indices, 512 terms and 10,000 candidate seeds.
+Its 64-component coefficient encoding can assign different expressions to the same component.
 
-The new phase uses batches of 32 targets and four CPU threads for training. Inference retains one CPU thread. The training-only resource trial verified score and gradient agreement across thread counts. An equivalent complete storage scan reduced filesystem overhead; runs/storage_scan_resume/ proves unchanged predictive code, features, configuration and exact checkpoint continuation. Factoring the first score layer avoids repeated target-context matrix multiplications without changing the network function. Direct comparisons with the original interface verify scores, loss and gradients. AdamW retains the previous optimizer state, learning rate 0.001 and weight decay 0.0001; the gradient norm is bounded by one. Scores describe membership in one reference seed set, and this model test alone does not run Kira with the predicted sets.
+Run prediction from the project root in the existing Python environment:
 
-The frozen expanded-data test is complete. model_test/archive_before_expansion_250/ retains the preceding tests and their exact source. Current tests and plots occupy model_test/; the report is updated from these checked records. Generated data, model files and tests stay on Hoffman and GitHub; the report also stays on the local machine. Jobs bound CPU use, virtual memory and output sizes, and enforce the combined 10 GB ceiling.
-The training metadata records the state at training completion; release_manifest.json records the current publication and test stage.
+```bash
+.tools/seed-model/venv/bin/python ML_model_seed_selection/s04_predict.py --checkpoint ML_model_seed_selection/trained_model.pt --target FAMILY:ID
+```
 
-Prediction uses s04_predict.py --checkpoint ML_model_seed_selection/trained_model.pt --target FAMILY:ID, with an optional --seeds file containing an indices list. Run it with the existing .tools/seed-model/venv/bin/python after loading the Hoffman Python 3.9.6 module. The output includes predicted_label, probability_1, probability_0 and confidence for every candidate, ranked by probability_1. The public prediction path reads no reference labels.
+Replace `FAMILY:ID` with a stored target identifier.
+The output gives `predicted_label`, `probability_1`, `probability_0` and `confidence`.
+The confidence is a model score.
+The exact reduction determines whether the selected set is sufficient.
 
-The shared network uses 32-component hidden descriptions and a 64-component score layer with tanh activations. It compresses symbolic coefficient tokens into 64 signed hash components, which permits collisions. Ordered combinations mean all ordered pairs of distinct stored terms. Inputs accept at most sixteen indices, 512 terms and 10,000 supplied candidates. The candidate list is a bounded pool, and the chosen master basis is public input. Family IDs, split labels, reference coefficients, construction histories and future operation counts do not enter the scores.
+## Code use
 
-<!-- expanded-test-results -->
-The frozen model was tested on all 690,382 targets in 5137 held-out families. At the fixed threshold 0.5, pooled precision is 95.750448%, recall is 96.892412%, F1 is 96.318045%, and complete reference-set agreement is 84.332297%. Mean target average precision is 99.090018%.
+Run scientific calculations on Hoffman in a scheduled job.
+Load the Python 3.9.6 module and use the existing project environment.
+The usual interpreter is `.tools/seed-model/venv/bin/python` from the project root.
+Build scripts state their compiler and native Kira requirements.
+Keep each script's memory, time and storage limits.
+Keep existing model and test files before a new run.
+Scripts that write reports describe earlier document names; review their destinations before use.
 
-The labels identify one sufficient reference seed set. Alternative sufficient sets can differ, and this evaluation does not run Kira with the predicted sets or establish globally minimal seeds. Candidate-label accuracy must be read with the sparse positive-label fraction.
+## Code files
 
-See model_test/README.md for the complete frozen protocol and artifacts.
+The entries below follow file-name order.
+Each entry gives its purpose and the input or output interface available in the source.
 
-<!-- exact-kira-sufficiency -->
-The exact Kira sufficiency test is complete for 690,382 reserved targets in 5,137 families. Predicted seeds suffice for 652,517 targets (94.515%). The full candidate pool suffices for 690,382 (100.000%), and background identities without IBP seeds suffice for 26,915 (3.899%). All symbolic decisions agree with three independent finite-field row-space checks. The model and threshold remain unchanged. This test checks existence of a reduction within the stored identity pools; it does not reconstruct all master coefficients or measure a native Kira speedup.
+[s00_prepare_data.py](s00_prepare_data.py)
 
-See the [Kira sufficiency test](kira_sufficiency_test/README.md) for the equations, fixed protocol, raw symbolic remainders and independent checks.
+The program audits seed supervision and prepare a reproducible grouped 70:30 split; it does not fit a model.
 
-<!-- kira-cost-comparison -->
-The frozen model is also tested in [Kira_comparison](../Kira_comparison/README.md), both as a filter on the stored source pool and as native per-sector seed bounds. The comparison is complete and independently checked. The main experiment contains 792 trials in 19 family cases; the direct native seed-bound comparison contains 84 trials in seven independent-basis families. Against Kira with the full stored source pool, learned seeds have geometric mean complete-process/prepared-input time ratios 1.720/1.116, and learned rows have ratios 1.719/1.205. Learned native seed bounds have ratios 1.596/1.344 against default native bounds and 1.671/1.373 against restricted native bounds. Against the control with seed bounds taken directly from target indices, the native learned ratios are 1.425/1.141. Ratios use matched case medians from three repeats; values below one indicate lower time. Complete-process time includes loading, inference, exact algebra, fallback and coefficient checks. Prepared-input time excludes family and model loading. Completion counts, all resource outcomes, individual cases and operation measures appear in summary.json and native_seed/summary.json. The direct native test learns sector envelopes. The row model still acts on fixed source identities and changing target rows.
+The module defines these callable interfaces:
 
-<!-- native-acceleration -->
-The native integration in [Kira_comparison/acceleration](../Kira_comparison/acceleration) filters individual IBP seeds before generation and evaluates the unchanged row network in Kira's process. The reserved comparison has 720 planned records, 616 measured trials and 590 exact completions; remaining repeats after a failed trial are explicitly skipped. ml_lower: complete-time ratio to restricted native Kira 1.295050 (descriptive 95% interval 1.156164–1.542104, 20 complete paired batches); 100 exact completions, 4 failed trials and 16 skipped repeats. row_cpp: complete-time ratio to restricted native Kira 1.023629 (descriptive 95% interval 0.998189–1.053330, 21 complete paired batches); 105 exact completions, 3 failed trials and 12 skipped repeats. combined: complete-time ratio to restricted native Kira 1.983350 (descriptive 95% interval 1.574863–2.476497, 15 complete paired batches); 75 exact completions, 9 failed trials and 36 skipped repeats. All ratios include complete checked calculation time on complete paired cohorts. The report gives the controls, failures, descriptive intervals and one-loop scope.
+```python
 
-<!-- whole-expression-confirmation -->
-The whole-expression interface uses the frozen seed model, Kira's early master check, exact supplied-equation reduction and full-pool fallback. The reserved comparison contains 360 planned records, 348 measured trials and 345 exact completions. Its complete-time ratio to the full-pool supplied-equation control is 0.943782 (descriptive 95% interval 0.863046–1.041560; 23 complete paired batches), and its ratio to the fixed 64-seed distance control is 0.603585 (descriptive 95% interval 0.534379–0.677998; 23 complete paired batches). The full-pool control completed 0 additional batches and the learned method completed 0 additional batches. Both comparisons start from the same existing identity pool and include loading, prediction, equation export, exact algebra, failed attempts, fallback and checks. Offline pool generation is outside both measurements. These are constructed targets from twelve original-held-out one-loop box instances in six kinematic groups.
+def read(path)
+def rows(path)
+def sha(path)
+def group_for(d)
+def main()
 
-The separate two-loop transfer has 60 exact completions. For 64 targets the compiled learned-row pipeline took a median 12.460 seconds against 12.770 seconds for restricted native Kira, a 2.4% reduction. Its advantage over the deterministic compiled source control remains unresolved, and the full-pool control was faster at 11.773 seconds. Both seed-containing policies required fallback in every 64-target repeat.
+```
 
-Code, raw measurements and checks: [../Kira_comparison/acceleration](../Kira_comparison/acceleration).
+The imported external packages are `sympy`.
 
-<!-- matched-admission-confirmation -->
-The additional matched-admission confirmation applies the same early master check and full-pool fallback to learned seeds and the 64-seed distance control. It contains 360 planned records, 348 measured trials and 345 exact completions. The learned complete-time ratios are 0.931643 (descriptive 95% interval 0.844721–1.030866; 23 complete paired batches) against the full pool and 0.925206 (descriptive 95% interval 0.847770–1.023721; 23 complete paired batches) against the matched distance control. The full-pool control completed 0 additional batches, and the learned method completed 0 additional batches. This repeats the same twelve physical family instances; it is not a new-family test. The first comparison is fully retained, and its distance control lacks the early admission check.
+These source constants locate inputs and outputs:
 
-<!-- single-target-result -->
-The predefined single-target comparison gives 8.6% lower geometric mean complete time against the full-pool Kira control and 8.7% lower time against the distance control with the same early check. Both descriptive intervals lie below one across all twelve held-out instances, with five exact repeats per method. The earlier confirmation gave 7.8% lower time against the full pool for this batch size. The sixteen-target intervals include one. This measured benefit applies to one constructed target expression at a time using an existing IBP identity pool; it does not establish a native Kira or general high-loop speedup.
+```python
 
-<!-- responsive-fermat-exit -->
-The responsive Fermat shutdown comparison contains 480 planned records, 416 measured trials and 400 exact completions in twelve new held-out one-loop box instances. For one target, the modified learned workflow has a complete-time ratio of 0.384629 to the original learned workflow (descriptive 95% interval 0.342069–0.452551; 12 paired batches), with geometric mean times 5.528 and 2.126 seconds. For sixteen targets the corresponding ratio is 0.685856 (interval 0.540426–0.844099). Against the full pool with the same shutdown improvement, the single-target learned ratio is 0.690298 (interval 0.423691–0.931312). All completed reductions matched exact references. Both learned methods use the same original weights, threshold, early master check and fallback. The shutdown change preserves symbolic operations and also applies to the full-pool control. These measurements use existing IBP identity pools; they exclude their original generation.
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
+DATA = ROOT / 'integrals'
 
-Code, measurements, source patch, frozen inputs and independent checks are in Kira_comparison/fast_expression/. The report explains the separate shutdown and learned-seed effects in kira_fast_expression.tex and figures/responsive_exit_times.pdf.
+```
 
-<!-- native-multiloop-results-begin -->
-## Complete multiloop cost comparison
+This entry point uses the paths and options set in its source.
 
-The fixed complete-generation experiment has 324 planned workflows, 324 measured workflows and 324 exact completions.
+These calls show the stored input and output interface:
 
-The selected seed policy's complete-time ratio to responsive stock Kira is 0.741945 (12 paired batches).
+```python
 
-Seed-to-stock time ratios are 0.563457 for two-loop boxes, 1.265710 for three-loop vacua, 0.572691 for three-loop ladders. The aggregate seed time interval includes one; gains are specific to the tested family classes. The row-time interval also includes one.
+path.read_text(encoding='utf-8')
+(HERE / name).write_text(json.dumps(content, indent=2, sort_keys=True) + '\n', encoding='utf-8')
 
-The cost-trained row policy's complete-time ratio to instrumented native Kira is 1.007901 (12 paired batches); its forward coefficient-operation ratio is 1.003162 (12 paired batches).
+```
 
-These are paired, three-repeat comparisons at rational kinematics with symbolic d. Results include inference, native generation, exact algebra, verification and fallback. The common reference basis is prepared separately.
+[s01_data.py](s01_data.py)
 
-The independent audit passed. Family-level results and completion counts must accompany aggregate ratios; none establishes a universal speedup.
+The file provides streaming inputs with a strict boundary between problem features and reference labels.
 
-[Methods, raw evidence and outcomes](../Kira_comparison/multiloop_native/README.md). Original integral records and neural checkpoints remain unchanged.
-<!-- native-multiloop-results-end -->
+The module defines these callable interfaces:
 
-## Integrated runtime extension
+```python
 
-The ongoing native integration extension is documented in [integrated_runtime](../Kira_comparison/integrated_runtime/README.md). It preserves previous trained models and comparisons, verifies faster seed feature construction, develops row policies from measured exact trajectories and compares complete workflows with matched native controls. New weights and measurements remain separate from earlier frozen results.
+def read(path)
+def config()
+def rows(path)
+def text_features(text, bins)
+def index_features(indices, cfg)
+def public_family(definition, master_basis)
+def encode_shared(family, seeds, cfg)
+def encode(target, family, seeds, cfg, shared=None)
+def labels(reference, seeds)
+def family_records(meta, cfg, shuffle_seed=None)
+def examples(split, cfg, epoch=None, start=0)
+def find_input(identifier)
+def verify_sources(split=None)
+def storage_guard()
 
+```
 
-<!-- integrated-runtime-current -->
-The current native-integration extension is in Kira_comparison/integrated_runtime/. It combines compiled seed inference, complete-trajectory row policies and matched native/deterministic controls. The model additions are in ML_model_seed_selection/runtime_inference/ and ML_model_reduction/runtime_training/. The initial comparison completed all 560 workflows. A 400-workflow implementation confirmation on the same eight physical profiles also completed every target with exact reference agreement. In the confirmation, seed, row and combined complete-time ratios to the smaller native control are 1.154805, 0.998979, 1.159119. The seed ratio for boxes is 0.963700; the aggregate row operation ratio is 0.985327, but its forward-stage time ratio is 1.041202. Neither model has a universal runtime advantage. Read summary.json and pair_reserved_summary.json for grouped intervals, topology results and all failed attempts. Earlier data, checkpoints and tests remain preserved. See that folder's README for the integration entry point, exact checks, resources and reproducible execution order.
+The imported external packages are `torch`.
 
-<!-- shared-evaluation-current -->
-The preceding implementation is Kira_comparison/integrated_runtime/s88_reduce.py, described in [the current integration guide](https://github.com/NonHermitianMatrix/ML_for_Kira_Seeding_Reduction/tree/main/Kira_comparison/integrated_runtime/fast_evaluation). It reuses seed-network affine prefixes and symmetric row-cancellation calculations while preserving weights and algebraic choices. All 800 implementation-confirmation workflows and 180 validation workflows complete with exact coefficient and decision parity. New/preceding complete-time ratios for seed, row, both and automatic execution are 0.982155, 1.005713, 0.996704, 0.982498. These ratios retain all fallback attempts. Separate comparisons with the new native control appear in confirmation_summary.json; an implementation gain does not itself establish a general ML advantage. Earlier checkpoints and implementations remain preserved.
+These source constants locate inputs and outputs:
 
-<!-- parallel-inference-current -->
-The latest production entry is Kira_comparison/integrated_runtime/s108_reduce.py. [The current guide](https://github.com/NonHermitianMatrix/ML_for_Kira_Seeding_Reduction/tree/main/Kira_comparison/parallel_inference) describes parallel neural outputs, exact modular inverses and reduced row-feature allocation. All 144 final-candidate validation workflows and 640 confirmation workflows preserve exact coefficients, seed probabilities, source-row digests and committed operation counts. The complete-time new/preceding ratios for seed, row and combined execution are 0.989778, 0.989961, 0.984075. All fallback costs are included. All three complete-time intervals include one, so the component gain is clearer than the full-workflow change. Seed and combined aggregate costs remain above the native control; the row-only interval against native also includes one. See confirmation_summary.json for descriptive intervals and topology results. The rejected development candidate and all preceding releases remain preserved.
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
+DATA = ROOT / 'integrals'
+
+```
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+path.read_text(encoding='utf-8')
+(HERE / 'split_manifest.json').read_bytes()
+
+```
+
+[s02_model.py](s02_model.py)
+
+The file provides small shared neural scorer; every output is a reference-set membership probability.
+
+The module defines these callable interfaces:
+
+```python
+
+class SeedSelector
+def reference_loss(logits, y)
+def binary_decisions(probabilities)
+
+```
+
+The imported external packages are `torch`.
+
+Import this helper module from the stage that uses it.
+
+[s03_train.py](s03_train.py)
+
+The program trains the seed model on the training split only; save resumable and final weights here.
+
+The module defines these callable interfaces:
+
+```python
+
+def atomic_json(path, value)
+def train(epochs=None, resume=False)
+
+```
+
+The imported external packages are `torch`.
+
+The imported project modules are `s01_data`, `s02_model`.
+
+The command accepts these parser options:
+
+- `'--epochs'`: type=int.
+- `'--resume'`: action='store_true'.
+
+These calls show the stored input and output interface:
+
+```python
+
+temp.write_text(json.dumps(value, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+torch.load(str(checkpoint), map_location='cpu')
+torch.save(payload, str(temp))
+tmp.write_text(''.join((json.dumps(r) + '\n' for r in history)), encoding='utf-8')
+torch.save(final, str(temp))
+p.read_bytes()
+
+```
+
+[s04_predict.py](s04_predict.py)
+
+The program ranks an input target's bounded candidate pool using an explicitly supplied trained checkpoint.
+
+The module defines these callable interfaces:
+
+```python
+
+def load_model(path)
+def main()
+
+```
+
+The imported external packages are `torch`.
+
+The imported project modules are `s01_data`, `s02_model`.
+
+The command accepts these parser options:
+
+- `'--checkpoint'`: type=pathlib.Path; required=True.
+- `'--target'`: required=True.
+- `'--seeds'`: type=pathlib.Path; help="Optional public candidate list in {'indices': [...]} form".
+
+These calls show the stored input and output interface:
+
+```python
+
+torch.load(str(path), map_location='cpu')
+(HERE / 'split_manifest.json').read_bytes()
+
+```
+
+[s05_evaluate.py](s05_evaluate.py)
+
+The file provides future held-out comparison with recorded sufficient sets; no exact-reduction claim.
+
+The module defines these callable interfaces:
+
+```python
+
+def confidence_bins(probabilities, labels)
+def seed_metrics(probabilities, labels)
+def main()
+
+```
+
+The imported external packages are `torch`.
+
+The imported project modules are `s01_data`, `s02_model`, `s04_predict`.
+
+The command accepts these parser options:
+
+- `'--checkpoint'`: type=pathlib.Path; required=True.
+- `'--output'`: type=pathlib.Path; default=HERE / 'runs' / 'test_metrics.json'.
+
+These calls show the stored input and output interface:
+
+```python
+
+args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+
+```
+
+[s06_check.py](s06_check.py)
+
+The file provides implementation checks only: no optimizer, learned checkpoint or performance estimate.
+
+The module defines these callable interfaces:
+
+```python
+
+class ModelChecks
+def main()
+
+```
+
+The imported external packages are `torch`.
+
+The imported project modules are `s00_prepare_data`, `s01_data`, `s02_model`, `s05_evaluate`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'implementation_checks.json').write_text(json.dumps(summary, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+
+```
+
+[s07_run.sh](s07_run.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -S /bin/bash
+#$ -N KiraSeedModel
+#$ -l h_rt=24:00:00,h_data=4G
+#$ -j y
+#$ -o .tools/seed-model/logs
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 3145728
+ulimit -f 131072
+ulimit -c 0
+SEED_PYTHON=.tools/seed-model/venv/bin/python
+MODE=check
+if (( $# )); then MODE="$1"; fi
+case "$MODE" in
+  prepare) timeout 1100s "$SEED_PYTHON" ML_model_seed_selection/s00_prepare_data.py ;;
+  check) timeout 600s "$SEED_PYTHON" ML_model_seed_selection/s06_check.py ;;
+  train) shift; timeout 82800s "$SEED_PYTHON" ML_model_seed_selection/s03_train.py "$@" ;;
+  evaluate) shift; timeout 82800s "$SEED_PYTHON" ML_model_seed_selection/s05_evaluate.py "$@" ;;
+  *) echo "Use prepare, check, train or evaluate." >&2; exit 2 ;;
+esac
+
+```
+
+[s08_setup_environment.sh](s08_setup_environment.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -S /bin/bash
+#$ -N KiraSeedEnv
+#$ -l h_rt=00:20:00,h_data=3G
+#$ -j y
+#$ -o .tools/seed-model/logs
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2621440
+ulimit -f 786432
+ulimit -c 0
+mkdir -p .tools/seed-model/tmp
+export TMPDIR="$PWD/.tools/seed-model/tmp"
+python3 -m venv --system-site-packages .tools/seed-model/venv
+.tools/seed-model/venv/bin/python -m pip install --no-cache-dir --ignore-installed --no-deps --index-url https://download.pytorch.org/whl/cpu 'torch==2.2.2+cpu'
+.tools/seed-model/venv/bin/python -c 'import torch,numpy;print("torch",torch.__version__,"numpy",numpy.__version__)'
+
+```
+
+[s09_check_training_inputs.py](s09_check_training_inputs.py)
+
+The program checks training input reuse and resume ordering without evaluating the test split.
+
+The imported external packages are `torch`.
+
+The imported project modules are `s01_data`, `s02_model`.
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+(out / 'input_checks.json').write_text(json.dumps(result, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+
+```
+
+[s10_finalize_training.py](s10_finalize_training.py)
+
+The program verifies the saved training artifact and update status documentation; never run testing.
+
+The imported external packages are `torch`.
+
+The imported project modules are `s01_data`.
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+torch.load(str(model_path), map_location='cpu')
+(HERE / 'trained_model.json').write_text(json.dumps(result, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+p.read_text(encoding='utf-8')
+p.write_text(text[:start] + paragraph + text[end:], encoding='utf-8')
+p.write_text(text[:start] + para + text[end:], encoding='utf-8')
+model_path.read_bytes()
+
+```
+
+[s11_run_training.sh](s11_run_training.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -S /bin/bash
+#$ -N KiraSeedTrain
+#$ -l h_rt=24:00:00,h_data=4G
+#$ -j y
+#$ -o ML_model_seed_selection/runs/scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 3145728
+ulimit -f 131072
+ulimit -c 0
+SEED_PYTHON=.tools/seed-model/venv/bin/python
+"$SEED_PYTHON" ML_model_seed_selection/s09_check_training_inputs.py
+if [[ -f ML_model_seed_selection/runs/latest.pt ]]; then
+  timeout 82800s "$SEED_PYTHON" ML_model_seed_selection/s03_train.py --resume
+else
+  timeout 82800s "$SEED_PYTHON" ML_model_seed_selection/s03_train.py
+fi
+"$SEED_PYTHON" ML_model_seed_selection/s10_finalize_training.py
+{
+git -c gc.auto=0 add -- ML_model_seed_selection/trained_model.pt ML_model_seed_selection/trained_model.json ML_model_seed_selection/runs README.md ML_model_seed_selection/README.md
+git -c gc.auto=0 commit -q -m 'Save seed-selection model after ten training epochs'
+git -c pack.threads=1 -c pack.windowMemory=64m -c pack.deltaCacheSize=16m -c gc.auto=0 push origin main
+} > .tools/seed-training/publish.log 2>&1
+
+```
+
+[s12_prepare_features.py](s12_prepare_features.py)
+
+The program prepares bounded immutable features using training families only.
+
+The module defines these callable interfaces:
+
+```python
+
+def sha(p)
+def write(p, obj)
+def main()
+
+```
+
+The imported external packages are `numpy`.
+
+The imported project modules are `s01_data`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+t.write_text(json.dumps(obj, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+np.savez_compressed(f, **arrays)
+p.read_bytes()
+
+```
+
+[s13_batch.py](s13_batch.py)
+
+The file provides masked batch execution of the existing seed scorer, with identical features and weights.
+
+The module defines these callable interfaces:
+
+```python
+
+def collate(z, items)
+def forward(model, x, mask, shared)
+def verify(model, z)
+
+```
+
+The imported external packages are `numpy`, `torch`.
+
+Import this helper module from the stage that uses it.
+
+[s14_train_all_loops.py](s14_train_all_loops.py)
+
+The program continues saved weights and optimizer for twenty complete passes over expanded training data.
+
+The module defines these callable interfaces:
+
+```python
+
+def savept(path, obj)
+def main()
+
+```
+
+The imported external packages are `numpy`, `torch`.
+
+The imported project modules are `s01_data`, `s02_model`, `s12_prepare_features`, `s13_batch`.
+
+The command accepts these parser options:
+
+- `'--pilot'`: action='store_true'.
+
+These calls show the stored input and output interface:
+
+```python
+
+torch.save(obj, tmp)
+torch.load(warm, map_location='cpu', weights_only=False)
+torch.load(checkpoint, map_location='cpu', weights_only=False)
+
+```
+
+[s15_run_all_loops.sh](s15_run_all_loops.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -S /bin/bash
+#$ -N KiraSeedAllLoops
+#$ -pe shared 4
+#$ -l h_rt=12:00:00,h_data=1G,h_vmem=4G
+#$ -j y
+#$ -o ML_model_seed_selection/runs/expansion_1000_scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 3145728
+ulimit -f 131072
+ulimit -c 0
+python3 - <<'PY'
+import json
+from pathlib import Path
+assert json.loads(Path("integrals/expansion_1000/reader_validation.json").read_text())["status"]=="passed"
+summary=json.loads(Path("integrals/expansion_1000/integration_summary.json").read_text())
+validation=json.loads(Path("integrals/expansion_1000/validation.json").read_text())
+assert summary["families"]==17100 and summary["targets"]==2301272
+assert validation["status"]=="passed" and len(validation["families"])==12000
+import hashlib
+audit=json.loads(Path("integrals/validation_summary.json").read_text())
+assert audit["status"]=="passed" and audit["family_count"]==17100
+assert audit["catalog_sha256"]==hashlib.sha256(Path("integrals/catalog.json").read_bytes()).hexdigest()
+assert audit["split_sha256"]==hashlib.sha256(Path("ML_model_seed_selection/split_manifest.json").read_bytes()).hexdigest()
+PY
+if [[ ! -f ML_model_seed_selection/runs/all_loops_latest.pt ]]; then
+  .tools/seed-model/venv/bin/python ML_model_seed_selection/s12_prepare_features.py
+fi
+.tools/seed-model/venv/bin/python ML_model_seed_selection/s14_train_all_loops.py "$@"
+
+```
+
+[s16_validate_all_loops.py](s16_validate_all_loops.py)
+
+The program validates the expanded-data checkpoint and preserve its training provenance.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `torch`.
+
+The imported project modules are `s01_data`, `s02_model`, `s12_prepare_features`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+torch.load(HERE / 'trained_model.pt', map_location='cpu', weights_only=False)
+torch.load(HERE / 'runs/all_loops_latest.pt', map_location='cpu', weights_only=False)
+
+```
+
+[s17_run_batch_pilot.sh](s17_run_batch_pilot.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -S /bin/bash
+#$ -N KiraBatchPilot
+#$ -l h_rt=00:05:00,h_data=2G,h_vmem=4G
+#$ -j y
+#$ -o ML_model_seed_selection/runs/batch_pilot_scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 3145728
+ulimit -f 131072
+ulimit -c 0
+.tools/seed-model/venv/bin/python ML_model_seed_selection/s14_train_all_loops.py --pilot
+
+```
+
+[s18_validate_mixed_batches.py](s18_validate_mixed_batches.py)
+
+The program checks batched seed scores and derivatives on mixed-length training examples.
+
+The module defines these callable interfaces:
+
+```python
+
+def sha(p)
+def main()
+
+```
+
+The imported external packages are `numpy`, `torch`.
+
+The imported project modules are `s01_data`, `s02_model`, `s13_batch`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'runs/all_loops_latest.pt').read_bytes()
+torch.load(io.BytesIO(payload), map_location='cpu', weights_only=False)
+(HERE / 'runs/mixed_batch_validation.json').write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
+p.read_bytes()
+
+```
+
+[s19_run_batch_validation.sh](s19_run_batch_validation.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -S /bin/bash
+#$ -N KiraMixedBatchCheck
+#$ -l h_rt=00:10:00,h_data=1G,h_vmem=4G
+#$ -j y
+#$ -o ML_model_seed_selection/runs/mixed_batch_validation.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 3145728
+ulimit -f 131072
+ulimit -c 0
+.tools/seed-model/venv/bin/python ML_model_seed_selection/s18_validate_mixed_batches.py
+
+```
+
+## Data and supporting files
+
+- [config.json](config.json): This file sets the model or calculation options.
+
+- [data_audit.json](data_audit.json): This file records checks of the corresponding calculation.
+
+- [implementation_checks.json](implementation_checks.json): This file records checks of the corresponding calculation.
+
+- [release_manifest.json](release_manifest.json): This file identifies the saved release files.
+
+- [requirements.txt](requirements.txt): This file lists the Python package requirements.
+
+- [source_hashes.json](source_hashes.json): This file contains structured records from the parent calculation.
+
+- [split_manifest.json](split_manifest.json): This file lists related records and their identifiers.
+
+- [trained_model.json](trained_model.json): This file contains a saved model or its description.
+
+- [trained_model.pt](trained_model.pt): This file contains a saved model or its description.
+
+- [validation.json](validation.json): This file records the completed validation checks.
+
+## Child folders
+
+- [data](data/README.md).
+
+- [kira_sufficiency_test](kira_sufficiency_test/README.md).
+
+- [model_test](model_test/README.md).
+
+- [runs](runs/README.md).
+
+- [runtime_inference](runtime_inference/README.md).

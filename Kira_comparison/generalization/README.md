@@ -1,40 +1,612 @@
-# Scattering, symbolic kinematics and certified paths
+# generalization
 
-The extension contains seven new scattering batches with 88 targets and 70 exact comparison workflows. It includes a nonplanar two-loop box, a one-loop pentagon with five independent symbolic invariants, and a one-loop box with an independent external virtuality. The frozen equation filter has a complete-time ratio of 1.251829 to native choices, including all 35 native fallbacks. The new symbolic-capable application defaults to native choices for these inputs. Separate exact certificates enumerate every sufficient source subset and every allowed pivot path for a bubble and a tadpole. Each has a joint minimum of seven counted coefficient operations, within its specified finite pool. These certificates do not prove unrestricted IBP or wall-time optimality.
+This folder tests new scattering structures and symbolic invariants.
+It contains a massless nonplanar two-loop box, a massless pentagon and a box with external virtuality.
+Seven batches contain 88 targets.
+All seventy measured workflows pass exact checks.
+All thirty-five filtered workflows require native fallback.
+The complete-time ratio to native choices is 1.251829.
+The application therefore defaults to native choices for these inputs.
 
-## Contents and physical scope
+`cases.json` defines the denominators, scalar products and targets.
+`scattering_families/` contains rational parameter profiles.
+`symbolic_kinematics/` contains independent symbolic invariants.
+`optimal_paths/` contains finite minimum-operation checks for a bubble and a tadpole.
+Each minimum applies to a stated source pool and operation cost.
 
-- [scattering_families](scattering_families/) defines four numerical-profile batches on new nonplanar four-point and five-point graphs.
-- [symbolic_kinematics](symbolic_kinematics/) defines three batches with all specified invariants symbolic. The fields are Q(d,s,t), Q(d,s12,s23,s34,s45,s51), and Q(d,s,t,q2). All internal scattering propagators are massless.
-- [optimal_paths](optimal_paths/) contains exact source equations, seeds, master coefficients, complete state graphs, all sufficient source subsets, optimal paths, operation counts and independent certificates. These are two small one-loop systems, with three nonmaster columns each.
-- references/ contains enlarged native reductions. model_test/ retains all 70 workflows, their failed attempts, exact coefficients, full native inputs, resource samples, solver logs, and independent larger-seed/specialization checks.
-- development/ retains four feasibility pilots and the initial symbolic-name parsing failure. Symbolic feasibility pilots share some final targets but select neither a model nor a threshold.
-- freeze.json fixes the case list, solver, model and timing sources before reserved timings. runner_provenance.json records the existing native adapter and the symbolic-invariant extension. summary.json and verification.json contain the checked results.
+Use `s12_reduce.py` for the application with a supplied basis.
+Use `s02_study.py` for the recorded preparation and comparison stages.
+The job wrappers supply the resource limits.
+The application needs no reference target coefficients.
+The mathematical checks and the timing tests use separate output files.
 
-The nonplanar family is the massless limit of topo4 in the original Kira paper, arXiv:1705.05610. The pentagon has five massless external legs. The box virtuality q2 denotes (p1+p2-p3)^2, displayed as v in the report. The complete independent denominator ranks are nine, five and four. Numerical profiles and all target indices are in cases.json.
+## Code use
 
-## Comparison and checks
+Run scientific calculations on Hoffman in a scheduled job.
+Load the Python 3.9.6 module and use the existing project environment.
+The usual interpreter is `.tools/seed-model/venv/bin/python` from the project root.
+Build scripts state their compiler and native Kira requirements.
+Keep each script's memory, time and storage limits.
+Keep existing model and test files before a new run.
+Scripts that write reports describe earlier document names; review their destinations before use.
 
-The unchanged depth-twelve early equation tree uses threshold 0.01. Every comparison starts a fresh native Kira process inside an already running driver. Complete time includes input generation, model work, native IBP generation, exact symbolic algebra, coefficient comparisons, cleanup, every rejected attempt and fallback. Enlarged reference discovery, post-run audits, compression and figure generation lie outside this timer.
+## Code files
 
-Both methods start at the target seed limits and use a common prescribed master basis. A failed learned attempt retries native equations; an incomplete native attempt uses a larger region. All 35 learned workflows needed the native fallback. No test result is used to fit or activate a new policy. Five alternating repetitions give a case-weighted geometric mean learned/native ratio of 1.251829. This is a transfer limit, with no new speedup claim.
+The entries below follow file-name order.
+Each entry gives its purpose and the input or output interface available in the source.
 
-The independent audit checks 5600 coefficient pairs, including 560 distinct pairs, from raw native exports. All seven larger-seed checks agree, and fresh rational specializations of all three symbolic results agree with separately generated native reductions. Native Kira also confirms the six coefficients in the two certified systems. The mathematical certificates count rational-function operations; they do not measure Fermat polynomial work or runtime.
+[s00_native_run.py](s00_native_run.py)
 
-## Execution order
+The program runs one bounded complete Kira reduction, retaining compact exact evidence.
 
-Run scientific commands only in scheduled jobs with node-local TMPDIR.
+The module defines these callable interfaces:
 
-1. s00_native_run.py supplies the bounded native adapter; s01_cases.py defines the physical inputs and verifies independent scalar products.
-2. Submit s03_job.sh prepare to create cases and run feasibility pilots. s02_study.py supplies prepare, pilot, freeze and test actions.
-3. Submit s06_pipeline.sh after the pilot. It runs frozen comparisons, s04_optimal_paths.py and s05_verify_certificates.py.
-4. Submit s09_audit_job.sh after comparisons. It runs s07_audit.py and s08_analyze.py for independent coefficient checks and a timing plot.
-5. s11_finish.sh regenerates and verifies the final joint equation/pivot certificates, then refreshes the summary. The original fixed-pool certificates and code remain in optimal_paths/fixed_pool/.
-6. Run s10_document.py to update READMEs. After publishing the data commit, use --data-commit COMMIT to update the LaTeX, bibliography and conclusion. Build with make -C report and synchronize the complete report locally.
+```python
 
-7. s12_reduce.py is the answer-free application. Supply --case CASE (from cases.json), --masters-file PATH and --output PATH. The output must be new and inside this study folder. The saved bases/ files contain masters only. The default uses native choices; --experimental-filter explicitly enables the frozen filter and its exact native fallback. --family-file accepts the same physical case schema for a new input, subject to the recorded limits.
-8. s13_application_check.py verifies seven native and three experimental applications with target answers withheld until after execution. s14_application_job.sh schedules these checks and refreshes the summary.
+def sha(p)
+def label(a)
+def limits()
+def disk(path)
+def process_rss(pid)
+def parse_export(text)
+def run(case, size, policy, output, timeout=300, margin=1, reference=None, weights=None, records=True, archive=True, check_masters=False, force=None, scratch_cap=None, compact=True, ordering=None, basis=None)
+def main()
 
-Example inside a scheduled job: .tools/seed-model/venv/bin/python Kira_comparison/generalization/s12_reduce.py --case pentagon_symbolic --masters-file Kira_comparison/generalization/symbolic_kinematics/bases/pentagon_symbolic.json --output Kira_comparison/generalization/application/user_pentagon.json.gz
+```
 
-Scientific records stay on Hoffman and GitHub. The report also stays locally. resource_plan.json gives a conservative combined ceiling of 9,958,476,224 bytes, below the 10 GB limit. Each native attempt has a 150-second limit, a 2400 MiB address-space limit, a 2100 MiB sampled process-tree RSS limit and a 32 MiB scratch limit. Only one scientific job runs at once. The fresh storage audit found 8,676,072,960 allocated bytes remotely and 392,683,520 locally before this extension.
+The imported external packages are `sympy`.
+
+The imported project modules are `s02_records`, `s07_seed`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+MODEL_HOME = ROOT / 'ML_model_equation_selection'
+MODEL = ROOT / 'ML_model_reduction/cost_training'
+
+```
+
+The command accepts these parser options:
+
+- `'case'`: The parser accepts a value..
+- `'--size'`: type=int; default=8.
+- `'--policy'`: default='stock'.
+- `'--timeout'`: type=int; default=300.
+- `'--margin'`: type=int; default=1.
+- `'--output'`: type=pathlib.Path; required=True.
+- `'--reference'`: type=pathlib.Path.
+- `'--weights'`: type=pathlib.Path.
+- `'--no-records'`: action='store_true'.
+- `'--legacy-backsub'`: action='store_true'.
+- `'--check-masters'`: action='store_true'.
+- `'--ordering'`: type=int.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'resource_plan.json').read_text()
+(scratch / 'config/integralfamilies.yaml').write_text(json.dumps(config))
+(scratch / 'config/kinematics.yaml').write_text(json.dumps(dict(kinematics=kin)))
+(scratch / 'targets').write_text(''.join((label(a) + '\n' for a in target)))
+(scratch / 'jobs.yaml').write_text(json.dumps(jobs))
+(scratch / 'equation_context.txt').write_text(f"{len(definition['loop_momenta'])} {len(ext)} {len(target)} {n}\n" + '\n'.join((' '.join(map(str, a)) for a in target)) + '\n')
+(scratch / 'run.log').read_text(errors='replace')
+(scratch / 'masters').write_text(''.join((label(a) + '\n' for a in basis)))
+(scratch / 'seeds.txt').write_text(''.join((label(a) + '\n' for a in selected)))
+(scratch / '.kira_ephemeral_trial').write_text('Disposable fresh calculation; discard after interruption.\n')
+(scratch / 'equations.tsv').read_text()
+(scratch / 'choices.jsonl').read_text()
+paths[0].read_text()
+(HERE / 'families.json').read_text()
+p.read_bytes()
+(scratch / 'equation_metrics.json').read_text()
+(scratch / 'seed_audit.json').read_text()
+(base / 'status').read_text()
+(scratch / 'stage_metrics.jsonl').read_text()
+(scratch / 'metrics.jsonl').read_text()
+(thread / 'children').read_text()
+
+```
+
+[s01_cases.py](s01_cases.py)
+
+The program defines new physical scattering families without using learned scores.
+
+The module defines these callable interfaces:
+
+```python
+
+def build(kind, symbolic, profile=0)
+def targets(d)
+def audit(d)
+def case(kind, symbolic, profile, split, size)
+def main()
+
+```
+
+The imported external packages are `sympy`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'cases.json').write_text(json.dumps(manifest, indent=2) + '\n')
+(HERE / directory / 'families.json').write_text(json.dumps(subset, indent=2) + '\n')
+
+```
+
+[s02_study.py](s02_study.py)
+
+The file provides frozen transfer tests with symbolic coefficients and exact native fallback.
+
+The module defines these callable interfaces:
+
+```python
+
+def sha(p)
+def load(p)
+def save(p, r)
+def setup(mode='off')
+def attempt(c, mode='off', ref=None, margin=0)
+def reference(c)
+def workflow(c, method, ref)
+def freeze()
+def main()
+
+```
+
+The imported project modules are `s00_native_run`, `s01_cases`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+WEIGHTS = ROOT / 'ML_model_equation_selection/early_generation/trained_model/early_d12/weights.txt'
+BINARY = ROOT / '.tools/kira-early-generation/kira'
+
+```
+
+The command accepts these parser options:
+
+- `'action'`: choices=['prepare', 'pilot', 'freeze', 'test'].
+
+These calls show the stored input and output interface:
+
+```python
+
+p.write_text(json.dumps(record, indent=2) + '\n')
+(HERE / 'cases.json').read_text()
+p.read_bytes()
+p.read_text()
+
+```
+
+[s03_job.sh](s03_job.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraGeneral
+#$ -l h_rt=03:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load git/2.40.0 python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2867200
+ulimit -c 0
+.tools/seed-model/venv/bin/python Kira_comparison/generalization/s02_study.py "$@"
+
+```
+
+[s04_optimal_paths.py](s04_optimal_paths.py)
+
+The program certifies minimum counted field operations over every admissible finite pivot path.
+
+The module defines these callable interfaces:
+
+```python
+
+def systems()
+def certificate(system)
+def main()
+
+```
+
+The imported external packages are `sympy`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'optimal_paths/summary.json').write_text(json.dumps(summaries, indent=2) + '\n')
+pathlib.Path(__file__).read_bytes()
+
+```
+
+[s05_verify_certificates.py](s05_verify_certificates.py)
+
+The program checks every certificate edge independently using exact symbolic matrices.
+
+The module defines these callable interfaces:
+
+```python
+
+def verify(p)
+def main()
+
+```
+
+The imported external packages are `sympy`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'optimal_paths/verification.json').write_text(json.dumps(dict(success=True, systems=results), indent=2) + '\n')
+
+```
+
+[s06_pipeline.sh](s06_pipeline.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraGeneral
+#$ -l h_rt=03:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load git/2.40.0 python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2867200
+ulimit -c 0
+P=.tools/seed-model/venv/bin/python
+D=Kira_comparison/generalization
+$P $D/s02_study.py test
+$P $D/s04_optimal_paths.py
+$P $D/s05_verify_certificates.py
+
+```
+
+[s07_audit.py](s07_audit.py)
+
+The program audits symbolic exports and test a larger seed region and fresh specializations.
+
+The module defines these callable interfaces:
+
+```python
+
+def expr(s)
+def equal(a, b)
+def main()
+
+```
+
+The imported external packages are `sympy`.
+
+The imported project modules are `s00_native_run`, `s02_study`, `s04_optimal_paths`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'verification.json').write_text(json.dumps(result, indent=2) + '\n')
+(HERE / 'cases.json').read_text()
+
+```
+
+[s08_analyze.py](s08_analyze.py)
+
+The program summarizes complete times without selecting a new policy from the test.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `matplotlib`.
+
+The imported project modules are `s02_study`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
+(HERE / 'cases.json').read_text()
+(HERE / 'application/verification.json').read_text()
+(HERE / 'verification.json').read_text()
+(HERE / 'optimal_paths/verification.json').read_text()
+
+```
+
+[s09_audit_job.sh](s09_audit_job.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraGenAudit
+#$ -l h_rt=01:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load git/2.40.0 python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2867200
+ulimit -c 0
+.tools/seed-model/venv/bin/python Kira_comparison/generalization/s07_audit.py
+.tools/seed-model/venv/bin/python Kira_comparison/generalization/s08_analyze.py
+
+```
+
+[s10_document.py](s10_document.py)
+
+The program writes checked results and pin the report to the published data.
+
+The module defines these callable interfaces:
+
+```python
+
+def replace_block(p, tag, text)
+def main()
+
+```
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+The command accepts these parser options:
+
+- `'--data-commit'`: The parser accepts a value..
+
+These calls show the stored input and output interface:
+
+```python
+
+p.read_text()
+p.write_text(old)
+(HERE / 'README.md').write_text(readme)
+rules.read_text()
+(ROOT / 'report/generalization.tex').write_text(text)
+p.write_text(text)
+(HERE / 'summary.json').read_text()
+(HERE / 'optimal_paths/summary.json').read_text()
+rules.write_text(text)
+(HERE / 'report_template.tex.in').read_text()
+
+```
+
+[s11_finish.sh](s11_finish.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraGenFinish
+#$ -l h_rt=00:30:00,h_data=3G,h_vmem=4G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load git/2.40.0 python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2867200
+ulimit -c 0
+P=.tools/seed-model/venv/bin/python
+D=Kira_comparison/generalization
+$P $D/s04_optimal_paths.py
+$P $D/s05_verify_certificates.py
+$P $D/s08_analyze.py
+
+```
+
+[s12_reduce.py](s12_reduce.py)
+
+The program reduces symbolic scattering targets using a supplied basis, without target answers.
+
+The module defines these callable interfaces:
+
+```python
+
+def reduce(case, masters, experimental_filter=False)
+def main()
+
+```
+
+The imported project modules are `s00_native_run`, `s02_study`.
+
+The command accepts these parser options:
+
+- `'--case'`: The parser accepts a value..
+- `'--family-file'`: type=pathlib.Path.
+- `'--masters-file'`: type=pathlib.Path; required=True.
+- `'--output'`: type=pathlib.Path; required=True.
+- `'--experimental-filter'`: action='store_true'.
+
+These calls show the stored input and output interface:
+
+```python
+
+a.masters_file.read_text()
+a.family_file.read_text()
+(HERE / 'cases.json').read_text()
+
+```
+
+[s13_application_check.py](s13_application_check.py)
+
+The program checks the answer-free native application and its explicit experimental fallback.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s02_study`, `s07_audit`, `s12_reduce`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(directory / 'verification.json').write_text(json.dumps(result, indent=2) + '\n')
+p.write_text(json.dumps(frozen, indent=2) + '\n')
+(location / (c['id'] + '.json')).write_text(json.dumps({'masters': ref['masters']}, indent=2) + '\n')
+(HERE / 'cases.json').read_text()
+p.read_text()
+(HERE / 's12_reduce.py').read_bytes()
+
+```
+
+[s14_application_job.sh](s14_application_job.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraGenApp
+#$ -l h_rt=00:30:00,h_data=3G,h_vmem=4G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load git/2.40.0 python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2867200
+ulimit -c 0
+.tools/seed-model/venv/bin/python Kira_comparison/generalization/s13_application_check.py
+.tools/seed-model/venv/bin/python Kira_comparison/generalization/s08_analyze.py
+.tools/seed-model/venv/bin/python Kira_comparison/generalization/s10_document.py
+
+```
+
+## Data and supporting files
+
+- [cases.json](cases.json): This file defines the physical cases and requested targets.
+
+- [freeze.json](freeze.json): This file identifies the fixed inputs and method for the completed test.
+
+- [report_template.tex.in](report_template.tex.in): This file supports the calculation described in the parent guide.
+
+- [resource_plan.json](resource_plan.json): This file sets storage, memory and execution limits.
+
+- [runner_provenance.json](runner_provenance.json): This file contains structured records from the parent calculation.
+
+- [storage_audit.json](storage_audit.json): This file records checks of the corresponding calculation.
+
+- [summary.json](summary.json): This file contains the result counts and summary measurements.
+
+- [verification.json](verification.json): This file records the independent checks.
+
+## Child folders
+
+- [application](application/README.md).
+
+- [development](development/README.md).
+
+- [logs](logs/README.md).
+
+- [model_test](model_test/README.md).
+
+- [optimal_paths](optimal_paths/README.md).
+
+- [references](references/README.md).
+
+- [scattering_families](scattering_families/README.md).
+
+- [symbolic_kinematics](symbolic_kinematics/README.md).

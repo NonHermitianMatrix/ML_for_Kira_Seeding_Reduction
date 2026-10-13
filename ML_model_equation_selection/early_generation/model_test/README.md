@@ -1,5 +1,27 @@
-# Frozen tests
+# model test
 
-summary.json contains all batch medians and profile-weighted comparisons. verification.json checks 288 workflows, including eight applications without reference target answers. plots/ contains standalone PDF figures. The methods, targets and repeats follow ../families_test.json and ../trained_model/freeze.json.
+This folder contains reserved test inputs, outputs or checks.
+Keep these records outside model fitting and threshold selection.
 
-Load workflows through s04_workflows.read to resolve exact payloads in ../objects/. Each record includes every attempt, timing, log, native export and exact check. Training and routing stayed fixed during tests. See the parent README for timing exclusions and scope.
+Read [the parent guide](../README.md) for the stage and data flow.
+
+The producing and reading code is described in [the stage guide](../README.md).
+
+## Data and supporting files
+
+This folder contains 282 data entries.
+The names identify the family, case, target or repetition used by the parent reader.
+
+- `.json`: 2 entries.
+
+- `.json.gz`: 280 entries.
+
+Use the local manifest or the parent case list to match identifiers.
+Keep compressed files in their stored format.
+Read one record at a time with the parent reader.
+
+## Child folders
+
+- [application](application/README.md).
+
+- [plots](plots/README.md).

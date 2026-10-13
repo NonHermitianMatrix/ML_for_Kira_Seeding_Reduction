@@ -1,147 +1,902 @@
-# Kira cost comparison
+# Kira comparison
 
-This experiment compares the frozen seed and reduction models with Kira 3.1 on identical held-out targets and prescribed master bases. No model is retrained and the seed threshold remains 0.5. The full stored source pool and Kira's own equation selection provide a controlled algebra baseline. Where the family has a complete independent propagator basis, native Kira runs include its own equation generation, with default and documented truncation options.
+This folder supports the calculation described in the parent guide.
 
-The learned reduction policy selects exact target-row substitutions through its existing sampled features. The adapter applies these substitutions symbolically and gives any remaining work to Kira. This evaluates the policy that was trained; it does not replace every internal Kira pivot decision.
+Read [the parent guide](../README.md) for the stage and data flow.
 
-s00_prepare.py freezes cases using public family metadata and SHA256 order, without using previous outcomes. s01_common.py loads public inputs and checks rational coefficients. s02_worker.py runs one symbolic comparison including current inference and seed fallback. s03_run.py controls resources, repeats and records runs in rotated order. s04_run.sh submits the serial, single-threaded trial stream to a compute node. Run the wrapper with --pilot before the full experiment. Outputs retain attempts, choices, source identifiers, exact coefficient checks, solver logs, timing, sampled process-tree memory and bounds. The final summary reports failures as well as successful pairs.
+## Code use
 
-The methods use nested target batches of 1, 4 and 16, three repeats, one family per domain and loop order, and three box pool-size strata. Cases are a bounded comparison, not a population-wide estimate or a test of generic twelve-loop scattering. Rational coefficient verification is included in reported complete-task time. Process startup and model loading are reported separately from in-process time; cold time includes both. Equation/term counts are work measures, not arithmetic-operation counts inside Fermat. Model row-operation counts describe field operations and do not count symbolic polynomial expansion.
+Run scientific calculations on Hoffman in a scheduled job.
+Load the Python 3.9.6 module and use the existing project environment.
+The usual interpreter is `.tools/seed-model/venv/bin/python` from the project root.
+Build scripts state their compiler and native Kira requirements.
+Keep each script's memory, time and storage limits.
+Keep existing model and test files before a new run.
+Scripts that write reports describe earlier document names; review their destinations before use.
 
-The combined conservative storage upper bound, including additional output and Git copies, stays below 10 GB. A single child has a 1.5 GiB address-space limit, 180-second time limit and 32 MiB scratch bound; the original retained-output guard was 24 MiB and the documented resumption raises it to 64 MiB. Temporary solver databases are removed after each archived trial. All test data remain on Hoffman and GitHub.
+## Code files
 
-The completed first adapter pilot is retained under pilot_adapter_v1/. It exposed a tadpole kinematics-file error and unnecessary symbolic parsing of unused source rows. The main adapter evaluates public source coefficients modulo a fixed prime and parses symbolic rows only when a selected operation needs them. This changes preparation cost without changing model weights or selection thresholds. The local_reduction control applies the existing greedy rule through the same symbolic adapter. s05_array.sh runs disjoint family cases, with at most two single-threaded trials at once; each family's matched methods and repetitions share one node. Aggregate comparisons use paired ratios to account for node differences.
+The entries below follow file-name order.
+Each entry gives its purpose and the input or output interface available in the source.
 
-s06_freeze_inputs.py records hashes of selected public inputs, references, checkpoints, adapter sources and solver executables before repeated trials. s07_audit.py verifies complete trial coverage, seed masks and equation sets, archived Kira exports and master coefficients at three independent finite-field points. It replays recorded row operations independently. s08_summarize.py groups the three repeats and compares matched case medians, with process-start and in-process timings reported separately. The original 24 MiB output guard used a conservative pre-measurement bound. The later storage snapshot and documented 64 MiB evidence guard give a combined conservative bound of 8,337,104,444 bytes, including local allowance, Git copies, index storage and scratch.
+[s00_prepare.py](s00_prepare.py)
 
-The direct native-seeding comparison in native_seed/ uses the same seven independent-basis families and their largest frozen target batches. s14_prepare_native.py fixes its inputs before execution. s10_native_worker.py converts the union of predicted seeds into per-sector maxima for r, s and the number of dots. Kira generates all seeds within those envelopes and retains its own symmetry handling and equation selection. A missing complete reduction triggers the stated default native bounds; both attempts count. s11_native_run.py and s12_native_array.sh repeat this method and all three native baselines on the same node, after the main array completes. s13_native_audit.py checks outputs independently, s15_native_summary.py summarizes paired trials, and s16_native_plot.py draws the direct native timing comparison. This adapter tests learned sector bounds, which can enclose more seeds than the original predictions.
+The program freezes outcome-independent held-out cases, models, and resource limits.
 
-The interrupted first repeated comparison is retained in adapter_v2_partial/. Native Kira finished an affected box case in about five seconds, while the adapter's subsequent SymPy combination exceeded its limit. Those timings cannot be attributed to Kira. Protocol revision 3 combines native component expansions with Kira/Fermat before checking the resulting target coefficients. The native baselines and learned native bounds use that same combination step, whose time and counters are recorded separately. The complete matched grid is restarted with unchanged families, targets, models and thresholds.
+The module defines these callable interfaces:
 
-Revision 3 passed three further native regression checks, including the box combination that previously exceeded the adapter limit and a learned native seed envelope. s17_native_combine.py combines native component expansions using Kira/Fermat; s18_native_regression.py and s19_regression.sh retain those checks. Native equation-generation time and the later combination time remain separately recorded. Submit s12_native_array.sh with qsub -hold_jid followed by the current main-array job ID so the two arrays share the stated concurrency budget.
+```python
 
-Before the direct native experiment starts, it also includes a deterministic control with bounds r, s and the number of dots set to the largest target/master values, without the extra margin. It uses subsector truncation and the same first-attempt and default-fallback budgets as the learned native method. This strengthens the comparison without fitting the model or its threshold. The direct native protocol therefore has four methods and 84 trials; its prior three-method preparation is retained separately. The full study has 876 trials, including the 792 main comparisons.
+def sha(p)
+def key(s)
+def main()
 
-The target-index control and native-export verifier were corrected before the first direct native trial, and the previous input freezes are retained as frozen_inputs_pre_execution_v1.json and frozen_inputs_pre_execution_v2.json. The active freeze records the exact executed sources. The zero-margin control sets all three maxima, including numerator and extra denominator powers, directly from the target components and prescribed masters. Independent checks inspect the archived native configuration as well as its coefficients.
+```
 
-The original native array stopped between trials when all retained comparison evidence exceeded its 24 MiB guard. The main 792-trial experiment passed its independent audit. The 26 completed native records are preserved: the one complete family retains its original 12 matched trials, and 14 records from two interrupted families are archived in native_seed/storage_guard_partial/. Those two whole family groups are restarted to keep all methods and repeats on one node. The other four families had no trials. No model, mathematical worker, target, seed bound, time limit or memory limit changes. native_seed/storage_guard_extension.json records a 64 MiB retained-evidence cap and a conservative combined project bound of 8,337,104,444 bytes. s24_resume_native.py changes only that guard in the controller configuration; s25_resume_array.sh runs the remaining whole family cases. s26_resume_audit.py checks preserved records, both source freezes and the storage-only change. s27_finish_resumed.sh runs the remaining independent checks and cost summaries after resumption, retaining the already passed main audit.
+These source constants locate inputs and outputs:
 
-The final paper review enlarges plot labels, uses numerical ratio ticks and groups figures with their discussion. These presentation changes leave all trial records and reported statistics unchanged.
+```python
 
-<!-- validated-cost-results -->
-The comparison is complete and independently checked. The main experiment contains 792 trials in 19 family cases; the direct native seed-bound comparison contains 84 trials in seven independent-basis families. Against Kira with the full stored source pool, learned seeds have geometric mean complete-process/prepared-input time ratios 1.720/1.116, and learned rows have ratios 1.719/1.205. Learned native seed bounds have ratios 1.596/1.344 against default native bounds and 1.671/1.373 against restricted native bounds. Against the control with seed bounds taken directly from target indices, the native learned ratios are 1.425/1.141. Ratios use matched case medians from three repeats; values below one indicate lower time. Complete-process time includes loading, inference, exact algebra, fallback and coefficient checks. Prepared-input time excludes family and model loading. Completion counts, all resource outcomes, individual cases and operation measures appear in summary.json and native_seed/summary.json. The direct native test learns sector envelopes. The row comparison in that experiment uses fixed source identities and changing target rows; the live-matrix comparison below tests changing identity rows inside Kira.
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
 
-s20_finalize.sh runs both independent audits, summaries and all five plots after the comparison arrays finish. s21_update_report.py writes the scientific section from checked summaries and an immutable data-release commit. s22_readmes.py updates these documentation links and measurements. s23_cost_breakdown.py separates measured loading, prediction or symbolic preprocessing, solver and verification times and gives domain-specific paired comparisons in cost_breakdown.json. Frozen input hashes are recorded separately for each protocol; validation.json files bind all measured trial files by hash. The published report accompanies the checked data.
+```
 
+This entry point uses the paths and options set in its source.
 
-<!-- kira-live-matrix -->
-## Live matrix comparison
+These calls show the stored input and output interface:
 
-Completed 84 final trials in seven held-out independent-basis families, with 0 incomplete trials. The learned/stock complete-time ratio is 1.305. The learned/instrumented-native forward-stage ratio is 276.149, or 62.270 after subtracting recorded model loading. Summed median committed coefficient-operation counts are 5771 for the learned policy and 5070 for the native policy.
+```python
 
-The code, frozen protocol, exact operation records and plots are in [Kira_comparison/live_matrix](live_matrix/). The model acts inside Kira's symbolic forward phase on changing identity rows. The report distinguishes this test from the earlier fixed-source target-row procedure.
+(ROOT / 'ML_model_seed_selection/split_manifest.json').read_text()
+out.write_text(json.dumps(plan, indent=2) + '\n')
+p.read_bytes()
+out.read_text()
 
-<!-- native-acceleration -->
-The native integration in [Kira_comparison/acceleration](acceleration) filters individual IBP seeds before generation and evaluates the unchanged row network in Kira's process. The reserved comparison has 720 planned records, 616 measured trials and 590 exact completions; remaining repeats after a failed trial are explicitly skipped. ml_lower: complete-time ratio to restricted native Kira 1.295050 (descriptive 95% interval 1.156164–1.542104, 20 complete paired batches); 100 exact completions, 4 failed trials and 16 skipped repeats. row_cpp: complete-time ratio to restricted native Kira 1.023629 (descriptive 95% interval 0.998189–1.053330, 21 complete paired batches); 105 exact completions, 3 failed trials and 12 skipped repeats. combined: complete-time ratio to restricted native Kira 1.983350 (descriptive 95% interval 1.574863–2.476497, 15 complete paired batches); 75 exact completions, 9 failed trials and 36 skipped repeats. All ratios include complete checked calculation time on complete paired cohorts. The report gives the controls, failures, descriptive intervals and one-loop scope.
+```
 
-<!-- whole-expression-confirmation -->
-The whole-expression interface uses the frozen seed model, Kira's early master check, exact supplied-equation reduction and full-pool fallback. The reserved comparison contains 360 planned records, 348 measured trials and 345 exact completions. Its complete-time ratio to the full-pool supplied-equation control is 0.943782 (descriptive 95% interval 0.863046–1.041560; 23 complete paired batches), and its ratio to the fixed 64-seed distance control is 0.603585 (descriptive 95% interval 0.534379–0.677998; 23 complete paired batches). The full-pool control completed 0 additional batches and the learned method completed 0 additional batches. Both comparisons start from the same existing identity pool and include loading, prediction, equation export, exact algebra, failed attempts, fallback and checks. Offline pool generation is outside both measurements. These are constructed targets from twelve original-held-out one-loop box instances in six kinematic groups.
+[s01_common.py](s01_common.py)
 
-The separate two-loop transfer has 60 exact completions. For 64 targets the compiled learned-row pipeline took a median 12.460 seconds against 12.770 seconds for restricted native Kira, a 2.4% reduction. Its advantage over the deterministic compiled source control remains unresolved, and the full-pool control was faster at 11.773 seconds. Both seed-containing policies required fallback in every 64-target repeat.
+The file provides public inputs and exact coefficient arithmetic for paired Kira comparisons.
 
-Code, raw measurements and checks: [acceleration](acceleration).
+The module defines these callable interfaces:
 
-<!-- matched-admission-confirmation -->
-The additional matched-admission confirmation applies the same early master check and full-pool fallback to learned seeds and the 64-seed distance control. It contains 360 planned records, 348 measured trials and 345 exact completions. The learned complete-time ratios are 0.931643 (descriptive 95% interval 0.844721–1.030866; 23 complete paired batches) against the full pool and 0.925206 (descriptive 95% interval 0.847770–1.023721; 23 complete paired batches) against the matched distance control. The full-pool control completed 0 additional batches, and the learned method completed 0 additional batches. This repeats the same twelve physical family instances; it is not a new-family test. The first comparison is fully retained, and its distance control lacks the early admission check.
+```python
 
-<!-- single-target-result -->
-The predefined single-target comparison gives 8.6% lower geometric mean complete time against the full-pool Kira control and 8.7% lower time against the distance control with the same early check. Both descriptive intervals lie below one across all twelve held-out instances, with five exact repeats per method. The earlier confirmation gave 7.8% lower time against the full pool for this batch size. The sixteen-target intervals include one. This measured benefit applies to one constructed target expression at a time using an existing IBP identity pool; it does not establish a native Kira or general high-loop speedup.
+def read(p)
+def write(p, v)
+def sha(p)
+def load_module(name, path)
+def ranking(s)
+def load_case(case, size)
+def connected(eqs, targets, masters)
+def rational_rows(terms)
+def expression_terms(row)
+def exact_check(rows, family)
+def sample_point(definition)
 
-<!-- responsive-fermat-exit -->
-The responsive Fermat shutdown comparison contains 480 planned records, 416 measured trials and 400 exact completions in twelve new held-out one-loop box instances. For one target, the modified learned workflow has a complete-time ratio of 0.384629 to the original learned workflow (descriptive 95% interval 0.342069–0.452551; 12 paired batches), with geometric mean times 5.528 and 2.126 seconds. For sixteen targets the corresponding ratio is 0.685856 (interval 0.540426–0.844099). Against the full pool with the same shutdown improvement, the single-target learned ratio is 0.690298 (interval 0.423691–0.931312). All completed reductions matched exact references. Both learned methods use the same original weights, threshold, early master check and fallback. The shutdown change preserves symbolic operations and also applies to the full-pool control. These measurements use existing IBP identity pools; they exclude their original generation.
+```
 
-Code, measurements, source patch, frozen inputs and independent checks are in Kira_comparison/fast_expression/. The report explains the separate shutdown and learned-seed effects in kira_fast_expression.tex and figures/responsive_exit_times.pdf.
+The imported external packages are `sympy`.
 
-<!-- native-multiloop-results-begin -->
-## Complete multiloop cost comparison
+The imported project modules are `s02_common`, `s03_kira_adapter`.
 
-The fixed complete-generation experiment has 324 planned workflows, 324 measured workflows and 324 exact completions.
+These source constants locate inputs and outputs:
 
-The selected seed policy's complete-time ratio to responsive stock Kira is 0.741945 (12 paired batches).
+```python
 
-Seed-to-stock time ratios are 0.563457 for two-loop boxes, 1.265710 for three-loop vacua, 0.572691 for three-loop ladders. The aggregate seed time interval includes one; gains are specific to the tested family classes. The row-time interval also includes one.
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
+DATA = ROOT / 'integrals'
+SUFF = ROOT / 'ML_model_seed_selection/kira_sufficiency_test'
 
-The cost-trained row policy's complete-time ratio to instrumented native Kira is 1.007901 (12 paired batches); its forward coefficient-operation ratio is 1.003162 (12 paired batches).
+```
 
-These are paired, three-repeat comparisons at rational kinematics with symbolic d. Results include inference, native generation, exact algebra, verification and fallback. The common reference basis is prepared separately.
+Import this helper module from the stage that uses it.
 
-The independent audit passed. Family-level results and completion counts must accompany aggregate ratios; none establishes a universal speedup.
+These calls show the stored input and output interface:
 
-[Methods, raw evidence and outcomes](multiloop_native/README.md). Original integral records and neural checkpoints remain unchanged.
-<!-- native-multiloop-results-end -->
+```python
 
-## Integrated runtime extension
+t.write_text(json.dumps(v, indent=2, allow_nan=False) + '\n')
+pathlib.Path(p).read_text()
 
-The ongoing native integration extension is documented in [integrated_runtime](../Kira_comparison/integrated_runtime/README.md). It preserves previous trained models and comparisons, verifies faster seed feature construction, develops row policies from measured exact trajectories and compares complete workflows with matched native controls. New weights and measurements remain separate from earlier frozen results.
+```
 
+[s02_worker.py](s02_worker.py)
 
-<!-- integrated-runtime-current -->
-The current native-integration extension is in Kira_comparison/integrated_runtime/. It combines compiled seed inference, complete-trajectory row policies and matched native/deterministic controls. The model additions are in ML_model_seed_selection/runtime_inference/ and ML_model_reduction/runtime_training/. The initial comparison completed all 560 workflows. A 400-workflow implementation confirmation on the same eight physical profiles also completed every target with exact reference agreement. In the confirmation, seed, row and combined complete-time ratios to the smaller native control are 1.154805, 0.998979, 1.159119. The seed ratio for boxes is 0.963700; the aggregate row operation ratio is 0.985327, but its forward-stage time ratio is 1.041202. Neither model has a universal runtime advantage. Read summary.json and pair_reserved_summary.json for grouped intervals, topology results and all failed attempts. Earlier data, checkpoints and tests remain preserved. See that folder's README for the integration entry point, exact checks, resources and reproducible execution order.
+The file provides one isolated symbolic reduction, with live inference and exact fallback.
 
-<!-- shared-evaluation-current -->
-The preceding implementation is Kira_comparison/integrated_runtime/s88_reduce.py, described in [the current integration guide](https://github.com/NonHermitianMatrix/ML_for_Kira_Seeding_Reduction/tree/main/Kira_comparison/integrated_runtime/fast_evaluation). It reuses seed-network affine prefixes and symmetric row-cancellation calculations while preserving weights and algebraic choices. All 800 implementation-confirmation workflows and 180 validation workflows complete with exact coefficient and decision parity. New/preceding complete-time ratios for seed, row, both and automatic execution are 0.982155, 1.005713, 0.996704, 0.982498. These ratios retain all fallback attempts. Separate comparisons with the new native control appear in confirmation_summary.json; an implementation gain does not itself establish a general ML advantage. Earlier checkpoints and implementations remain preserved.
+The module defines these callable interfaces:
 
-<!-- parallel-inference-current -->
-The latest production entry is Kira_comparison/integrated_runtime/s108_reduce.py. [The current guide](https://github.com/NonHermitianMatrix/ML_for_Kira_Seeding_Reduction/tree/main/Kira_comparison/parallel_inference) describes parallel neural outputs, exact modular inverses and reduced row-feature allocation. All 144 final-candidate validation workflows and 640 confirmation workflows preserve exact coefficients, seed probabilities, source-row digests and committed operation counts. The complete-time new/preceding ratios for seed, row and combined execution are 0.989778, 0.989961, 0.984075. All fallback costs are included. All three complete-time intervals include one, so the component gain is clearer than the full-workflow change. Seed and combined aggregate costs remain above the native control; the row-only interval against native also includes one. See confirmation_summary.json for descriptive intervals and topology results. The rejected development candidate and all preceding releases remain preserved.
+```python
 
-## Target-dependent equation selection
+def kira_run(w, plan)
+def supplied(family, targets, selected, w, plan)
+def seed_select(fam)
+def reduce_targets(fam, learned=True)
+def native(fam, trim, w, plan)
+def main()
 
-The trained third model and native integration are in [../ML_model_equation_selection](../ML_model_equation_selection/README.md). The current s35_reduce.py route uses the recorded 21-target two-loop sunrise domain with native seed and row choices. Six fresh profiles give complete-time ratio 0.9942 and preparation ratio 0.7848. Other domains and combinations with earlier learned policies retain native equation choices. The report preserves the slower broad and combined results, descriptive intervals, exact checks and current limits.
+```
 
-<!-- early-equation-release -->
-The current early equation policy predicts which seed/operator identities to construct. On eight fresh physical profiles, its complete-time ratio to matched native choices is 0.942907, with descriptive 95% interval [0.915,0.970]. Its preparation ratio is 0.637888, with interval [0.546,0.734]. The complete-time ratio to the previous release is 0.943456, and the ratio to the distance control is 0.933657. All 280 comparisons and eight basis-only applications pass exact checks. The selected route keeps native seed and row choices and preserves the preceding sunrise policy. These results include every fallback cost and cover known two-/three-loop structures at fixed rational kinematics with symbolic d.
+The imported external packages are `sympy`, `torch`.
 
-See [early equation selection](../ML_model_equation_selection/early_generation/README.md).
-<!-- early-equation-release-end -->
+The imported project modules are `s01_common`, `s01_state`, `s05_predict`, `s08_verify`, `s17_native_combine`.
 
-<!-- higher-loop-acceleration -->
-The higher-loop extension generates exact Euler and mass partial-fraction equations for the restricted coupled vacuum family, then uses Kira's user-defined-system solver. A shared variable z=L(d-2) supports every positive loop order mathematically. Tests cover L=1,...,12, with additional applications at 13, 16, 24 and 32. Across six reserved batches, the deployed route has complete-time ratio 0.155 (descriptive interval 0.132--0.184) to separate full-pool reductions. The learned separate-loop route has ratio 0.911 (descriptive interval 0.815--0.986) to the same full-pool baseline. Learned/shared versus rule/shared has ratio 0.968 (descriptive interval 0.927--1.003). Validation selects the extreme route. These are supplied-identity results, with exact coefficient checks and all runtime costs; they do not establish a generic high-loop native Kira speedup.
+The command accepts these parser options:
 
-See [../ML_model_equation_selection/higher_loops/README.md](../ML_model_equation_selection/higher_loops/README.md).
-<!-- higher-loop-acceleration-end -->
+- `'case'`: type=int.
+- `'size'`: type=int.
+- `'policy'`: The parser accepts a value..
+- `'scratch'`: type=pathlib.Path.
+- `'output'`: type=pathlib.Path.
 
+These calls show the stored input and output interface:
 
-<!-- batch-reuse-begin -->
-## Learned equation reuse across target batches
+```python
 
-The earlier batch interface is [batch_reuse](../ML_model_equation_selection/batch_reuse/README.md). It trains a batch equation-cost model, shares exact coefficient checks across loop orders and combines independent systems in one Kira call. All 460 reserved applications pass exact checks. The selected combined route has complete-time ratio 0.220 to the preceding separate workflow. Matched simple-rule and inference-backend comparisons remain recorded. General high-loop native IBP generation is outside this scope.
-<!-- batch-reuse-end -->
+(w / 'run.log').read_text(errors='replace')
+torch.load(ROOT / 'ML_model_seed_selection/trained_model.pt', map_location='cpu', weights_only=False)
+(w / 'config/integralfamilies.yaml').write_text(json.dumps(config))
+(w / 'config/kinematics.yaml').write_text(json.dumps(kin))
+(w / 'targets').write_text(''.join((label(a) + '\n' for a in component)))
+(w / 'masters').write_text(''.join((label(a) + '\n' for a in fam['masters'])))
+(w / 'jobs.yaml').write_text(json.dumps({'jobs': [{'reduce_sectors': reduction}, {'kira2file': {'target': [['targets']]}}]}))
 
-<!-- pre-reduction-current -->
-Validation selects the simple direct route. On 200 reserved applications, its calculation-time ratio to the preceding combined learned Kira route is 0.306, with descriptive interval [0.246,0.373]. The full-worker ratio is 0.430. All exact checks pass with zero reserved fallbacks. The earlier trained four-tree model remains available with unchanged weights; learned/direct versus simple/direct has calculation ratio 0.982. The comparison does not establish a further complete-time advantage from learned ordering over both direct controls. This is a checked shortcut for the restricted coupled vacuum family. Native IBP generation keeps its earlier supported domains.
+```
 
-See [exact pre-reduction](../ML_model_equation_selection/pre_reduction/README.md).
-<!-- pre-reduction-current-end -->
+[s03_run.py](s03_run.py)
 
-<!-- polynomial-reuse-current -->
-The polynomial-reuse interface shares exact loop-order transformations and Taylor factors, with an optional persistent worker. Validation selects both arithmetic changes and preserves the simple extreme ordering. Across eight reserved batches, calculation-time ratio to the preceding direct arithmetic is 0.372, and full-worker ratio is 0.682. Arithmetic plus persistent execution has full-time ratio 0.365 across three specified overlapping streams. All 352 reserved applications pass exact checks; 28860 expanded coefficient positions also match the older loop-dependent formula. These gains come from exact reuse and process startup. The unchanged learned model remains optional. General native high-loop IBP generation retains its earlier scope.
+The program runs counterbalanced matched trials with bounded processes and archived evidence.
 
-See [exact polynomial reuse](../ML_model_equation_selection/polynomial_reuse/README.md).
-<!-- polynomial-reuse-current-end -->
+The module defines these callable interfaces:
 
-<!-- exact-backend-current -->
-The latest restricted vacuum-family route uses compiled expansion and binary output with a fixed recurrence rule. Its complete-process time ratio is 0.850 and its ratio including output decoding is 0.858, with descriptive interval [0.800,0.914]. The persistent-stream ratio including decoding is 0.725. 948 reserved applications across the original and compiled-reader comparisons pass exact checks. Learned versus validation-selected fixed-rule time ratio is 1.017, with interval [0.969,1.070]. This interval includes one, so the reserved comparison does not establish a further time reduction from learned choices. The deployed default uses the fixed validation choice. These results retain the restricted vacuum-family scope; native IBP generation keeps its earlier supported domains.
+```python
 
-See [exact arithmetic and batch strategies](../ML_model_equation_selection/exact_backend/README.md).
-<!-- exact-backend-current-end -->
+def read(p)
+def write(p, x)
+def allocated(p)
+def rss_tree(pid)
+def limits()
+def main()
 
-<!-- cumulative-results-begin -->
-The direct cumulative comparison uses eight new groups of three restricted vacuum mass profiles, loop orders 1--12, and five repetitions of three methods. All 120 workflows pass exact checks. Relative to the original saved Kira binary with the full supplied equation pool and separate loop reductions, the final route has total-time ratio 0.001839, speedup 543.815x (descriptive 95% interval 488.134--605.064), and 99.82% less time, including startup, saving and output reading. Against the earlier full-pool pipeline binary, the speedup is 81.170x. The selected final route uses a fixed recurrence and exact direct arithmetic. The result measures the complete restricted-family replacement; it does not establish a corresponding native general-IBP or ML-only speedup.
-<!-- cumulative-results-end -->
+```
 
+These source constants locate inputs and outputs:
 
-<!-- generalization-results -->
-The extension contains seven new scattering batches with 88 targets and 70 exact comparison workflows. It includes a nonplanar two-loop box, a one-loop pentagon with five independent symbolic invariants, and a one-loop box with an independent external virtuality. The frozen equation filter has a complete-time ratio of 1.251829 to native choices, including all 35 native fallbacks. The new symbolic-capable application defaults to native choices for these inputs. Separate exact certificates enumerate every sufficient source subset and every allowed pivot path for a bubble and a tadpole. Each has a joint minimum of seven counted coefficient operations, within its specified finite pool. These certificates do not prove unrestricted IBP or wall-time optimality.
+```python
 
-Code, definitions, exact results and certificates: [generalization/](generalization/).
-<!-- /generalization-results -->
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
+
+```
+
+The command accepts these parser options:
+
+- `'--pilot'`: action='store_true'.
+- `'--case'`: type=int.
+
+These calls show the stored input and output interface:
+
+```python
+
+p.write_text(json.dumps(x, indent=2) + '\n')
+p.read_text()
+p.read_text(errors='replace')
+pathlib.Path('/proc/%d/task/%d/children' % (p, p)).read_text()
+pathlib.Path('/proc/%d/statm' % p).read_text()
+pathlib.Path('/proc/cpuinfo').read_text()
+
+```
+
+[s04_run.sh](s04_run.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraCost
+#$ -l h_rt=02:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o Kira_comparison/scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -c 0
+export KIRA_COMPARISON_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-cost-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_COMPARISON_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python Kira_comparison/s03_run.py "$@"
+
+```
+
+[s05_array.sh](s05_array.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraCostFull
+#$ -t 1-19
+#$ -tc 2
+#$ -l h_rt=03:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o Kira_comparison/results
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -c 0
+export KIRA_COMPARISON_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-cost-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_COMPARISON_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python Kira_comparison/s03_run.py --case "$((SGE_TASK_ID-1))"
+
+```
+
+[s06_freeze_inputs.py](s06_freeze_inputs.py)
+
+The program records and enforce the exact inputs and executable sources before repeated tests.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s01_common`.
+
+This entry point uses the paths and options set in its source.
+
+[s07_audit.py](s07_audit.py)
+
+The program checks final exports, selected identities, paths and complete trial coverage.
+
+The module defines these callable interfaces:
+
+```python
+
+def vector(terms, point, p)
+def main()
+
+```
+
+The imported project modules are `s01_common`, `s08_verify`.
+
+This entry point uses the paths and options set in its source.
+
+[s08_summarize.py](s08_summarize.py)
+
+The program summarizes matched repetitions, resource outcomes and distinct cost measures.
+
+The module defines these callable interfaces:
+
+```python
+
+def median(v)
+def mean(v)
+def geo(v)
+def counter(r, key)
+def main()
+
+```
+
+The imported project modules are `s01_common`.
+
+This entry point uses the paths and options set in its source.
+
+[s09_plot.py](s09_plot.py)
+
+The program plots verified matched runtime, solver work, model work and memory.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `matplotlib`, `numpy`.
+
+The imported project modules are `s01_common`.
+
+This entry point uses the paths and options set in its source.
+
+[s10_native_worker.py](s10_native_worker.py)
+
+The file provides native Kira seeding from frozen learned seed envelopes, with default fallback.
+
+The module defines these callable interfaces:
+
+```python
+
+def native_selected(fam, trim, w, plan, selected, margin=1)
+def main()
+
+```
+
+The imported external packages are `sympy`.
+
+The imported project modules are `s01_common`, `s02_worker`, `s17_native_combine`.
+
+The command accepts these parser options:
+
+- `'case'`: type=int.
+- `'size'`: type=int.
+- `'policy'`: The parser accepts a value..
+- `'scratch'`: type=pathlib.Path.
+- `'output'`: type=pathlib.Path.
+
+These calls show the stored input and output interface:
+
+```python
+
+(w / 'config/integralfamilies.yaml').write_text(json.dumps(config))
+(w / 'config/kinematics.yaml').write_text(json.dumps(kin))
+(w / 'targets').write_text(''.join((label(a) + '\n' for a in component)))
+(w / 'masters').write_text(''.join((label(a) + '\n' for a in fam['masters'])))
+(w / 'jobs.yaml').write_text(json.dumps({'jobs': [{'reduce_sectors': reduction}, {'kira2file': {'target': [['targets']]}}]}))
+logpath.read_text(errors='replace')
+
+```
+
+[s11_native_run.py](s11_native_run.py)
+
+The program runs counterbalanced matched trials with bounded processes and archived evidence.
+
+The module defines these callable interfaces:
+
+```python
+
+def read(p)
+def write(p, x)
+def allocated(p)
+def rss_tree(pid)
+def limits()
+def main()
+
+```
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
+
+```
+
+The command accepts these parser options:
+
+- `'--pilot'`: action='store_true'.
+- `'--case'`: type=int.
+
+These calls show the stored input and output interface:
+
+```python
+
+p.write_text(json.dumps(x, indent=2) + '\n')
+p.read_text()
+p.read_text(errors='replace')
+pathlib.Path('/proc/%d/task/%d/children' % (p, p)).read_text()
+pathlib.Path('/proc/%d/statm' % p).read_text()
+pathlib.Path('/proc/cpuinfo').read_text()
+
+```
+
+[s12_native_array.sh](s12_native_array.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraNativeSeeds
+#$ -t 1-7
+#$ -tc 2
+#$ -l h_rt=03:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o Kira_comparison/native_seed/results
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -c 0
+export KIRA_COMPARISON_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-cost-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_COMPARISON_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python Kira_comparison/s11_native_run.py --case "$((SGE_TASK_ID-1))"
+
+```
+
+[s13_native_audit.py](s13_native_audit.py)
+
+The program checks final exports, selected identities, paths and complete trial coverage.
+
+The module defines these callable interfaces:
+
+```python
+
+def vector(terms, point, p)
+def main()
+
+```
+
+The imported project modules are `s01_common`, `s08_verify`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = HERE / 'native_seed'
+
+```
+
+This entry point uses the paths and options set in its source.
+
+[s14_prepare_native.py](s14_prepare_native.py)
+
+The program freezes the native seed-envelope comparison on the same seven independent bases.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s01_common`.
+
+This entry point uses the paths and options set in its source.
+
+[s15_native_summary.py](s15_native_summary.py)
+
+The program summarizes matched repetitions, resource outcomes and distinct cost measures.
+
+The module defines these callable interfaces:
+
+```python
+
+def median(v)
+def mean(v)
+def geo(v)
+def counter(r, key)
+def main()
+
+```
+
+The imported project modules are `s01_common`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = HERE / 'native_seed'
+
+```
+
+This entry point uses the paths and options set in its source.
+
+[s16_native_plot.py](s16_native_plot.py)
+
+The program plots the direct native seed-envelope comparison.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `matplotlib`.
+
+The imported project modules are `s01_common`.
+
+This entry point uses the paths and options set in its source.
+
+[s17_native_combine.py](s17_native_combine.py)
+
+The program combines native component reductions with exact Fermat algebra through Kira.
+
+The module defines these callable interfaces:
+
+```python
+
+def combine(family, path, work, plan, solver)
+
+```
+
+The imported project modules are `s01_common`.
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+path.read_text()
+
+```
+
+[s18_native_regression.py](s18_native_regression.py)
+
+The program checks the previously slow native combination and the learned native envelope.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s01_common`, `s03_run`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+f.read_text(errors='replace')
+
+```
+
+[s19_regression.sh](s19_regression.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraCombineCheck
+#$ -l h_rt=02:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o Kira_comparison/native_regression.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -c 0
+export KIRA_COMPARISON_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-cost-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_COMPARISON_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python Kira_comparison/s18_native_regression.py "$@"
+
+```
+
+[s20_finalize.sh](s20_finalize.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraCostAudit
+#$ -l h_rt=02:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o Kira_comparison/finalization.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1 MPLBACKEND=Agg
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 32768
+ulimit -c 0
+.tools/seed-model/venv/bin/python Kira_comparison/s07_audit.py
+.tools/seed-model/venv/bin/python Kira_comparison/s08_summarize.py
+.tools/seed-model/venv/bin/python Kira_comparison/s09_plot.py
+.tools/seed-model/venv/bin/python Kira_comparison/s13_native_audit.py
+.tools/seed-model/venv/bin/python Kira_comparison/s15_native_summary.py
+.tools/seed-model/venv/bin/python Kira_comparison/s16_native_plot.py
+.tools/seed-model/venv/bin/python Kira_comparison/s23_cost_breakdown.py
+python - <<'PY'
+import json,pathlib
+p=pathlib.Path('.tools/kira-comparison-publication/completion.json');x=json.loads(p.read_text());x['stage']='comparisons_validated';p.write_text(json.dumps(x,indent=2)+'\n')
+print('Both comparisons validated and plotted')
+PY
+
+```
+
+[s21_update_report.py](s21_update_report.py)
+
+The program writes the checked comparison into the paper and preserve the supplied abstract.
+
+The module defines these callable interfaces:
+
+```python
+
+def comparison(data, baseline, policy)
+def ratio_fields(c)
+def figure(name, caption, label)
+def replace_once(text, old, new)
+def main()
+
+```
+
+The imported project modules are `s01_common`.
+
+The command accepts these parser options:
+
+- `'data_commit'`: The parser accepts a value..
+
+These calls show the stored input and output interface:
+
+```python
+
+(report / 'kira_comparison.tex').write_text(content, encoding='utf-8')
+p.read_text(encoding='utf-8')
+p.write_text(text, encoding='utf-8')
+p.read_text()
+p.write_text(t)
+p.write_text(t, encoding='utf-8')
+backup.write_text(text, encoding='utf-8')
+
+```
+
+[s22_readmes.py](s22_readmes.py)
+
+The program documents the validated comparison without changing models or integral data.
+
+The module defines these callable interfaces:
+
+```python
+
+def append(path, marker, paragraph)
+def get(data, baseline, policy)
+def main()
+
+```
+
+The imported project modules are `s01_common`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+path.write_text(text + '\n' + marker + '\n' + paragraph + '\n', encoding='utf-8')
+path.read_text(encoding='utf-8')
+
+```
+
+[s23_cost_breakdown.py](s23_cost_breakdown.py)
+
+The program separates measured stages and family outcomes after exact validation.
+
+The module defines these callable interfaces:
+
+```python
+
+def med(v)
+def geo(v)
+def summarize(folder)
+def main()
+
+```
+
+The imported project modules are `s01_common`.
+
+This entry point uses the paths and options set in its source.
+
+[s24_resume_native.py](s24_resume_native.py)
+
+The program resumes native cases after enlarging only the retained-evidence storage guard.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+
+```
+
+The command accepts these parser options:
+
+- `'--case'`: type=int; required=True.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'native_seed/storage_guard_extension.json').read_text()
+
+```
+
+[s25_resume_array.sh](s25_resume_array.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraNativeResume
+#$ -t 1-7
+#$ -tc 2
+#$ -l h_rt=03:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o Kira_comparison/native_seed/results
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -c 0
+export KIRA_COMPARISON_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-cost-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_COMPARISON_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python Kira_comparison/s24_resume_native.py --case "$((SGE_TASK_ID-1))"
+
+```
+
+[s26_resume_audit.py](s26_resume_audit.py)
+
+The program checks the storage-only resumption and preservation of fixed mathematical inputs.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s01_common`.
+
+This entry point uses the paths and options set in its source.
+
+[s27_finish_resumed.sh](s27_finish_resumed.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraNativeAudit
+#$ -l h_rt=02:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o Kira_comparison/resumed_finalization.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1 MPLBACKEND=Agg
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1572864
+ulimit -f 32768
+ulimit -c 0
+.tools/seed-model/venv/bin/python Kira_comparison/s13_native_audit.py
+.tools/seed-model/venv/bin/python Kira_comparison/s26_resume_audit.py
+.tools/seed-model/venv/bin/python Kira_comparison/s15_native_summary.py
+.tools/seed-model/venv/bin/python Kira_comparison/s16_native_plot.py
+.tools/seed-model/venv/bin/python Kira_comparison/s23_cost_breakdown.py
+python - <<'PY'
+import json,pathlib
+p=pathlib.Path(".tools/kira-comparison-publication/completion.json")
+x=json.loads(p.read_text());x["stage"]="comparisons_validated";p.write_text(json.dumps(x,indent=2)+"\n")
+print("Both comparisons validated and plotted; storage-only resumption checked.")
+PY
+
+```
+
+## Data and supporting files
+
+- [cost_breakdown.json](cost_breakdown.json): This file contains structured records from the parent calculation.
+
+- [finalization.log](finalization.log): This file contains saved program messages.
+
+- [frozen_inputs.json](frozen_inputs.json): This file contains structured records from the parent calculation.
+
+- [native_regression.log](native_regression.log): This file contains saved program messages.
+
+- [plan.json](plan.json): This file contains structured records from the parent calculation.
+
+- [resumed_finalization.log](resumed_finalization.log): This file contains saved program messages.
+
+- [scheduler.log](scheduler.log): This file contains saved program messages.
+
+- [summary.json](summary.json): This file contains the result counts and summary measurements.
+
+- [validation.json](validation.json): This file records the completed validation checks.
+
+## Child folders
+
+- [acceleration](acceleration/README.md).
+
+- [adapter_v2_partial](adapter_v2_partial/README.md).
+
+- [cumulative_speedup](cumulative_speedup/README.md).
+
+- [fast_expression](fast_expression/README.md).
+
+- [figures](figures/README.md).
+
+- [generalization](generalization/README.md).
+
+- [integrated_runtime](integrated_runtime/README.md).
+
+- [live_matrix](live_matrix/README.md).
+
+- [multiloop_native](multiloop_native/README.md).
+
+- [native_regression](native_regression/README.md).
+
+- [native_seed](native_seed/README.md).
+
+- [native_seed_preflight](native_seed_preflight/README.md).
+
+- [native_seed_three_method_preflight](native_seed_three_method_preflight/README.md).
+
+- [parallel_inference](parallel_inference/README.md).
+
+- [pilot](pilot/README.md).
+
+- [pilot_adapter_v1](pilot_adapter_v1/README.md).
+
+- [results](results/README.md).

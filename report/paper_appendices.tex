@@ -86,7 +86,26 @@ For row selection, let $\mathcal A$ be the current allowed action list and $\bol
 \end{equation}
 Here $A$ is the matrix, $a^*$ is the recorded action and $\mathcal D_r$ contains states with an actual choice. The denominator normalizes the probabilities; taking the negative logarithm of the categorical reference likelihood gives the loss. Single-action states have zero loss. Training uses the same AdamW learning rate, decay and norm limit as seed training, with 256 states per update. Finite-field trial updates supply cancellation features; a modular residue's numerical size does not represent a real coefficient magnitude.
 
-The equation tree uses the seed, operator and target features described in Section~\ref{sec:equations}. Training gives each physical profile equal total weight, and leaf frequencies supply smoothed scores. The depth-eight and depth-twelve candidates require at least 24 and eight rows per child, respectively. Classification-tree splits and pruning principles follow Ref.~\cite{CART1984}; the specified depths, features and thresholds define our fitted policies. Support-membership scores do not certify that a selected system is complete. A prescribed-basis check and native fallback therefore remain part of each application.
+The later native row policies change the fitted target to the cost caused by a candidate source. An immediate-cost fit predicts the logarithm of measured exact insertion time. A continuation fit instead counts the remaining forward insertions after the candidate choice, followed by native choices. If insertion $j$ uses $n_j$ source entries, its specified estimate is $1+2n_j$: one division and one multiplication and subtraction per entry. The continuation label is therefore $C(S,q)=\sum_j(1+2n_j)$. The later tree fits
+\begin{equation}
+ y_q=\frac{C(S,q)-C(S,0)}{\max\{1,\max_b C(S,b)-\min_b C(S,b)\}},
+ \qquad \widehat y_q=h(\boldsymbol x_q-\boldsymbol x_0),
+\end{equation}
+where $0$ denotes Kira's native source and $\boldsymbol x_q$ contains eighteen current-row and overlap features. Weighted squared error gives each training family equal weight. Validation selects the tree and the required predicted improvement, and exact coefficients must agree before a measured continuation enters training. This count describes coefficient operations, while complete timings include the algebraic work inside each coefficient operation. Neither training objective proves a globally minimum path.
+
+The equation tree uses the seed, operator and target features described in Section~\ref{sec:equations}. Its seventeen inputs are the loop count, independent external-momentum count, index count, logarithm of target count, number of positive seed indices, additional seed powers, seed numerator rank, excess additional powers and rank over the target maxima, whether the target list requests the seed sector, the corresponding two excesses within that sector, minimum seed--target index distance, whether the seed itself is a target, operator index, and the two overall target maxima. The index distance is $\sum_i|\sigma_i-a_i|$. Additional powers and numerator rank are $\sum_i\max(\sigma_i-1,0)$ and $\sum_i\max(-\sigma_i,0)$, respectively. Coefficient-expression features are excluded, so prediction can precede coefficient construction.
+
+Training gives each physical profile equal total weight by assigning each row weight $1/(n_b B_g)$, where $n_b$ is its batch size and $B_g$ is the number of training batches in its profile. At a node, let $w_+,w_-$ be the positive and negative total weights. Half the weighted binary Gini impurity is
+\begin{equation}
+ H=\frac{w_+w_-}{w_++w_-}.
+\end{equation}
+Indeed, with $p=w_+/(w_++w_-)$, the weighted Gini expression is $(w_++w_-)[1-p^2-(1-p)^2]=2H$. Each proposed split reduces $H$ by the sum of its two children's values. The fit tests 25 feature quantiles between 0.02 and 0.98, rejects children below the stated population limit, and selects the largest positive reduction. This is the classification-tree construction of Ref.~\cite{CART1984} with our bounded set of candidate splits.
+
+A leaf with $n_+$ positive rows among $n$ rows returns
+\begin{equation}
+ p_{\rm leaf}=\frac{n_++1/2}{n+1}.
+\end{equation}
+This definition adds one half-count to each class and keeps a finite score even for a pure leaf. The acceptance condition is $p_{\rm leaf}\geq0.01$. These scores estimate recorded support membership; they do not measure a calibrated probability of reduction success. The depth-eight and depth-twelve candidates require at least 24 and eight rows per child, respectively. Classification-tree splits and pruning principles follow Ref.~\cite{CART1984}; the specified depths, features and thresholds define our fitted policies. Support-membership scores do not certify that a selected system is complete. A prescribed-basis check and native fallback therefore remain part of each application.
 
 \section{Exact reuse for the restricted vacuum family}
 \label{app:vacuum}
@@ -156,7 +175,7 @@ Here $[t^n]$ extracts Taylor coefficient $n$ and factors with $b_i=0$ are one. A
 \end{equation}
 An empty product is one. The Taylor calculation avoids the selected pair-recurrence path and checks every returned polynomial coefficient before substitution. The derivation assumes distinct $\rho_j$, unit massless powers and the shared momentum $Q$; it supplies no formula for arbitrary multiloop scattering families.
 
-\section{Measurement definitions and evidence}
+\section{Measurement definitions and comparison conditions}
 \label{app:timing}
 For seed labels, let TP count selected reference seeds, FP count selected seeds absent from the reference set, and FN count omitted reference seeds. Precision is $P=\mathrm{TP}/(\mathrm{TP}+\mathrm{FP})$ and recall is $R=\mathrm{TP}/(\mathrm{TP}+\mathrm{FN})$. Defining $F_1$ as their harmonic mean gives
 \begin{equation}
@@ -172,14 +191,197 @@ For timing, let $T_{abr}$ be the measured time for method $a$, batch $b$ and rep
  \qquad R_{a/c}=e^{\overline\ell}.
  \label{eq:ratio}
 \end{equation}
-Here $c$ identifies the control and $G$ is the number of physical groups. Exponentiating the mean log ratio gives the geometric mean; ratios below one indicate lower time. Reversing numerator and denominator changes $\overline\ell$ to $-\overline\ell$, so speedup is $S=1/R_{a/c}$ and the time reduction is $100(1-R_{a/c})\%$. The cumulative study uses one batch per group. The supplied-equation seed comparison instead gives each complete paired batch equal weight; its interval resamples six related kinematic groups. Reported descriptive 95\% intervals resample complete groups 10,000 times while retaining paired methods and repetitions. They describe case-to-case variation in these experiments. We do not infer new uncertainty intervals for figures whose source summaries provide only point estimates.
+Here $c$ identifies the control and $G$ is the number of physical groups. Exponentiating the mean log ratio gives the geometric mean; ratios below one indicate lower time. Reversing numerator and denominator changes $\overline\ell$ to $-\overline\ell$, so speedup is $S=1/R_{a/c}$ and the time reduction is $100(1-R_{a/c})\%$. The cumulative study uses one batch per group. The supplied-equation seed comparison instead gives each complete paired batch equal weight; its interval resamples six related kinematic groups. Following bootstrap resampling~\cite{Efron1979}, reported descriptive 95\% intervals resample complete groups 10,000 times while retaining paired methods and repetitions. They describe case-to-case variation in these experiments. We do not infer new uncertainty intervals for figures whose source summaries provide only point estimates.
 
 The supplied-equation seed test includes target preparation, inference, early basis checking, reduction, result checking and fallback. It excludes original IBP-pool generation. It rotates methods within each family and target batch on the same node, and includes only complete paired batches in its ratio summary while preserving incomplete and skipped trials in the accounting.
 
-The native equation and transfer tests include input preparation, model loading and evaluation, Kira startup, native IBP generation, elimination, basis and coefficient checks, cleanup and every fallback. The comparison driver is already running. Independent reference discovery, the later audit and evidence compression lie outside the timer. In the equation test, the native and learned arms receive the same executable-level improvements. The eight reserved profiles test new masses and invariants within known structures; the seven transfer cases additionally test new structures and symbolic invariants.
+The native equation and transfer tests include input preparation, model loading and evaluation, Kira startup, native IBP generation, elimination, basis and coefficient checks, cleanup and every fallback. Independent reference discovery and the later independent check lie outside the timer. In the equation test, the native and learned arms receive the same executable-level improvements. The eight reserved profiles test new masses and invariants within known structures; the seven transfer cases additionally test new structures and symbolic invariants.
 
-The cumulative test includes fresh-worker startup, input loading, supplied Euler and mass-identity construction, algebra, verification, output saving and complete output reading. Eight groups use maximum massive powers 8, 10, 12 or 14, with two groups at each bound. They request 16, 32, 48 or 64 targets per profile, capped by availability. Each group contains three mass profiles and all loop orders 1--12. Four workers bind to distinct physical cores on one scheduled Hoffman node, and matched trials remain on the same core. Method order is shuffled within repetition blocks. Filesystem caches remain ordinary, and each method recomputes the reduction. Queue time, offline training and the later independent audit remain outside all reported production times.
+The cumulative test includes fresh-worker startup, input loading, supplied Euler and mass-identity construction, algebra, verification, output saving and complete output reading. Eight groups use maximum massive powers 8, 10, 12 or 14, with two groups at each bound. They request 16, 32, 48 or 64 targets per profile, capped by availability. Each group contains three mass profiles and all loop orders 1--12. Paired methods use the same resources, and their order changes between repetition blocks. Each method recomputes the reduction. Waiting for resources, offline training and the later independent check remain outside all reported production times.
 
 The initial live-matrix comparison uses three repetitions of four methods on seven physical cases, giving 84 workflows. Its complete ratio is the geometric mean of the seven paired median ratios and carries no reported uncertainty interval. The later native implementation comparison uses five repetitions and sixteen batches; it repeats earlier physical profiles to measure the implementation change.
 
-Every quantitative statement in Sections~\ref{sec:data}--\ref{sec:overall} reports this study's recorded measurements. The accompanying figure source data identify the original result files and their SHA-256 hashes, and the figure script reads those files directly. The evidence separates the expanded label test, supplied-equation seed comparison, live-row comparison, later native comparison, early-equation comparison, new-family transfer test and direct cumulative test. This separation prevents a change of baseline or workload from entering a claimed combined model speedup. The archived notes retain the earlier experiments and their negative results.
+Every quantitative statement in Sections~\ref{sec:data}--\ref{sec:overall} reports this study's recorded measurements. The evidence separates the expanded label test, supplied-equation seed comparison, live-row comparison, later native comparison, early-equation comparison, new-family transfer test and direct cumulative test. This separation prevents a change of baseline or workload from entering a claimed combined model speedup. The archived notes retain the earlier experiments and their negative results.
+
+\section{Integral families and kinematic conventions}
+\label{app:families}
+The general integral in Eq.~\eqref{eq:family} becomes a specific family when its ordered denominator momenta, masses and external scalar products are given. The definitions below cover the families used to construct the training data and the families used in the reported comparisons. A target is an index vector in one of these families or a stated rational linear combination of such vectors. Thus the definitions cover the generated integrals without printing each parameter instance. Unless stated otherwise, $D_i=q_i^2-m_i^2+i0$ and the measure is that of Eq.~\eqref{eq:family}. The Euclidean family in Eq.~\eqref{eq:vacuum} retains its separately stated sign convention.
+
+\subsection{Initial one-loop and two-loop families}
+For the one-loop tadpole, $q_1=\ell$ and $m_1^2=\mu>0$. For the bubbles,
+\begin{equation}
+ \boldsymbol q=(\ell,\ell-p),\qquad p^2=s,
+ \qquad (m_1^2,m_2^2)\in\{(0,0),(\mu,0),(\mu,\mu),(\mu_1,\mu_2)\}.
+\end{equation}
+The symbols $\mu,\mu_1,\mu_2$ denote squared masses, with $\mu_1\ne\mu_2$ in the unequal-mass case. The triangle routing is
+\begin{equation}
+ \boldsymbol q=(\ell,\ell-p_1,\ell-p_1-p_2),\qquad
+ (p_1^2,p_2^2,(p_1+p_2)^2)=(u_1,u_2,u_3).
+\end{equation}
+Expanding $(p_1+p_2)^2$ gives $2p_1\cdot p_2=u_3-u_1-u_2$. Three massless triangle classes use virtualities $(0,0,s)$, $(0,u_2,u_3)$ and $(u_1,u_2,u_3)$. Two equal-mass classes, with all internal squared masses $\mu$, use $(0,0,s)$ and $(u_1,u_2,u_3)$. Each displayed nonzero virtuality is independent at generic kinematics.
+
+The initial massless boxes use four incoming external momenta, $p_4=-p_1-p_2-p_3$, and
+\begin{equation}
+ \boldsymbol q=(\ell,\ell-p_1,\ell-p_1-p_2,\ell-p_1-p_2-p_3),
+ \quad s=(p_1+p_2)^2,\quad t=(p_2+p_3)^2.
+\end{equation}
+Writing $u_i=p_i^2$, the three classes have $(u_1,u_2,u_3,u_4)=(0,0,0,0)$, $(0,0,0,u_4)$ and $(u_1,u_2,u_3,u_4)$. Expanding the definitions of $s,t$ and $p_4^2$ gives
+\begin{equation}
+ 2p_1\cdot p_2=s-u_1-u_2,\quad
+ 2p_2\cdot p_3=t-u_2-u_3,\quad
+ 2p_1\cdot p_3=u_4+u_2-s-t.
+\end{equation}
+These definitions give thirteen one-loop classes. The initial two-loop massless two-point family uses
+\begin{equation}
+ \boldsymbol q=(\ell_1,\ell_2,\ell_1-\ell_2,\ell_1-p,\ell_2-p),
+ \qquad p^2=s,qquad m_i^2=0.
+\end{equation}
+The equal-mass sunrise uses $\boldsymbol q=(\ell_1,\ell_2,p-\ell_1-\ell_2,p-\ell_1,p-\ell_2)$, with masses $(\mu,\mu,\mu,0,0)$ and $p^2=s$. Its last two entries are auxiliary: $a_4,a_5\leq0$. The equal-mass vacuum sunset has $\boldsymbol q=(\ell_1,\ell_2,\ell_1-\ell_2)$ and all three squared masses $\mu$. These three classes complete the initial sixteen. Their subsectors include the integrals obtained by removing physical denominators.
+
+\subsection{Additional one-loop mass and invariant assignments}
+The 984 added box families use a more general assignment than the three initial massless boxes:
+\begin{equation}
+ D_i=(\ell-Q_i)^2-\mu_{\alpha_i}+i0,
+ \quad Q_1=0,\quad \mu_0=0,\quad \alpha_i\in\{0,1,2,3\}.
+\end{equation}
+The nonzero squared masses $\mu_1,\mu_2,\mu_3$ are independent. Repeated labels impose equal masses. The three external shifts $Q_2,Q_3,Q_4$ have squared differences
+\begin{equation}
+ \Delta_{ij}=(Q_i-Q_j)^2=y_{\beta_{ij}},
+ \quad y_0=0,\quad \beta_{ij}\in\{0,1,2,3\}.
+\end{equation}
+The nonzero $y_1,y_2,y_3$ are independent invariants. Expanding a squared difference gives the Gram matrix
+\begin{equation}
+ Q_i\cdot Q_j=\frac{\Delta_{1i}+\Delta_{1j}-\Delta_{ij}}2,
+ \qquad i,j\in\{2,3,4\}.
+\end{equation}
+The construction rejects singular sampled Gram matrices and identifies assignments related by propagator permutations or by relabelling nonzero masses and invariants. A fixed order selects 984 of 1,673 admissible inequivalent profiles after excluding the original massless boxes. This extends the initial collection to 1,000 families with 9,678 family-local masters and 240,472 targets before the higher-loop additions. Each profile gives a symbolic family through its zeros and equality conditions. The single-target seed timing comparison uses twelve reserved instances of these boxes. Its targets follow the reverse construction in Appendix~\ref{app:construction}, rather than the native target enumeration below.
+
+\subsection{Native multiloop comparisons}
+The sunrise comparisons allow independent masses on the same three physical propagators. The other native comparison families use
+\begin{align}
+ \boldsymbol q_{\rm DB}={}&(\ell_1,\ell_1-p_1,\ell_1-p_1-p_2,
+ \ell_2,\ell_2-p_1-p_2,\ell_2-p_1-p_2-p_3,\nonumber\\
+ &\ell_1-\ell_2,\ell_1-p_3,\ell_2-p_1),\\
+ \boldsymbol q_{\rm V}={}&(\ell_1,\ell_2,\ell_3,\ell_1-\ell_2,
+ \ell_2-\ell_3,\ell_1-\ell_3),\\
+ \boldsymbol q_{\rm L}={}&(\ell_1,\ell_1-p,\ell_2,\ell_2-p,\ell_3,
+ \ell_3-p,\ell_1-\ell_2,\ell_2-\ell_3,\ell_1-\ell_3).
+\end{align}
+The double box has two loops and seven physical denominators; its last two entries are auxiliary. The vacuum has three loops and six physical denominators. The ladder has three loops and eight physical denominators; its last entry is auxiliary. Auxiliary indices remain nonpositive. The massless double box has $p_i^2=0$ and uses $2p_1\cdot p_2=s$, $2p_1\cdot p_3=t$, $2p_2\cdot p_3=-s-t$. This local definition of $t$ differs from the initial box convention because the routing differs.
+
+For the final early-equation test, the sunrise squared-mass vectors are $(2,7,11)$ and $(3,7,13)$, with $p^2=-101,-103$. The double-box profiles are $(s,t)=(-101,-103),(-107,-109)$. The vacuum squared-mass vectors are $(1,1,1,1,1,11)$ and $(1,1,1,13,13,13)$. The ladder has squared masses $(1,0,0,0,0,0,0,0)$ and $p^2=-101,-103$. All values use a common squared-momentum unit. These choices keep $d$ symbolic and give coefficients in $\Q(d)$.
+
+The target order starts with the full-sector corner, then adds each single extra propagator power and each available single auxiliary numerator. The construction repeats after removing one, two and three physical denominators, retains at least two, and removes duplicates. The comparison takes 21 sunrise targets and batches of 32 and 128 targets for each other profile. This gives the fourteen batches in Section~\ref{sec:equations}.
+
+\subsection{New scattering structures and symbolic invariants}
+The massless nonplanar box uses the routing of Ref.~\cite{KiraOriginal}:
+\begin{align}
+ \boldsymbol q_{\rm NP}={}&(\ell_1,\ell_2,p_1-\ell_1,p_2-\ell_2,
+ p_1+p_2-p_3-\ell_1,\nonumber\\
+ &p_1-\ell_1+\ell_2,p_1-p_3-\ell_1+\ell_2,
+ \ell_1-p_3,\ell_2-p_1-p_2).
+\end{align}
+Its first seven entries are physical. Its last two are auxiliary. Here $p_1^2=p_2^2=p_3^2=(p_1+p_2-p_3)^2=0$, $s=(p_1+p_2)^2$ and $t=(p_1-p_3)^2$. Expanding these squares gives $2p_1\cdot p_2=s$, $2p_1\cdot p_3=-t$ and $2p_2\cdot p_3=s+t$.
+
+The massless pentagon uses $\sum_{i=1}^5p_i=0$, $p_i^2=0$ and
+\begin{equation}
+ \boldsymbol q_{\rm P}=(\ell,\ell-p_1,\ell-p_1-p_2,
+ \ell-p_1-p_2-p_3,\ell-p_1-p_2-p_3-p_4).
+\end{equation}
+All five denominators are physical. The independent invariants are $(s_{12},s_{23},s_{34},s_{45},s_{51})$, where $s_{ij}=(p_i+p_j)^2$. Squaring $p_1+p_2+p_3=-(p_4+p_5)$ gives $2p_1\cdot p_3=s_{45}-s_{12}-s_{23}$; the other nonadjacent products follow by cyclic relabelling. The box with an external virtuality uses $\boldsymbol q=(\ell,\ell-p_1,\ell-p_1-p_2,\ell-p_3)$, $p_1^2=p_2^2=p_3^2=0$, and $v=(p_1+p_2-p_3)^2$. With the nonplanar convention for $s,t$, expanding $v$ gives $2p_2\cdot p_3=s+t-v$.
+
+The rational nonplanar profiles are $(s,t)=(-149,-147),(-167,-157)$. The pentagon profiles are $(-51,-53,-57,-59,-63)$ and $(-71,-73,-77,-79,-83)$ in the displayed invariant order. Each rational profile supplies sixteen targets. The symbolic nonplanar, pentagon and virtuality-box tests supply ten, six and eight targets. They start with the corner and single additional powers, followed by auxiliary numerators and single removed denominators where available. These definitions give the 88 targets of the transfer test.
+
+\section{Master bases and dimensionally consistent target construction}
+\label{app:basis}
+For a complete independent family basis, the number of scalar products involving loop momenta is
+\begin{equation}
+ N_{\rm sp}=\frac{L(L+1)}2+LE.
+\end{equation}
+There are $L$ loop squares and $L(L-1)/2$ distinct loop cross-products, followed by $LE$ products with the $E$ independent external momenta. This count supplies a direct rank check for the independent denominator lists. The restricted vacuum parent in Eq.~\eqref{eq:vacuum} instead uses the explicitly dependent massive denominators and their partial fractions.
+
+For index vector $\boldsymbol a$, define the positive-index sum $r=\sum_i\max(a_i,0)$, numerator rank $s_-=\sum_i\max(-a_i,0)$ and additional-power count $b=\sum_i\max(a_i-1,0)$. If the top sector has $t_{\rm top}$ physical denominators, the initial Kira basis calculation uses seed limits $(r,s_-,b)\leq(t_{\rm top}+2,2,2)$ and probe limits $(t_{\rm top}+1,1,1)$, component by component. Both include all subsectors. The basis check then increases every limit by one and repeats at a second finite-field point. The original sixteen definitions give the same master labels in all three calculations, for 48 completed basis checks. Such agreement supports stability in the tested domains; it does not prove completeness for all integer indices~\cite{KiraOriginal,Kira3}.
+
+The initial sixteen classes give 49 family-local master entries. The tadpole gives one. The four bubble classes give one, two, two and three, in their stated order. The five triangle classes give one, two, four, three and five. The three box classes give three, four and eleven. The massless two-loop two-point, sunrise and vacuum sunset classes give two, three and two. For example, the equal-mass sunrise basis is
+\begin{equation}
+ M_1=I_{(1,1,0,0,0)},\qquad M_2=I_{(1,1,1,0,0)},\qquad
+ M_3=I_{(1,1,1,-2,0)}.
+\end{equation}
+The first integral separates into two tadpoles, and the last contains the numerator $[(p-\ell_1)^2]^2$. These are basis integrals, whose numerical values need not be calculated to train a reduction policy. Each later family instance retains its own explicit index basis and parameter assignment in the integral data.
+
+The mass dimension of Eq.~\eqref{eq:family} is $Ld-2\sum_i a_i$: each loop measure contributes $d$ powers of mass and each inverse propagator contributes two. In the restricted vacuum data, $[V_{\boldsymbol b}^{(L)}]=Ld-2L-2B$. Thus targets of different total powers can be combined consistently as
+\begin{equation}
+ T=\sum_\nu \kappa_\nu d^{\eta_\nu}\mu^{B_\nu-B_*}
+ V_{\boldsymbol b_\nu}^{(L)},\qquad B_*=\max_\nu B_\nu.
+ \label{eq:weighted-target}
+\end{equation}
+Every term has dimension $Ld-2L-2B_*$. The construction uses $\eta_\nu\in\{0,1\}$ and $\kappa_\nu=n_\nu/q_\nu$, with $n_\nu\in\{-3,-2,-1,1,2,3\}$ and $q_\nu\in\{1,2,3\}$. Each expression contains one, two or three distinct roots. Individual roots have $2\leq B\leq5$; Euler seeds have $1\leq B\leq5$, and mass identities extend through $B=6$. Each added family contains 128 distinct targets, including individual roots. The identity pools contain 35, 160 or 545 rows for two, three or four massive denominators.
+
+For integer profile number $n$, the generated mass ratios are $R=2+((n-1)\bmod3)$, $\rho_1=1$ and $\rho_{j+2}=2+3n+j(n+2)$ for $0\leq j\leq R-2$. Profiles $n=1,\ldots,100$ enter at loop orders 2--12; profiles 101--1350 enter at orders 1--12. Distinct masses make the partial-fraction denominators nonzero. A profile remains in the same training or testing group at every loop order. These rules state the extent of the high-loop collection and its restricted algebraic structure.
+
+\subsection{Analytic check of the restricted masters}
+The recurrences in Appendix~\ref{app:vacuum} reduce the specified family to $M_j^{(L)}$. We can also derive their values to check this choice. Write $\delta=d/2$, $\alpha=L(\delta-1)$ and $c=L-(L-1)\delta$. The symbol $\Gamma$ denotes the Euler gamma function, and $a,b$ below are denominator powers. The standard Euclidean two-denominator convolution follows from Feynman parameters~\cite{Weinzierl2022}:
+\begin{align}
+ J(a,b;Q)&=\int\frac{d^dk}{\pi^\delta}
+ \frac1{(k^2)^a((Q-k)^2)^b}\nonumber\\
+ &=(Q^2)^{\delta-a-b}
+ \frac{\Gamma(a+b-\delta)\Gamma(\delta-a)\Gamma(\delta-b)}
+ {\Gamma(a)\Gamma(b)\Gamma(2\delta-a-b)}.
+ \label{eq:convolution-check}
+\end{align}
+To obtain this expression, combine the denominators with
+\begin{equation}
+ \frac1{A^aB^b}=\frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}
+ \int_0^1\frac{x^{a-1}(1-x)^{b-1}\,dx}{[xA+(1-x)B]^{a+b}}.
+\end{equation}
+Shifting $k$ completes the square and gives the radial denominator $k^2+x(1-x)Q^2$. The radial integral equals
+$\Gamma(a+b-\delta)[x(1-x)Q^2]^{\delta-a-b}/\Gamma(a+b)$.
+The remaining beta integral is $\Gamma(\delta-b)\Gamma(\delta-a)/\Gamma(2\delta-a-b)$, which yields Eq.~\eqref{eq:convolution-check}.
+
+At fixed $Q$, successive convolution of the $L$ unit-power massless factors gives
+\begin{equation}
+ C_L(Q^2)^{-c},\qquad
+ C_L=\frac{\Gamma(c)\Gamma(\delta-1)^L}{\Gamma(\alpha)}.
+\end{equation}
+For $L=1$ the coefficient is one. Applying Eq.~\eqref{eq:convolution-check} with $a=c$, $b=1$ advances $c$ to $c+1-\delta$ and proves the formula by induction. The final integral over $Q$ then gives
+\begin{align}
+ M_j^{(L)}
+ &=\frac{C_L}{\Gamma(\delta)}\int_0^\infty
+       \frac{x^{\alpha-1}\,dx}{x+\mu_j}\nonumber\\
+ &=\mu_j^{\alpha-1}
+ \frac{\Gamma(c)\Gamma(\delta-1)^L\Gamma(1-\alpha)}{\Gamma(\delta)}.
+ \label{eq:master-value-check}
+\end{align}
+The change $x=\mu_j y$ reduces the integral to
+$\Gamma(\alpha)\Gamma(1-\alpha)$ for $0<\operatorname{Re}\alpha<1$. Analytic continuation gives the dimensionally regulated result~\cite{Weinzierl2022}. Distinct positive fixed mass ratios give distinct exponentials $\rho_j^{L(d/2-1)-1}$ as functions of $d$. After common factors cancel, a rational-function relation would have a unique largest exponential as real $d$ increases. Rational coefficients grow at most as powers and cannot cancel that term. Removing its zero coefficient and repeating establishes independence over $\Q(d)$ at these fixed mass ratios. Special dimensions and coincident masses require their own analysis.
+
+\section{Finite minimum-operation checks}
+\label{app:optimal}
+A known reverse construction supplies a valid training path, but a minimum also requires a specified operation cost and a complete set of alternatives. We checked two small physical systems to make this distinction explicit. Define the massless bubble $B_{a,b}=I_{(a,b)}$ with denominators $\ell^2+i0$ and $(\ell-p)^2+i0$, and $p^2=s\ne0$. Contracting the derivative with $\ell$ uses
+$2\ell\cdot(\ell-p)=\ell^2+(\ell-p)^2-s$. Substituting this equality in Eq.~\eqref{eq:ibp-expanded} gives
+\begin{equation}
+ 0=(d-2a-b)B_{a,b}-bB_{a-1,b+1}+bsB_{a,b+1}.
+\end{equation}
+Changing variables $\ell\mapsto p-\ell$ exchanges $a,b$ and gives the second operator identity. Integrals with only a massless denominator vanish in dimensional regularization~\cite{Weinzierl2022}. The two operators at $(1,1)$, the first at $(2,1)$ and the second at $(1,2)$ therefore give
+\begin{equation}
+ \begin{pmatrix}0&s&0&d-3\\s&0&0&d-3\\d-5&-1&s&0\\-1&d-5&s&0\end{pmatrix}
+ \begin{pmatrix}B_{2,1}\\B_{1,2}\\B_{2,2}\\B_{1,1}\end{pmatrix}=0.
+\end{equation}
+The first two rows yield $B_{2,1}=B_{1,2}=(3-d)B_{1,1}/s$. Substituting in the third yields $B_{2,2}=(d-6)(d-3)B_{1,1}/s^2$.
+
+For the massive tadpole $T_a=\int d^d\ell\,(\ell^2-m^2+i0)^{-a}/(i\pi^{d/2})$, the same derivative gives
+\begin{equation}
+ 0=dT_a-2a\int\frac{d^d\ell}{i\pi^{d/2}}
+ \frac{\ell^2}{(\ell^2-m^2+i0)^{a+1}}
+ =(d-2a)T_a-2am^2T_{a+1}.
+\end{equation}
+Seeds $a=1,2,3$ reduce $T_2,T_3,T_4$ to $T_1$. We keep the master column protected in both systems. An allowed step selects a nonzero pivot in an unprocessed nonmaster column, normalizes its row and eliminates that column from the other rows. The cost counts one division per nonzero nonpivot source entry when normalization is needed, plus one multiplication and one subtraction for each nonpivot source-entry update. It excludes assignments and the internal polynomial operations of a rational-function operation.
+
+Let $S$ be the exact matrix state, $\mathcal A(S)$ its allowed actions, $c(S,a)$ the stated step cost and $S_a$ the resulting state. Splitting every complete path into its first action and its remaining path gives the finite recurrence~\cite{Bellman1952}
+\begin{equation}
+ V(S)=\min_{a\in\mathcal A(S)}\{c(S,a)+V(S_a)\},
+ \qquad V(S_{\rm done})=0.
+\end{equation}
+Each action removes an unprocessed column. Induction on the number of remaining columns proves the minimum after all actions have been evaluated. Repeating this calculation for every source-row subset of nonmaster rank three also minimizes over initial equation selection.
+
+Our bubble check covers 113 states, 234 transitions and 152 complete paths across five sufficient subsets. Its minimum is seven coefficient operations with subset selection and thirteen with the full pool. The tadpole check covers 24 states, 32 transitions and fifteen paths; its minimum is seven operations with its single sufficient subset. Each pool requires at least three equations. The smallest number of distinct seed labels is two for the bubble and three for the tadpole. Exact replay and six native Kira master-coefficient comparisons agree. These are minima for the displayed identities, protected basis, allowed operations and cost. They do not establish minimum elapsed time or an optimum over all IBP identities.

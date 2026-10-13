@@ -1,81 +1,1483 @@
-<!-- early-equation-current -->
-The current application is [early_generation/s12_reduce.py](early_generation/s12_reduce.py).
+# ML model equation selection
 
-The current early equation policy predicts which seed/operator identities to construct. On eight fresh physical profiles, its complete-time ratio to matched native choices is 0.942907, with descriptive 95% interval [0.915,0.970]. Its preparation ratio is 0.637888, with interval [0.546,0.734]. The complete-time ratio to the previous release is 0.943456, and the ratio to the distance control is 0.933657. All 280 comparisons and eight basis-only applications pass exact checks. The selected route keeps native seed and row choices and preserves the preceding sunrise policy. These results include every fallback cost and cover known two-/three-loop structures at fixed rational kinematics with symbolic d.
+This folder contains the equation-selection model and its later extensions.
+The model scores identities for the requested targets.
+Exact Kira reduction checks the selected system.
+The current native application is in `early_generation/`.
+It makes the decision before symbolic coefficient construction.
+The other child folders retain earlier methods and specialized vacuum methods.
+Use each folder's guide to identify its inputs and supported physical domain.
 
-See the [extension README](early_generation/README.md). The remaining text describes the preceding frozen release.
-<!-- early-equation-current-end -->
+## Code use
 
-# Target-dependent equation selection
+Run scientific calculations on Hoffman in a scheduled job.
+Load the Python 3.9.6 module and use the existing project environment.
+The usual interpreter is `.tools/seed-model/venv/bin/python` from the project root.
+Build scripts state their compiler and native Kira requirements.
+Keep each script's memory, time and storage limits.
+Keep existing model and test files before a new run.
+Scripts that write reports describe earlier document names; review their destinations before use.
 
-The preceding application is s35_reduce.py. It enables the trained equation model for the recorded 21-target two-loop sunrise domain with native seed and row choices. Other target sets, other topologies, and requests for the earlier seed/row models retain native equation choices. The slower three-model combination stays disabled.
+## Code files
 
-On six fresh physical profiles, the equation policy has complete-time ratio 0.994238, descriptive interval [0.9912948654378096, 0.9970062760952034], and equation-preparation ratio 0.784781, interval [0.7763148590933325, 0.7941014613492257]. This is about 0.6% lower complete time and 21.5% lower preparation time within that domain. Generated-equation ratio is 0.413523; selected-equation count is unchanged. Native median complete times range from 0.692 to 0.709 seconds. Preparation occupies about 3.29% of native complete time.
+The entries below follow file-name order.
+Each entry gives its purpose and the input or output interface available in the source.
 
-The fresh main comparison has 162 workflows and no failed attempts. It fixes the model and route before testing six new mass/kinematic profiles, with nine alternating repetitions per method. A further 36 workflows compare all three models with the earlier two-model configuration. That composition is 31.7% slower and includes extra fallback. Six applications use prescribed masters without reference target coefficients. All 204 workflows pass the independent exact audit.
+[s00_build.py](s00_build.py)
 
-The earlier broad test has 280 complete workflows over eight two- and three-loop profiles, plus 48 composition workflows and eight applications. Its initial route is 9.8% slower overall because new vacuum filters require fallback. These results remain in model_test/. They motivated the restricted route before the fresh confirmation began. This work does not establish a general multiloop speedup.
+The program compiles equation filtering and collection without changing prior binaries.
 
-The trained CART model has 233 nodes, maximum depth eight and 23 decision features. It uses 74,692 native training candidates, including 5,978 positive labels, from six physical profiles. A label records integral-support membership in the final native selected system. It is a conservative proxy rather than a necessity or optimality label. Probabilities are smoothed leaf frequencies without a calibration claim.
+The module defines these callable interfaces:
 
-Native Kira constructs the identities and performs exact algebra. The integration shares seed features, evaluates equation features when the tree needs them, and caches decisions to skip rebuilding omitted equations. An incomplete reduction retries native equations and then a larger seed region. All attempts, model loading, generation, exact checks and cleanup enter the measured workflow time. The experiment driver is already running; independent-reference creation and evidence compression lie outside the timer.
+```python
 
-Folders:
+def sha(p)
+def main()
 
-- training/: native features, labels, exact reductions and hashes.
-- validation/: final threshold comparisons on three validation profiles; earlier validation variants remain in named archives.
-- trained_model/: model.json, weights.txt, both experimental freezes, deployment_final.json and deployment_verification.json.
-- model_test/: broad tests, labels, composition and application checks, plus confirmation/ for the fresh restricted-domain study.
-- integration/: C++ headers, source patches, build hashes and probability/feature parity checks.
-- references/: additional native reference reductions. Some unchanged references remain in Kira_comparison and are identified by path in each record.
-- development_v1/ and development_v2/: rejected label-collection attempts, with explanations. Training excludes them.
+```
 
-Use s35_reduce.py inside a scheduled Hoffman job with node-local TMPDIR. Required arguments are --family-file, --masters-file, --size and --output. Use the family definition, ordered target list and topology metadata schema in families.json. The output must lie inside this folder. The optional --base accepts native, seed, row or both. That preceding interface prevents an equation-filter combination that the tests found slower.
+These source constants locate inputs and outputs:
 
-On the configured cluster installation, s25_build_lazy.sh builds the final native evaluator. s04_experiment.py collects training examples, s06_train.py fits the tree, and s12_freeze.py locks the original broad experiment. s19_test.sh performs the broad tests. s30_confirmation.py prepare defines and freezes the six fresh profiles; s32_confirm.sh runs their comparison and independent audit. These completed experiments must remain fixed; use separate folders and fresh profiles for further policy development.
+```python
 
-s36_check_deployment.py verifies that the deployed choices match measured successful arms and disable unsupported combinations. s39_finish_report.sh generates plots, documentation and the report from checked measurements. s38_plot.py preserves the original plotting logic with compatibility for the installed Matplotlib version; the originally frozen s23_plot.py remains unchanged. s31_reduce.py and s11_reduce.py preserve preceding experimental interfaces.
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
+BUILD = ROOT / '.tools/kira-build'
+OUT = ROOT / '.tools/kira-equation-selection'
 
-The resource plan permits one experiment trial at a time and bounds the complete project below 10 GB. Generated models, data and tests stay on Hoffman and GitHub. The complete report is also synchronized to the laptop.
+```
 
-<!-- higher-loop-acceleration -->
-The higher-loop extension generates exact Euler and mass partial-fraction equations for the restricted coupled vacuum family, then uses Kira's user-defined-system solver. A shared variable z=L(d-2) supports every positive loop order mathematically. Tests cover L=1,...,12, with additional applications at 13, 16, 24 and 32. Across six reserved batches, the deployed route has complete-time ratio 0.155 (descriptive interval 0.132--0.184) to separate full-pool reductions. The learned separate-loop route has ratio 0.911 (descriptive interval 0.815--0.986) to the same full-pool baseline. Learned/shared versus rule/shared has ratio 0.968 (descriptive interval 0.927--1.003). Validation selects the extreme route. These are supplied-identity results, with exact coefficient checks and all runtime costs; they do not establish a generic high-loop native Kira speedup.
+This entry point uses the paths and options set in its source.
 
-See [higher_loops/README.md](higher_loops/README.md).
-<!-- higher-loop-acceleration-end -->
+These calls show the stored input and output interface:
 
+```python
 
-<!-- batch-reuse-begin -->
-## Learned equation reuse across target batches
+p.read_text()
+(HERE / 'integration' / os.getenv('KIRA_EQ_BUILD_RECORD', 'build.json')).write_text(json.dumps(dict(sources=records, header_sha256=sha(header), binary_sha256=sha(binary), link_command=link), indent=2) + '\n')
+header.read_text()
+(BUILD / 'compile_commands.json').read_text()
+dest.write_text(t)
+(HERE / 'integration' / (name + '.patch')).write_text(''.join(difflib.unified_diff(p.read_text().splitlines(True), t.replace(str(header), header.name).splitlines(True), fromfile=str(p.relative_to(ROOT)), tofile=name)))
+(ROOT / 'Kira_comparison/parallel_inference/build.json').read_text()
+p.read_bytes()
 
-The earlier batch interface is [batch_reuse](batch_reuse/README.md). It trains a batch equation-cost model, shares exact coefficient checks across loop orders and combines independent systems in one Kira call. All 460 reserved applications pass exact checks. The selected combined route has complete-time ratio 0.220 to the preceding separate workflow. Matched simple-rule and inference-backend comparisons remain recorded. General high-loop native IBP generation is outside this scope.
-<!-- batch-reuse-end -->
+```
 
-<!-- pre-reduction-current -->
-Validation selects the simple direct route. On 200 reserved applications, its calculation-time ratio to the preceding combined learned Kira route is 0.306, with descriptive interval [0.246,0.373]. The full-worker ratio is 0.430. All exact checks pass with zero reserved fallbacks. The earlier trained four-tree model remains available with unchanged weights; learned/direct versus simple/direct has calculation ratio 0.982. The comparison does not establish a further complete-time advantage from learned ordering over both direct controls. This is a checked shortcut for the restricted coupled vacuum family. Native IBP generation keeps its earlier supported domains.
+[s01_build.sh](s01_build.sh)
 
-See [exact pre-reduction](pre_reduction/README.md).
-<!-- pre-reduction-current-end -->
+This shell script runs the recorded commands for this stage.
 
-<!-- polynomial-reuse-current -->
-The polynomial-reuse interface shares exact loop-order transformations and Taylor factors, with an optional persistent worker. Validation selects both arithmetic changes and preserves the simple extreme ordering. Across eight reserved batches, calculation-time ratio to the preceding direct arithmetic is 0.372, and full-worker ratio is 0.682. Arithmetic plus persistent execution has full-time ratio 0.365 across three specified overlapping streams. All 352 reserved applications pass exact checks; 28860 expanded coefficient positions also match the older loop-dependent formula. These gains come from exact reuse and process startup. The unchanged learned model remains optional. General native high-loop IBP generation retains its earlier scope.
+This is a scheduler job script. Submit it with `qsub` from the project root.
 
-See [exact polynomial reuse](polynomial_reuse/README.md).
-<!-- polynomial-reuse-current-end -->
+The exact command sequence is:
 
-<!-- exact-backend-current -->
-The latest restricted vacuum-family route uses compiled expansion and binary output with a fixed recurrence rule. Its complete-process time ratio is 0.850 and its ratio including output decoding is 0.858, with descriptive interval [0.800,0.914]. The persistent-stream ratio including decoding is 0.725. 948 reserved applications across the original and compiled-reader comparisons pass exact checks. Learned versus validation-selected fixed-rule time ratio is 1.017, with interval [0.969,1.070]. This interval includes one, so the reserved comparison does not establish a further time reduction from learned choices. The deployed default uses the fixed validation choice. These results retain the restricted vacuum-family scope; native IBP generation keeps its earlier supported domains.
+```bash
 
-See [exact arithmetic and batch strategies](exact_backend/README.md).
-<!-- exact-backend-current-end -->
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraEqBuild
+#$ -l h_rt=00:20:00,h_data=2G,h_vmem=3G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load gcc/9.5.0 python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2097152
+ulimit -c 0
+python3 ML_model_equation_selection/s00_build.py
 
-<!-- cumulative-results-begin -->
-The direct cumulative comparison uses eight new groups of three restricted vacuum mass profiles, loop orders 1--12, and five repetitions of three methods. All 120 workflows pass exact checks. Relative to the original saved Kira binary with the full supplied equation pool and separate loop reductions, the final route has total-time ratio 0.001839, speedup 543.815x (descriptive 95% interval 488.134--605.064), and 99.82% less time, including startup, saving and output reading. Against the earlier full-pool pipeline binary, the speedup is 81.170x. The selected final route uses a fixed recurrence and exact direct arithmetic. The result measures the complete restricted-family replacement; it does not establish a corresponding native general-IBP or ML-only speedup.
-<!-- cumulative-results-end -->
+```
 
+[s02_records.py](s02_records.py)
 
-<!-- generalization-results -->
-The extension contains seven new scattering batches with 88 targets and 70 exact comparison workflows. It includes a nonplanar two-loop box, a one-loop pentagon with five independent symbolic invariants, and a one-loop box with an independent external virtuality. The frozen equation filter has a complete-time ratio of 1.251829 to native choices, including all 35 native fallbacks. The new symbolic-capable application defaults to native choices for these inputs. Separate exact certificates enumerate every sufficient source subset and every allowed pivot path for a bubble and a tadpole. Each has a joint minimum of seven counted coefficient operations, within its specified finite pool. These certificates do not prove unrestricted IBP or wall-time optimality.
+The file provides bounded compressed exact evidence.
 
-Code, definitions, exact results and certificates: [../Kira_comparison/generalization/](../Kira_comparison/generalization/).
-<!-- /generalization-results -->
+The module defines these callable interfaces:
+
+```python
+
+def read(path)
+def packed(path, record)
+
+```
+
+The imported project modules are `s105_parallel_records`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
+
+```
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+path.write_bytes(data)
+(HERE / 'resource_plan.json').read_text()
+
+```
+
+[s03_run.py](s03_run.py)
+
+The program runs one bounded complete Kira reduction, retaining compact exact evidence.
+
+The module defines these callable interfaces:
+
+```python
+
+def sha(p)
+def label(a)
+def limits()
+def disk(path)
+def process_rss(pid)
+def parse_export(text)
+def run(case, size, policy, output, timeout=300, margin=1, reference=None, weights=None, records=True, archive=True, check_masters=False, force=None, scratch_cap=None, compact=True, ordering=None, basis=None)
+def main()
+
+```
+
+The imported external packages are `sympy`.
+
+The imported project modules are `s02_records`, `s07_seed`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+MODEL_HOME = pathlib.Path(__file__).resolve().parent
+HERE = ROOT / 'Kira_comparison/integrated_runtime'
+MODEL = ROOT / 'ML_model_reduction/cost_training'
+
+```
+
+The command accepts these parser options:
+
+- `'case'`: The parser accepts a value..
+- `'--size'`: type=int; default=8.
+- `'--policy'`: default='stock'.
+- `'--timeout'`: type=int; default=300.
+- `'--margin'`: type=int; default=1.
+- `'--output'`: type=pathlib.Path; required=True.
+- `'--reference'`: type=pathlib.Path.
+- `'--weights'`: type=pathlib.Path.
+- `'--no-records'`: action='store_true'.
+- `'--legacy-backsub'`: action='store_true'.
+- `'--check-masters'`: action='store_true'.
+- `'--ordering'`: type=int.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'resource_plan.json').read_text()
+(scratch / 'config/integralfamilies.yaml').write_text(json.dumps(config))
+(scratch / 'config/kinematics.yaml').write_text(json.dumps(dict(kinematics=kin)))
+(scratch / 'targets').write_text(''.join((label(a) + '\n' for a in target)))
+(scratch / 'jobs.yaml').write_text(json.dumps(jobs))
+(scratch / 'equation_context.txt').write_text(f"{len(definition['loop_momenta'])} {len(ext)} {len(target)} {n}\n" + '\n'.join((' '.join(map(str, a)) for a in target)) + '\n')
+(scratch / 'run.log').read_text(errors='replace')
+(scratch / 'masters').write_text(''.join((label(a) + '\n' for a in basis)))
+(scratch / 'seeds.txt').write_text(''.join((label(a) + '\n' for a in selected)))
+(scratch / '.kira_ephemeral_trial').write_text('Disposable fresh calculation; discard after interruption.\n')
+(scratch / 'equations.tsv').read_text()
+(scratch / 'choices.jsonl').read_text()
+paths[0].read_text()
+(HERE / 'families.json').read_text()
+p.read_bytes()
+(scratch / 'equation_metrics.json').read_text()
+(scratch / 'seed_audit.json').read_text()
+(base / 'status').read_text()
+(scratch / 'stage_metrics.jsonl').read_text()
+(scratch / 'metrics.jsonl').read_text()
+(thread / 'children').read_text()
+
+```
+
+[s04_experiment.py](s04_experiment.py)
+
+The program collects native labels and compare frozen filters with exact fallback.
+
+The module defines these callable interfaces:
+
+```python
+
+def setup()
+def cases(phase)
+def reference(c, n)
+def workflow(c, n, mode, threshold, out, ref, base='native', basis=None)
+def main()
+
+```
+
+The imported project modules are `s02_records`, `s03_run`, `s108_reduce`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
+RUNTIME = ROOT / 'Kira_comparison/integrated_runtime'
+
+```
+
+The command accepts these parser options:
+
+- `'action'`: choices=['collect', 'validate', 'test', 'pilot'].
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'families.json').read_text()
+(HERE / 'trained_model/deployment.json').read_text()
+(HERE / 'trained_model/freeze.json').read_text()
+pathlib.Path(os.environ['KIRA_EQ_VALIDATION_GRID']).read_text()
+(ROOT / name).read_bytes()
+
+```
+
+[s05_run.sh](s05_run.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraEqExperiment
+#$ -l h_rt=03:00:00,h_data=3G,h_vmem=6G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2867200
+ulimit -c 0
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s04_experiment.py "$1"
+
+```
+
+[s06_train.py](s06_train.py)
+
+The program fits a small target-dependent CART probability model using training groups only.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `numpy`.
+
+The imported project modules are `s02_records`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'trained_model/model.json').write_text(json.dumps(model, indent=2) + '\n')
+(HERE / 'trained_model/weights.txt').write_text(str(len(nodes)) + '\n' + ''.join((f"{z['feature']} {z['threshold']:.17g} {z['left']} {z['right']} {z['probability']:.17g}\n" for z in nodes)))
+(HERE / 'training/summary.json').write_text(json.dumps({k: v for k, v in model.items() if k not in ('nodes', 'features')}, indent=2) + '\n')
+pathlib.Path(__file__).read_bytes()
+p.read_bytes()
+
+```
+
+[s07_train.sh](s07_train.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraEqTrain
+#$ -l h_rt=00:45:00,h_data=2G,h_vmem=3G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 1800000
+ulimit -c 0
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s06_train.py
+
+```
+
+[s08_develop.sh](s08_develop.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraEqDevelop
+#$ -l h_rt=03:00:00,h_data=3G,h_vmem=6G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2867200
+ulimit -c 0
+ .tools/seed-model/venv/bin/python ML_model_equation_selection/s04_experiment.py collect
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s13_check_labels.py
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s06_train.py
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s04_experiment.py validate
+
+```
+
+[s09_predict.py](s09_predict.py)
+
+The program predicts reference-membership probabilities from the documented 24 features.
+
+The module defines these callable interfaces:
+
+```python
+
+def predict(features, model)
+def main()
+
+```
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+
+```
+
+The command accepts these parser options:
+
+- `'features'`: type=pathlib.Path.
+- `'--threshold'`: type=float; default=0.01.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'trained_model/model.json').read_text()
+a.features.read_text()
+
+```
+
+[s10_summarize.py](s10_summarize.py)
+
+The program summarizes paired timings without dropping failed filtered attempts.
+
+The module defines these callable interfaces:
+
+```python
+
+def stage(r)
+def aggregate(folder)
+def ratio(batches, key, field)
+def main()
+
+```
+
+The imported external packages are `numpy`.
+
+The imported project modules are `s02_records`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
+
+```
+
+The command accepts these parser options:
+
+- `'phase'`: choices=['validation', 'model_test'].
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / a.phase / 'summary.json').write_text(json.dumps(result, indent=2) + '\n')
+
+```
+
+[s11_reduce.py](s11_reduce.py)
+
+The program applies the third policy with a prescribed basis; target reference coefficients are optional.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s04_experiment`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+
+```
+
+The command accepts these parser options:
+
+- `'--family-file'`: type=pathlib.Path; required=True.
+- `'--masters-file'`: type=pathlib.Path; required=True.
+- `'--size'`: type=int; required=True.
+- `'--output'`: type=pathlib.Path; required=True.
+- `'--base'`: choices=['native', 'seed', 'row', 'both']; default='native'.
+- `'--force-model'`: action='store_true'.
+
+These calls show the stored input and output interface:
+
+```python
+
+a.family_file.read_text()
+a.masters_file.read_text()
+(HERE / 'trained_model/deployment.json').read_text()
+
+```
+
+[s12_freeze.py](s12_freeze.py)
+
+The program chooses from completed validation only, then freeze before test reductions.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s10_summarize`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'trained_model/deployment.json').write_text(json.dumps(config, indent=2) + '\n')
+(HERE / 'trained_model/freeze.json').write_text(json.dumps(frozen, indent=2) + '\n')
+(HERE / 'validation_grid.json').read_text()
+(HERE / 'integration/lazy_verification.json').read_text()
+p.read_bytes()
+
+```
+
+[s13_check_labels.py](s13_check_labels.py)
+
+The program repeats a native collection to check labels and features before fitting.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s04_experiment`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'integration/label_verification.json').write_text(json.dumps(result, indent=2) + '\n')
+(HERE / 'integration/s00_equation_policy.h').read_bytes()
+
+```
+
+[s14_check_fast.py](s14_check_fast.py)
+
+The program checks that shared features preserve all learned probabilities and equation masks.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s04_experiment`, `s09_predict`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'integration' / os.environ.get('KIRA_EQ_PARITY_REPORT', 'fast_verification.json')).write_text(json.dumps(result, indent=2) + '\n')
+(HERE / 'trained_model/model.json').read_text()
+
+```
+
+[s15_build_fast.sh](s15_build_fast.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraEqFastBuild
+#$ -l h_rt=00:20:00,h_data=2G,h_vmem=3G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load gcc/9.5.0 python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2097152
+ulimit -c 0
+KIRA_EQ_HEADER=s01_fast_equation_policy.h KIRA_EQ_BINARY_NAME=kira-fast KIRA_EQ_BUILD_RECORD=build_fast.json python3 ML_model_equation_selection/s00_build.py
+
+```
+
+[s16_validate_fast.sh](s16_validate_fast.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraEqFastValidation
+#$ -l h_rt=03:00:00,h_data=3G,h_vmem=6G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2867200
+ulimit -c 0
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s06_train.py
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s14_check_fast.py
+export KIRA_EQ_RUNTIME_BINARY=.tools/kira-equation-selection/kira-fast
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s04_experiment.py validate
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s10_summarize.py validation
+
+```
+
+[s17_audit.py](s17_audit.py)
+
+The program compares all completed test coefficients over Q(d).
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `sympy`.
+
+The imported project modules are `s02_records`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'model_test/verification.json').write_text(json.dumps(result, indent=2) + '\n')
+(HERE / 'model_test/summary.json').read_text()
+(HERE / 'trained_model/freeze.json').read_text()
+(ROOT / name).read_bytes()
+
+```
+
+[s18_additional_checks.py](s18_additional_checks.py)
+
+The program checks composition with existing models, basis-only use, and held-out labels.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `sympy`.
+
+The imported project modules are `s04_experiment`, `s09_predict`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'model_test/label_metrics.json').write_text(json.dumps(label_report, indent=2) + '\n')
+(HERE / 'model_test/composition.json').write_text(json.dumps(dict(all_passed=True, workflows=len(composition), results=composition), indent=2) + '\n')
+(HERE / 'model_test/application_verification.json').write_text(json.dumps(dict(all_passed=True, checks=len(applications), results=applications), indent=2) + '\n')
+(HERE / 'trained_model/model.json').read_text()
+(HERE / 'trained_model/deployment.json').read_text()
+
+```
+
+[s19_test.sh](s19_test.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraEqTest
+#$ -l h_rt=03:00:00,h_data=3G,h_vmem=6G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+export KIRA_EQ_RUNTIME_BINARY=.tools/kira-equation-selection/kira-lazy
+ulimit -v 2867200
+ulimit -c 0
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s12_freeze.py
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s04_experiment.py test
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s10_summarize.py model_test
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s17_audit.py
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s18_additional_checks.py
+
+```
+
+[s20_build_cached.sh](s20_build_cached.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraEqCachedBuild
+#$ -l h_rt=00:20:00,h_data=2G,h_vmem=3G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load gcc/9.5.0 python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2097152
+ulimit -c 0
+KIRA_EQ_HEADER=s02_cached_equation_policy.h KIRA_EQ_BINARY_NAME=kira-cached KIRA_EQ_BUILD_RECORD=build_cached.json python3 ML_model_equation_selection/s00_build.py
+
+```
+
+[s21_validate_cached.sh](s21_validate_cached.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraEqCompactValidation
+#$ -l h_rt=02:00:00,h_data=3G,h_vmem=6G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2867200
+ulimit -c 0
+.tools/seed-model/venv/bin/python - <<'PY'
+from pathlib import Path
+import sys,json
+root=Path('ML_model_equation_selection')
+sys.path.insert(0,str(root.resolve()))
+from s10_summarize import aggregate,ratio
+batches,rows=aggregate(root/'validation')
+assert len(rows)==150 and all(r['success'] for r in rows)
+keys=sorted({k for b in batches for k in b['methods']})
+chosen=set()
+for subset in [batches]+[[b for b in batches if b['topology']==t] for t in sorted({b['topology'] for b in batches})]:
+ for prefix in ['learned:','distance:']:
+  chosen.add(min((ratio(subset,k,'complete_seconds')['ratio'],k) for k in keys if k.startswith(prefix))[1])
+grid=[['off',0]]+[[k.split(':')[0],float(k.split(':')[1])] for k in sorted(chosen)]
+(root/'validation_grid.json').write_text(json.dumps(grid,indent=2)+'\n')
+(root/'validation').rename(root/'validation_fast_features')
+(root/'validation').mkdir()
+print('Cached validation grid',grid,flush=True)
+PY
+export KIRA_EQ_PARITY_VERSIONS=kira-fast,kira-compact KIRA_EQ_PARITY_TAG=cached_ KIRA_EQ_PARITY_REPORT=cached_verification.json
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s14_check_fast.py
+export KIRA_EQ_RUNTIME_BINARY=.tools/kira-equation-selection/kira-compact
+export KIRA_EQ_VALIDATION_GRID=ML_model_equation_selection/validation_grid.json
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s04_experiment.py validate
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s10_summarize.py validation
+
+```
+
+[s22_build_compact.sh](s22_build_compact.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraEqCompactBuild
+#$ -l h_rt=00:20:00,h_data=2G,h_vmem=3G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load gcc/9.5.0 python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2097152
+ulimit -c 0
+KIRA_EQ_HEADER=s03_compact_equation_policy.h KIRA_EQ_BINARY_NAME=kira-compact KIRA_EQ_BUILD_RECORD=build_compact.json python3 ML_model_equation_selection/s00_build.py
+
+```
+
+[s23_plot.py](s23_plot.py)
+
+The program plots measured complete costs, preparation work and held-out label scores.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `matplotlib`, `numpy`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'model_test/summary.json').read_text()
+(HERE / 'model_test/label_metrics.json').read_text()
+(ROOT / 'report/figures' / ('equation_' + name + '.pdf')).write_bytes((out / (name + '.pdf')).read_bytes())
+(out / (name + '.pdf')).read_bytes()
+
+```
+
+[s24_document.py](s24_document.py)
+
+The program writes measured results and folder documentation after all checks finish.
+
+The module defines these callable interfaces:
+
+```python
+
+def read(p)
+def write(p, s)
+def main()
+
+```
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
+
+```
+
+The command accepts these parser options:
+
+- `'--data-commit'`: default='main'.
+
+These calls show the stored input and output interface:
+
+```python
+
+p.write_text(s.strip() + '\n')
+p.read_text()
+p.write_text(text)
+p.write_text(bib)
+p.write_text(s)
+
+```
+
+[s25_build_lazy.sh](s25_build_lazy.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraEqLazyBuild
+#$ -l h_rt=00:20:00,h_data=2G,h_vmem=3G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load gcc/9.5.0 python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2097152
+ulimit -c 0
+KIRA_EQ_HEADER=s04_lazy_equation_policy.h KIRA_EQ_BINARY_NAME=kira-lazy KIRA_EQ_BUILD_RECORD=build_lazy.json python3 ML_model_equation_selection/s00_build.py
+
+```
+
+[s26_validate_lazy.sh](s26_validate_lazy.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraEqLazyValidation
+#$ -l h_rt=02:00:00,h_data=3G,h_vmem=6G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2867200
+ulimit -c 0
+.tools/seed-model/venv/bin/python - <<'PY'
+from pathlib import Path
+import json
+r=Path('ML_model_equation_selection')
+s=json.loads((r/'validation/summary.json').read_text())
+g=json.loads((r/'validation_grid.json').read_text())
+assert s['all_exact'] and s['workflows']==5*3*len(g)
+(r/'validation').rename(r/'validation_compact')
+(r/'validation').mkdir()
+PY
+export KIRA_EQ_PARITY_VERSIONS=kira-compact,kira-lazy KIRA_EQ_PARITY_TAG=lazy_ KIRA_EQ_PARITY_REPORT=lazy_verification.json
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s14_check_fast.py
+export KIRA_EQ_RUNTIME_BINARY=.tools/kira-equation-selection/kira-lazy
+export KIRA_EQ_VALIDATION_GRID=ML_model_equation_selection/validation_grid.json
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s04_experiment.py validate
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s10_summarize.py validation
+
+```
+
+[s27_report.sh](s27_report.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraEqReport
+#$ -l h_rt=00:20:00,h_data=2G,h_vmem=3G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2097152
+ulimit -c 0
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s23_plot.py
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s24_document.py --data-commit "${1:-main}"
+make -C report all
+
+```
+
+[s28_stratify.py](s28_stratify.py)
+
+The program stratifies frozen test results by the topology route fixed in validation.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s10_summarize`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'model_test/topology_summary.json').write_text(json.dumps(result, indent=2) + '\n')
+(ROOT / 'report/equation_selection_domain.tex').write_text(text)
+p.read_text()
+p.write_text(s)
+(HERE / 'trained_model/deployment.json').read_text()
+(HERE / 'model_test/summary.json').read_bytes()
+
+```
+
+[s29_final_report.sh](s29_final_report.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraEqFinalReport
+#$ -l h_rt=00:20:00,h_data=2G,h_vmem=3G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2097152
+ulimit -c 0
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s24_document.py --data-commit "${1:-main}"
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s23_plot.py
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s28_stratify.py
+make -C report all
+
+```
+
+[s30_confirmation.py](s30_confirmation.py)
+
+The program confirms a restricted deployment on six fresh physical sunrise profiles.
+
+The module defines these callable interfaces:
+
+```python
+
+def check_freeze()
+def prepare()
+def exact_record(r, ref, cache)
+def confirm()
+
+```
+
+The imported external packages are `numpy`, `sympy`.
+
+The imported project modules are `s02_records`, `s04_experiment`, `s10_summarize`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+OUT = HERE / 'model_test/confirmation'
+
+```
+
+The command accepts these parser options:
+
+- `'action'`: choices=['prepare', 'confirm'].
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'families_confirmation.json').write_text(json.dumps(manifest, indent=2) + '\n')
+(HERE / 'trained_model/deployment_confirmed.json').write_text(json.dumps(config, indent=2) + '\n')
+(HERE / 'trained_model/confirmation_freeze.json').write_text(json.dumps(frozen, indent=2) + '\n')
+(OUT / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
+(OUT / 'composition_summary.json').write_text(json.dumps(composition, indent=2) + '\n')
+(OUT / 'verification.json').write_text(json.dumps(audit, indent=2) + '\n')
+(HERE / 'trained_model/confirmation_freeze.json').read_text()
+(HERE / 'families_confirmation.json').read_text()
+(HERE / 'families.json').read_text()
+(ROOT / n).read_bytes()
+p.read_bytes()
+
+```
+
+[s31_reduce.py](s31_reduce.py)
+
+The program applies the confirmed equation policy within its measured target domain.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s04_experiment`.
+
+The command accepts these parser options:
+
+- `'--family-file'`: type=pathlib.Path; required=True.
+- `'--masters-file'`: type=pathlib.Path; required=True.
+- `'--size'`: type=int; required=True.
+- `'--output'`: type=pathlib.Path; required=True.
+- `'--base'`: choices=['native', 'seed', 'row', 'both']; default='native'.
+
+These calls show the stored input and output interface:
+
+```python
+
+a.family_file.read_text()
+a.masters_file.read_text()
+(HERE / 'trained_model/deployment_confirmed.json').read_text()
+
+```
+
+[s32_confirm.sh](s32_confirm.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraEqConfirm
+#$ -l h_rt=03:00:00,h_data=3G,h_vmem=6G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+export KIRA_EQ_RUNTIME_BINARY=.tools/kira-equation-selection/kira-lazy
+ulimit -v 2867200
+ulimit -c 0
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s30_confirmation.py confirm
+
+```
+
+[s33_confirm_document.py](s33_confirm_document.py)
+
+The program documents the restricted deployment and independent confirmation.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `matplotlib`, `numpy`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
+OUT = HERE / 'model_test/confirmation'
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(ROOT / 'report/figures/equation_confirmed_costs.pdf').write_bytes((plot / 'confirmed_costs.pdf').read_bytes())
+(ROOT / 'report/equation_selection_confirmation.tex').write_text(text)
+p.read_text()
+p.write_text(v)
+(OUT / 'README.md').write_text(info.strip() + '\n')
+(OUT / 'report_values.json').write_text(json.dumps(dict(learned=z, distance=d, composition=joint, audit=a), indent=2) + '\n')
+(OUT / 'summary.json').read_text()
+(OUT / 'verification.json').read_text()
+(OUT / 'composition_summary.json').read_text()
+(plot / 'confirmed_costs.pdf').read_bytes()
+(HERE / name / 'README.md').write_text(body + '\n')
+(HERE / 'trained_model/README.md').read_text()
+
+```
+
+[s34_confirmed_report.sh](s34_confirmed_report.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraEqConfirmedReport
+#$ -l h_rt=00:20:00,h_data=2G,h_vmem=3G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2097152
+ulimit -c 0
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s24_document.py --data-commit "${1:-main}"
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s23_plot.py
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s28_stratify.py
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s33_confirm_document.py
+make -C report all
+
+```
+
+[s35_reduce.py](s35_reduce.py)
+
+The program applies equation selection only in its measured beneficial standalone domain.
+
+The module defines these callable interfaces:
+
+```python
+
+def choose(c, size, base, config)
+def main()
+
+```
+
+The imported project modules are `s04_experiment`.
+
+The command accepts these parser options:
+
+- `'--family-file'`: type=pathlib.Path; required=True.
+- `'--masters-file'`: type=pathlib.Path; required=True.
+- `'--size'`: type=int; required=True.
+- `'--output'`: type=pathlib.Path; required=True.
+- `'--base'`: choices=['native', 'seed', 'row', 'both']; default='native'.
+
+These calls show the stored input and output interface:
+
+```python
+
+a.family_file.read_text()
+a.masters_file.read_text()
+(HERE / 'trained_model/deployment_final.json').read_text()
+
+```
+
+[s36_check_deployment.py](s36_check_deployment.py)
+
+The program verifies that deployment selects measured successful arms and guards combinations.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s02_records`, `s35_reduce`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'trained_model/deployment_verification.json').write_text(json.dumps(result, indent=2) + '\n')
+(HERE / 'trained_model/deployment_final.json').read_text()
+(HERE / 'families_confirmation.json').read_text()
+(HERE / 'families.json').read_text()
+p.read_bytes()
+
+```
+
+[s37_finish_documentation.py](s37_finish_documentation.py)
+
+The program finalizes deployment documentation without changing either frozen experiment.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+p.read_text()
+p.write_text(text)
+(HERE / 'README.md').write_text(readme)
+(HERE / 'model_test/confirmation/summary.json').read_text()
+(HERE / 'trained_model/deployment_verification.json').read_text()
+
+```
+
+[s38_plot.py](s38_plot.py)
+
+The program plots measured complete costs, preparation work and held-out label scores.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `matplotlib`, `numpy`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'model_test/summary.json').read_text()
+(HERE / 'model_test/label_metrics.json').read_text()
+(ROOT / 'report/figures' / ('equation_' + name + '.pdf')).write_bytes((out / (name + '.pdf')).read_bytes())
+(out / (name + '.pdf')).read_bytes()
+
+```
+
+[s39_finish_report.sh](s39_finish_report.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraEqFinishReport
+#$ -l h_rt=00:20:00,h_data=2G,h_vmem=3G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2097152
+ulimit -c 0
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s24_document.py --data-commit "${1:-main}"
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s38_plot.py
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s28_stratify.py
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s33_confirm_document.py
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s36_check_deployment.py
+.tools/seed-model/venv/bin/python ML_model_equation_selection/s37_finish_documentation.py
+make -C report all
+
+```
+
+## Data and supporting files
+
+- [families.json](families.json): This file defines the families in this collection.
+
+- [families_confirmation.json](families_confirmation.json): This file contains structured records from the parent calculation.
+
+- [report_values.json](report_values.json): This file contains structured records from the parent calculation.
+
+- [resource_plan.json](resource_plan.json): This file sets storage, memory and execution limits.
+
+- [validation_grid.json](validation_grid.json): This file contains structured records from the parent calculation.
+
+## Child folders
+
+- [batch_reuse](batch_reuse/README.md).
+
+- [development_v1](development_v1/README.md).
+
+- [development_v2](development_v2/README.md).
+
+- [early_generation](early_generation/README.md).
+
+- [exact_backend](exact_backend/README.md).
+
+- [higher_loops](higher_loops/README.md).
+
+- [integration](integration/README.md).
+
+- [model_test](model_test/README.md).
+
+- [polynomial_reuse](polynomial_reuse/README.md).
+
+- [pre_reduction](pre_reduction/README.md).
+
+- [references](references/README.md).
+
+- [trained_model](trained_model/README.md).
+
+- [training](training/README.md).
+
+- [validation](validation/README.md).
+
+- [validation_compact](validation_compact/README.md).
+
+- [validation_fast_features](validation_fast_features/README.md).
+
+- [validation_full_features](validation_full_features/README.md).

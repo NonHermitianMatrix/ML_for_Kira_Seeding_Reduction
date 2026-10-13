@@ -1,3 +1,12 @@
-# Master to target for training
+# master to target
 
-families/ contains links for the 11963 families in this split. See [the split README](../README.md) and [the canonical data README](../../master_to_target/README.md).
+This folder contains training inputs or saved training results.
+Keep the stored family division unchanged.
+
+Read [the parent guide](../README.md) for the stage and data flow.
+
+The producing and reading code is described in [the stage guide](../../README.md).
+
+## Child folders
+
+- [families](families/README.md).

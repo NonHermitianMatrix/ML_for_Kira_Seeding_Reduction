@@ -1,3 +1,23 @@
-# Excluded development pilot
+# development overlap
 
-The first added ladder profiles had p^2=-2 and -3 for training and -5 for validation. These overlap prior reserved profiles. The run was stopped during the pilot. All of its records, references and provisional trees remain here as excluded engineering evidence. Final training does not read this directory. Fresh ladder profiles use p^2=-211,-223 for training and -227 for validation.
+This folder retains an earlier stage, development check or saved comparison.
+Use its records to interpret that stage.
+Use the current parent application for a new calculation.
+
+Read [the parent guide](../README.md) for the stage and data flow.
+
+The producing and reading code is described in [the stage guide](../README.md).
+
+## Data and supporting files
+
+- [additional_families.json](additional_families.json): This file contains structured records from the parent calculation.
+
+## Child folders
+
+- [references](references/README.md).
+
+- [trained_model](trained_model/README.md).
+
+- [training](training/README.md).
+
+- [validation](validation/README.md).

@@ -1,1 +1,22 @@
-results/ contains 144 refined validation workflows on six batches with three repetitions of eight candidates. The split uses distinct mass profiles. reader_audit.json compares 277 unique coefficients against symbolic algebra, checks five special cases and rejects five unsupported expressions. The earlier integration remains in ../development_initial/ and does not select the final route.
+# validation
+
+This folder contains validation records.
+These records select a method before the reserved test.
+
+Read [the parent guide](../README.md) for the stage and data flow.
+
+The producing and reading code is described in [the stage guide](../README.md).
+
+## Data and supporting files
+
+- [reader_audit.json](reader_audit.json): This file records checks of the corresponding calculation.
+
+- [reader_scheduler.log](reader_scheduler.log): This file contains saved program messages.
+
+- [validation_complete.json](validation_complete.json): This file contains structured records from the parent calculation.
+
+## Child folders
+
+- [inputs](inputs/README.md).
+
+- [results](results/README.md).

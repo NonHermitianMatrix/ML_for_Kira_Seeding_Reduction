@@ -1,11 +1,130 @@
-# CPU resource check
+# resource check
 
-The check compared one, two and four CPU threads while training job 15036272 continued unchanged. It used training records only, performed no optimizer updates and never read held-out testing examples. All benchmark outputs remain separate from the production model.
+This folder supports the calculation described in the parent guide.
 
-s00_cpu_scaling.py measures gradient calculations on 128 pre-encoded training targets. s01_run_cpu_scaling.sh requests four CPU cores and 8 GiB total memory for that check. cpu_scaling.json records three repetitions per thread count and a repeated one-thread reference. Two threads took 0.834 seconds per group at the median, compared with 0.998 and 1.287 seconds for the two one-thread groups. Four threads took 2.211 seconds. The largest observed gradient difference was 4.66e-10.
+Read [the parent guide](../README.md) for the stage and data flow.
 
-s02_end_to_end_scaling.py repeats input preparation and gradient calculations for 1,024 targets from five training families. s03_run_end_to_end.sh requests two CPU cores and 4 GiB total memory. end_to_end_scaling.json records results. The first one-thread pass took 7.850 seconds before the input feature cache was warm. The later one-thread pass took 6.155 seconds, while the later two-thread pass took 6.008 seconds, a throughput ratio of 1.024. Comparing averaged cold and warm timings would overstate the gain. This short result does not establish a useful overall training speedup.
+## Code use
 
-decision.json records the choice to leave the current one-thread training job running. The production code, model parameters, optimizer state and data order were not changed. The checkpoint can support a later resource change without restarting training from initial weights. These timings measure resource use and do not measure seed-selection accuracy or held-out model performance.
+Run scientific calculations on Hoffman in a scheduled job.
+Load the Python 3.9.6 module and use the existing project environment.
+The usual interpreter is `.tools/seed-model/venv/bin/python` from the project root.
+Build scripts state their compiler and native Kira requirements.
+Keep each script's memory, time and storage limits.
+Keep existing model and test files before a new run.
+Scripts that write reports describe earlier document names; review their destinations before use.
 
-The scheduler memory request is per allocated core; see the [Hoffman resource documentation](https://support.idre.ucla.edu/KB/View/2049342-requesting-the-appropriate-amount-of-resources-for-jobs-on-the-hoffman2-cluster). CPU thread controls follow [PyTorch documentation](https://docs.pytorch.org/docs/stable/generated/torch.set_num_threads.html). No GPU timing was performed.
+## Code files
+
+The entries below follow file-name order.
+Each entry gives its purpose and the input or output interface available in the source.
+
+[s00_cpu_scaling.py](s00_cpu_scaling.py)
+
+The program measures CPU scaling using training records; never change production weights.
+
+The imported external packages are `torch`.
+
+The imported project modules are `s01_data`, `s02_model`.
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+torch.load(str(HERE / 'runs/latest.pt'), map_location='cpu')
+(out / 'cpu_scaling.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
+
+```
+
+[s01_run_cpu_scaling.sh](s01_run_cpu_scaling.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -S /bin/bash
+#$ -N KiraCPUCheck
+#$ -pe shared 4
+#$ -l h_rt=00:15:00,h_data=2G
+#$ -j y
+#$ -o ML_model_seed_selection/runs/resource_check/scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=4
+ulimit -v 6291456
+ulimit -f 32768
+ulimit -c 0
+timeout 780s .tools/seed-model/venv/bin/python ML_model_seed_selection/runs/resource_check/s00_cpu_scaling.py
+
+```
+
+[s02_end_to_end_scaling.py](s02_end_to_end_scaling.py)
+
+The program compares full training-input and gradient work with one and two CPU threads.
+
+The imported external packages are `torch`.
+
+The imported project modules are `s01_data`, `s02_model`.
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+torch.load(str(HERE / 'runs/latest.pt'), map_location='cpu')
+(HERE / 'runs/resource_check/end_to_end_scaling.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
+
+```
+
+[s03_run_end_to_end.sh](s03_run_end_to_end.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -S /bin/bash
+#$ -N KiraCPUCheck2
+#$ -pe shared 2
+#$ -l h_rt=00:15:00,h_data=2G
+#$ -j y
+#$ -o ML_model_seed_selection/runs/resource_check/end_to_end.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=2
+ulimit -v 3145728
+ulimit -f 32768
+ulimit -c 0
+timeout 780s .tools/seed-model/venv/bin/python ML_model_seed_selection/runs/resource_check/s02_end_to_end_scaling.py
+
+```
+
+## Data and supporting files
+
+- [cpu_scaling.json](cpu_scaling.json): This file contains structured records from the parent calculation.
+
+- [decision.json](decision.json): This file contains structured records from the parent calculation.
+
+- [end_to_end.log](end_to_end.log): This file contains saved program messages.
+
+- [end_to_end_scaling.json](end_to_end_scaling.json): This file contains structured records from the parent calculation.
+
+- [scheduler.log](scheduler.log): This file contains saved program messages.

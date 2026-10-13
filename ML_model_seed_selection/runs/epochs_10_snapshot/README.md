@@ -1,3 +1,19 @@
-# Published ten-epoch checkpoint
+# epochs 10 snapshot
 
-These files preserve the model and optimizer before twenty additional epochs on Hoffman. The existing model_test results and published report describe these weights. The continued model must be evaluated separately before assigning new test results to it.
+This folder supports the calculation described in the parent guide.
+
+Read [the parent guide](../README.md) for the stage and data flow.
+
+The producing and reading code is described in [the stage guide](../../README.md).
+
+## Data and supporting files
+
+- [config.json](config.json): This file sets the model or calculation options.
+
+- [trained_model.json](trained_model.json): This file contains a saved model or its description.
+
+- [trained_model.pt](trained_model.pt): This file contains a saved model or its description.
+
+## Child folders
+
+- [runs](runs/README.md).

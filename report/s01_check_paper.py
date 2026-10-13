@@ -16,6 +16,9 @@ def main():
     assert refs<=set(labels),refs-set(labels)
     assert len(labels)==len(set(labels))
     assert not re.search(r'NonHermitianMatrix|ML_for_Kira_Seeding_Reduction',source+bib)
+    assert not re.search(r'SHA[- ]?256|checksum|git commit|scratch directory|source hash',source,re.I)
+    for label in ['app:families','app:basis','app:optimal','app:models','app:vacuum']:
+        assert label in labels,label
     figs=re.findall(r'\\includegraphics(?:\[[^\]]*\])?\{([^}]+)\}',source)
     for f in figs:assert (HERE/f).read_bytes().startswith(b'%PDF'),f
     for name in ['report','notes']:

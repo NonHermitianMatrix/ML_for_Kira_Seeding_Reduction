@@ -1,38 +1,464 @@
-# Exact pre-reduction and checked direct execution
+# pre reduction
 
-The earlier learned equation policy supplies a terminating dependency graph for the restricted coupled scalar vacuum family. Exact polynomial substitutions solve this graph, and an independent Taylor construction checks every coefficient. Kira remains the fallback. The model is reused without retraining.
+This folder supports the calculation described in the parent guide.
 
-Validation selects the simple direct route. On 200 reserved applications, its calculation-time ratio to the preceding combined learned Kira route is 0.306, with descriptive interval [0.246,0.373]. The full-worker ratio is 0.430. All exact checks pass with zero reserved fallbacks. The earlier trained four-tree model remains available with unchanged weights; learned/direct versus simple/direct has calculation ratio 0.982. The comparison does not establish a further complete-time advantage from learned ordering over both direct controls. This is a checked shortcut for the restricted coupled vacuum family. Native IBP generation keeps its earlier supported domains.
+Read [the parent guide](../README.md) for the stage and data flow.
 
-The request schema matches batch_reuse/s17_application.py: requests contains objects with a unique id, family=coupled_vacuum_unit_massless, 2--4 distinct positive integer mass_ratios, unique targets with nonnegative powers and total power 1--14, positive loops and mass_scale_squared=1. Limits are eight profiles, 512 total targets, 128 targets per profile, 32 requested loop values and 12,000 selected intermediate equations. Unit massless powers are required. These profiles share topology; they are not arbitrary graph families.
+## Code use
 
-Run inside a bounded scheduler allocation, without Python -O:
+Run scientific calculations on Hoffman in a scheduled job.
+Load the Python 3.9.6 module and use the existing project environment.
+The usual interpreter is `.tools/seed-model/venv/bin/python` from the project root.
+Build scripts state their compiler and native Kira requirements.
+Keep each script's memory, time and storage limits.
+Keep existing model and test files before a new run.
+Scripts that write reports describe earlier document names; review their destinations before use.
 
-    .tools/seed-model/venv/bin/python ML_model_equation_selection/pre_reduction/s01_application.py --input request.json --output ML_model_equation_selection/pre_reduction/model_test/application.json
+## Code files
 
-The default --mode deployed uses the frozen validation choice. Other modes are baseline (preceding learned Kira route), model (pre-reduce, then Kira), direct_model (compiled unchanged forest and exact recurrence), direct_extreme (simple recurrence), and direct_analytic (Taylor construction checked by the simple recurrence). Retained extreme and analytic modes submit completed relations to Kira and occur only in the development pilot. Scores estimate log weighted equation cost, without a confidence-calibration claim.
+The entries below follow file-name order.
+Each entry gives its purpose and the input or output interface available in the source.
 
-Each direct result must equal the independent exact formula in Q[z] before substitution z=L(d-2). A failed check retries Kira with all costs included. Invalid requests are rejected. Returning a completed direct reduction avoids invoking Kira for this supported case. The new direct path does not accelerate native IBP generation.
+[s00_contract.py](s00_contract.py)
 
-The earlier model and training evidence remain in ../batch_reuse/. Validation uses six groups, mass ratios 503--796 and 90 applications. The frozen test uses eight further groups, masses 809--1296 and 200 applications. The ranges are disjoint from prior model training. Five methods have five repetitions per test group. Validation fixes the default before the reserved test. The analytic control includes an independent recurrence check.
+The file provides exact polynomial pre-reduction of the restricted vacuum identities.
 
-Calculation time includes input reading, loading, inference, preparation, exact algebra, checks, loop substitution and fallback. external_seconds adds interpreter startup and evidence saving. Ratios use geometric means of batch median ratios and descriptive bootstrap intervals over eight groups.
+The module defines these callable interfaces:
 
-All exact source choices, coefficients and raw Kira outputs reside in objects/, addressed by SHA256 of decompressed JSON. Identical payloads share one file. Direct outputs contain an empty raw Kira export because no Kira process ran. Every record hash is verified. The independent audit checks each distinct expanded batch against the older loop-specific oracle and reads every raw Kira coefficient with the earlier reader.
+```python
 
-The initial eight pilot runs and their matching source remain in pilot/ and development_pilot/. The storage guard interrupted the first reserved run after two complete applications; the completed coefficient record from the interrupted serialization remains in model_test/interrupted/. Its missing worker time excludes it from timing. The remaining frozen trials resumed with unchanged code, inputs and policy after increasing the reserved storage allowance within 10 GB.
+def module(name, path)
+def normalize(a, d)
+def from_fraction(p)
+def fractions(p)
+def subtract(a, b, delta)
+def euler(a, k, rho)
+def selected(request, mode, model)
+def recurrence(request, rows)
+def expression(p)
+def allocated(p)
+def guard()
+def save(path, result)
 
-Script order:
-- s00_contract.py: Exact polynomial pre-reduction of the restricted vacuum identities.
-- s01_application.py: Pre-reduce selected exact identities, then finish and check with Kira.
-- s02_study.py: Fresh disjoint validation and reserved comparisons of exact pre-reduction.
-- s04_check.py: Independent arithmetic, application, fallback and final-output checks.
-- s06_analyze.py: Matched complete-time ratios and exactness summaries.
-- s07_plot.py: Standalone plots from matched independent measurements.
-- s08_document.py: Update scientific text and READMEs from checked measurements.
-- s09_release_check.py: Verify frozen code, exact evidence, report references and resource bounds.
-- s12_check_deployed.py: Verify the public deployed interface and its exact expanded output.
+```
 
-s03_run.sh preserves the pilot launch. s05_run.sh runs arithmetic checks, validation, freeze, testing, fallback checks and the independent audit. The saved s11_resume.sh continues an interrupted test without changing the freeze. s10_report.sh runs analysis, plots, documentation, release checks and the PDF build after testing. Preserve completed experiments; use a new directory for further policy selection.
+The imported project modules are `s00_common`, `s16_native`.
 
-The resource plan bounds the complete project below 10 GB. One experiment job runs at a time with a 2,800 MiB address-space limit. Kira retains its 90-second, 1.5 GiB sampled tree-RSS and 64 MiB scratch limits. Generated data stay on Hoffman and GitHub. Report files also synchronize locally.
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+BATCH = HERE.parent / 'batch_reuse'
+
+```
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'resource_plan.json').read_text()
+dest.write_bytes(gzip.compress(data, compresslevel=9, mtime=0))
+
+```
+
+[s01_application.py](s01_application.py)
+
+The program pre-reduces selected exact identities, then finish and check with Kira.
+
+The module defines these callable interfaces:
+
+```python
+
+def validate_group(requests)
+def calculate(requests, mode, inject_failure=False)
+def apply(requests, mode, inject_failure=False)
+def main()
+
+```
+
+The imported project modules are `s00_contract`, `s08_reader`, `s16_native`.
+
+The command accepts these parser options:
+
+- `'--input'`: type=Path; required=True.
+- `'--output'`: type=Path; required=True.
+- `'--mode'`: choices=['deployed', 'baseline', 'model', 'extreme', 'analytic', 'direct_model', 'direct_extreme', 'direct_analytic']; default='deployed'.
+
+These calls show the stored input and output interface:
+
+```python
+
+(w / 'system.kira').write_text(''.join(equations))
+(w / 'targets').write_text(''.join((str(n) + '\n' for n in targets)))
+(w / 'masters').write_text(''.join((str(n) + '\n' for n in range(m))))
+(w / 'jobs.yaml').write_text(pack.driver.previous.JOBS)
+(w / 'results/Tuserweight/kira_targets.kira').read_text()
+a.input.read_text()
+(HERE / 'deployment.json').read_text()
+
+```
+
+[s02_study.py](s02_study.py)
+
+The file provides fresh disjoint validation and reserved comparisons of exact pre-reduction.
+
+The module defines these callable interfaces:
+
+```python
+
+def records(stage)
+def med(rows, method, group, key='complete_seconds')
+def check_freeze()
+def main()
+
+```
+
+The imported project modules are `s00_contract`.
+
+The command accepts these parser options:
+
+- `'stage'`: choices=['prepare', 'pilot', 'validation', 'freeze', 'test'].
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'freeze.json').read_text()
+p.read_text()
+out.read_text()
+(BATCH / 'trained_model' / name).read_text()
+
+```
+
+[s03_run.sh](s03_run.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraPreReduce
+#$ -l h_rt=01:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2867200
+ulimit -c 0
+.tools/seed-model/venv/bin/python ML_model_equation_selection/pre_reduction/s02_study.py prepare
+.tools/seed-model/venv/bin/python -u ML_model_equation_selection/pre_reduction/s02_study.py pilot
+
+```
+
+[s04_check.py](s04_check.py)
+
+The file provides independent arithmetic, application, fallback and final-output checks.
+
+The module defines these callable interfaces:
+
+```python
+
+def kernel()
+def integration()
+def audit()
+def main()
+
+```
+
+The imported project modules are `s00_contract`, `s01_application`, `s02_study`, `s08_reader`, `s10_polynomial`.
+
+The command accepts these parser options:
+
+- `'stage'`: choices=['kernel', 'integration', 'audit'].
+
+These calls show the stored input and output interface:
+
+```python
+
+p.read_text()
+(HERE / 'objects' / (record['payload_sha256'] + '.json.gz')).read_bytes()
+(HERE / record['input']).read_text()
+
+```
+
+[s05_run.sh](s05_run.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraPreFull
+#$ -l h_rt=01:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2867200
+ulimit -c 0
+.tools/seed-model/venv/bin/python ML_model_equation_selection/pre_reduction/s04_check.py kernel
+.tools/seed-model/venv/bin/python -u ML_model_equation_selection/pre_reduction/s02_study.py validation
+.tools/seed-model/venv/bin/python ML_model_equation_selection/pre_reduction/s02_study.py freeze
+.tools/seed-model/venv/bin/python -u ML_model_equation_selection/pre_reduction/s02_study.py test
+.tools/seed-model/venv/bin/python ML_model_equation_selection/pre_reduction/s04_check.py integration
+.tools/seed-model/venv/bin/python -u ML_model_equation_selection/pre_reduction/s04_check.py audit
+
+```
+
+[s06_analyze.py](s06_analyze.py)
+
+The file provides matched complete-time ratios and exactness summaries.
+
+The module defines these callable interfaces:
+
+```python
+
+def compare(rows, num, den, key)
+def main()
+
+```
+
+The imported project modules are `s00_contract`, `s02_study`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'model_test/audit.json').read_text()
+p.read_text()
+(HERE / 'deployment.json').read_text()
+(HERE / g).read_text()
+
+```
+
+[s07_plot.py](s07_plot.py)
+
+The file provides standalone plots from matched independent measurements.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `matplotlib`.
+
+The imported project modules are `s00_contract`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'model_test/summary.json').read_text()
+
+```
+
+[s08_document.py](s08_document.py)
+
+The program updates scientific text and READMEs from checked measurements.
+
+The module defines these callable interfaces:
+
+```python
+
+def block(path, key, text)
+def main()
+
+```
+
+The imported project modules are `s00_contract`.
+
+The command accepts these parser options:
+
+- `'--data-commit'`: The parser accepts a value..
+
+These calls show the stored input and output interface:
+
+```python
+
+path.read_text()
+path.write_text(old)
+(HERE / 'report_template.tex.in').read_text()
+(ROOT / 'report/pre_reduction.tex').write_text(text)
+p.read_text()
+p.write_text(old)
+(HERE / 'model_test/summary.json').read_text()
+p.write_text(old + '\n' + '\\input{pre_reduction}' + '\n')
+p.write_text(old.replace('batch_reuse.tex references.bib', 'batch_reuse.tex pre_reduction.tex references.bib'))
+(HERE / folder / 'README.md').write_text(description + '\n')
+
+```
+
+[s09_release_check.py](s09_release_check.py)
+
+The program verifies frozen code, exact evidence, report references and resource bounds.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s00_contract`, `s02_study`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(ROOT / 'report/report.tex').read_text()
+(HERE / 'resource_plan.json').read_text()
+(HERE / 'model_test/summary.json').read_text()
+(HERE / 'model_test/integration/summary.json').read_text()
+p.read_text()
+(ROOT / 'report/references.bib').read_text()
+(HERE / 'model_test/audit.json').read_text()
+p.read_bytes()
+
+```
+
+[s10_report.sh](s10_report.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraPreReport
+#$ -l h_rt=00:20:00,h_data=3G,h_vmem=4G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2867200
+ulimit -c 0
+.tools/seed-model/venv/bin/python ML_model_equation_selection/pre_reduction/s12_check_deployed.py
+.tools/seed-model/venv/bin/python ML_model_equation_selection/pre_reduction/s06_analyze.py
+.tools/seed-model/venv/bin/python ML_model_equation_selection/pre_reduction/s07_plot.py
+.tools/seed-model/venv/bin/python ML_model_equation_selection/pre_reduction/s08_document.py "$@"
+.tools/seed-model/venv/bin/python ML_model_equation_selection/pre_reduction/s09_release_check.py
+make -C report all
+
+```
+
+[s11_resume.sh](s11_resume.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraPreFull
+#$ -l h_rt=01:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C LANG=C PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 2867200
+ulimit -c 0
+.tools/seed-model/venv/bin/python -u ML_model_equation_selection/pre_reduction/s02_study.py test
+.tools/seed-model/venv/bin/python ML_model_equation_selection/pre_reduction/s04_check.py integration
+.tools/seed-model/venv/bin/python -u ML_model_equation_selection/pre_reduction/s04_check.py audit
+.tools/seed-model/venv/bin/python ML_model_equation_selection/pre_reduction/s06_analyze.py
+
+```
+
+[s12_check_deployed.py](s12_check_deployed.py)
+
+The program verifies the public deployed interface and its exact expanded output.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s00_contract`.
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+out.read_text()
+(HERE / 'objects' / (x['payload_sha256'] + '.json.gz')).read_bytes()
+p.read_text()
+(HERE / 'deployment.json').read_text()
+
+```
+
+## Data and supporting files
+
+- [deployment.json](deployment.json): This file contains structured records from the parent calculation.
+
+- [freeze.json](freeze.json): This file identifies the fixed inputs and method for the completed test.
+
+- [pilot_scheduler.log](pilot_scheduler.log): This file contains saved program messages.
+
+- [report_template.tex.in](report_template.tex.in): This file supports the calculation described in the parent guide.
+
+- [resource_plan.json](resource_plan.json): This file sets storage, memory and execution limits.
+
+- [resume_scheduler.log](resume_scheduler.log): This file contains saved program messages.
+
+- [study_scheduler.log](study_scheduler.log): This file contains saved program messages.
+
+## Child folders
+
+- [development_pilot](development_pilot/README.md).
+
+- [model_test](model_test/README.md).
+
+- [objects](objects/README.md).
+
+- [pilot](pilot/README.md).
+
+- [validation](validation/README.md).

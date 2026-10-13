@@ -1,21 +1,139 @@
-# Superseded continuation
+# extra 20 epochs
 
-This historical continuation stopped after 19 completed passes and 70,000 targets in the next pass when the user requested twenty new passes on the expanded loop-order collection. Its latest saved weights and optimizer were preserved in ../before_all_loops_20/runs/latest.pt and initialize the expanded run. The current request authorizes publication of these historical records with the new models. Do not use this old launcher for the expanded-data phase; use ../../s15_run_all_loops.sh. The original workflow is recorded below.
+This folder supports the calculation described in the parent guide.
 
-# Twenty additional training epochs
+Read [the parent guide](../README.md) for the stage and data flow.
 
-This cluster-only continuation resumes the published ten-epoch weights and optimizer state and stops at thirty total epochs. It uses the same 693 training families, architecture, objective, learning rate and remaining settings. No held-out test is run and no Git command publishes the updates.
+## Code use
 
-../epochs_10_snapshot/ preserves the original compact model, optimizer checkpoint, configuration and metadata. The existing model_test results and report describe that ten-epoch model. They do not measure the continued model.
+Run scientific calculations on Hoffman in a scheduled job.
+Load the Python 3.9.6 module and use the existing project environment.
+The usual interpreter is `.tools/seed-model/venv/bin/python` from the project root.
+Build scripts state their compiler and native Kira requirements.
+Keep each script's memory, time and storage limits.
+Keep existing model and test files before a new run.
+Scripts that write reports describe earlier document names; review their destinations before use.
 
-request.json records the initial hashes, original settings and requested total. s00_continue.py verifies the starting model and optimizer and runs the continuation. s01_run.sh supplies scheduler and resource limits. jobs.json identifies each execution, scheduler.log records progress, and preflight.json records the checkpoint checks.
+## Code files
 
-Run from the project root with:
+The entries below follow file-name order.
+Each entry gives its purpose and the input or output interface available in the source.
 
-    qsub ML_model_seed_selection/runs/extra_20_epochs/s01_run.sh
+[s00_continue.py](s00_continue.py)
 
-The job requests one CPU and 4 GiB, caps virtual memory at 3 GiB and any single output file at 128 MiB, and retains the existing project storage guard. If its bounded training time expires, it can submit a successor to continue from the last checkpoint, with at most three jobs for this request. Other failures stop explicitly.
+The program continues the published seed checkpoint for the requested twenty epochs.
 
-The epoch goal overrides only the training schedule. The original configuration and data-preparation files remain unchanged. The active optimizer checkpoint is ../latest.pt and the compact model is ../../trained_model.pt. The compact model is replaced after epoch thirty. Training progress remains in ../training_status.json and ../training.jsonl.
+The module defines these callable interfaces:
 
-Keep these weights, logs and metadata on Hoffman until the user requests publication. Report updates and testing require a separate instruction.
+```python
+
+def sha(p)
+def write_status(stage, **more)
+def main()
+
+```
+
+The imported external packages are `torch`.
+
+The imported project modules are `s01_data`, `s03_train`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+WORK = pathlib.Path(__file__).resolve().parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+torch.load(latest, map_location='cpu', weights_only=False)
+torch.load(MODEL / 'trained_model.pt', map_location='cpu', weights_only=False)
+(MODEL / 'README.md').read_text(encoding='utf-8')
+(MODEL / 'README.md').write_text(text, encoding='utf-8')
+torch.load(snapshot / 'trained_model.pt', map_location='cpu', weights_only=False)
+torch.save(compact, temp)
+torch.load(snapshot / 'runs/latest.pt', map_location='cpu', weights_only=False)
+
+```
+
+[s01_run.sh](s01_run.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -S /bin/bash
+#$ -N KiraSeedExtra20
+#$ -l h_rt=24:00:00,h_data=4G
+#$ -j y
+#$ -o ML_model_seed_selection/runs/extra_20_epochs/scheduler.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -v 3145728
+ulimit -f 131072
+ulimit -c 0
+TRAIN_PYTHON=.tools/seed-model/venv/bin/python
+"$TRAIN_PYTHON" - <<'PY'
+import json,os,pathlib,platform,shutil,time
+p=pathlib.Path("ML_model_seed_selection/runs/extra_20_epochs")
+plan=json.loads((p/"request.json").read_text())
+history=json.loads((p/"jobs.json").read_text()) if (p/"jobs.json").exists() else []
+assert len(history)<plan["max_attempts"],"Continuation attempt limit reached"
+assert shutil.disk_usage(".").free>2000000000,"Less than 2 GB free"
+history.append(dict(job_id=os.environ.get("JOB_ID"),host=platform.node(),started_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),cpu_slots=1,requested_memory_gib=4,virtual_memory_limit_kib=3145728))
+(p/"jobs.json").write_text(json.dumps(history,indent=2)+"\n")
+print(json.dumps(history[-1]),flush=True)
+PY
+if timeout --signal=TERM --kill-after=60s 82800s "$TRAIN_PYTHON" ML_model_seed_selection/runs/extra_20_epochs/s00_continue.py; then
+  exit 0
+else
+  TRAIN_EXIT=$?
+fi
+if [[ "$TRAIN_EXIT" == 124 ]]; then
+  "$TRAIN_PYTHON" - <<'PY'
+import json,pathlib,subprocess,time
+p=pathlib.Path("ML_model_seed_selection/runs/extra_20_epochs")
+plan=json.loads((p/"request.json").read_text())
+history=json.loads((p/"jobs.json").read_text())
+assert len(history)<plan["max_attempts"],"Maximum automatic continuation attempts reached"
+reply=subprocess.check_output(["qsub","ML_model_seed_selection/runs/extra_20_epochs/s01_run.sh"],text=True)
+(p/"resubmission.json").write_text(json.dumps(dict(reason="bounded_walltime_reached",reply=reply,utc=time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime())),indent=2)+"\n")
+print(reply,flush=True)
+PY
+  exit 0
+fi
+exit "$TRAIN_EXIT"
+
+```
+
+## Data and supporting files
+
+- [jobs.json](jobs.json): This file contains structured records from the parent calculation.
+
+- [launch.json](launch.json): This file contains structured records from the parent calculation.
+
+- [preflight.json](preflight.json): This file contains structured records from the parent calculation.
+
+- [request.json](request.json): This file contains structured records from the parent calculation.
+
+- [run.lock](run.lock): This file supports the calculation described in the parent guide.
+
+- [scheduler.log](scheduler.log): This file contains saved program messages.
+
+- [setup_validation.json](setup_validation.json): This file contains structured records from the parent calculation.
+
+- [status.json](status.json): This file records the execution state.

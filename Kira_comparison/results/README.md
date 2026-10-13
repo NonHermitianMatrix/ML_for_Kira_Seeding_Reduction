@@ -1,7 +1,58 @@
+# results
 
-<!-- main-comparison-records -->
-# Main comparison records
+This folder supports the calculation described in the parent guide.
 
-Each compressed JSON file contains one bounded trial, identified by family-case number, target-batch size, repeat and method. The public plan fixes 792 trials. Records include fresh model predictions or row paths, attempts, equation counts, full rational target coefficients, exact checks, elapsed time, sampled summed resident memory and archived solver configurations, exports and logs. status and complete files describe array progress; environment files identify the compute node and CPU. No temporary solver databases are retained.
+Read [the parent guide](../README.md) for the stage and data flow.
 
-Only these main records enter ../summary.json. Pilot and interrupted adapter versions remain in separately named folders and are excluded. ../validation.json binds each measured record by hash, checks the immutable inputs and independently verifies exports and row operations. Native generation on the same independent bases also appears here as two main controls; the four-method learned-native comparison has its own ../native_seed/results/ records.
+The producing and reading code is described in [the stage guide](../README.md).
+
+## Data and supporting files
+
+This folder contains 868 data entries.
+The names identify the family, case, target or repetition used by the parent reader.
+
+- `.json`: 57 entries.
+
+- `.json.gz`: 792 entries.
+
+- `.o15099517.1`: 1 entries.
+
+- `.o15099517.10`: 1 entries.
+
+- `.o15099517.11`: 1 entries.
+
+- `.o15099517.12`: 1 entries.
+
+- `.o15099517.13`: 1 entries.
+
+- `.o15099517.14`: 1 entries.
+
+- `.o15099517.15`: 1 entries.
+
+- `.o15099517.16`: 1 entries.
+
+- `.o15099517.17`: 1 entries.
+
+- `.o15099517.18`: 1 entries.
+
+- `.o15099517.19`: 1 entries.
+
+- `.o15099517.2`: 1 entries.
+
+- `.o15099517.3`: 1 entries.
+
+- `.o15099517.4`: 1 entries.
+
+- `.o15099517.5`: 1 entries.
+
+- `.o15099517.6`: 1 entries.
+
+- `.o15099517.7`: 1 entries.
+
+- `.o15099517.8`: 1 entries.
+
+- `.o15099517.9`: 1 entries.
+
+Use the local manifest or the parent case list to match identifiers.
+Keep compressed files in their stored format.
+Read one record at a time with the parent reader.

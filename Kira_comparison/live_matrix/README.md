@@ -1,55 +1,566 @@
-# Learned row choices inside Kira's evolving matrix
+# live matrix
 
-Completed 84 final trials in seven held-out independent-basis families, with 0 incomplete trials. The learned/stock complete-time ratio is 1.305. The learned/instrumented-native forward-stage ratio is 276.149, or 62.270 after subtracting recorded model loading. Summed median committed coefficient-operation counts are 5771 for the learned policy and 5070 for the native policy.
+This folder supports the calculation described in the parent guide.
 
-The experiment uses the frozen checkpoint in ML_model_reduction/trained_model.pt. It does not retrain, fit confidence, or use reference master coefficients in predictions. It covers three one-loop box profiles, a bubble, triangle and tadpole, and a two-loop propagator, with 99 target expressions. Family selection and the grouped test split match the preceding native comparison.
+Read [the parent guide](../README.md) for the stage and data flow.
 
-## Mathematical integration
+## Code use
 
-Kira generates and selects the physical IBP equations. The hook operates inside Kira::run_reduction after that selection, before normalization and back substitution. It chooses the highest Kira leading integral shared by at least two current identity rows. Every ordered pair of distinct rows in that group is an allowed elementary update. The frozen model scores all pairs and returns the source, destination and confidence. Kira's existing insert_equation function performs the exact symbolic update through Fermat. The changed row returns to the matrix and can serve as a later source. All other rows also contribute to the model's current matrix features.
+Run scientific calculations on Hoffman in a scheduled job.
+Load the Python 3.9.6 module and use the existing project environment.
+The usual interpreter is `.tools/seed-model/venv/bin/python` from the project root.
+Build scripts state their compiler and native Kira requirements.
+Keep each script's memory, time and storage limits.
+Keep existing model and test files before a new run.
+Scripts that write reports describe earlier document names; review their destinations before use.
 
-The hook preserves the integral order and prescribed master basis. It does not choose arbitrary pivot columns, alter native numerical equation selection, or learn back-substitution order. The protected-master and finite-field pivot checks fail explicitly if their requirements are violated. The model uses the original 132-feature encoding. Initial symbolic rows and later updates are sampled at the fixed public point solely for inference; the Kira algebra remains symbolic.
+## Code files
 
-A single policy process stays loaded for one forward solve. A matrix with no admissible updates skips model loading. The training states used fixed identities and a changing target row. This experiment tests transfer to changing identity rows.
+The entries below follow file-name order.
+Each entry gives its purpose and the input or output interface available in the source.
 
-## Controls and timing
+[s00_policy_server.py](s00_policy_server.py)
 
-The stock control uses the original installed Kira binary. The instrumented-native control retains Kira's forward algorithm while recording exact updates. The deterministic control uses the hook's serial schedule and Kira's source-row length/integral-order criterion, with stable destination identifiers. The learned method uses the same serial schedule and chooses both rows. Native seed bounds, target components and master preferences are identical across all controls.
+The program scores admissible live Kira row operations with the frozen reduction model.
 
-Each family has three repeats of each of the four methods, run on one node with rotated order and one computation thread. Only two family tasks run concurrently. Complete time includes process startup, data preparation, model work, symbolic reduction, target combination and exact coefficient checks. The internal forward timer includes all work in the forward phase. The load-excluded diagnostic subtracts the policy server's measured import and model-loading interval from that timer; it retains feature construction, inference, communication and exact algebra. It is a decomposition of the recorded runs; a separate run with a preloaded model has not been measured.
+The module defines these callable interfaces:
 
-Coefficient-operation counts use 1 + 2 times the source-row nonzero count for each committed exact update. They exclude polynomial simplification internals and candidate feature trial updates. Time includes those costs. Geometric-mean ratios use paired three-repeat medians. Forward-stage ratios exclude cases with zero committed updates. Incomplete cases remain in the audit and are excluded from ratios requiring two complete methods.
+```python
 
-## Files and execution
+def emit(x)
+def evaluate(text)
+def readrow(n)
+def sampled(terms)
 
-- s00_policy_server.py: persistent frozen-model inference from the current matrix.
-- s01_live_policy.h: source hook, admissible operations, native algebra calls and operation records.
-- s02_build.py: patch one source translation unit and link unchanged Kira objects into an isolated binary.
-- s03_build.sh: bounded scheduled compilation.
-- s04_worker.py: native generation, live reduction, exact target combination and master-coefficient checks.
-- s05_run.py: repeated trial controller with process, memory and storage guards.
-- s06_run.sh: scheduled single-family or pilot execution.
-- s07_audit.py: independent export checks and replay of all saved row updates and live choices.
-- s08_summarize.py: paired medians, ratios, failures and operation totals.
-- s09_array.sh: seven family tasks, with concurrency two.
-- s10_prepare.py: exact pilot checks and immutable input/model/source hashes.
-- s11_plot.py: two PDF figures and the values used to draw them.
-- s12_finalize.sh: scheduled audit, summary and plots after all family tasks finish.
-- s13_update_report.py: report sources, bibliography and conclusion using a supplied data-release commit.
-- s14_readmes.py: this README and parent-folder summaries.
-- s15_build_report.sh: bounded scheduled report update and PDF build using the published data commit.
+```
 
-Submit s03_build.sh first. Run s06_run.sh with --case 0 --pilot, --case 3 --pilot and --case 4 --pilot. After successful diagnostics and compilation, run s10_prepare.py, submit s09_array.sh and hold s12_finalize.sh on that array. Finally run s14_readmes.py, publish the data release, submit s15_build_report.sh with that commit to update the report and rebuild report/report.pdf.
+The imported external packages are `torch`.
 
-build.json records compiler/link commands and original, modified and binary hashes. frozen_inputs.json fixes the model, public data and execution sources. The experiment reuses the existing symbolic Kira 3.1/Fermat build and does not benchmark FireFly reconstruction. The isolated source and binary remain in .tools/kira-live-build. COPYING supplies the upstream GPL license for the derivative Kira extension.
+The imported project modules are `s01_state`, `s05_predict`.
 
-results/*.json.gz stores each result, exact checked coefficients, native exports, configuration, symbolic row-update records and model choices. summary.json and figure_values.csv contain the reported measurements. validation.json records independent checks and file hashes. The initial 12 successful pilot trials and earlier setup/build logs remain diagnostic records; they are excluded from the 84 final trials. The skip-empty-model-load guard was added after pilots and before the final source freeze.
+These source constants locate inputs and outputs:
 
-## Verification and resource bounds
+```python
 
-The audit interprets archived native Kira exports independently at the reference sample points. It replays each committed symbolic row operation at three independent finite-field samples, checks the live row identities against the exact operation trace, validates the complete allowed pair list and probabilities, and counts choices that use previously updated sources.
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
 
-Each trial has a 600-second limit, 1.9 GB address space per process, 1.7 GB sampled summed process memory, and 64 MB scratch. Published outputs have a 128 MB cap. A conservative combined storage guard keeps the project below 10 GB. Data and binaries stay on Hoffman; public data and code are also on GitHub. Only report artifacts are synchronized locally.
+```
 
+Import this helper module from the stage that uses it.
 
-The final audit recorded 3564 master-sample checks, 12708 row-sample checks, 1413 learned choices and 465 choices using previously updated sources.
+[s01_live_policy.h](s01_live_policy.h)
+
+The file provides live symbolic forward-elimination experiment; GPL-3.0-or-later.
+
+The required headers are `chrono`, `cstdio`, `cstdlib`, `fstream`, `map`, `memory`, `algorithm`, `set`, `stdexcept`, `vector`, `spawn.h`, `sys/wait.h`, `unistd.h`.
+
+The matching build script compiles this file with its caller.
+
+Use the parent stage guide for the build order and input records.
+
+[s02_build.py](s02_build.py)
+
+The program builds one changed translation unit; reuse the unchanged installed Kira objects.
+
+The module defines these callable interfaces:
+
+```python
+
+def sha(p)
+
+```
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+Import this helper module from the stage that uses it.
+
+These calls show the stored input and output interface:
+
+```python
+
+original.read_text()
+modified.write_text(text)
+(HERE / 'build.json').write_text(json.dumps(record, indent=2) + '\n')
+p.read_bytes()
+
+```
+
+[s03_build.sh](s03_build.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraLiveBuild
+#$ -l h_rt=00:20:00,h_data=2G,h_vmem=3G
+#$ -j y
+#$ -o Kira_comparison/live_matrix/build.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load gcc/9.5.0 python/3.9.6
+export LC_ALL=C PYTHONDONTWRITEBYTECODE=1 PYTHONIOENCODING=utf-8
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -c 0
+python3 Kira_comparison/live_matrix/s02_build.py
+
+```
+
+[s04_worker.py](s04_worker.py)
+
+The program runs native equation generation and choose live forward operations inside Kira.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s01_common`, `s02_worker`, `s10_native_worker`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+PARENT = HERE.parent
+
+```
+
+The command accepts these parser options:
+
+- `'case'`: type=int.
+- `'policy'`: The parser accepts a value..
+- `'scratch'`: type=pathlib.Path.
+- `'output'`: type=pathlib.Path.
+
+These calls show the stored input and output interface:
+
+```python
+
+(w / 'run.log').read_text(errors='replace')
+(w / 'forward.jsonl').read_text()
+
+```
+
+[s05_run.py](s05_run.py)
+
+The file provides counterbalanced trials with hard time, memory, scratch and output bounds.
+
+The module defines these callable interfaces:
+
+```python
+
+def write(p, x)
+def limits()
+def main()
+
+```
+
+The imported project modules are `s03_run`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+The command accepts these parser options:
+
+- `'--case'`: type=int; required=True.
+- `'--pilot'`: action='store_true'.
+
+These calls show the stored input and output interface:
+
+```python
+
+p.write_text(json.dumps(x, indent=2) + '\n')
+path.read_text(errors='replace')
+(HERE / 'plan.json').read_bytes()
+pathlib.Path('/proc/cpuinfo').read_text()
+
+```
+
+[s06_run.sh](s06_run.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraLiveMatrix
+#$ -l h_rt=02:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o Kira_comparison/live_matrix
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -c 0
+export KIRA_LIVE_SCRATCH=$(mktemp -d "${TMPDIR:-/tmp}/kira-live-${JOB_ID}.XXXXXX")
+trap 'rm -rf -- "$KIRA_LIVE_SCRATCH"' EXIT
+.tools/seed-model/venv/bin/python Kira_comparison/live_matrix/s05_run.py "$@"
+
+```
+
+[s07_audit.py](s07_audit.py)
+
+The program replays exact-operation records and verify archived native reductions.
+
+The module defines these callable interfaces:
+
+```python
+
+def vec(row, point, p)
+def trace_rows(text)
+def check_update(src, dst, after, samples)
+def main()
+
+```
+
+The imported project modules are `s01_common`, `s08_verify`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+This entry point uses the paths and options set in its source.
+
+[s08_summarize.py](s08_summarize.py)
+
+The program summarizes complete paired trials and preserve incomplete-case counts.
+
+The module defines these callable interfaces:
+
+```python
+
+def median(v)
+def main()
+
+```
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'summary.json').write_text(json.dumps(result, indent=2) + '\n')
+
+```
+
+[s09_array.sh](s09_array.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraLiveFull
+#$ -t 1-7
+#$ -tc 2
+#$ -l h_rt=02:00:00,h_data=3G,h_vmem=4G
+#$ -j y
+#$ -o Kira_comparison/live_matrix
+exec bash Kira_comparison/live_matrix/s06_run.sh --case "$((SGE_TASK_ID-1))"
+
+```
+
+[s10_prepare.py](s10_prepare.py)
+
+The program freezes the benchmark inputs after exact pilot checks, before repeated trials.
+
+The module defines these callable interfaces:
+
+```python
+
+def sha(p)
+def main()
+
+```
+
+The imported project modules are `s07_audit`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'frozen_inputs.json').write_text(json.dumps(dict(sha256=current, model_retrained=False), indent=2) + '\n')
+p.read_text()
+p.read_bytes()
+
+```
+
+[s11_plot.py](s11_plot.py)
+
+The program plots matched elapsed times and exact coefficient-operation counts.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported external packages are `matplotlib`, `numpy`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+This entry point uses the paths and options set in its source.
+
+[s12_finalize.sh](s12_finalize.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraLiveAudit
+#$ -l h_rt=00:45:00,h_data=2G,h_vmem=3G
+#$ -j y
+#$ -o Kira_comparison/live_matrix/audit.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -c 0
+.tools/seed-model/venv/bin/python Kira_comparison/live_matrix/s07_audit.py
+.tools/seed-model/venv/bin/python Kira_comparison/live_matrix/s08_summarize.py
+.tools/seed-model/venv/bin/python Kira_comparison/live_matrix/s11_plot.py
+
+```
+
+[s13_update_report.py](s13_update_report.py)
+
+The program writes the measured live-matrix section and synchronize its scientific scope.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+REPORT = ROOT / 'report'
+
+```
+
+The command accepts these parser options:
+
+- `'data_commit'`: The parser accepts a value..
+
+These calls show the stored input and output interface:
+
+```python
+
+(REPORT / 'kira_live_matrix.tex').write_text(fill(section), encoding='utf-8')
+p.read_text(encoding='utf-8')
+p.write_text(text, encoding='utf-8')
+p.read_text()
+p.write_text(t)
+(HERE / 'report_values.json').write_text(json.dumps(vals, indent=2) + '\n')
+
+```
+
+[s14_readmes.py](s14_readmes.py)
+
+The program documents the checked live policy, controls, limits, execution and measured results.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'README.md').write_text(text)
+p.read_text()
+p.write_text(t + b)
+
+```
+
+[s15_build_report.sh](s15_build_report.sh)
+
+This shell script runs the recorded commands for this stage.
+
+This is a scheduler job script. Submit it with `qsub` from the project root.
+
+The exact command sequence is:
+
+```bash
+
+#!/bin/bash
+#$ -cwd
+#$ -q pod_smp.q
+#$ -S /bin/bash
+#$ -N KiraLiveReport
+#$ -l h_rt=00:15:00,h_data=2G,h_vmem=3G
+#$ -j y
+#$ -o .tools/kira-live-publication/report_build.log
+set -euo pipefail
+source /u/local/Modules/default/init/modules.sh
+module load python/3.9.6
+export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ulimit -c 0
+.tools/seed-model/venv/bin/python Kira_comparison/live_matrix/s13_update_report.py "$1"
+make -C report
+
+```
+
+## Data and supporting files
+
+- [COPYING](COPYING): This file supports the calculation described in the parent guide.
+
+- [KiraLiveFull.o15109182.1](KiraLiveFull.o15109182.1): This file supports the calculation described in the parent guide.
+
+- [KiraLiveFull.o15109182.2](KiraLiveFull.o15109182.2): This file supports the calculation described in the parent guide.
+
+- [KiraLiveFull.o15109182.3](KiraLiveFull.o15109182.3): This file supports the calculation described in the parent guide.
+
+- [KiraLiveFull.o15109182.4](KiraLiveFull.o15109182.4): This file supports the calculation described in the parent guide.
+
+- [KiraLiveFull.o15109182.5](KiraLiveFull.o15109182.5): This file supports the calculation described in the parent guide.
+
+- [KiraLiveFull.o15109182.6](KiraLiveFull.o15109182.6): This file supports the calculation described in the parent guide.
+
+- [KiraLiveFull.o15109182.7](KiraLiveFull.o15109182.7): This file supports the calculation described in the parent guide.
+
+- [KiraLiveMatrix.o15108816](KiraLiveMatrix.o15108816): This file supports the calculation described in the parent guide.
+
+- [KiraLiveMatrix.o15108848](KiraLiveMatrix.o15108848): This file supports the calculation described in the parent guide.
+
+- [KiraLiveMatrix.o15108899](KiraLiveMatrix.o15108899): This file supports the calculation described in the parent guide.
+
+- [KiraLiveMatrix.o15108900](KiraLiveMatrix.o15108900): This file supports the calculation described in the parent guide.
+
+- [audit.log](audit.log): This file records checks of the corresponding calculation.
+
+- [build.json](build.json): This file contains structured records from the parent calculation.
+
+- [build.log](build.log): This file contains saved program messages.
+
+- [figure_values.csv](figure_values.csv): This file supports the calculation described in the parent guide.
+
+- [frozen_inputs.json](frozen_inputs.json): This file contains structured records from the parent calculation.
+
+- [pilot_validation.json](pilot_validation.json): This file contains structured records from the parent calculation.
+
+- [plan.json](plan.json): This file contains structured records from the parent calculation.
+
+- [plot.log](plot.log): This file contains saved program messages.
+
+- [plot_review.log](plot_review.log): This file contains saved program messages.
+
+- [report_values.json](report_values.json): This file contains structured records from the parent calculation.
+
+- [summary.json](summary.json): This file contains the result counts and summary measurements.
+
+- [validation.json](validation.json): This file records the completed validation checks.
+
+## Child folders
+
+- [figures](figures/README.md).
+
+- [pilot](pilot/README.md).
+
+- [results](results/README.md).

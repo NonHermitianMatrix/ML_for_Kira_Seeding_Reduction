@@ -1,7 +1,33 @@
-# Symbolic reduction application
+# application
 
-s12_reduce.py in the parent folder accepts physical family definitions, indexed targets and a prescribed master list. It receives no target coefficients. Native choices are the default for the new domains; an explicit experimental flag tests the unchanged equation filter with native fallback.
+This folder supports the calculation described in the parent guide.
 
-freeze.json records the application source and ten fixed checks. Seven native applications and three explicitly requested experimental applications use the same family/target inputs as the comparison. verification.json compares their coefficients with the reference only after execution. The gzip files retain every attempt and the native input/output. This is an implementation check, not a new independent performance sample.
+Read [the parent guide](../README.md) for the stage and data flow.
 
-Run the entry point and scheduler wrapper as described in ../README.md. Generated output must stay in this study folder, on Hoffman and GitHub.
+The producing and reading code is described in [the stage guide](../README.md).
+
+## Data and supporting files
+
+- [freeze.json](freeze.json): This file identifies the fixed inputs and method for the completed test.
+
+- [nonplanar_box_point2_native.json.gz](nonplanar_box_point2_native.json.gz): This file contains structured records from the parent calculation.
+
+- [nonplanar_box_point3_native.json.gz](nonplanar_box_point3_native.json.gz): This file contains structured records from the parent calculation.
+
+- [nonplanar_box_symbolic_experimental.json.gz](nonplanar_box_symbolic_experimental.json.gz): This file contains structured records from the parent calculation.
+
+- [nonplanar_box_symbolic_native.json.gz](nonplanar_box_symbolic_native.json.gz): This file contains structured records from the parent calculation.
+
+- [one_mass_box_symbolic_experimental.json.gz](one_mass_box_symbolic_experimental.json.gz): This file contains structured records from the parent calculation.
+
+- [one_mass_box_symbolic_native.json.gz](one_mass_box_symbolic_native.json.gz): This file contains structured records from the parent calculation.
+
+- [pentagon_point2_native.json.gz](pentagon_point2_native.json.gz): This file contains structured records from the parent calculation.
+
+- [pentagon_point3_native.json.gz](pentagon_point3_native.json.gz): This file contains structured records from the parent calculation.
+
+- [pentagon_symbolic_experimental.json.gz](pentagon_symbolic_experimental.json.gz): This file contains structured records from the parent calculation.
+
+- [pentagon_symbolic_native.json.gz](pentagon_symbolic_native.json.gz): This file contains structured records from the parent calculation.
+
+- [verification.json](verification.json): This file records the independent checks.

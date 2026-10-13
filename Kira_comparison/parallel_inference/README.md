@@ -1,46 +1,115 @@
-# Parallel seed evaluation and exact row features
+# parallel inference
 
-The production entry is ../integrated_runtime/s108_reduce.py. It retains the trained weights, thresholds, candidate regions, exact Kira algebra and validation-selected routing. Seed arithmetic evaluates independent output components together while preserving the addition order of each float32 result. Row features use exact Euclidean modular inverses, direct evaluation of short integer literals, and contiguous coefficient storage.
+This folder supports the calculation described in the parent guide.
 
-All 144 final-candidate validation workflows and 640 confirmation workflows preserve exact coefficients, seed probabilities, source-row digests and committed operation counts. The complete-time new/preceding ratios for seed, row and combined execution are 0.989778, 0.989961, 0.984075. All fallback costs are included. All three complete-time intervals include one, so the component gain is clearer than the full-workflow change. Seed and combined aggregate costs remain above the native control; the row-only interval against native also includes one. See confirmation_summary.json for descriptive intervals and topology results.
+Read [the parent guide](../README.md) for the stage and data flow.
 
-The initial Euclidean-only candidate failed the fixed validation conditions. rejected_euclid/ preserves its code/build snapshots, 144 workflow records, summary and component tests. Its complete row ratio was 1.02739 and row-decision ratio 1.01713. The final candidate changes arithmetic/storage only and uses fresh validation records with literal_ attempt names. No confirmation outcomes select its changes.
+## Code use
 
-The final validation uses three physical profiles, six batches, four methods and three repetitions for each implementation. The frozen confirmation uses eight previously defined physical profiles, sixteen batches and five repetitions. It repeats implementation measurements on existing profiles and adds no independent-family evidence. Both implementations use identical wrappers, exact checks, resource bounds and evidence storage.
+Run scientific calculations on Hoffman in a scheduled job.
+Load the Python 3.9.6 module and use the existing project environment.
+The usual interpreter is `.tools/seed-model/venv/bin/python` from the project root.
+Build scripts state their compiler and native Kira requirements.
+Keep each script's memory, time and storage limits.
+Keep existing model and test files before a new run.
+Scripts that write reports describe earlier document names; review their destinations before use.
 
-The timing interval includes preparation, model loading, predictions, fresh IBP generation, exact elimination, back substitution, reference checks and every fallback. Reference preparation, interpreter startup, release-hash verification, initial routing lookup and evidence compression remain outside it. Summary ratios use per-batch medians and equal physical-profile geometric weighting. Bootstrap intervals are descriptive and keep related batches together. Implementation savings and ML-versus-native savings answer separate questions.
+## Code files
 
-All successful outputs receive independent rational-coefficient verification over Q(d). Eight further application checks supply only family definitions, targets and master indices; postrun comparisons verify their coefficients. The model does not require known target coefficients during production. Its basis-admission check triggers the fixed fallback when necessary.
+The entries below follow file-name order.
+Each entry gives its purpose and the input or output interface available in the source.
 
-A bounded production invocation is:
+[reduction_parallel.patch](reduction_parallel.patch)
 
-    .tools/seed-model/venv/bin/python Kira_comparison/integrated_runtime/s108_reduce.py --family-file CASE.json --masters-file MASTERS.json --size 32 --policy auto --verify-release --output Kira_comparison/parallel_inference/application/CASE.json.gz
+This patch records changes to the native Kira source.
 
-Run on a scheduled node with one arithmetic worker, h_data=3G, h_vmem=6G and outer address limit 2800 MiB. At most two trials run together; each gets 128 MiB scratch and a 2400 MiB native-child address limit. resource_plan.json reserves 9,893,372,928 combined bytes, below the user's decimal 10 GB ceiling. New retained evidence is capped at 12 MiB, new tools at 24 MiB. Tools stay outside Git. Earlier data and old shared-content hashes remain immutable. Rebuilds change binary hashes and require a new freeze.
+The changed source paths are `b/src/kira/reduction.cpp`.
 
-Read workflow files with integrated_runtime/s105_parallel_records.read_record. Their attempts live in attempts/; large fields resolve SHA256-named gzip payloads in this folder's shared/ or the older integrated_runtime/shared/. Every raw failed attempt remains available.
+Use the matching build script in the parent stage. Keep the required Kira source version.
 
-The execution order in integrated_runtime/ is s109_build_parallel.sh, s111_validate_parallel.sh, s118_freeze_parallel.sh, s114_confirm_parallel.sh and s116_finalize_parallel.sh. After exact checks, s122_document_parallel_readmes.py updates guides, s119_document_parallel.py writes the scientific text from summaries, and s121_build_parallel_report.sh builds plots and the PDF.
+[s00_check_arithmetic.cpp](s00_check_arithmetic.cpp)
 
-Script roles:
-- s105_parallel_records.py writes bounded immutable records and reuses existing field payloads.
-- s106_run_parallel.py runs one native attempt and selects old/new arithmetic.
-- s107_workflow_parallel.py executes fixed fallbacks and includes all attempt costs.
-- s108_reduce.py exposes native, seed, row, both and automatic production modes.
-- s109_build_parallel.sh compiles both components, runs their fixtures and builds native Kira.
-- s110_compare_parallel.py alternates old/new execution and checks decision parity.
-- s111_validate_parallel.sh runs the three validation profiles.
-- s112_summarize_parallel.py includes every planned workflow and computes paired statistics.
-- s113_freeze_parallel.py enforces the predefined adoption conditions and hashes the implementation.
-- s114_confirm_parallel.sh runs the eight-profile confirmation with at most two jobs.
-- s115_audit_parallel.py independently parses exports and compares exact rational coefficients.
-- s116_finalize_parallel.sh summarizes confirmation and runs application and coefficient checks.
-- s117_check_parallel_application.py checks eight basis-only production calls.
-- s118_freeze_parallel.sh summarizes validation and freezes only an eligible candidate.
-- s119_document_parallel.py writes equations, results and the report conclusion.
-- s120_plot_parallel.py plots complete timing against the previous implementation and native choices.
-- s121_build_parallel_report.sh renders the report and its plot.
-- s122_document_parallel_readmes.py writes these guides and the release record.
-- s123_prepare_parallel_report.sh checks completed jobs and bounds, publishes data and builds the report for review.
+The file provides exact checks for field inversion and all source-row features.
 
-This folder's s00_check_arithmetic.cpp checks 100,000 inverses, short literal edge cases and 1,000 row-feature groups. s01_check_seed.py checks bitwise probability parity and all six threshold masks in 36 development contexts. build.json identifies the native patch and headers; freeze.json fixes code, binaries, weights and test inputs; verification.json and application_verification.json retain independent checks.
+The required headers are `string`, `vector`, `algorithm`, `iostream`, `random`, `stdexcept`, `chrono`, `iomanip`, `s15_shared_modular.h`, `s19_literal_modular.h`.
+
+The matching build script compiles this file into an executable.
+
+Use the parent stage guide for the build order and input records.
+
+[s01_check_seed.py](s01_check_seed.py)
+
+The program checks bitwise probabilities and masks against the preceding compiled network.
+
+The module defines these callable interfaces:
+
+```python
+
+def main()
+
+```
+
+The imported project modules are `s03_records`, `s07_seed`, `s12_shared_seed`, `s14_lane_seed`.
+
+These source constants locate inputs and outputs:
+
+```python
+
+HERE = pathlib.Path(__file__).resolve().parent
+EXP = HERE.parent / 'integrated_runtime'
+ROOT = HERE.parents[1]
+
+```
+
+This entry point uses the paths and options set in its source.
+
+These calls show the stored input and output interface:
+
+```python
+
+(HERE / 'seed_parity.json').write_text(json.dumps(data, indent=2) + '\n')
+(EXP / 'families.json').read_text()
+(ROOT / 'ML_model_seed_selection/runtime_inference/compiled_weights.bin').read_bytes()
+(ROOT / '.tools/kira-parallel-inference/libseed.so').read_bytes()
+
+```
+
+## Data and supporting files
+
+- [adoption.json](adoption.json): This file contains structured records from the parent calculation.
+
+- [application_verification.json](application_verification.json): This file records checks of the corresponding calculation.
+
+- [arithmetic_check.json](arithmetic_check.json): This file records checks of the corresponding calculation.
+
+- [build.json](build.json): This file contains structured records from the parent calculation.
+
+- [confirmation_summary.json](confirmation_summary.json): This file contains structured records from the parent calculation.
+
+- [freeze.json](freeze.json): This file identifies the fixed inputs and method for the completed test.
+
+- [release.json](release.json): This file contains structured records from the parent calculation.
+
+- [report_values.json](report_values.json): This file contains structured records from the parent calculation.
+
+- [resource_plan.json](resource_plan.json): This file sets storage, memory and execution limits.
+
+- [seed_parity.json](seed_parity.json): This file records seed information or seed checks.
+
+- [validation_summary.json](validation_summary.json): This file contains structured records from the parent calculation.
+
+- [verification.json](verification.json): This file records the independent checks.
+
+## Child folders
+
+- [application_checks](application_checks/README.md).
+
+- [attempts](attempts/README.md).
+
+- [confirmation](confirmation/README.md).
+
+- [rejected_euclid](rejected_euclid/README.md).
+
+- [shared](shared/README.md).
+
+- [validation](validation/README.md).

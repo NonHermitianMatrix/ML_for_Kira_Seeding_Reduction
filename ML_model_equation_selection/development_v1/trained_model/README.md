@@ -1,5 +1,15 @@
-# Trained model
+# trained model
 
-model.json contains the tree, feature order, training provenance and empirical leaf probabilities. weights.txt exports the same tree to the C++ filter. s09_predict.py returns both class probabilities and the thresholded label. These probabilities have not been calibrated on independent data.
+This folder retains an earlier stage, development check or saved comparison.
+Use its records to interpret that stage.
+Use the current parent application for a new calculation.
 
-Validation chooses a threshold based on complete runtime. freeze.json will record the model and implementation hashes before testing. Native Kira determines the exact reduction coefficients.
+Read [the parent guide](../README.md) for the stage and data flow.
+
+The producing and reading code is described in [the stage guide](../README.md).
+
+## Data and supporting files
+
+- [model.json](model.json): This file contains a saved model or its description.
+
+- [weights.txt](weights.txt): This file contains a saved model or its description.

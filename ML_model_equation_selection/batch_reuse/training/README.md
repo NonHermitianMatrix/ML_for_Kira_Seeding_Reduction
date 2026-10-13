@@ -1,3 +1,18 @@
-# Training
+# training
 
-420 batches and 6,300 candidate mass orderings. examples.json.gz records targets, candidate features and exact weighted dependency costs. summary.json records training; compact_check.json and native_check.json check unchanged inference.
+This folder contains training inputs or saved training results.
+Keep the stored family division unchanged.
+
+Read [the parent guide](../README.md) for the stage and data flow.
+
+The producing and reading code is described in [the stage guide](../README.md).
+
+## Data and supporting files
+
+- [compact_check.json](compact_check.json): This file records checks of the corresponding calculation.
+
+- [examples.json.gz](examples.json.gz): This file contains structured records from the parent calculation.
+
+- [native_check.json](native_check.json): This file records checks of the corresponding calculation.
+
+- [summary.json](summary.json): This file contains the result counts and summary measurements.
