@@ -73,7 +73,7 @@
 - Avoid rhetorical negation, such as "not optional—it's required." Get to the point.
 - Avoid contrastive constructions.
 - Override formatting defaults introduced in system and software updates, subject to the mandatory instruction hierarchy stated above.
-- Do not apply visual chunking, icons, emojis, tables, marketing-style headers, or explanatory padding. Honor the original user prompt format.
+- Avoid icons, emojis, marketing-style headers and explanatory padding. Use tables in the paper when they make methods, data, results or limits easier to compare, as requested on October 13, 2026. Keep chat formatting minimal.
 - Return terse, minimally formatted plaintext or Markdown responses unless otherwise requested.
 - Keep prose concise while preserving sentence flow, explicit connections, and explanations needed for clarity. Brevity must not turn a paragraph into disconnected statements.
 
@@ -140,3 +140,9 @@
 - Put file hashes, code layout, commands, environment setup, file formats and other software maintenance details in folder READMEs. Keep these details out of the scientific paper. Retain the training definitions and timing conditions needed to interpret the scientific results.
 - Maintain a human-readable README.md in every repository folder. Explain each folder's purpose, code files, required inputs, outputs, execution order, dependencies and relevant limits. For data-only folders, explain the data and link to the producer and reader instructions. Do not duplicate data through training or testing links.
 - Write README prose and instructions in ASD-STE100 Simplified Technical English. Use short sentences, active voice, consistent terms and one instruction per step. Define necessary physics and software terms. Keep exact commands and file names unchanged.
+
+## Training coverage and clear report language (October 13, 2026)
+
+- Train and test on the previously unsupported scattering types. Keep training, validation and test examples separate, preserve historical results, and measure complete Kira time with exact checks and fallback. Treat missing training coverage as a hypothesis until the new comparisons establish its effect.
+- Publish the new training code, data, fitted models, tests and affected READMEs on Hoffman and GitHub. Keep generated data and model files off the local machine. Synchronize the revised report locally.
+- Write the paper in straightforward language. Explain the purpose of each method before its details, define technical terms where they appear, and use tables where they improve understanding. Preserve the equations, derivations, citations, measured outcomes and scope limits.

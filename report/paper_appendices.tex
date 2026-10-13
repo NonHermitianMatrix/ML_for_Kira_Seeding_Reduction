@@ -10,7 +10,7 @@ Write $P_{\boldsymbol\sigma}=\prod_iD_i^{-\sigma_i}$ and $\partial_k^\mu=\partia
        D_i^{-\sigma_i-1}\prod_{j\ne i}D_j^{-\sigma_j}.
  \label{eq:ibp-expanded}
 \end{align}
-For $v=\ell_h$, $\partial_k\cdot v=d\delta_{kh}$; for an external momentum it is zero. The integrated derivative vanishes in a convergent domain and defines the dimensionally regulated identity by analytic continuation~\cite{ChetyrkinTkachov,Weinzierl2022}. This use of dimensional regularization includes its treatment of scaleless sectors.
+For $v=\ell_h$, the derivative gives $\partial_k\cdot v=d\delta_{kh}$, where $\delta_{kh}$ is one for $k=h$ and zero otherwise. For an external momentum, the derivative is zero. The integrated total derivative vanishes where the integral converges. Analytic continuation then defines the identity in dimensional regularization~\cite{ChetyrkinTkachov,Weinzierl2022}. This prescription also sets scaleless integrals to zero.
 
 With a complete scalar-product basis, the scalar numerator $v\cdot\partial_kD_i$ can be written as $u_i+\sum_j v_{ij}D_j$. The coefficients $u_i$ and $v_{ij}$ depend on masses, invariants and the chosen momentum routing. Substituting in Eq.~\eqref{eq:ibp-expanded} gives
 \begin{equation}
@@ -33,7 +33,7 @@ For a second identity row, or a target coefficient row $r$, subtract $(A_{rk}/A_
  \qquad A'_{rk}=0.
  \label{eq:row}
 \end{equation}
-The target retains its value because the subtracted expression is zero. A different permitted source row changes the intermediate expressions but preserves this argument. Iterating until every unprotected column vanishes yields Eq.~\eqref{eq:master}. A nonzero pivot condition applies over the rational-function field; special kinematic points where denominators vanish require separate treatment.
+Subtracting a zero identity leaves the target unchanged. A different allowed source row changes the intermediate expressions but preserves this equality. Repeating the operation removes the nonmaster columns and gives Eq.~\eqref{eq:master}. Each pivot coefficient must be nonzero. Kinematic points at which a required denominator vanishes need a separate calculation.
 
 \section{Reverse construction and the meaning of reference labels}
 \label{app:construction}
@@ -44,11 +44,11 @@ For each checked source identity $E_q$, its coefficients sum to zero when evalua
 \end{equation}
 This establishes the master coefficients of the constructed expression. Expanding each $E_q$ in indexed integrals and collecting equal indices defines the input target. The reverse operations, source rows and their seed--operator labels supply a reproducible path back to the masters. The coefficients $\lambda_q$ and $r_m$ can be rational functions; constants form a special case. Mass partial-fraction identities have no IBP seed label.
 
-Adding another zero identity changes the construction history without changing the integral expression. This explains why a recorded sufficient seed set need not be unique. It also explains why a reference elimination path need not minimize the number of operations. Our binary labels mean membership in one checked reference set. Our action labels mean the next recorded step. Neither label supplies an unrestricted optimality certificate. The target's final master coefficients and later construction steps remain outside the features used at inference.
+Different zero identities can give different construction histories for the same target. A saved seed set is therefore sufficient, but need not be unique or smallest. Likewise, the saved row sequence need not use the fewest operations. A seed label records membership in one checked set, and a row label records the next step in one checked path. The final master coefficients and later steps do not enter the model inputs.
 
 \section{Model specification and training objectives}
 \label{app:models}
-For seed selection, a fixed signed token-count map encodes coefficient expressions into 64 components, including individual tokens and consecutive groups of two and three tokens. Different groups can share a component, so this representation does not establish symbolic equality. Integral indices, complexity counts and the stored term position supplement these features. A shared hyperbolic-tangent map gives a term vector $\boldsymbol h_u\in\mathbb R^{32}$. Family symbols, master indices and candidate seed indices give 32-component family, basis and seed representations.
+The seed network needs numerical inputs for symbolic coefficient expressions. We split each expression into tokens and count individual tokens and consecutive pairs and triples. A fixed signed map places these counts in 64 components. Different token groups can share a component, so equal representations do not prove equal expressions. Integral indices, complexity counts and term positions give further inputs. A shared hyperbolic-tangent map converts each term into a vector $\boldsymbol h_u\in\mathbb R^{32}$. Family symbols, master indices and candidate indices give separate 32-component vectors.
 
 The ordered-pair summary is
 \begin{equation}
@@ -65,7 +65,7 @@ where $n_T$ is the number of terms, square brackets concatenate vectors, $\odot$
  {\sum_v\exp(\boldsymbol u_b\cdot\boldsymbol h_v/\sqrt{32})},
  \qquad \boldsymbol v_b=\sum_u w_{bu}\boldsymbol h_u.
 \end{equation}
-The output map joins the mean and maximum term vectors, pair vector, family vector, basis vector, seed vector and weighted-term vector. A 64-component hidden layer produces the logit $g_\theta$ in Eq.~\eqref{eq:seed}. Shared maps and aggregation follow the set-based construction of Ref.~\cite{DeepSets}; stored positions retain term order in this implementation. Candidate reordering only reorders the outputs.
+The final network input joins the mean and maximum term vectors, pair vector, family vector, basis vector, seed vector and weighted-term vector. A 64-component hidden layer gives the output $g_\theta$ in Eq.~\eqref{eq:seed}. This construction uses shared maps and aggregation as in Ref.~\cite{DeepSets}. Stored positions retain term order. Reordering the candidate list only reorders the outputs.
 
 If $y_b\in\{0,1\}$ is recorded seed membership, a Bernoulli model assigns label likelihood $p_b^{y_b}(1-p_b)^{1-y_b}$. Taking its negative logarithm gives $-y_b\log p_b-(1-y_b)\log(1-p_b)$. Averaging within each candidate list and then across targets gives the implemented loss
 \begin{equation}
@@ -84,16 +84,32 @@ For row selection, let $\mathcal A$ be the current allowed action list and $\bol
        \sum_{(A,\mathcal A,a^*)\in\mathcal D_r}\log p(a^*\mid A,\mathcal A).
  \label{eq:row-loss}
 \end{equation}
-Here $A$ is the matrix, $a^*$ is the recorded action and $\mathcal D_r$ contains states with an actual choice. The denominator normalizes the probabilities; taking the negative logarithm of the categorical reference likelihood gives the loss. Single-action states have zero loss. Training uses the same AdamW learning rate, decay and norm limit as seed training, with 256 states per update. Finite-field trial updates supply cancellation features; a modular residue's numerical size does not represent a real coefficient magnitude.
+Here $A$ is the matrix, $a^*$ is the saved action, and $\mathcal D_r$ is the set of training states with a choice. The denominator makes the probabilities sum to one. The negative logarithm of the reference action's probability gives the loss. A state with one action has zero loss. Training uses the seed model's AdamW settings and 256 states per update. Trial updates modulo a prime provide cancellation features. The numerical size of a modular value does not measure the size of a real coefficient.
 
-The later native row policies change the fitted target to the cost caused by a candidate source. An immediate-cost fit predicts the logarithm of measured exact insertion time. A continuation fit instead counts the remaining forward insertions after the candidate choice, followed by native choices. If insertion $j$ uses $n_j$ source entries, its specified estimate is $1+2n_j$: one division and one multiplication and subtraction per entry. The continuation label is therefore $C(S,q)=\sum_j(1+2n_j)$. The later tree fits
+Later row models learn the cost of an action. One fit predicts the logarithm of the measured insertion time. Another counts the remaining forward insertions after that action, with Kira choosing later steps. If insertion $j$ uses $n_j$ source entries, its estimated cost is $1+2n_j$: one division, followed by a multiplication and subtraction for each entry. Thus the cost label is $C(S,q)=\sum_j(1+2n_j)$ for state $S$ and choice $q$. The later tree fits
 \begin{equation}
  y_q=\frac{C(S,q)-C(S,0)}{\max\{1,\max_b C(S,b)-\min_b C(S,b)\}},
  \qquad \widehat y_q=h(\boldsymbol x_q-\boldsymbol x_0),
 \end{equation}
 where $0$ denotes Kira's native source and $\boldsymbol x_q$ contains eighteen current-row and overlap features. Weighted squared error gives each training family equal weight. Validation selects the tree and the required predicted improvement, and exact coefficients must agree before a measured continuation enters training. This count describes coefficient operations, while complete timings include the algebraic work inside each coefficient operation. Neither training objective proves a globally minimum path.
 
-The equation tree uses the seed, operator and target features described in Section~\ref{sec:equations}. Its seventeen inputs are the loop count, independent external-momentum count, index count, logarithm of target count, number of positive seed indices, additional seed powers, seed numerator rank, excess additional powers and rank over the target maxima, whether the target list requests the seed sector, the corresponding two excesses within that sector, minimum seed--target index distance, whether the seed itself is a target, operator index, and the two overall target maxima. The index distance is $\sum_i|\sigma_i-a_i|$. Additional powers and numerator rank are $\sum_i\max(\sigma_i-1,0)$ and $\sum_i\max(-\sigma_i,0)$, respectively. Coefficient-expression features are excluded, so prediction can precede coefficient construction.
+The support of an equation is the set of integrals with nonzero coefficients. An equation label records whether this support appears in Kira's selected system. Table~\ref{tab:features} groups the equation tree's seventeen inputs. They describe the seed and target before symbolic coefficient construction. For seed indices $\boldsymbol\sigma$ and target indices $\boldsymbol a$, the distance is $\sum_i|\sigma_i-a_i|$. The additional-power count is $\sum_i\max(\sigma_i-1,0)$, and the numerator rank is $\sum_i\max(-\sigma_i,0)$. Neither quantity requires equation coefficients.
+
+\begin{table}[!htbp]
+\centering\small
+\caption{Inputs to the original equation tree. The scattering seed trees omit the operator input and use sixteen features.}
+\label{tab:features}
+\begin{tabularx}{\linewidth}{@{}lYr@{}}\toprule
+Group & Quantities & Number\\\midrule
+Family and request & Loops, external momenta, index count, logarithm of target count & 4\\
+Seed & Positive indices, additional powers, numerator rank & 3\\
+Target limits & Excess seed powers and rank above target maxima & 2\\
+Sector & Whether requested; excess powers and rank above its target maxima & 3\\
+Target distance & Minimum index distance; whether the seed is a target & 2\\
+Operator & IBP operator index & 1\\
+Overall limits & Maximum target powers and numerator rank & 2\\\bottomrule
+\end{tabularx}
+\end{table}
 
 Training gives each physical profile equal total weight by assigning each row weight $1/(n_b B_g)$, where $n_b$ is its batch size and $B_g$ is the number of training batches in its profile. At a node, let $w_+,w_-$ be the positive and negative total weights. Half the weighted binary Gini impurity is
 \begin{equation}
@@ -105,11 +121,23 @@ A leaf with $n_+$ positive rows among $n$ rows returns
 \begin{equation}
  p_{\rm leaf}=\frac{n_++1/2}{n+1}.
 \end{equation}
-This definition adds one half-count to each class and keeps a finite score even for a pure leaf. The acceptance condition is $p_{\rm leaf}\geq0.01$. These scores estimate recorded support membership; they do not measure a calibrated probability of reduction success. The depth-eight and depth-twelve candidates require at least 24 and eight rows per child, respectively. Classification-tree splits and pruning principles follow Ref.~\cite{CART1984}; the specified depths, features and thresholds define our fitted policies. Support-membership scores do not certify that a selected system is complete. A prescribed-basis check and native fallback therefore remain part of each application.
+Adding one half-count to each class gives a finite score even when a leaf contains only one class. The original tree keeps an equation when $p_{\rm leaf}\geq0.01$. These scores estimate reference-set membership; they are not calibrated probabilities that the whole reduction succeeds. The depth-eight and depth-twelve fits require at least 24 and eight rows in each child. The split procedure follows Ref.~\cite{CART1984}. A basis check and fallback still test whether the selected system is sufficient.
+
+\subsection{Additional scattering seed and equation trees}
+The added scattering study fits a separate pair of trees for each of the three graph structures. The equation labels use the same selected-support rule as the original equation model. Let $y_{\sigma,o}$ be one when the native selected system contains the recorded equation support for seed $\sigma$ and operator $o$. A seed receives label one when any of its operators has label one:
+\begin{equation}
+ y_\sigma=\max_o y_{\sigma,o}.
+ \label{eq:adapted-seed-label}
+\end{equation}
+For binary labels, this maximum is one exactly when at least one selected-support equation comes from the seed. This proves the stated membership rule. The label gives a useful reference set, not a proof that every labelled seed is necessary.
+
+Each seed appears once per training batch. Its tree uses the sixteen features that do not depend on the operator. Thus every operator of that seed receives the same score. The early filter either permits or skips construction of all its equations. Kira still enumerates the seed region and applies its native symmetries. The equation tree uses all seventeen features and can keep different operators of the same seed.
+
+Both fits have maximum depth twelve and at least eight records in each child. Each training batch has equal total weight. The split rule and leaf score are those derived above. Validation compares thresholds $0.001$, $0.01$ and $0.05$ using full reduction time. Three repetitions contribute to each validation median. The chosen threshold minimizes the geometric mean ratio over the rational and symbolic validation batches of its graph. Model parameters and thresholds are fixed before testing. For the nonplanar box, both thresholds are $0.05$. For the pentagon, the seed and equation thresholds are $0.05$ and $0.001$. For the box with virtuality, they are $0.001$ and $0.01$. These fits create new small tree models; they do not change the original neural checkpoints. The reserved timing test gives no overall saving, so the application keeps native choices as its default.
 
 \section{Exact reuse for the restricted vacuum family}
 \label{app:vacuum}
-To state the domain of the cumulative comparison, define a Euclidean vacuum family with positive, distinct squared masses $\mu_j=\rho_j\mu$:
+The cumulative speedup concerns the following Euclidean vacuum family. Its squared masses $\mu_j=\rho_j\mu$ are positive and distinct:
 \begin{equation}
  V^{(L)}_{\boldsymbol b}=
  \int\prod_{h=1}^L\frac{d^d\ell_h}{\pi^{d/2}}
@@ -201,11 +229,11 @@ The cumulative test includes fresh-worker startup, input loading, supplied Euler
 
 The initial live-matrix comparison uses three repetitions of four methods on seven physical cases, giving 84 workflows. Its complete ratio is the geometric mean of the seven paired median ratios and carries no reported uncertainty interval. The later native implementation comparison uses five repetitions and sixteen batches; it repeats earlier physical profiles to measure the implementation change.
 
-Every quantitative statement in Sections~\ref{sec:data}--\ref{sec:overall} reports this study's recorded measurements. The evidence separates the expanded label test, supplied-equation seed comparison, live-row comparison, later native comparison, early-equation comparison, new-family transfer test and direct cumulative test. This separation prevents a change of baseline or workload from entering a claimed combined model speedup. The archived notes retain the earlier experiments and their negative results.
+The reported numbers are measurements from this study. We keep the original label tests, seed tests, row tests, equation tests, scattering tests and vacuum benchmark separate. This prevents differences in targets or timed work from being mistaken for a combined model gain. The archived notes preserve earlier experiments, including negative results.
 
 \section{Integral families and kinematic conventions}
 \label{app:families}
-The general integral in Eq.~\eqref{eq:family} becomes a specific family when its ordered denominator momenta, masses and external scalar products are given. The definitions below cover the families used to construct the training data and the families used in the reported comparisons. A target is an index vector in one of these families or a stated rational linear combination of such vectors. Thus the definitions cover the generated integrals without printing each parameter instance. Unless stated otherwise, $D_i=q_i^2-m_i^2+i0$ and the measure is that of Eq.~\eqref{eq:family}. The Euclidean family in Eq.~\eqref{eq:vacuum} retains its separately stated sign convention.
+To specify a family in Eq.~\eqref{eq:family}, we give its ordered denominator momenta, masses and external scalar products. The definitions below cover the training families and the reported test families. A target is an index vector in one family or a rational linear combination of such vectors. These definitions specify the generated integrals without listing millions of individual records. Unless stated otherwise, $D_i=q_i^2-m_i^2+i0$ and the measure is that of Eq.~\eqref{eq:family}. The Euclidean vacuum family keeps the sign convention in Eq.~\eqref{eq:vacuum}.
 
 \subsection{Initial one-loop and two-loop families}
 For the one-loop tadpole, $q_1=\ell$ and $m_1^2=\mu>0$. For the bubbles,
@@ -234,7 +262,7 @@ Writing $u_i=p_i^2$, the three classes have $(u_1,u_2,u_3,u_4)=(0,0,0,0)$, $(0,0
 These definitions give thirteen one-loop classes. The initial two-loop massless two-point family uses
 \begin{equation}
  \boldsymbol q=(\ell_1,\ell_2,\ell_1-\ell_2,\ell_1-p,\ell_2-p),
- \qquad p^2=s,qquad m_i^2=0.
+ \qquad p^2=s,\qquad m_i^2=0.
 \end{equation}
 The equal-mass sunrise uses $\boldsymbol q=(\ell_1,\ell_2,p-\ell_1-\ell_2,p-\ell_1,p-\ell_2)$, with masses $(\mu,\mu,\mu,0,0)$ and $p^2=s$. Its last two entries are auxiliary: $a_4,a_5\leq0$. The equal-mass vacuum sunset has $\boldsymbol q=(\ell_1,\ell_2,\ell_1-\ell_2)$ and all three squared masses $\mu$. These three classes complete the initial sixteen. Their subsectors include the integrals obtained by removing physical denominators.
 
@@ -291,6 +319,18 @@ The massless pentagon uses $\sum_{i=1}^5p_i=0$, $p_i^2=0$ and
 All five denominators are physical. The independent invariants are $(s_{12},s_{23},s_{34},s_{45},s_{51})$, where $s_{ij}=(p_i+p_j)^2$. Squaring $p_1+p_2+p_3=-(p_4+p_5)$ gives $2p_1\cdot p_3=s_{45}-s_{12}-s_{23}$; the other nonadjacent products follow by cyclic relabelling. The box with an external virtuality uses $\boldsymbol q=(\ell,\ell-p_1,\ell-p_1-p_2,\ell-p_3)$, $p_1^2=p_2^2=p_3^2=0$, and $v=(p_1+p_2-p_3)^2$. With the nonplanar convention for $s,t$, expanding $v$ gives $2p_2\cdot p_3=s+t-v$.
 
 The rational nonplanar profiles are $(s,t)=(-149,-147),(-167,-157)$. The pentagon profiles are $(-51,-53,-57,-59,-63)$ and $(-71,-73,-77,-79,-83)$ in the displayed invariant order. Each rational profile supplies sixteen targets. The symbolic nonplanar, pentagon and virtuality-box tests supply ten, six and eight targets. They start with the corner and single additional powers, followed by auxiliary numerators and single removed denominators where available. These definitions give the 88 targets of the transfer test.
+
+\subsection{Parameter points and targets for the additional training}
+The new scattering study uses the same three denominator lists and scalar-product conventions defined above. For integer profile number $n$, we choose
+\begin{align}
+ (s,t)_{\rm NP}&=(-113-18n,-127-10n),\\
+ (s_{12},s_{23},s_{34},s_{45},s_{51})_{\rm P}
+ &=(-11-20n,-13-20n,-17-20n,-19-20n,-23-20n),\\
+ (s,t,v)_{\rm box}&=(-113-18n,-127-10n,-149-12n).
+\end{align}
+These are specified input values in a common squared-momentum unit. Training uses $n=10,11$, validation uses $n=12$, and testing uses $n=13,14$. The dimension $d$ remains symbolic in every case. Each symbolic batch instead keeps all of its displayed invariants independent.
+
+The target list starts with the full-sector corner. It then raises each physical denominator power once and adds each single auxiliary numerator. The same sequence follows for each possible single removed physical denominator. Rational batches take the first sixteen entries. Symbolic training takes entries 0--3, validation takes 4--7, and testing takes 8--11, with indices starting at zero. We verify that the three symbolic lists are disjoint for each structure. Rational batches reuse index templates at different parameter points, so this split does not claim entirely unseen target patterns in every representation.
 
 \section{Master bases and dimensionally consistent target construction}
 \label{app:basis}
@@ -357,8 +397,7 @@ $\Gamma(\alpha)\Gamma(1-\alpha)$ for $0<\operatorname{Re}\alpha<1$. Analytic con
 
 \section{Finite minimum-operation checks}
 \label{app:optimal}
-A known reverse construction supplies a valid training path, but a minimum also requires a specified operation cost and a complete set of alternatives. We checked two small physical systems to make this distinction explicit. Define the massless bubble $B_{a,b}=I_{(a,b)}$ with denominators $\ell^2+i0$ and $(\ell-p)^2+i0$, and $p^2=s\ne0$. Contracting the derivative with $\ell$ uses
-$2\ell\cdot(\ell-p)=\ell^2+(\ell-p)^2-s$. Substituting this equality in Eq.~\eqref{eq:ibp-expanded} gives
+A saved construction proves that a reduction path exists. To prove that a path has minimum cost, we must also specify the allowed equations, operations and cost. We perform this check for two small systems. Define the massless bubble $B_{a,b}=I_{(a,b)}$ with denominators $\ell^2+i0$ and $(\ell-p)^2+i0$, where $p^2=s\ne0$. Contracting the derivative with $\ell$ uses $2\ell\cdot(\ell-p)=\ell^2+(\ell-p)^2-s$. Equation~\eqref{eq:ibp-expanded} then gives
 \begin{equation}
  0=(d-2a-b)B_{a,b}-bB_{a-1,b+1}+bsB_{a,b+1}.
 \end{equation}

@@ -16,7 +16,7 @@ Run `make report.pdf` to build the paper only.
 The Makefile uses the existing Tectonic installation and bounded memory.
 The tracked figures permit a build without the scientific datasets.
 
-Run `s00_make_paper_figures.py` on Hoffman to regenerate the five paper figures.
+Run `s00_make_paper_figures.py` on Hoffman to regenerate the five original paper figures.
 Use the existing environment at `../.tools/seed-model/venv/bin/python`.
 The script reads the recorded result summaries.
 It does not train a model or repeat a reduction.
@@ -53,10 +53,10 @@ TECTONIC ?= ../.tools/tectonic/tectonic
 .DELETE_ON_ERROR:
 all: report.pdf notes.pdf
 
-report.pdf: report.tex paper_appendices.tex paper_references.bib $(wildcard paper_figures/*.pdf)
+report.pdf: report.tex paper_appendices.tex scattering_results.tex paper_references.bib $(wildcard paper_figures/*.pdf)
 	ulimit -v 1572864; ulimit -f 131072; XDG_CACHE_HOME="$(abspath ../.tools/cache)" timeout 180s "$(TECTONIC)" --keep-logs --outdir . report.tex
 
-NOTES_SECTIONS := $(filter-out report.tex notes.tex paper_appendices.tex,$(wildcard *.tex))
+NOTES_SECTIONS := $(filter-out report.tex notes.tex paper_appendices.tex scattering_results.tex,$(wildcard *.tex))
 notes.pdf: notes.tex references.bib $(NOTES_SECTIONS) $(wildcard figures/*.pdf)
 	ulimit -v 1572864; ulimit -f 131072; XDG_CACHE_HOME="$(abspath ../.tools/cache)" timeout 180s "$(TECTONIC)" --keep-logs --outdir . notes.tex
 
@@ -168,3 +168,18 @@ Read one record at a time with the parent reader.
 - [figures](figures/README.md).
 
 - [paper_figures](paper_figures/README.md).
+
+## Additional scattering study
+
+`scattering_results.tex` adds the new scattering training and test results to the paper.
+`scattering_figure_data.json` stores the compact measured values used by its figures and tables.
+The full data remain in the model folders on Hoffman and GitHub.
+
+Use [the scattering analysis](../ML_model_equation_selection/scattering_training/s02_analyze.py) to create the two additional figures.
+Run it on Hoffman after the study tests finish.
+Read [the study guide](../ML_model_equation_selection/scattering_training/README.md) for the required inputs and job order.
+
+The main paper now explains each model before its technical details.
+Tables compare the model roles, dataset sizes, measured results and equation features.
+The appendices retain the integral definitions and derivations.
+The archived notes remain unchanged.

@@ -1481,3 +1481,9 @@ make -C report all
 - [validation_fast_features](validation_fast_features/README.md).
 
 - [validation_full_features](validation_full_features/README.md).
+
+## Additional scattering training
+
+The [scattering study](scattering_training/README.md) fits and tests trees for three additional structures.
+It includes rational and symbolic kinematics with separate training, validation and test batches.
+Read its measured results before selecting a learned policy.

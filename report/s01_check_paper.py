@@ -6,7 +6,7 @@ import re
 
 HERE=Path(__file__).resolve().parent
 def main():
-    source='\n'.join((HERE/n).read_text() for n in ['report.tex','paper_appendices.tex'])
+    source='\n'.join((HERE/n).read_text() for n in ['report.tex','paper_appendices.tex','scattering_results.tex'])
     bib=(HERE/'paper_references.bib').read_text()
     cites={x.strip() for group in re.findall(r'\\cite\{([^}]+)\}',source) for x in group.split(',')}
     keys=set(re.findall(r'@\w+\{([^,]+),',bib))
@@ -39,6 +39,17 @@ def main():
     for name,record in data['sources'].items():
         path=HERE.parent/name
         if path.exists():assert hashlib.sha256(path.read_bytes()).hexdigest()==record['sha256'],name
+    adaptation=json.loads((HERE/'scattering_figure_data.json').read_text())
+    assert adaptation['complete'] and adaptation['all_exact']
+    assert adaptation['workflows']==180 and adaptation['application_checks']==18
+    assert len(adaptation['training'])==6
+    for task in ['seed','equation']:
+        assert adaptation['aggregate'][task]['first_attempt_successes']==sum(
+            c['first_attempt_successes'][task] for c in adaptation['cases'])
+    for record in adaptation['cases']:
+        for task,ratio in record['ratios'].items():
+            expected=record['median_seconds'][task]/record['median_seconds']['native']
+            assert abs(ratio-expected)<1e-12
     result=dict(external_citation_keys=len(cites),internal_references=len(refs),figures=len(figs),
         self_repository_citations=0,original_abstract_preserved=True,original_notes_text_preserved_except_title=True,
         original_supporting_files_preserved=len(archive['supporting_files']),

@@ -1,0 +1,186 @@
+{
+  "policies": {
+    "nonplanar_box_seed": {
+      "threshold": 0.05,
+      "ratio": 0.9701234248152586,
+      "fallback": 0,
+      "success": true,
+      "options": [
+        {
+          "threshold": 0.001,
+          "ratio": 0.9939725338797355,
+          "fallback": 0,
+          "success": true
+        },
+        {
+          "threshold": 0.01,
+          "ratio": 1.0059457334236275,
+          "fallback": 0,
+          "success": true
+        },
+        {
+          "threshold": 0.05,
+          "ratio": 0.9701234248152586,
+          "fallback": 0,
+          "success": true
+        }
+      ],
+      "activate": true
+    },
+    "nonplanar_box_equation": {
+      "threshold": 0.05,
+      "ratio": 0.9183996840006604,
+      "fallback": 0,
+      "success": true,
+      "options": [
+        {
+          "threshold": 0.001,
+          "ratio": 0.9992758425287278,
+          "fallback": 0,
+          "success": true
+        },
+        {
+          "threshold": 0.01,
+          "ratio": 0.9741743419404698,
+          "fallback": 0,
+          "success": true
+        },
+        {
+          "threshold": 0.05,
+          "ratio": 0.9183996840006604,
+          "fallback": 0,
+          "success": true
+        }
+      ],
+      "activate": true
+    },
+    "pentagon_seed": {
+      "threshold": 0.05,
+      "ratio": 0.9221655918241819,
+      "fallback": 0,
+      "success": true,
+      "options": [
+        {
+          "threshold": 0.001,
+          "ratio": 0.9639999830052473,
+          "fallback": 0,
+          "success": true
+        },
+        {
+          "threshold": 0.01,
+          "ratio": 0.9546241402216026,
+          "fallback": 0,
+          "success": true
+        },
+        {
+          "threshold": 0.05,
+          "ratio": 0.9221655918241819,
+          "fallback": 0,
+          "success": true
+        }
+      ],
+      "activate": true
+    },
+    "pentagon_equation": {
+      "threshold": 0.001,
+      "ratio": 0.9322936931145356,
+      "fallback": 0,
+      "success": true,
+      "options": [
+        {
+          "threshold": 0.001,
+          "ratio": 0.9322936931145356,
+          "fallback": 0,
+          "success": true
+        },
+        {
+          "threshold": 0.01,
+          "ratio": 1.0808674763548625,
+          "fallback": 3,
+          "success": true
+        },
+        {
+          "threshold": 0.05,
+          "ratio": 1.0676939372567247,
+          "fallback": 3,
+          "success": true
+        }
+      ],
+      "activate": true
+    },
+    "one_mass_box_seed": {
+      "threshold": 0.001,
+      "ratio": 0.9629975658990964,
+      "fallback": 0,
+      "success": true,
+      "options": [
+        {
+          "threshold": 0.001,
+          "ratio": 0.9629975658990964,
+          "fallback": 0,
+          "success": true
+        },
+        {
+          "threshold": 0.01,
+          "ratio": 0.9893118929681436,
+          "fallback": 0,
+          "success": true
+        },
+        {
+          "threshold": 0.05,
+          "ratio": 0.9715392182407073,
+          "fallback": 0,
+          "success": true
+        }
+      ],
+      "activate": true
+    },
+    "one_mass_box_equation": {
+      "threshold": 0.01,
+      "ratio": 0.9340479134562034,
+      "fallback": 0,
+      "success": true,
+      "options": [
+        {
+          "threshold": 0.001,
+          "ratio": 0.9985553912705964,
+          "fallback": 0,
+          "success": true
+        },
+        {
+          "threshold": 0.01,
+          "ratio": 0.9340479134562034,
+          "fallback": 0,
+          "success": true
+        },
+        {
+          "threshold": 0.05,
+          "ratio": 0.9646482160616764,
+          "fallback": 0,
+          "success": true
+        }
+      ],
+      "activate": true
+    }
+  },
+  "cases_sha256": "df19f9e59fc76e46b6b513a2fe9571a8f18af5a8a61ede67b3ac27907ab5c16c",
+  "source_sha256": "024a6a11bc004d6b439322babe5ed833da3b9e4c863f6b6ec75174c6d9e91ac8",
+  "binary_sha256": "2d616a6fc0dc0dea4e293c8d213ab269019c9bfb13cad8ee6b972762ad4afbdd",
+  "weights": {
+    "ML_model_equation_selection/scattering_training/trained_model/nonplanar_box.txt": "52ec0d950dce0ad8d9b0becbb046cdc1064fdd7ab54c124eefae460c60f2b396",
+    "ML_model_equation_selection/scattering_training/trained_model/one_mass_box.txt": "d8507deed3efee156e214e0f0f888a54bcc6e430c1eea4cb9b4bf05402419ce1",
+    "ML_model_equation_selection/scattering_training/trained_model/pentagon.txt": "6124a5024b58286dc058f48618f2bcef52df52d3950cd677781680cf1b3e8874",
+    "ML_model_seed_selection/scattering_training/trained_model/nonplanar_box.txt": "5a58c977c451c87b2b9ab26b0029c0f3fddc9c8730a246cd84663ed409f0aac2",
+    "ML_model_seed_selection/scattering_training/trained_model/one_mass_box.txt": "49fbd32ee57a9b553157f53a20d5e651f750609b3871d896914a550ad0219aab",
+    "ML_model_seed_selection/scattering_training/trained_model/pentagon.txt": "edb0c55825bd519b5932a83fea4e42f63f682e7ae40b44485e1ae075b24f975c"
+  },
+  "test_methods": [
+    "native",
+    "old_equation",
+    "seed",
+    "equation"
+  ],
+  "repetitions": 5,
+  "timing": "Includes input preparation, inference, native generation, exact comparisons, cleanup, and every fallback. Offline references and training excluded.",
+  "adaptation": "New graph-specific trees; original neural checkpoints and historical tests remain unchanged."
+}

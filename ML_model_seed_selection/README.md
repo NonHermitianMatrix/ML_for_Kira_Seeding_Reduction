@@ -708,3 +708,9 @@ ulimit -c 0
 - [runs](runs/README.md).
 
 - [runtime_inference](runtime_inference/README.md).
+
+## Additional scattering training
+
+The [scattering seed folder](scattering_training/README.md) stores three new native seed trees.
+The shared study contains their training data and full Kira comparisons.
+The earlier neural model remains unchanged.

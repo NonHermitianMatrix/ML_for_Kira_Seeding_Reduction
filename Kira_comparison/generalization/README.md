@@ -610,3 +610,10 @@ ulimit -c 0
 - [scattering_families](scattering_families/README.md).
 
 - [symbolic_kinematics](symbolic_kinematics/README.md).
+
+## Later training study
+
+This folder preserves the original fixed-model transfer test.
+The [later scattering study](../../ML_model_equation_selection/scattering_training/README.md) adds training examples from these structures.
+It tests new models on separate parameter points and symbolic target lists.
+Its results do not replace the historical measurements above.

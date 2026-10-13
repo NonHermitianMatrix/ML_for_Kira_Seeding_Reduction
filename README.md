@@ -67,3 +67,10 @@ A matching file check does not prove a physical or mathematical claim.
 - [integrals](integrals/README.md).
 
 - [report](report/README.md).
+
+## Additional scattering training
+
+Read [the new scattering study](ML_model_equation_selection/scattering_training/README.md) for training on the three previously unsupported structures.
+It contains new seed and equation trees, separate validation and test batches, and full native Kira comparisons.
+The original models and negative transfer results remain available.
+The updated paper uses simpler explanations and comparison tables.
