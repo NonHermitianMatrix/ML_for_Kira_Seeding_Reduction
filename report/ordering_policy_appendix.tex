@@ -1,0 +1,93 @@
+\section{Learned choices of integral and propagator order}
+\label{app:ordering-policy}
+The family definitions and target patterns are those of
+Appendix~\ref{app:type-specialists}. We use parameter profile 81 for
+development, profiles 82 and 83 for training, profile 84 for validation,
+and profiles 85 and 86 for the reserved comparison. Each profile uses
+the rational parameters defined there, while the dimension $d$ remains
+symbolic. These are new parameter values of known graphs and target
+patterns.
+
+\subsection{What the choice changes}
+Kira provides eight integral orderings~\cite{Kira12}. Order one treats
+numerator powers as simpler than extra denominator powers, called dots;
+order two reverses that preference. Orders three and four first compare
+their sum and then favour numerator powers or dots, respectively.
+Orders one through four compare sectors by sector number. Orders five
+through eight use the corresponding index rules but first compare the
+number of positive indices and favour subsectors of the declared top
+sectors. We also test the four automatic propagator permutation schemes
+of Kira~\cite{Kira3}. The final coefficients use the original index
+convention in every comparison.
+
+The development candidates retain the preceding route, test each integral
+order from two through eight with propagator scheme one, and test
+propagator schemes two through four with integral order one. These are
+eleven initial choices. For each development batch, we also combine its
+fastest nondefault integral order with its fastest nondefault propagator
+scheme and time that pair. This adds one development calculation per
+batch. The preceding seed policy remains active in each
+new choice. It can use truncation, selected seed bounds, or temporary-basis
+completion as defined in the preceding appendices. A changed ordering is
+applied to each Kira attempt in that route. If it fails to reduce to the
+prescribed basis, we repeat the preceding route with its original settings.
+Both attempts enter the recorded time. This finite comparison does not
+search every joint ordering or every possible elimination sequence.
+
+To see why changing labels preserves an integral, let $\pi$ be a
+permutation of the $N$ propagator positions. Set
+$D'_i=D_{\pi(i)}$ and $a'_i=a_{\pi(i)}$. Reindexing the product gives
+\begin{equation}
+ \prod_{i=1}^{N}(D'_i)^{-a'_i}
+ =\prod_{i=1}^{N}D_{\pi(i)}^{-a_{\pi(i)}}
+ =\prod_{j=1}^{N}D_j^{-a_j},
+ \qquad I_{D'}(\mathbf a')=I_D(\mathbf a).
+ \label{eq:order-relabel}
+\end{equation}
+Here $I_D$ denotes the integral defined with propagators $D_i$.
+The integration measure is unchanged. Integral ordering changes the
+sequence used to solve the IBP equations. If $A\mathbf I=0$ denotes
+those equations and $P$ is the permutation matrix that reorders the integral columns, then
+\begin{equation}
+ \mathbf J=P\mathbf I,\qquad
+ AP^{-1}\mathbf J=A\mathbf I=0.
+ \label{eq:order-system}
+\end{equation}
+Thus a column order changes the representation of the same equations.
+In an actual finite reduction, the resulting selection of equations can
+also change, so exact agreement and completeness must still be checked.
+We require every target to reduce to the prescribed master basis and
+compare every output coefficient with an independent expanded-seed
+reduction. The predictor receives neither those coefficients nor the
+reference reduction steps.
+
+\subsection{Training, validation, and timing}
+For each development batch, we retain the fastest candidate if its full
+time is at least ten percent below the preceding route. We also retain
+the preceding route. The resulting candidate set is fixed before training.
+We fit the same ten predictor types per graph as in
+Appendix~\ref{app:basis-completion}, using the same nine features and
+complete-time log-ratio labels. Training has two measurements per
+candidate and batch; validation has three. Validation chooses a fixed
+control and enables a predictor only when it saves at least five percent
+against that control. We freeze the models, controls, and gates before
+using the reserved profiles.
+
+Each application selects its ordering before Kira creates integral weights
+and generates equations. The prediction is made once per requested batch.
+The selected route retains the earlier seed policy, and Kira performs all
+algebraic operations. This study measures a choice of complete reduction
+strategy; it does not reinstate the earlier model that scored individual
+row operations. That model remains excluded from the retained method.
+
+The reserved comparison measures native choices, the preceding route,
+the training-selected fixed setting for each graph, and the new selected
+route. It uses five repetitions with rotating execution order. The same
+worker handles all methods for each batch. The timer includes prediction,
+input preparation, native equation generation, exact algebra, basis
+conversion where needed, coefficient checks, fallback, and cleanup.
+The caller and models are already loaded, and each attempt starts a new
+Kira process. Offline development, reference construction, training, and
+record writing are excluded. Additional applications receive the target
+indices and master basis without reference coefficients. Their results
+are checked independently after the reduction.

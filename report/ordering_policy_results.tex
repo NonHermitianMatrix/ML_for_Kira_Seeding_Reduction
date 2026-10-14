@@ -1,0 +1,69 @@
+\section{Choosing integral order before equation generation}
+\label{sec:ordering-policy}
+Selective seed limits reduce the number of equations, but the order in
+which Kira treats their integrals can also change the remaining work.
+Kira provides eight integral priority rules and four automatic propagator
+ordering schemes~\cite{Kira12,Kira3}. We test whether a model can choose
+between these settings from the requested target indices before Kira
+generates equations. The earlier learned seed strategy stays active.
+The new model makes one choice per target batch; Kira then carries out
+the exact reduction with those settings. If the result does not reach
+the prescribed basis, the calculation repeats the preceding route.
+Appendix~\ref{app:ordering-policy} defines the choices and derives the
+invariance under relabelling.
+
+We compare eleven initial candidates on a separate development profile,
+then test the pair of best nondefault orderings for each batch. We keep
+the preceding route plus each batch winner with at least ten percent less
+full time. Write $\omega$ for the integral-order number and $\chi$ for the propagator-scheme number. The retained settings are the preceding route, $ (\omega,\chi)=(2,1) $, $ (\omega,\chi)=(7,1) $, $ (\omega,\chi)=(5,4) $, $ (\omega,\chi)=(8,3) $.
+The preceding route retains its settings. We then fit ten models
+per graph on 36 training batches, select policies on 18 validation
+batches, and reserve 36 further batches. The nine target features,
+complete-cost labels, predictor types, and validation gate are the same
+as in the seed-expansion study. The final choice can be a fitted model
+or a fixed setting, according to validation cost. A fixed setting still
+uses the preceding learned seed policy, so the fixed comparison isolates
+the additional selection procedure. This includes both validation-based
+control choices and target-dependent predictions.
+
+Validation enables a new predictor for 0 of seven graph types. The training and validation measurements contain 1,432.8 seconds of reductions, and fitting seventy predictors takes 0.93 seconds. These offline costs exclude development and reference construction and remain outside application time.
+
+None of the new ordering predictors passes the five-percent validation gate. The selected method therefore uses fixed ordering settings chosen by validation while retaining the preceding learned seed policies. Any measured change in this stage comes from those settings and their interaction with the preceding method. It does not establish an added gain from an ordering predictor.
+
+All 720 timed reductions pass exact checks. All 43 additional applications also pass when no target coefficients are supplied to the reduction. The new-to-previous time ratio is $1.0141$ (descriptive interval $[0.9986,1.0303]$), giving 1.4\% more time. The new-to-native ratio is $0.8499$ (descriptive interval $[0.7306,0.9642]$), giving 15.0\% less time. The ratio to the new fixed strategy is $1.0070$ (descriptive interval $[0.9811,1.0327]$). These ratios give each graph equal weight.
+
+The sum of median full times over the 36 reserved batches is 110.09 seconds for native choices, 79.61 seconds for the preceding method, 79.53 seconds for the new fixed settings, and 79.68 seconds for the selected method. This gives 0.1\% more time than the preceding method for that workload.
+
+The additional ordering decision takes a median of 271.1 microseconds per timed application. This is part of the full time above; the preceding seed-policy cost is also included in full time.
+
+\begin{table}[!htbp]
+\centering\small
+\caption{Complete times for the ordering study. Times are geometric
+means of batch medians in seconds. Each graph uses two reserved
+kinematic profiles. The choice is a fitted predictor, the previous route,
+or a fixed $(\omega,\chi)$ setting. A ratio below one indicates less time.}
+\label{tab:ordering-policy}
+\begin{tabular}{@{}llrrrr@{}}\toprule
+Graph & Choice & Previous (s) & New (s) & New/previous & New/native\\\midrule
+Sunrise & $(7,1)$ & 0.610 & 0.633 & 1.037 & 1.034\\
+Planar box & $(2,1)$ & 2.407 & 2.390 & 0.993 & 0.759\\
+Vacuum & Previous & 0.975 & 0.982 & 1.007 & 0.983\\
+Ladder & Previous & 3.122 & 3.088 & 0.989 & 0.591\\
+Nonplanar box & $(2,1)$ & 3.698 & 3.681 & 0.995 & 0.745\\
+Pentagon & $(2,1)$ & 0.788 & 0.820 & 1.041 & 0.987\\
+Virtuality box & $(5,4)$ & 0.601 & 0.624 & 1.039 & 0.955\\
+\bottomrule\end{tabular}
+\end{table}
+\begin{figure}[!htbp]
+\centering\includegraphics[width=\linewidth]{paper_figures/ordering_policy.pdf}
+\caption{The effect of choosing Kira settings before reduction. Left:
+new fixed settings and selected settings relative to the preceding method.
+Right: preceding and selected methods relative to native choices.
+Values below one indicate less full time. Bars give the range across
+two parameter profiles; they are not significance intervals.}
+\label{fig:ordering-policy}
+\end{figure}
+\FloatBarrier
+The following graph groups take more time than the preceding method: sunrise (3.7\%), vacuum (0.7\%), pentagon (4.1\%), virtuality box (3.9\%).
+
+The selected method makes 0 fallback attempts in the timed comparison. Across 180 runs per method, symbolic equation regeneration takes 79.88 seconds with the preceding method and 80.58 seconds with the selected method. Across 180 runs per method, back-substitution takes 37.99 seconds with the preceding method and 37.35 seconds with the selected method. The total time also includes prediction, preparation, native generation, exact checks, basis conversion, retries, and cleanup. The measurements use loaded caller and model code, with a new Kira process for each attempt. They establish the measured choice among the tested strategies for known graphs at one through three loops and new rational parameter profiles. They do not establish a globally fastest ordering or a gain for arbitrary integral families.

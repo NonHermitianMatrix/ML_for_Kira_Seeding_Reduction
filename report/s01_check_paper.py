@@ -8,7 +8,7 @@ import statistics
 
 HERE=Path(__file__).resolve().parent
 def main():
-    names=['report.tex','paper_appendices.tex','scattering_results.tex','workflow_results.tex','workflow_appendix.tex','type_specialist_results.tex','type_specialist_appendix.tex','basis_completion_results.tex','basis_completion_appendix.tex']
+    names=['report.tex','paper_appendices.tex','scattering_results.tex','workflow_results.tex','workflow_appendix.tex','type_specialist_results.tex','type_specialist_appendix.tex','basis_completion_results.tex','basis_completion_appendix.tex','ordering_policy_results.tex','ordering_policy_appendix.tex','thread_policy_results.tex','thread_policy_appendix.tex']
     source='\n'.join((HERE/n).read_text() for n in names)
     bib=(HERE/'paper_references.bib').read_text()
     cites={x.strip() for group in re.findall(r'\\cite\{([^}]+)\}',source) for x in group.split(',')}
@@ -114,6 +114,32 @@ def main():
     for name,data in [('model_test/summary.json',completion),('evidence_validation.json',completion_audit)]:
         path=HERE.parent/'ML_model_workflow_selection/basis_completion'/name
         if path.exists():assert json.loads(path.read_text())==data
+    ordering=json.loads((HERE/'ordering_policy_figure_data.json').read_text())
+    ordering_audit=json.loads((HERE/'ordering_policy_validation.json').read_text())
+    assert ordering['complete'] and ordering['all_exact'] and ordering_audit['complete']
+    assert ordering['workflows']==720 and ordering['applications']==36 and ordering_audit['public_applications']==7
+    for row in ordering['cases']:
+        for key,(a,b) in denominators.items():assert abs(row['ratios'][key]-row['median_seconds'][a]/row['median_seconds'][b])<1e-12
+    for key,row in ordering['aggregate'].items():
+        expected=math.exp(statistics.mean(math.log(r[key]) for r in ordering['by_topology'].values()))
+        assert abs(row['ratio']-expected)<1e-12
+    for name,data in [('model_test/summary.json',ordering),('evidence_validation.json',ordering_audit)]:
+        path=HERE.parent/'ML_model_workflow_selection/ordering_policy'/name
+        if path.exists():assert json.loads(path.read_text())==data
+    thread=json.loads((HERE/'thread_policy_figure_data.json').read_text())
+    thread_audit=json.loads((HERE/'thread_policy_validation.json').read_text())
+    assert thread['complete'] and thread['all_exact'] and thread_audit['complete']
+    assert thread['workflows']==900 and thread['applications']==36 and thread_audit['public_applications']==7 and thread_audit['persistent_worker_applications']==7
+    thread_denominators=dict(denominators,selected_to_four=('selected','previous_four'),four_to_previous=('previous_four','previous'))
+    for row in thread['cases']:
+        for key,(a,b) in thread_denominators.items():assert abs(row['ratios'][key]-row['median_seconds'][a]/row['median_seconds'][b])<1e-12
+    for key,row in thread['aggregate'].items():
+        expected=math.exp(statistics.mean(math.log(r[key]) for r in thread['by_topology'].values()))
+        assert abs(row['ratio']-expected)<1e-12
+    assert thread['allocated_cores']==4 and all(v>0 for v in thread['cpu_totals'].values())
+    for name,data in [('model_test/summary.json',thread),('evidence_validation.json',thread_audit)]:
+        path=HERE.parent/'ML_model_workflow_selection/thread_policy'/name
+        if path.exists():assert json.loads(path.read_text())==data
     result=dict(external_citation_keys=len(cites),internal_references=len(refs),figures=len(figs),
         self_repository_citations=0,original_notes_reconstructable=True,terminology_updated_as_requested=True,
         original_supporting_files_preserved=len(archive['supporting_files']),
@@ -121,6 +147,8 @@ def main():
         applications_without_reference_answers=applications,
         specialist_workflows=specialist['workflows'],specialist_applications=43,specialist_candidates=70,
         basis_completion_workflows=completion['workflows'],basis_completion_applications=43,
+        ordering_workflows=ordering['workflows'],ordering_applications=43,
+        thread_workflows=thread['workflows'],thread_applications=50,
         pdf_sha256={n:hashlib.sha256((HERE/(n+'.pdf')).read_bytes()).hexdigest() for n in ['report','notes']})
     (HERE/'paper_validation.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(result))

@@ -73,3 +73,11 @@ See [the study guide](../ML_model_workflow_selection/type_specialists/README.md)
 ## Selective seed expansion
 
 `basis_completion_results.tex` gives the new methods and measured results. `basis_completion_appendix.tex` defines the inputs, candidates, exact basis conversion, model selection, and comparison. `basis_completion_figure_data.json` contains the compact plot and table values. `basis_completion_validation.json` records the completed evidence checks. The [study guide](../ML_model_workflow_selection/basis_completion/README.md) explains all code and data. `s01_check_paper.py` also checks the new summaries against their scientific sources on Hoffman.
+
+## Ordering comparison
+
+`ordering_policy_results.tex` gives the new methods and measured results. `ordering_policy_appendix.tex` defines the inputs, candidates, relabelling invariance, model selection, and comparison. `ordering_policy_figure_data.json` contains the compact plot and table values. `ordering_policy_validation.json` records the completed evidence checks. The [study guide](../ML_model_workflow_selection/ordering_policy/README.md) explains all code and data. `s01_check_paper.py` also checks the new summaries against their scientific sources on Hoffman.
+
+## Worker-count comparison
+
+`thread_policy_results.tex` gives the new methods and measured results. `thread_policy_appendix.tex` defines the inputs, candidates, worker-count invariance, model selection, and comparison. `thread_policy_figure_data.json` contains the compact plot and table values. `thread_policy_validation.json` records the completed evidence checks. The [study guide](../ML_model_workflow_selection/thread_policy/README.md) explains all code and data. `s01_check_paper.py` also checks the new summaries against their scientific sources on Hoffman.

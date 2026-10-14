@@ -24,3 +24,11 @@ The original supporting files remain unchanged.
 ## Selective seed expansion
 
 The current-update blocks also include the new seed-expansion results and derivation. The preservation check still reconstructs the original notes and verifies all 91 earlier supporting files.
+
+## Ordering comparison
+
+The current-update blocks also include the new ordering results and derivation. The preservation check still reconstructs the original notes and verifies all 91 earlier supporting files.
+
+## Worker-count comparison
+
+The current-update blocks also include the new thread results and derivation. The preservation check still reconstructs the original notes and verifies all 91 earlier supporting files.

@@ -1,0 +1,71 @@
+\section{Selecting the number of Kira workers}
+\label{sec:thread-policy}
+The preceding study found no further gain from changing integral order.
+We therefore retain the preceding learned seed strategy and test whether
+the number of Kira workers should depend on the requested integrals.
+Kira supports parallel symbolic reduction~\cite{KiraOriginal}, but the
+cost of extra workers can outweigh their benefit on small batches. Our
+development measurements show this effect, while larger box batches can
+use extra workers to finish sooner. A model can make this choice before
+equation generation, using one prediction for the complete batch.
+
+We compare one, two, and four workers in the same integrated executable.
+The native control uses Kira's own seed and reduction choices with the
+common earlier implementation changes. The model receives the nine target
+features used in the preceding cost studies and predicts the full time
+of each choice relative to one worker. We train ten predictor types per
+graph on 36 batches, select policies on 18 validation batches, and reserve
+36 further batches for testing. Validation minimizes the sum of batch
+costs. A new predictor must save at least two percent against the faster
+control and win in at least two of three validation repetitions.
+Otherwise the control remains active. Appendix~\ref{app:thread-policy}
+derives the labels, explains exactness, and defines the comparisons.
+
+Validation enables additional predictors for 2 graph types (planar box, nonplanar box). The other graph types retain the preceding one-worker strategy. Their measured time differences include run-to-run variation and the additional decision cost. Training and validation contain 1,098.1 seconds of reduction measurements. Fitting all seventy candidates takes 0.82 seconds. These offline costs exclude reference construction and development and remain outside application time.
+
+Both selected trees split only on the number of targets in a batch. This feature separates the tested target patterns. Because those patterns repeat across the parameter splits, this result does not establish that target count alone selects a suitable worker count for new integral structures.
+
+All 900 timed reductions and 50 further applications pass exact checks. The extra applications receive targets and their prescribed basis without reference coefficients. Seven use a persistent caller in a separate two-core allocation. It keeps the models loaded across consecutive requests while each native attempt starts a fresh Kira process. The retained trees choose at most two workers; the timing comparison reserves four cores to accommodate its four-worker control. For the 36 reserved batches, the sum of median full times is 82.21 seconds for the preceding one-worker method and 78.73 seconds for the selected method, giving 4.2\% less time. The native one-worker control takes 110.67 seconds, the always-four-worker control takes 156.95 seconds, and the fixed-per-graph control takes 82.45 seconds. The selected route gives 4.5\% less time relative to the fixed-per-graph control.
+
+\begin{table}[!htbp]
+\centering\small
+\caption{Worker-count selection on reserved batches. Times sum batch
+medians within each graph, in seconds. The choice names an enabled model
+or the validation-selected worker count. A ratio below one indicates
+less complete time.}
+\label{tab:thread-policy}
+\begin{tabular}{@{}llrrr@{}}\toprule
+Graph & Choice & Previous (s) & Selected (s) & Selected/previous\\\midrule
+Sunrise & 1 worker & 5.271 & 5.215 & 0.989\\
+Planar box & Tree depth 2 & 15.643 & 14.997 & 0.959\\
+Vacuum & 1 worker & 4.813 & 4.620 & 0.960\\
+Ladder & 1 worker & 23.197 & 23.602 & 1.017\\
+Nonplanar box & Tree depth 1 & 26.768 & 23.819 & 0.890\\
+Pentagon & 1 worker & 3.558 & 3.523 & 0.990\\
+Virtuality box & 1 worker & 2.963 & 2.955 & 0.997\\
+\bottomrule\end{tabular}
+\end{table}
+Giving each graph equal weight instead yields a selected-to-previous time ratio of $0.9817$ with descriptive interval $[0.9682,0.9946]$, or 1.8\% less time. The selected-to-native ratio is $0.8456$ with descriptive interval $[0.7346,0.9502]$, or 15.4\% less time. These measures answer different questions: the summed time measures this workload, while the geometric ratio gives every graph equal weight.
+
+\begin{figure}[!htbp]
+\centering\includegraphics[width=\linewidth]{paper_figures/thread_policy.pdf}
+\caption{The effect of selecting the worker count. Left: selected and fixed worker counts compared with the preceding
+one-worker route. Right: always using four workers adds overhead on
+many small cases. Each panel has its own horizontal scale.
+Each point is the geometric mean of batch time ratios for one graph. Bars show the
+range across two parameter profiles and are not significance intervals.}
+\label{fig:thread-policy}
+\end{figure}
+\FloatBarrier
+Across all five repetitions, the selected route consumes 404.84 seconds and the preceding route consumes 414.08 seconds, giving 2.2\% less time. The selected route has lower summed time in 4 of five repetitions.
+
+The selected-to-previous summed time ratio ranges from $0.9346$ to $1.0555$ across the five complete repetitions. This range describes repeat variation and is not a confidence interval.
+
+The extra worker-count prediction takes a median of 276.6 microseconds; this cost is included in full time. Across 180 reductions per method, the preceding, always-four-worker, and selected routes consume 385.9, 1024.1, and 458.9 CPU-seconds, respectively. The selected route uses 18.9\% more CPU time. Every method has the same four-core allocation. These figures measure used CPU time and do not imply that fewer cores were reserved. The selected route makes 0 fallback attempts.
+
+Summed time increases for ladder (1.7\%).
+
+The selected and always-four-worker routes contain 0 and 10 unsuccessful native attempts, respectively. Their subsequent retries succeed, and all attempt costs enter the reported full time. Some native attempts report allocation failures under the imposed per-process limits.
+
+The measurements include prediction, preparation, exact algebra, basis conversion, checks, retries, and cleanup. The caller and models are loaded before timing, and each attempt starts a new Kira process. The results cover seven known graph structures at one through three loops, known target patterns, and new rational kinematics with symbolic dimension. They measure the tested model and worker choices; they do not establish a globally fastest reduction or a gain for arbitrary integral families.
+The selected worker policy is available for this measured workload in a four-core allocation. The preceding one-worker route remains available for other resource limits and inputs.

@@ -1,0 +1,87 @@
+\section{Selecting the number of Kira workers}
+\label{app:thread-policy}
+We use the family definitions and target patterns in
+Appendix~\ref{app:type-specialists}. Parameter profile 91 supplies the
+development test, profiles 92 and 93 supply training, profile 94 supplies
+validation, and profiles 95 and 96 supply the reserved comparison.
+The dimension remains symbolic. Target patterns overlap across these
+sets; the rational kinematic values differ.
+
+\subsection{Choices and exactness}
+The preceding learned route chooses seed bounds and can reduce through
+a temporary basis. We retain that route and let a new policy choose
+one, two, or four Kira workers for each requested batch. The choice
+applies to each Kira attempt, including a temporary-basis conversion.
+Kira supports parallel symbolic reduction~\cite{KiraOriginal}. Changing the
+number of workers changes the scheduling of operations. Each operation
+still uses exact rational arithmetic. Every output must reach the
+prescribed master basis and agree with an independent expanded-seed
+reduction. If a new choice fails, its time and the repeat with the
+preceding one-worker route both enter the full time.
+
+Let $A\mathbf I=0$ denote the IBP system. An exact elimination step
+left-multiplies it by an invertible elementary matrix $E$, so
+\begin{equation}
+ A\mathbf I=0\quad\Longleftrightarrow\quad
+ EA\mathbf I=0.
+ \label{eq:thread-row-equivalence}
+\end{equation}
+The forward implication follows by multiplication by $E$; the reverse
+implication follows by multiplication by $E^{-1}$. A sequence of valid
+steps preserves these relations. Parallel scheduling must preserve the
+dependencies between steps. Our use of Kira's existing workers keeps
+those dependencies in Kira; the predictor only sets the worker count.
+This argument preserves relations but does not prove that a finite seed
+set is sufficient. The basis and coefficient checks therefore remain
+part of every measured reduction.
+
+\subsection{Cost labels and selection}
+Write $x$ for the nine target features defined in
+Appendix~\ref{app:basis-completion}, and $q\in\{1,2,4\}$ for the worker
+count. For training batch $b$, let $t_{b,q}$ be the median full time of
+two measurements. The training label is
+\begin{equation}
+ y_{b,q}=\log(t_{b,q}/t_{b,1}).
+ \label{eq:thread-label}
+\end{equation}
+Because the logarithm is strictly increasing and $t_{b,1}>0$ is common
+to all choices for that batch, minimizing this label also minimizes
+$t_{b,q}$. We fit the same ten predictor types per graph as in
+Appendix~\ref{app:basis-completion}. They include constants, trees,
+bagged trees, regularized linear fits, and nearest-neighbour fits.
+
+The training-selected fixed control minimizes $\sum_b t_{b,q}$.
+Validation uses three measurements per choice and batch. It first selects
+the faster of that fixed control and the preceding route, using the sum
+of batch medians. It then compares each predictor with decision margins
+$0$, $0.05$, and $0.15$ in log relative cost. A predictor is enabled only
+if its summed median cost is at least two percent lower than the control
+and its summed cost is lower in at least two of the three validation
+repetitions. Otherwise the control stays active. This objective weights
+batches by their elapsed cost. It differs from an equal-weight geometric
+mean of relative times. We freeze the choices before the reserved tests.
+Unknown graph structures or features outside the training range use the
+preceding route.
+
+\subsection{Complete-time comparisons}
+The reserved comparison has 36 batches and five repetitions. It measures
+native choices with one worker, the preceding learned route with one
+worker, that same route with four workers throughout, a training-selected
+fixed worker count per graph, and the final selected route. All methods use the same integrated executable and its common earlier
+optimizations. The native control uses Kira's native seed and reduction
+choices in that executable. All methods run sequentially in the same
+four-core allocation. Execution order rotates
+between repetitions. Thus the always-four-worker control measures the
+cost of using the extra cores without target-dependent selection.
+
+Full time includes model decisions, input preparation, Kira startup,
+equation generation, exact algebra, any basis conversion, coefficient
+checks, fallback, and cleanup. The caller and models are already loaded,
+while every attempt starts a new Kira process. Offline reference
+construction, training, and record writing are excluded. CPU time sums
+user and system time of the caller and its completed child processes.
+It measures consumed CPU time; all routes reserve four cores even when
+they use one. The comparison reports both the sum of batch medians and
+the graph-weighted geometric ratios defined in the earlier appendices.
+Additional applications receive the targets and basis without reference
+coefficients and are checked after reduction.

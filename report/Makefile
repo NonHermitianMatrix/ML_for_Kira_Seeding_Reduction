@@ -5,7 +5,7 @@ TECTONIC ?= ../.tools/tectonic/tectonic
 .DELETE_ON_ERROR:
 all: report.pdf notes.pdf
 
-report.pdf: report.tex paper_appendices.tex scattering_results.tex workflow_results.tex workflow_appendix.tex type_specialist_results.tex type_specialist_appendix.tex basis_completion_results.tex basis_completion_appendix.tex paper_references.bib type_specialist_references.bib $(wildcard paper_figures/*.pdf)
+report.pdf: report.tex paper_appendices.tex scattering_results.tex workflow_results.tex workflow_appendix.tex type_specialist_results.tex type_specialist_appendix.tex basis_completion_results.tex basis_completion_appendix.tex ordering_policy_results.tex ordering_policy_appendix.tex thread_policy_results.tex thread_policy_appendix.tex paper_references.bib type_specialist_references.bib $(wildcard paper_figures/*.pdf)
 	ulimit -v 1572864; ulimit -f 131072; XDG_CACHE_HOME="$(abspath ../.tools/cache)" timeout 180s "$(TECTONIC)" --keep-logs --outdir . report.tex
 
 NOTES_SECTIONS := $(filter-out report.tex notes.tex paper_appendices.tex scattering_results.tex,$(wildcard *.tex))

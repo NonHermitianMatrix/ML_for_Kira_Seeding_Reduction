@@ -160,3 +160,5 @@
 ## Further reduction-time improvement (October 14, 2026)
 
 - Continue improving complete reduction time from the published graph-specific route. Use fresh development, training, validation, and reserved inputs for changed policies. Preserve the published models and measurements. Test exact basis conversion and selective seed expansion when they can avoid larger equation systems. Include all conversion, prediction, verification, and retry costs. Update the report, notes, READMEs, Hoffman, and GitHub, and keep the existing resource limits.
+
+- Optimize both the learned choice and its interaction with Kira. Make decisions before the algebraic work they can avoid. Compare the new route with the latest published route and matched controls on fresh reserved inputs. Select the fastest configuration supported by these measurements and document the tested limits; do not claim global optimality.

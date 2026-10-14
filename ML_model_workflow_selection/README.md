@@ -230,3 +230,11 @@ See the study guide for the graph results and limits.
 ## Selective seed expansion
 
 The [basis-completion study](basis_completion/README.md) adds selective seed limits and tests exact conversion of a temporary basis. Its public entry point is `basis_completion/s07_reduce.py`. It uses the previous frozen route when a new strategy fails or the input is outside its trained domain. The earlier routes remain available for comparison. The new comparison includes complete reduction and exact checks.
+
+## Ordering comparison
+
+The [ordering study](ordering_policy/README.md) selects native integral ordering and propagator permutation before equation generation. Its public entry point is `ordering_policy/s07_reduce.py`. It uses the previous frozen route when a new strategy fails or the input is outside its trained domain. The earlier routes remain available for comparison. The new comparison includes complete reduction and exact checks.
+
+## Worker-count comparison
+
+The [worker-count study](thread_policy/README.md) chooses one, two, or four Kira workers before reduction. Its public entry point is `thread_policy/s07_reduce.py`. The experiment uses four slots for its controls. The retained policy needs at most two slots; use `thread_policy/s17_application.sh`. The previous learned seed strategy stays active. Unknown input structures use the previous one-worker route. This interface handles one application at a time because it scopes native settings for the duration of each application.

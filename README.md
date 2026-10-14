@@ -5,6 +5,13 @@ A seed is an integral index vector that supplies integration-by-parts identities
 A master integral is a retained basis integral.
 A target is an integral or an expression that must be reduced.
 
+For the latest measured single-batch route, use [worker-count selection](ML_model_workflow_selection/thread_policy/README.md).
+It retains the preceding learned seed strategy and chooses the Kira worker count once per batch.
+The measured scope is seven known graphs at one through three loops, with new rational parameter values.
+Summed median time changes from 82.21 to 78.73 seconds in the reserved comparison.
+The retained frozen policy uses at most two Kira workers. Use the two-core application wrapper.
+Use [the preceding route](ML_model_workflow_selection/basis_completion/README.md) when one core is available.
+
 Read [the paper](report/report.pdf) for the methods, derivations, results and limits.
 Read [the notes](report/notes.pdf) for the earlier experiments.
 The seed model and equation model have separate tested uses.
@@ -127,3 +134,11 @@ See the study guide for the graph results and limits.
 ## Selective seed expansion
 
 Use [the selective-seeding route](ML_model_workflow_selection/basis_completion/README.md) for the latest checked application on the stated target domain. The reserved test gives 8.8 percent less complete reduction time than the preceding route and 14.8 percent less than native choices in the same test. It contains 720 timing trials and 43 further applications. All pass exact checks. The study uses seven known graphs at one through three loops, new rational parameter profiles, and symbolic dimension. The caller and model are loaded before timing. The report gives per-graph results and descriptive intervals. These gains are not multiplied by earlier results.
+
+## Ordering comparison
+
+The [ordering comparison](ML_model_workflow_selection/ordering_policy/README.md) does not improve the preceding route. Keep the preceding route as the default. The reserved test gives 1.4 percent more complete reduction time than the preceding route and 15.0 percent less than native choices in the same test. It contains 720 timing trials and 43 further applications. All pass exact checks. The study uses seven known graphs at one through three loops, new rational parameter profiles, and symbolic dimension. The caller and model are loaded before timing. The report gives per-graph results and descriptive intervals. These gains are not multiplied by earlier results.
+
+## Worker-count comparison
+
+The [worker-count study](ML_model_workflow_selection/thread_policy/README.md) compares one, two, and four Kira workers in the same four-core allocation. The reserved comparison gives 1.8 percent less graph-weighted complete time than the preceding route and 15.4 percent less than native choices. Summed batch medians change from 82.21 to 78.73 seconds. It includes 900 timed reductions and 50 additional applications. All pass exact checks. The report separates summed workload time, per-graph effects, and CPU cost. The earlier ordering study remains available and is not the default. Use this route for the tested workload when two cores are available.
