@@ -44,7 +44,7 @@
 - Keep a rendered PDF of the report alongside its LaTeX source, and rebuild the PDF when the report changes.
 - After each report update, synchronize the complete report/ folder across Hoffman, GitHub and /home/physics/projects/ML_for_Kira_SeedReduction/report on the local machine. Keep the local folder linked to the same repository through a shallow, partial Git checkout containing report/, rules.md and .gitignore. Preserve conflicting local edits before synchronization. This report-copy requirement is an explicit exception to the restriction on local generated data; do not download integral datasets or model-training data.
 - Describe completed work as a physics and mathematics report or paper, with connected explanations of the method and results. Keep code organization, commands, job identifiers and execution logs out of the scientific narrative. Distinguish completed calculations from proposed later stages.
-- Preserve explicitly requested verbatim text in the archived notes, including the original supplied abstract. The new paper has its own results-based abstract, as requested on October 13, 2026.
+- Preserve the earlier notes in Git history. Apply the latest terminology correction to the current notes, including their abstract. The new paper has its own results-based abstract, as requested on October 13, 2026.
 - Write explanations in clear, coherent paragraphs using simple language, consistent notation, and equations where useful. Keep the theoretical background general. When documenting completed calculations, specify the actual families, kinematics, mathematical procedure, checks and results needed to explain and reproduce them.
 - Organize the report as a concise, connected narrative: introduce where Feynman integrals arise and why they matter, then their mathematical form, then reduction methods and Kira. Give each section and subsection a clear purpose and connect it naturally to the preceding and following discussion; avoid disconnected lists and repeated explanations.
 - Make the report accessible to readers who do not routinely work with Feynman integrals. Put equations beside the concepts they explain, define every new symbol and technical term at first use, and introduce prerequisites before relying on them. Audit the whole report for missing or delayed definitions rather than only fixing the passage identified by the user.
@@ -96,7 +96,7 @@
 
 ## Native acceleration development
 
-- The user authorizes finding, implementing and testing System 1 changes that reduce complete Kira calculation time, then publishing code, results, READMEs and the revised report. Preserve earlier checkpoints and experiments. Use separate development and validation families for new policies and freeze policies before evaluating reserved cost-test cases. Include prediction, preparation, exact checks and fallback costs; report measured gains and remaining limits without assuming a speedup. Maintain the existing resource and storage limits and synchronize the report locally.
+- The user authorizes finding, implementing and testing machine learning changes that reduce complete Kira calculation time, then publishing code, results, READMEs and the revised report. Preserve earlier checkpoints and experiments. Use separate development and validation families for new policies and freeze policies before evaluating reserved cost-test cases. Include prediction, preparation, exact checks and fallback costs; report measured gains and remaining limits without assuming a speedup. Maintain the existing resource and storage limits and synchronize the report locally.
 
 - Continue the current acceleration work until it produces a measured complete-calculation speedup with exact results and the code, report and GitHub updates are finished. Develop changes on training/validation data and preserve independent tests; report the supported domain and all costs. Do not claim a speedup that the measurements do not establish.
 
@@ -110,15 +110,15 @@
 
 ## Target-dependent equation selection
 
-- Implement and train a third System 1 model in ML_model_equation_selection/ on Hoffman to select generated IBP equations for the requested targets. Keep training, validation and test families separate, retain exact reduction and basis checks, and count all prediction and fallback costs. Compare equation-selection and complete calculation times with matched native and deterministic controls; preserve negative results and do not assume a speedup. Maintain the affected READMEs, publish the completed model, code and results on GitHub, and update and synchronize the report. Preserve the existing models and the combined 10 GB storage ceiling.
+- Implement and train a third machine learning model in ML_model_equation_selection/ on Hoffman to select generated IBP equations for the requested targets. Keep training, validation and test families separate, retain exact reduction and basis checks, and count all prediction and fallback costs. Compare equation-selection and complete calculation times with matched native and deterministic controls; preserve negative results and do not assume a speedup. Maintain the affected READMEs, publish the completed model, code and results on GitHub, and update and synchronize the report. Preserve the existing models and the combined 10 GB storage ceiling.
 
 ## Equation preparation acceleration
 
-- Use trained System 1 models to reduce measured equation-preparation cost. Reuse an existing model folder when extending that model; create a new model folder for a distinct model. Integrate decisions before the algebraic work they can avoid, include all costs and exact fallback, compare complete reductions, and document the measured best supported configuration. Update READMEs, the report and its local copy, and publish completed work under the existing publication rules. A measured improvement does not prove globally minimal calculation time.
+- Use trained machine learning models to reduce measured equation-preparation cost. Reuse an existing model folder when extending that model; create a new model folder for a distinct model. Integrate decisions before the algebraic work they can avoid, include all costs and exact fallback, compare complete reductions, and document the measured best supported configuration. Update READMEs, the report and its local copy, and publish completed work under the existing publication rules. A measured improvement does not prove globally minimal calculation time.
 
 ## Higher-loop acceleration
 
-- Extend the acceleration study to every loop order in the existing one-through-twelve-loop collection and investigate formulas that support arbitrary positive loop order. Use trained System 1 policies where complete cost tests support their use. Separate gains from exact mathematical reuse from gains due to learned decisions. Distinguish supplied-identity reductions from native IBP generation and state the family restrictions. Preserve previous results, use independent tests, update the report and READMEs, publish completed work, and synchronize the local report under the existing resource limits.
+- Extend the acceleration study to every loop order in the existing one-through-twelve-loop collection and investigate formulas that support arbitrary positive loop order. Use trained learned policies where complete cost tests support their use. Separate gains from exact mathematical reuse from gains due to learned decisions. Distinguish supplied-identity reductions from native IBP generation and state the family restrictions. Preserve previous results, use independent tests, update the report and READMEs, publish completed work, and synchronize the local report under the existing resource limits.
 
 
 ## Scattering, symbolic kinematics and optimality
@@ -132,7 +132,7 @@
 - Cite external factual and methodological claims or provide the derivation. Put equation derivations in appendices. Identify original measurements as results of this study with a reproducible evidence record. Do not cite the user's GitHub repository in the new paper.
 - Present each of the three models and its results. Omit learned row selection from the retained method because it gives no reliable complete-time gain; retain seed and equation selection only in their separately validated domains. Do not imply an unmeasured combined gain.
 - Each paper plot must convey a stated result, use readable labels and a justified visible axis range, preserve equal-time references, and show only uncertainty supported by the measurements.
-- Rebuild, inspect and publish both PDFs and all affected sources, bibliography, figure code, evidence metadata and READMEs. Report work does not authorize new training or benchmarks.
+- Rebuild, inspect and publish both PDFs and all affected sources, bibliography, figure code, evidence metadata and READMEs. A request limited to report editing does not authorize new training or benchmarks. The later full-time optimization request authorizes the recorded training and comparisons.
 
 ## Scientific paper and folder documentation (October 13, 2026)
 
@@ -146,3 +146,8 @@
 - Train and test on the previously unsupported scattering types. Keep training, validation and test examples separate, preserve historical results, and measure complete Kira time with exact checks and fallback. Treat missing training coverage as a hypothesis until the new comparisons establish its effect.
 - Publish the new training code, data, fitted models, tests and affected READMEs on Hoffman and GitHub. Keep generated data and model files off the local machine. Synchronize the revised report locally.
 - Write the paper in straightforward language. Explain the purpose of each method before its details, define technical terms where they appear, and use tables where they improve understanding. Preserve the equations, derivations, citations, measured outcomes and scope limits.
+
+## Model choice and full calculation time (October 13, 2026)
+
+- Use machine learning terminology in the current report, notes and project instructions. Remove the earlier two-system terminology. Choose model types from measured performance; no model architecture or size is required in advance. This instruction supersedes the earlier wording and model-type restrictions, including the original abstract wording.
+- Improve full reduction time through model training and Kira integration. Compare complete calculations on separate test cases, retain exact checks and fallback, and publish the measured results, code and documentation. Update both the report and notes, rebuild both PDFs, and synchronize them on Hoffman, GitHub and the local machine. Preserve earlier scientific evidence; report any remaining limits or regressions.

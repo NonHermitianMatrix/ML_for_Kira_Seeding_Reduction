@@ -9,6 +9,11 @@
 \setlength{\parindent}{1em}
 \setlength{\parskip}{3pt}
 \setlength{\emergencystretch}{2em}
+\makeatletter
+\setlength{\@fptop}{0pt}
+\setlength{\@fpsep}{12pt}
+\setlength{\@fpbot}{0pt plus 1fil}
+\makeatother
 \newcommand{\Q}{\mathbb Q}
 \newcommand{\T}{\mathcal T}
 \newcommand{\Sset}{\mathcal S}
@@ -16,22 +21,24 @@
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \title{Learned selection for exact Feynman integral reduction with Kira}
 \author{Rushil Saraswat}
-\date{October 13, 2026}
+\date{October 14, 2026}
 \begin{document}
 \maketitle
 
 \begin{abstract}
-We test three small machine learning models that choose seeds, elimination rows and equations during Feynman integral reduction with Kira. The models choose which work to perform, and exact algebra determines the reduction coefficients. We measure the full calculation time, including prediction, checks and retries. In the original tests, seed selection reduces time by 8.6\% for single targets with an existing equation pool. Equation selection reduces preparation time by 36.2\% and full native reduction time by 5.7\% within four tested graph structures. Row selection gives no reliable time saving, so we omit that model from the retained method. The original equation model takes 25.2\% more time on three scattering structures absent from its training data. Additional training on these structures removes fallback in all 45 trials per new selector, but their average full times remain 2.7\% and 1.7\% higher than native Kira. We also report a separate 543.8-fold speedup from exact recurrences and reuse in a restricted vacuum family. Each result applies to its stated integral families and timed calculation.
+We study learned choices of seeds, elimination rows and equations during exact Feynman integral reduction with Kira. We include prediction, algebra, checks and retries in the measured calculation time. Original tests give an 8.6\% saving from seed selection with supplied equations and a 5.7\% saving from equation selection in four native graph structures. Row selection gives no reliable saving and is omitted. Training on three additional scattering structures removes earlier equation-sufficiency failures but does not establish an overall time saving. We therefore fit models to complete reduction costs and compare twelve candidates. The selected model gives no reliable additional saving over native controls in 620 reserved calculations. Combining compatible target requests reduces full time by 48.3\%, or $1.93$ times, in 200 comparisons across seven graph structures. The main gain comes from sharing the reduction; learned choices add no reliable gain over the integrated native control. We also retain a separate 543.8-fold result from exact recurrences and reuse in a restricted vacuum family through twelve loops. The native studies cover one through three loops, and each result applies to its stated inputs and timing conditions.
 \end{abstract}
 
 \section{Introduction}
 Higher-order perturbative corrections to scattering amplitudes and particle decay amplitudes contain integrals over loop momenta. Higher loop orders produce many integrals with related numerators and denominators, and algebraic identities can express them in terms of a smaller set of master integrals~\cite{Weinzierl2022,ChetyrkinTkachov}.
 
-Kira performs this reduction by generating integration-by-parts (IBP) identities and solving the resulting linear equations~\cite{Laporta,KiraOriginal}. It returns the coefficient of each master integral in a requested target. Evaluating the masters is a separate calculation. Kira already uses methods that reduce unnecessary equations and algebraic work~\cite{Kira3}. Our aim is to test whether small learned models can further reduce that work.
+Kira performs this reduction by generating integration-by-parts (IBP) identities and solving the resulting linear equations~\cite{Laporta,KiraOriginal}. It returns the coefficient of each master integral in a requested target. Evaluating the masters is a separate calculation. Kira already uses methods that reduce unnecessary equations and algebraic work~\cite{Kira3}. Our aim is to test whether learned models can further reduce that work.
 
-We study three choices: which seeds generate equations, which row eliminates an integral, and which individual equations enter the calculation. We use the term \emph{System 1 model} for a model that makes one of these choices quickly. The term does not specify a particular neural network. Earlier work has also used machine-assisted search to find seed-selection rules~\cite{Song2025}.
+We study three choices: which seeds generate equations, which row eliminates an integral, and which individual equations enter the calculation. We select model types by complete reduction time, including inference and exact checks. Earlier work has also used machine-assisted search to find seed-selection rules~\cite{Song2025}.
 
-We first define the notation used in this paper and explain how the three choices enter Kira. We then describe the data, each model and its tests. We compare full calculation times because fewer equations or accurate predictions alone do not show that a reduction is faster. The appendices give the integral definitions, derivations and detailed measurement rules.
+We first define the notation used in this paper and explain how the three choices enter Kira. We then describe the data, each model and its tests. We use these results
+to study complete-cost model selection and shared reductions for compatible
+requests. We compare full calculation times because fewer equations or accurate predictions alone do not show that a reduction is faster. The appendices give the integral definitions, derivations and detailed measurement rules.
 
 \section{How Kira reduces Feynman integrals}
 \label{sec:reduction}
@@ -178,13 +185,19 @@ The seven batches contain 88 targets and give seventy comparison calculations. A
 
 \input{scattering_results}
 
+\input{workflow_results}
+
 \section{Overall results}
 \label{sec:overall}
 The original comparisons support learned seeds for the tested supplied-equation requests and learned equations for the tested native families. They give no reliable saving from learned row selection. Table~\ref{tab:overall} separates these results because they use different inputs and time different amounts of work. Multiplying the speedups would not give a measured combined speedup. The original native equation experiment also gives no established gain from activating both selectors together. Section~\ref{sec:adaptation} reports the separate scattering-training study.
+Section~\ref{sec:workflow} then tests complete-cost selection and joint
+requests. Its 48.3\% saving comes mainly from sharing the calculation;
+the learned cost model adds no reliable saving over the integrated native
+control. This result is a direct comparison of identical paired requests.
 
 \begin{table}[!htbp]
 \centering\small
-\caption{Original measured results. The new scattering-training results appear in Section~\ref{sec:adaptation}.}
+\caption{Summary of separate comparisons. Each row uses its stated inputs and baseline. The studies provide no measured product of these speedups.}
 \label{tab:overall}
 \begin{tabularx}{\linewidth}{@{}lYY@{}}\toprule
 Method & Tested calculation & Result for full time\\\midrule
@@ -192,6 +205,8 @@ Seed network & One target from an existing equation pool & 8.6\% less time\\
 Equation tree & Native reduction in four trained graph structures & 5.7\% less time\\
 Row policy & Native symbolic elimination & No reliable saving\\
 Original equation tree & Three new scattering structures & 25.2\% more time\\
+Complete-cost model & Seven known graph structures, loops 1--3 & No reliable gain over native controls\\
+Joint integrated reduction & Two compatible requests in seven graph structures & 48.3\% less time\\
 Exact recurrences and reuse & Restricted vacuum family, loops 1--12 & $543.8\times$ faster\\\bottomrule
 \end{tabularx}
 \end{table}
@@ -208,12 +223,39 @@ Eight fresh groups each contain three mass profiles, with two, three or four mas
 
 This benchmark includes construction of Euler and mass partial-fraction identities. It does not generate a general high-loop IBP system. Earlier checks at loop orders 13, 16, 24 and 32 use the same restricted family, and the recurrence proof permits any positive integer loop order. General high-loop scattering remains outside this result.
 \section{Conclusion}
-Small learned models can reduce the cost of selected Kira calculations when prediction costs less than the algebraic work it avoids. The original seed network saves time in a single-target test with supplied equations, and the equation tree saves time in native reductions within four trained graph structures. We omit the row model because its full-time tests show no reliable benefit.
+Learned selection can save time in the tested settings where its choices
+avoid more algebraic work than prediction costs. The original seed model
+saves time for supplied-equation targets, and the equation model saves
+time within four native graph structures. We omit the row model because
+its full-time comparisons show no reliable benefit. Additional scattering
+training supplies sufficient equations in all 45 trials per selector,
+but sufficiency alone does not establish faster reduction.
 
-The original scattering test motivates the new training study: its fixed equation model omits necessary equations on three new structures and adds fallback time. After training on these structures, each new selector completes all 45 first attempts without fallback. However, the seed and equation models give full-time ratios of 1.027 and 1.017 to native Kira. Training therefore resolves the observed equation-sufficiency failures without establishing an overall time saving. We keep native choices as the default for these scattering cases. These results apply to the stated families. The separate vacuum result shows that exact recurrences and reuse can give larger gains where the integral structure permits them. Small bubble and tadpole examples also have minimum-operation proofs within fixed equation pools, as shown in Appendix~\ref{app:optimal}. These finite examples do not establish a global optimum for the learned reductions. Exact coefficient checks and full-time comparisons determine which claims our measurements support.
+The complete-cost study tests a wider choice of model types and reduction
+strategies. Its selected ridge model completes every reserved reduction,
+yet its comparison with integrated native controls gives no reliable
+additional saving. The standard application therefore retains the best
+fixed strategy from training and keeps learned choices optional.
+Combining compatible target requests reduces full time by 48.3\% across
+the seven tested graph groups because they share one reduction.
+All 820 timed workflows in the complete-cost and joint-request studies
+pass exact checks, as do 61 applications supplied without target
+reference coefficients.
+
+These results support sharing compatible calculations and measuring the
+full cost before retaining a learned decision. They do not establish a
+significant machine learning speedup for every integral type. The native
+benchmarks cover known graph structures at one through three loops, with
+new rational parameter values and separate symbolic target lists. The
+543.8-fold result through twelve loops retains its restricted vacuum
+scope and includes exact recurrences and reuse. The small minimum-cost
+examples in Appendix~\ref{app:optimal} concern fixed equation pools.
+General high-loop scattering and globally optimal reduction paths remain
+outside the demonstrated results.
 
 \appendix
 \input{paper_appendices}
+\input{workflow_appendix}
 \begingroup
 \small
 \setlength{\parskip}{0pt}

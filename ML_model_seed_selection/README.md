@@ -714,3 +714,16 @@ ulimit -c 0
 The [scattering seed folder](scattering_training/README.md) stores three new native seed trees.
 The shared study contains their training data and full Kira comparisons.
 The earlier neural model remains unchanged.
+
+## Complete reduction cost
+
+The [complete-cost study](../ML_model_workflow_selection/README.md)
+compares models that choose a full reduction strategy from measured time.
+It combines seed bounds, saved seed and equation filters, integral ordering,
+and the existing temporary database change.
+It also compares separate target requests with their joint reduction.
+The study includes full native IBP generation and all fallback costs.
+It retains the earlier model weights and results.
+Its native cases cover seven graph structures at one through three loops.
+The restricted vacuum results through twelve loops remain a separate result.
+See that folder for the frozen model, test summaries and application commands.

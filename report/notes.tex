@@ -2,7 +2,7 @@
 \usepackage[margin=25mm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\usepackage{amsmath,amssymb}
+\usepackage{amsmath,amssymb,booktabs}
 \usepackage{graphicx}
 \usepackage{placeins}
 \usepackage{hyperref}
@@ -22,7 +22,7 @@
 \vspace{-1em}
 
 \begin{abstract}
-Feynman integral calculations are an important component of multiloop amplitude calculations in quantum field theory. In Quantum Chromodynamics (QCD), multiloop amplitudes and their associated Feynman integrals arise in higher-order perturbative calculations and can become increasingly complex at higher loop orders. Recent progress has automated these calculations to some extent using the framework Kira, which organizes target integrals into integral families and sectors, generate algebraic relations among the integrals by using integration by parts (IBP) identities, and reduce the resulting system to expressions in terms of a finite set of master integrals. We aim to explore the application of System 1 machine learning models to accelerate the IBP reduction process by investigating if lightweight learned models can improve seed selection. These models can predict the most useful integrals from which to generate IBP relations while minimizing redundant calculations. We will also explore System 1 models for learning efficient reduction and elimination sequences to minimize the number of algebraic operations required to express target integrals in terms of master integrals. Because the machine learning models will serve as decision-makers while the underlying IBP reduction and verification remain exact, these models can improve computational efficiency without compromising the correctness of the resulting reductions.
+Feynman integral calculations are an important component of multiloop amplitude calculations in quantum field theory. In Quantum Chromodynamics (QCD), multiloop amplitudes and their associated Feynman integrals arise in higher-order perturbative calculations and can become increasingly complex at higher loop orders. Recent progress has automated these calculations to some extent using the framework Kira, which organizes target integrals into integral families and sectors, generate algebraic relations among the integrals by using integration by parts (IBP) identities, and reduce the resulting system to expressions in terms of a finite set of master integrals. We aim to explore the application of machine learning models to accelerate the IBP reduction process by investigating if learned models can improve seed selection. These models can predict the most useful integrals from which to generate IBP relations while minimizing redundant calculations. We will also explore machine learning models for learning efficient reduction and elimination sequences to minimize the number of algebraic operations required to express target integrals in terms of master integrals. Because the machine learning models will serve as decision-makers while the underlying IBP reduction and verification remain exact, these models can improve computational efficiency without compromising the correctness of the resulting reductions.
 \end{abstract}
 
 \clearpage
@@ -30,11 +30,11 @@ Feynman integral calculations are an important component of multiloop amplitude 
 
 \section{ML for seed selection and elimination ordering}
 \label{sec:ml-roles}
-We first study two System 1
+We first study two machine learning
 models: one for seed selection and one for elimination ordering.
-Here a System 1 model is a small machine learning model that learns
-from recorded reductions and assigns scores to choices available at
-the current step. Training requires targets with known master
+These models learn from recorded reductions and assign scores to choices
+available at the current step. We select model types by complete reduction
+time, including inference and exact checks. Training requires targets with known master
 expansions, the seeds that supply their equations and the steps used
 to reduce them. The implemented models and their completed training
 appear in Sections~\ref{sec:seed-model} and
@@ -919,6 +919,10 @@ targets and complete reduction data~\cite{ExpandedIntegralData}.
 \input{generalization}
 
 \clearpage
+% BEGIN CURRENT WORKFLOW UPDATE
+\input{workflow_results}
+
+% END CURRENT WORKFLOW UPDATE
 \section{Conclusion}
 \label{sec:conclusion}
 We integrated seed and source-row policies with exact native Kira reduction
@@ -1104,8 +1108,26 @@ The direct cumulative comparison uses the saved original Kira executable and the
 \noindent The scattering extension adds new nonplanar four-point and five-point inputs and exact reductions with independent symbolic invariants. All seventy comparison workflows pass, while the frozen equation filter requires native fallback in all thirty-five learned workflows and has complete-time ratio 1.252 to native choices. The new symbolic-capable application therefore defaults to native choices for these domains. Separate complete certificates prove seven-operation minima for two small physical systems when equation-subset selection and the stated pivot actions are allowed. The certificates cover finite source pools with three nonmaster columns; their costs and native coefficient checks provide exact reference labels without asserting a general minimum for scattering reductions~\cite{KiraGeneralizationData}.
 % END GENERALIZATION CONCLUSION
 
+% BEGIN CURRENT WORKFLOW UPDATE
+The latest complete-cost study in Section~\ref{sec:workflow} compares twelve
+fitted predictors and preserves the selected model during testing. All
+620 timed reductions and 31 basis-only applications pass exact checks,
+but the learned choice adds no reliable gain over integrated native
+controls. Combining two compatible target requests gives 48.3\% less
+time, or $1.93$ times faster reduction, in 200 exact comparisons across
+seven graph structures. The standard application retains the best fixed
+training strategy, and the learned route remains optional. Thirty further
+command checks verify the single-batch, learned joint and default joint
+applications without supplying target coefficients. These measurements
+cover native calculations at one through three loops. The earlier
+restricted vacuum result through twelve loops remains a separate result.
+% END CURRENT WORKFLOW UPDATE
 \clearpage
 \renewcommand{\refname}{Citations}
+% BEGIN CURRENT WORKFLOW UPDATE
+\appendix
+\input{workflow_appendix}
+% END CURRENT WORKFLOW UPDATE
 \bibliographystyle{unsrt}
 \bibliography{references}
 

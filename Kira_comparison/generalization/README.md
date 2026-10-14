@@ -617,3 +617,16 @@ This folder preserves the original fixed-model transfer test.
 The [later scattering study](../../ML_model_equation_selection/scattering_training/README.md) adds training examples from these structures.
 It tests new models on separate parameter points and symbolic target lists.
 Its results do not replace the historical measurements above.
+
+## Complete reduction cost
+
+The [complete-cost study](../../ML_model_workflow_selection/README.md)
+compares models that choose a full reduction strategy from measured time.
+It combines seed bounds, saved seed and equation filters, integral ordering,
+and the existing temporary database change.
+It also compares separate target requests with their joint reduction.
+The study includes full native IBP generation and all fallback costs.
+It retains the earlier model weights and results.
+Its native cases cover seven graph structures at one through three loops.
+The restricted vacuum results through twelve loops remain a separate result.
+See that folder for the frozen model, test summaries and application commands.

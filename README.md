@@ -12,6 +12,11 @@ The retained method uses Kira's native row choices.
 The large vacuum speedup also uses exact recurrences and repeated coefficients.
 It is not a measured gain from machine learning alone.
 
+For compatible target requests, use [the joint application](ML_model_workflow_selection/README.md).
+Its standard route keeps the best fixed training strategy and makes learned choices optional.
+The paired-request comparison gives 48.3 percent less time across seven graph structures at one through three loops.
+The gain comes mainly from sharing the reduction.
+
 Start with [the integral collection](integrals/README.md).
 Then read the model folder for the required task.
 Use [early equation selection](ML_model_equation_selection/early_generation/README.md) for the supported native reductions.
@@ -62,6 +67,8 @@ A matching file check does not prove a physical or mathematical claim.
 
 - [ML_model_seed_selection](ML_model_seed_selection/README.md).
 
+- [ML_model_workflow_selection](ML_model_workflow_selection/README.md).
+
 - [documentation](documentation/README.md).
 
 - [integrals](integrals/README.md).
@@ -74,3 +81,16 @@ Read [the new scattering study](ML_model_equation_selection/scattering_training/
 It contains new seed and equation trees, separate validation and test batches, and full native Kira comparisons.
 The original models and negative transfer results remain available.
 The updated paper uses simpler explanations and comparison tables.
+
+## Complete reduction cost
+
+The [complete-cost study](ML_model_workflow_selection/README.md)
+compares models that choose a full reduction strategy from measured time.
+It combines seed bounds, saved seed and equation filters, integral ordering,
+and the existing temporary database change.
+It also compares separate target requests with their joint reduction.
+The study includes full native IBP generation and all fallback costs.
+It retains the earlier model weights and results.
+Its native cases cover seven graph structures at one through three loops.
+The restricted vacuum results through twelve loops remain a separate result.
+See that folder for the frozen model, test summaries and application commands.

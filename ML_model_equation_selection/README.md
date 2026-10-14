@@ -1487,3 +1487,16 @@ make -C report all
 The [scattering study](scattering_training/README.md) fits and tests trees for three additional structures.
 It includes rational and symbolic kinematics with separate training, validation and test batches.
 Read its measured results before selecting a learned policy.
+
+## Complete reduction cost
+
+The [complete-cost study](../ML_model_workflow_selection/README.md)
+compares models that choose a full reduction strategy from measured time.
+It combines seed bounds, saved seed and equation filters, integral ordering,
+and the existing temporary database change.
+It also compares separate target requests with their joint reduction.
+The study includes full native IBP generation and all fallback costs.
+It retains the earlier model weights and results.
+Its native cases cover seven graph structures at one through three loops.
+The restricted vacuum results through twelve loops remain a separate result.
+See that folder for the frozen model, test summaries and application commands.

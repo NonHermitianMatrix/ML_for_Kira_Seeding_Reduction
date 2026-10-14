@@ -1,0 +1,211 @@
+\section{Choosing a complete reduction strategy}
+\label{sec:workflow}
+The preceding tests show that supplying enough equations does not by itself
+ensure a faster reduction. We therefore train a model on complete reduction
+times. For a target batch and a prescribed master basis, the model chooses
+the initial seed region, an optional seed or equation filter, and an
+integral ordering. Kira then performs exact reduction. The choice occurs
+once for the batch, which avoids repeated model calls during elimination.
+
+We also combine the earlier equation filter with an existing improvement
+to temporary data handling. This changes execution cost while preserving
+the equations and arithmetic. A separate control uses this combined path
+with native decisions. Comparing the model with that control measures
+what the learned choice adds to the integration improvement.
+
+Let $B=(r_{\max},s_{\max},q_{\max})$ contain the largest positive index sum,
+numerator rank and dot count among the targets. A dot is one denominator
+power above one. Appendix~\ref{app:workflow} gives their definitions and
+the cost-model derivations. Table~\ref{tab:workflow-actions} lists the
+candidate strategies. Kira provides the seed limits and integral-ordering
+options used here~\cite{Kira12}. Ordering five changes the sector priority
+while keeping the same within-sector preference as ordering one.
+Every comparison uses the same prescribed master basis. For the four
+earlier multiloop graphs, the seed-filter option uses native choices
+because no graph-specific seed tree is available in this route. The
+equation option uses the earlier tree for those graphs and the new
+scattering trees for the three additional structures.
+
+\begin{table}[!htbp]
+\centering\small
+\caption{Strategies available to the complete-cost model. Negative seed
+bounds are replaced by zero. Native row choices remain active.}
+\label{tab:workflow-actions}
+\begin{tabular}{@{}ll@{}}\toprule
+Strategy & Initial seed region and selection\\\midrule
+Integrated native & Bounds $B$; native choices\\
+Smaller region & Bounds $B-(1,1,1)$; native choices\\
+Fewer dots & Bounds $B-(1,0,1)$; native choices\\
+Equation filter & Bounds $B$; saved equation tree\\
+Seed filter & Bounds $B$; saved seed tree where available\\
+Different ordering & Bounds $B$; Kira ordering five\\
+Larger region & Bounds $B+(1,1,1)$; native choices\\\bottomrule
+\end{tabular}
+\end{table}
+
+The larger region can avoid an unsuccessful first attempt when a target
+needs equations beyond its own index limits. The smaller regions can
+avoid unnecessary generation when fewer equations suffice. If a proposed
+region or filter fails the basis check, the calculation retries with native
+choices at $B$, then at $B+(1,1,1)$ when needed. The native control also
+includes enlargement after an unsuccessful first attempt. Failed attempts
+remain in the time used for both training and testing.
+
+The training label for each strategy is the logarithm of its complete-time
+ratio to integrated native choices. The model receives eighteen features
+that describe the graph, symbolic variables, target count, index powers
+and sectors. We compare a constant predictor, six regression trees,
+three ridge-regression models and two nearest-neighbour models.
+Regression trees follow the squared-error construction in
+Ref.~\cite{CART1984}. Appendix~\ref{app:workflow} specifies each model.
+Validation selects ridge regression with penalty $\lambda=10$ and
+margin $\gamma=0$ before the held-out tests. Its validation time ratio
+to integrated native choices is $0.993$. The best fixed strategy from
+training is integrated native choices. Thus the integrated and best-fixed
+controls repeat the same configuration in separate trials, and differences
+between their times reflect execution variation. The seed and equation trees retain their earlier
+weights, and the original row model remains omitted.
+
+The study has 31 training batches, 17 validation batches and 31 test
+batches. It covers the sunrise, planar box, three-loop vacuum, three-loop
+ladder, nonplanar box, pentagon and box with external virtuality. Rational
+batches use separate invariant or mass values in each split. Additional
+symbolic batches use different target lists. These are new inputs within
+known graph structures. The native tests cover one through three loops;
+the separate exact recurrence results through twelve loops retain their
+restricted vacuum scope.
+
+Each training and validation cost uses three repetitions. Testing compares
+the previous native path, integrated native choices, the best fixed
+strategy from training, and the learned strategy with five repetitions.
+A running controller starts a fresh Kira process for every attempt.
+The timer includes input preparation, prediction, native IBP generation,
+algebra, exact coefficient checks, cleanup and every retry. Offline
+training, enlarged reference reductions and later evidence archiving are
+outside the timer. Separate applications receive only the target and
+master basis; their coefficients are checked afterward. The learned application
+uses native choices for unmatched graph structures or target complexity
+outside the training range. This guard also applies when requests are
+combined. Cold command startup is recorded in the application checks;
+the comparative timings describe the running controller.
+
+
+\subsection{Full reduction results}
+All 620 timed workflows pass exact checks of 59,640 coefficient entries.
+All 31 applications supplied with a master basis also pass their later
+coefficient checks. Each timed method makes fifteen fallback attempts.
+The new selector therefore changes some initial strategies without
+removing the remaining insufficiency failures.
+
+The learned-to-previous-native time ratio is $0.9903$, with descriptive
+interval $[0.9796,0.9996]$, or about 1.0\% less time. Its ratio to integrated
+native choices is $0.9965$ with interval $[0.9875,1.0070]$. Its ratio to the
+best-fixed control is $1.0026$ with interval $[0.9979,1.0081]$. Both latter
+intervals include equal time, so the test establishes no additional
+full-time saving from the learned choices. The integrated and best-fixed
+controls have ratios $0.9938$ and $0.9878$ to the preceding native path.
+Their difference, despite using the same configuration, also shows the
+scale of timing variation in this comparison.
+
+Table~\ref{tab:workflow-times} gives the results by graph. We average
+logarithmic ratios within each graph and then give each of the seven
+graphs equal weight. Appendix~\ref{app:workflow} derives this average and
+defines the descriptive intervals. The smallest measured ratio for the learned route is $0.9654$,
+for the three-loop vacuum. The ladder and nonplanar box take
+slightly more time. These measurements do not establish a significant
+speedup across all the tested integral types.
+
+\begin{table}[!htbp]
+\centering\small
+\caption{Complete-cost results. Native seconds are geometric means of
+batch median times. The other entries are geometric mean time ratios;
+a value below one means less time.}
+\label{tab:workflow-times}
+\begin{tabular}{@{}lrrrr@{}}\toprule
+Graph & Native (s) & Integrated/native & Learned/native & Learned/integrated\\\midrule
+Sunrise & 0.502 & 1.0123 & 0.9932 & 0.9811\\
+Planar box & 1.621 & 0.9906 & 0.9771 & 0.9864\\
+Three-loop vacuum & 0.726 & 0.9745 & 0.9654 & 0.9907\\
+Three-loop ladder & 3.535 & 1.0146 & 1.0013 & 0.9869\\
+Nonplanar box & 3.119 & 1.0075 & 1.0073 & 0.9998\\
+Pentagon & 0.599 & 0.9758 & 0.9942 & 1.0189\\
+Box with virtuality & 0.484 & 0.9824 & 0.9944 & 1.0122\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[!htbp]
+\centering\includegraphics[width=\linewidth]{paper_figures/workflow_time.pdf}
+\caption{Learned choices and the native controls have similar full times.
+The best-fixed and integrated controls use the same configuration in
+separate trials. The plot shows variation across graph structures;
+the text gives the aggregate uncertainty intervals. The axis focuses
+on the measured range and retains the equal-time line.}
+\label{fig:workflow}
+\end{figure}
+\FloatBarrier
+
+
+\subsection{Sharing reductions between compatible requests}
+The small differences between single-batch strategies motivate a change
+in how requests reach Kira. When two target lists have the same family
+and kinematics and are available together, we combine their targets,
+reduce the union once, and return the coefficient rows for each list.
+This shares the family preparation and algebra. Appendix~\ref{app:workflow}
+specifies the ten request groups and derives the output separation from
+linearity. The model and its settings remain fixed.
+
+Five repetitions of four methods give 200 complete workflows, and all
+pass exact coefficient checks. Joint native reduction has time ratio
+$0.5252$ to two separate native reductions. The combined integration with
+native choices gives ratio $0.5175$ with interval $[0.5073,0.5346]$, or
+48.3\% less time. This is a speedup of $1.93$ with interval $[1.87,1.97]$.
+Every tested graph group takes less time with joint reduction. The
+integrated native ratios range from $0.5040$ to $0.5679$ across the seven
+graphs, corresponding to savings of 43.2--49.6\%.
+
+The joint learned route gives ratio $0.5152$ to separate native requests.
+Its ratio to joint integrated native choices is $0.9955$, with interval
+$[0.9810,1.0058]$. This interval includes equal time. Table~\ref{tab:joint}
+and Figure~\ref{fig:joint} therefore attribute the main measured gain to
+sharing the reduction. The model adds no reliable gain over the integrated
+native control. The standard application uses the best fixed strategy
+from training, which retains native choices. The learned strategy remains
+an optional route. Ten checks of each joint application supply only the
+basis, then verify the returned coefficients independently. Ten further
+checks exercise the single-batch command. These application checks add
+to the 31 basis-only applications in the main comparison.
+
+\begin{table}[!htbp]
+\centering\small
+\caption{Joint-request time ratios and descriptive intervals over the
+seven graph groups. Each group contains two compatible target requests.}
+\label{tab:joint}
+\begin{tabular}{@{}lrr@{}}\toprule
+Comparison & Time ratio & 95\% interval\\\midrule
+Joint native / separate native & 0.5252 & $[0.5130,0.5420]$\\
+Joint integrated / separate native & 0.5175 & $[0.5073,0.5346]$\\
+Joint learned / separate native & 0.5152 & $[0.5022,0.5322]$\\
+Joint learned / joint native & 0.9810 & $[0.9657,0.9946]$\\
+Joint learned / joint integrated & 0.9955 & $[0.9810,1.0058]$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[!htbp]
+\centering\includegraphics[width=\linewidth]{paper_figures/request_batching.pdf}
+\caption{Combining compatible requests gives the main saving.
+Left: ratios by graph relative to two separate native reductions.
+Right: aggregate ratios and descriptive intervals. Comparing learned
+choices with joint integrated native choices gives no reliable extra
+saving. The panels retain the equal-time reference.}
+\label{fig:joint}
+\end{figure}
+\FloatBarrier
+
+The joint comparison reuses reserved parameter points from the main test.
+It provides a new comparison on that population. Transfer to additional
+graph structures remains untested. The saving requires compatible
+requests that can share one calculation. These measurements neither
+establish a saving for an isolated arbitrary integral nor extend native
+IBP performance claims to general scattering graphs beyond three loops.
