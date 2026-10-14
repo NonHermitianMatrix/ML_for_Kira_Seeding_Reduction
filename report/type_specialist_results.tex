@@ -1,0 +1,85 @@
+\section{Choosing a policy for each integral type}
+\label{sec:type-specialists}
+The preceding study used one cost predictor across seven graph structures.
+We now train separate predictors and enlarge the set of possible seed
+strategies. This lets a target-dependent choice depend on the graph's own
+measured costs. The new candidates include restricting the maximal target
+sectors and reducing numerator seeding in lower sectors, using Kira's
+truncation option~\cite{Kira3}. The comparison retains exact algebra,
+master-basis checks, and fallback. Every method first enforces a valid
+positive-index bound for its declared sectors.
+
+We fit ten candidates for each graph, giving seventy fitted models.
+They include regression trees, a bagged tree ensemble, regularized linear
+models, and nearest-neighbour models. The model receives nine features of
+the target indices and family and predicts complete-time ratios for nine
+strategies. The response includes failed attempts and retries. We train
+on 36 batches, choose settings on 18 validation batches, and reserve
+36 batches at new rational parameter values for testing. The dimension
+remains symbolic. The targets include denominators raised to power three,
+lower sectors, and numerator indices $-2$ on auxiliary entries. Appendix~\ref{app:type-specialists}
+gives the exact definitions, model fits, and selection rule.
+The final training and validation records contain 2,798.5 seconds of measured reductions, and fitting all seventy candidates takes 0.86 seconds. The label total excludes reference construction, development, and replaced measurements. These offline costs remain outside the reserved reduction times.
+
+The route enables a new cost model only when validation shows at least
+five percent less time than the fastest available control. This threshold
+is fixed before testing. The controls are native choices, a deterministic
+sector-and-truncation rule, and one fixed strategy per graph selected
+from training. The last control can include the older equation filter.
+Validation activates a new cost model for 3 of the seven graphs and retains a control strategy for the others.
+Unknown graph structures and target features outside the training range
+use native choices. A chosen strategy can still fail its basis check;
+the route then retries, and the comparison includes that cost.
+
+Five repetitions of four methods give 720 reserved timing trials.
+All trials pass exact coefficient checks. Giving each graph equal weight,
+the selected route has geometric mean full-time ratio
+$0.9368$ with descriptive interval $[0.8867,0.9878]$, corresponding to 6.3\% less time.
+Its ratio to the fixed choice per graph is $0.9441$ with descriptive interval $[0.8992,0.9863]$. The aggregate interval lies below equal time.
+Table~\ref{tab:type-specialists} gives each graph's result.
+The selected route has a time ratio below one for 5 of the seven graph groups.
+These are measurements within the tested input groups, not a speed
+guarantee for every integral in those graphs.
+Across its 180 timed trials, the selected route makes 0 retry attempts; native choices make 40 retries in the matched 180 trials. The time ratios include these retries.
+
+The enabled trees give 14.2\%, 12.4\%, and 13.8\% less time for the planar box, ladder, and nonplanar box, respectively. The vacuum and virtuality box show 3.7\% and 0.8\% more time. Both of those groups use a retained control throughout. The vacuum route selects native settings, so its measured difference includes routing overhead and timing variation.
+
+\begin{table}[!htbp]
+\centering\small
+\caption{Results for each graph. Times are geometric means of the batch
+median times, in seconds. A ratio below one means less complete time.
+The route column names the enabled cost model or retained control.}
+\label{tab:type-specialists}
+\begin{tabular}{@{}llrrr@{}}\toprule
+Graph & Route & Native & Selected & Ratio\\\midrule
+Sunrise & Stronger truncation & 0.825 & 0.811 & 0.983\\
+Planar box & Depth-two tree & 3.410 & 2.925 & 0.858\\
+Vacuum & Native & 1.033 & 1.072 & 1.037\\
+Ladder & Depth-one tree & 5.144 & 4.506 & 0.876\\
+Nonplanar box & Depth-two tree & 6.234 & 5.376 & 0.862\\
+Pentagon & Target sectors & 1.040 & 0.989 & 0.951\\
+Virtuality box & Sectors and truncation & 0.808 & 0.815 & 1.008\\
+\bottomrule\end{tabular}
+\end{table}
+
+\begin{figure}[!htbp]
+\centering\includegraphics[width=\linewidth]{paper_figures/type_specialists.pdf}
+\caption{The effect of choosing a separate policy for each graph.
+Left: full-time ratios to native choices. Right: the selected route
+relative to one fixed strategy per graph. Bars show the range across two
+reserved parameter profiles; they are not significance intervals.
+Both panels retain the equal-time reference.}
+\label{fig:type-specialists}
+\end{figure}
+\FloatBarrier
+
+The timing trials check 14,040 coefficient entries.
+We also complete 36 applications supplied only with the master basis and
+seven further application checks, then compare their coefficients independently.
+These additional applications check 945 coefficients.
+The new study uses the same seven graph structures as before, at one
+through three loops. Its target patterns occur in training, and it tests
+new kinematic profiles. General scattering beyond three loops and new
+target structures remain outside this comparison. The per-graph models
+have two training parameter profiles; the fixed range guard and
+reserved checks limit the claims accordingly.

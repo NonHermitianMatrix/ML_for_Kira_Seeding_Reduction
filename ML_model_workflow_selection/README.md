@@ -196,3 +196,33 @@ The final audit checks 651 training records, 357 validation records, 820 timed r
 The application total includes 31 main checks and ten checks of each public command.
 The figures and report values come from the saved results.
 No reserved test changes the model coefficients.
+
+## Separate policies for seven graphs
+
+The [type_specialists guide](type_specialists/README.md) describes the completed cost-model study.
+It compares ten predictors for each graph and nine reduction strategies.
+The public application selects a fitted model or a validation control and then calls exact Kira.
+The new study preserves the preceding models and test records.
+Its native inputs use one through three loops and fresh rational parameter profiles.
+
+<!-- BEGIN GRAPH POLICY RESULTS -->
+
+## Completed graph-policy results
+
+The final fit contains 70 candidates for seven graph types.
+It uses 544 training cost records and 408 separate validation records.
+The reserved test contains 720 timing trials and 43 further application checks.
+All checks pass.
+The selected-to-native geometric mean time ratio is 0.936849.
+Its descriptive interval is [0.886703, 0.987789].
+The selected-to-fixed ratio is 0.944077.
+Its descriptive interval is [0.899157, 0.986347].
+Each graph has equal weight in these aggregate ratios.
+A ratio below one means less complete reduction time.
+The selected route has a ratio below one in 5 of the seven graph groups.
+The inputs use known graph structures and target patterns at new rational profiles.
+These results give no speed guarantee for other inputs.
+
+See the study guide for the graph results and limits.
+
+<!-- END GRAPH POLICY RESULTS -->

@@ -151,3 +151,8 @@
 
 - Use machine learning terminology in the current report, notes and project instructions. Remove the earlier two-system terminology. Choose model types from measured performance; no model architecture or size is required in advance. This instruction supersedes the earlier wording and model-type restrictions, including the original abstract wording.
 - Improve full reduction time through model training and Kira integration. Compare complete calculations on separate test cases, retain exact checks and fallback, and publish the measured results, code and documentation. Update both the report and notes, rebuild both PDFs, and synchronize them on Hoffman, GitHub and the local machine. Preserve earlier scientific evidence; report any remaining limits or regressions.
+
+## Models for different integral types (October 14, 2026)
+
+- Develop and train separate models for different integral types when measured performance supports this choice. Select the model and reduction strategy from validation results, then compare full calculation times on fresh reserved inputs. Use the best measured model within the tested domain without an architecture restriction.
+- Continue the authorized work automatically. Preserve earlier tests and distinguish gains from learned decisions from gains due to exact rules, shared work or implementation changes. Update the report, notes, affected READMEs and GitHub with measured results. A finite test cannot establish a speedup for every possible integral.

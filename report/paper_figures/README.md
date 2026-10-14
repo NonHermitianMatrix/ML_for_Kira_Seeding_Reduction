@@ -26,3 +26,14 @@ The [joint-request plotter](../../ML_model_workflow_selection/s12_plot_batching.
 Its compact values are in `../batching_figure_data.json`.
 
 Read the [report guide](../README.md) for build and check commands.
+
+## type_specialists.pdf
+
+This plot compares complete reduction time for separate graph policies.
+The left panel compares three methods with native choices.
+The right panel compares the selected route with one fixed strategy for each graph.
+The bars show the range across two reserved parameter profiles.
+They are not confidence intervals.
+The script `ML_model_workflow_selection/type_specialists/s05_analyze.py` generates the plot.
+Its input is the completed frozen test record.
+See [the study guide](../../ML_model_workflow_selection/type_specialists/README.md).

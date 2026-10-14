@@ -921,6 +921,7 @@ targets and complete reduction data~\cite{ExpandedIntegralData}.
 \clearpage
 % BEGIN CURRENT WORKFLOW UPDATE
 \input{workflow_results}
+\input{type_specialist_results}
 
 % END CURRENT WORKFLOW UPDATE
 \section{Conclusion}
@@ -1109,7 +1110,7 @@ The direct cumulative comparison uses the saved original Kira executable and the
 % END GENERALIZATION CONCLUSION
 
 % BEGIN CURRENT WORKFLOW UPDATE
-The latest complete-cost study in Section~\ref{sec:workflow} compares twelve
+The complete-cost study in Section~\ref{sec:workflow} compares twelve
 fitted predictors and preserves the selected model during testing. All
 620 timed reductions and 31 basis-only applications pass exact checks,
 but the learned choice adds no reliable gain over integrated native
@@ -1121,14 +1122,22 @@ command checks verify the single-batch, learned joint and default joint
 applications without supplying target coefficients. These measurements
 cover native calculations at one through three loops. The earlier
 restricted vacuum result through twelve loops remains a separate result.
+
+The graph-specific study in Section~\ref{sec:type-specialists} fits
+seventy candidates and gives 6.3\% less time relative to native choices
+on 720 reserved trials. Its ratio to a fixed strategy per graph is
+$0.9441$. All trials and 43 additional applications pass exact
+checks. The study covers the seven known graphs at one through three
+loops with new rational profiles and repeated target patterns.
 % END CURRENT WORKFLOW UPDATE
 \clearpage
 \renewcommand{\refname}{Citations}
 % BEGIN CURRENT WORKFLOW UPDATE
 \appendix
 \input{workflow_appendix}
+\input{type_specialist_appendix}
 % END CURRENT WORKFLOW UPDATE
 \bibliographystyle{unsrt}
-\bibliography{references}
+\bibliography{references,type_specialist_references}
 
 \end{document}

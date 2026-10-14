@@ -8,7 +8,7 @@ import statistics
 
 HERE=Path(__file__).resolve().parent
 def main():
-    names=['report.tex','paper_appendices.tex','scattering_results.tex','workflow_results.tex','workflow_appendix.tex']
+    names=['report.tex','paper_appendices.tex','scattering_results.tex','workflow_results.tex','workflow_appendix.tex','type_specialist_results.tex','type_specialist_appendix.tex']
     source='\n'.join((HERE/n).read_text() for n in names)
     bib=(HERE/'paper_references.bib').read_text()
     cites={x.strip() for group in re.findall(r'\\cite\{([^}]+)\}',source) for x in group.split(',')}
@@ -84,11 +84,28 @@ def main():
     for name,data in [('model_test/summary.json',workflow),('request_batching/summary.json',batching),('evidence_validation.json',audit)]:
         source_path=HERE.parent/'ML_model_workflow_selection'/name
         if source_path.exists():assert json.loads(source_path.read_text())==data,name
+    specialist=json.loads((HERE/'type_specialist_figure_data.json').read_text())
+    specialist_audit=json.loads((HERE/'type_specialist_validation.json').read_text())
+    assert specialist['complete'] and specialist['all_exact'] and specialist_audit['complete']
+    assert specialist['workflows']==720 and specialist['applications']==36
+    assert specialist['model_candidates']==70
+    assert specialist_audit['public_applications']==7
+    for record in specialist['cases']:
+        for method,ratio in record['ratios'].items():
+            expected=record['median_seconds'][method]/record['median_seconds']['native']
+            assert abs(ratio-expected)<1e-12
+    for method,record in specialist['aggregate'].items():
+        expected=math.exp(statistics.mean(math.log(v[method]) for v in specialist['by_topology'].values()))
+        assert abs(record['ratio']-expected)<1e-12
+    for name,data in [('model_test/summary.json',specialist),('evidence_validation.json',specialist_audit)]:
+        path=HERE.parent/'ML_model_workflow_selection/type_specialists'/name
+        if path.exists():assert json.loads(path.read_text())==data
     result=dict(external_citation_keys=len(cites),internal_references=len(refs),figures=len(figs),
         self_repository_citations=0,original_notes_reconstructable=True,terminology_updated_as_requested=True,
         original_supporting_files_preserved=len(archive['supporting_files']),
         complete_cost_workflows=workflow['workflows'],joint_request_workflows=batching['workflows'],
         applications_without_reference_answers=applications,
+        specialist_workflows=specialist['workflows'],specialist_applications=43,specialist_candidates=70,
         pdf_sha256={n:hashlib.sha256((HERE/(n+'.pdf')).read_bytes()).hexdigest() for n in ['report','notes']})
     (HERE/'paper_validation.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(result))

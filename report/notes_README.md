@@ -13,3 +13,10 @@ Run `make notes.pdf` in this folder to build the notes.
 Read [README.md](README.md) for the build tools and file checks.
 Earlier versions of this guide remain in Git history.
 Their references to `report.tex` describe the document now named `notes.tex`.
+
+## Added graph-specific study
+
+The current notes include the new result section and mathematical appendix for policies fitted separately to seven graph structures.
+The added blocks keep the original notes recoverable through `notes_revision.json`.
+The notes use `type_specialist_references.bib` for the added external citation.
+The original supporting files remain unchanged.

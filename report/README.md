@@ -58,3 +58,14 @@ The [paper figure guide](paper_figures/README.md) explains each plot.
 The [earlier figure guide](figures/README.md) describes the figures in the notes.
 
 Keep the sources, bibliography, figures and both PDFs on Hoffman, GitHub and the local machine.
+
+## Policies for each graph
+
+The `type_specialist_results.tex` section reports the graph-specific cost study.
+The `type_specialist_appendix.tex` appendix gives its physics inputs, model fits, and selection rule.
+The `type_specialist_references.bib` file supplies the added external source for the notes.
+The paper uses the same source in `paper_references.bib`.
+The `type_specialist_figure_data.json` file contains the compact result summary.
+The `type_specialist_validation.json` file records exact checks, split checks, and storage checks.
+The `s01_check_paper.py` script checks these data against the report and preserved notes.
+See [the study guide](../ML_model_workflow_selection/type_specialists/README.md) for source code, fitting, tests, and limits.

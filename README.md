@@ -94,3 +94,32 @@ It retains the earlier model weights and results.
 Its native cases cover seven graph structures at one through three loops.
 The restricted vacuum results through twelve loops remain a separate result.
 See that folder for the frozen model, test summaries and application commands.
+
+## Models for each graph type
+
+The graph-specific cost study fits separate policy candidates for seven known graph structures.
+It compares full exact Kira reductions, including failed attempts and retries.
+See [the study guide](ML_model_workflow_selection/type_specialists/README.md) for code, models, tests, inputs, and limits.
+The current paper and notes include the mathematical method and measured results.
+
+<!-- BEGIN GRAPH POLICY RESULTS -->
+
+## Completed graph-policy results
+
+The final fit contains 70 candidates for seven graph types.
+It uses 544 training cost records and 408 separate validation records.
+The reserved test contains 720 timing trials and 43 further application checks.
+All checks pass.
+The selected-to-native geometric mean time ratio is 0.936849.
+Its descriptive interval is [0.886703, 0.987789].
+The selected-to-fixed ratio is 0.944077.
+Its descriptive interval is [0.899157, 0.986347].
+Each graph has equal weight in these aggregate ratios.
+A ratio below one means less complete reduction time.
+The selected route has a ratio below one in 5 of the seven graph groups.
+The inputs use known graph structures and target patterns at new rational profiles.
+These results give no speed guarantee for other inputs.
+
+See the study guide for the graph results and limits.
+
+<!-- END GRAPH POLICY RESULTS -->

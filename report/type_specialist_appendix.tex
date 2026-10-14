@@ -1,0 +1,149 @@
+\section{Separate cost models for each graph}
+\label{app:type-specialists}
+This experiment retains the seven denominator definitions and profile
+formulas in Appendix~\ref{app:workflow}. Development uses profile $h=61$,
+training uses $h=62,63$, validation uses $h=64$, and the reserved test uses
+$h=65,66$. The dimension remains symbolic. Related target batches share
+the same split, so their rational kinematic values cannot pass from the
+training set into the reserved set. The graph structures and target
+patterns occur in both sets.
+
+Let $P$ be the number of physical propagators and let
+$\boldsymbol b=(1,\ldots,1,0,\ldots,0)$ have $P$ entries equal to one.
+Let $\boldsymbol e_j$ be the unit vector for index $j$. The first batch
+contains $\boldsymbol b+2\boldsymbol e_j$ for
+$j=1,\ldots,\min(P,3)$. Thus one denominator has power three in each target.
+For the second batch, define the lower-sector corner
+\begin{equation}
+ \boldsymbol b^{\rm low}=
+ \begin{cases}
+ \boldsymbol b-\boldsymbol e_1,&P<5,\\
+ \boldsymbol b-\boldsymbol e_1-\boldsymbol e_3,&P\geq5.
+ \end{cases}
+\end{equation}
+Include this corner and up to three single-dot targets,
+$\boldsymbol b^{\rm low}+\boldsymbol e_j$ with $b^{\rm low}_j=1$,
+taking the first available indices in increasing order.
+The third batch uses the original corner $\boldsymbol b$ and contains
+$\boldsymbol b-2\boldsymbol e_j$ for the first three auxiliary entries,
+or all auxiliary entries when fewer than three exist. When a family has no auxiliary entry, this construction
+repeats the first batch and we remove the duplicate. These formulas define
+the inputs; they do not infer their coefficients from the masters.
+
+\subsection{The allowed changes to Kira}
+For target batch $\mathcal T$ and a target $\boldsymbol a$, let $S(\boldsymbol a)=\{i:a_i>0\}$ be its
+positive-index set. One strategy supplies only maximal target sectors:
+\begin{equation}
+ \mathcal S_{\rm max}
+ =\{S(\boldsymbol a):\boldsymbol a\in\mathcal T,
+ \ S(\boldsymbol a)\not\subsetneq S(\boldsymbol a')
+ \text{ for every }\boldsymbol a'\in\mathcal T\}.
+ \label{eq:type-sectors}
+\end{equation}
+Kira then includes their subsectors. To see why this is a useful candidate,
+consider the shifted integrals produced by the IBP derivative. A raised
+index $a_i+1$ carries a factor $a_i$, and the other shifts lower an index.
+If $a_i=0$, the raising term vanishes; if $a_i<0$, raising it once leaves
+it nonpositive. Thus an IBP equation seeded in one sector stays in that
+sector or its subsectors. This observation does not prove that the
+restricted pool contains every relation useful for a chosen master basis.
+We therefore retain the basis check and full-sector fallback.
+
+Another strategy uses Kira's numerator truncation~\cite{Kira3}. In a sector
+with $t$ positive indices, Kira restricts the inherited numerator bound by
+\begin{equation}
+ s\leq\max(1,t-\tau+1,s_{\rm explicit}),
+ \label{eq:type-truncation}
+\end{equation}
+where $\tau$ is the chosen integer cutoff and $s_{\rm explicit}$ is a
+bound explicitly supplied for that sector. We test
+$\tau=P-s_c$ and $\tau=P-s_c+1$, where $s_c$ is the largest target numerator
+rank. The top-level sector retains its explicit target bound. The first
+cutoff combined with maximal target sectors forms the deterministic
+control. The development probes also test $\tau=P-s_c-1$.
+
+The remaining choices use the original bounds $B_c$, the smaller bounds
+$B_c-(1,0,1)$ with negative entries replaced by zero, the larger bounds
+$B_c+(1,1,1)$, Kira integral ordering five~\cite{Kira12}, or the preceding
+trained equation filter. Together these choices give nine strategies.
+Before each attempt, every strategy enforces a nonempty seed region in
+its declared top-level sectors. If $\mathcal S_0$ is that sector list and
+$r_{\rm req}$ is the requested positive-index bound, the actual bound is
+\begin{equation}
+ r_{\rm run}=\max\left(r_{\rm req},\max_{S\in\mathcal S_0}|S|\right).
+ \label{eq:type-valid-bound}
+\end{equation}
+Each positive index is at least one, so a seed in sector $S$ has
+$\sum_{i\in S}a_i\geq|S|$. This proves the lower bound used in
+Eq.~\eqref{eq:type-valid-bound}. The correction prevents an invalid
+configuration from adding a failed startup to any method's cost.
+Identical input configurations share one training or validation measurement.
+If a proposed reduction fails, it retries with native choices at $B_c$
+and then at $B_c+(1,1,1)$. The recorded cost includes every attempt.
+
+\subsection{Fitting and selecting the models}
+Each graph has its own predictors of
+$y_{cj}=\log(t_{cj}/t_{c0})$, where $t_{cj}$ is the median complete cost of
+strategy $j$ on batch $c$ and zero denotes native choices. The nine input
+features are the target count; maximum dot count and numerator rank;
+minimum and maximum positive-index counts; mean dot count and numerator
+rank; number of maximal target sectors; and number of physical
+propagators. These features use the requested indices and family
+definition. They contain no reduced coefficients.
+
+We fit ten candidates per graph: one constant predictor, trees of maximum
+depth one, two and three, a bagged ensemble of sixteen depth-three trees,
+ridge regressions with penalties $0.1,1,10$, and nearest-neighbour
+predictors with one and three neighbours. Trees use squared-error splits
+with at least one row in each child. Each ensemble tree receives a
+bootstrap sample of the training batches and uses all features at each
+split. This follows bootstrap aggregation~\cite{Breiman1996Bagging}.
+For fitted trees $f_1,\ldots,f_{16}$, the ensemble prediction is
+\begin{equation}
+ \widehat y_j(\boldsymbol f)=\frac1{16}
+ \sum_{b=1}^{16}f_{bj}(\boldsymbol f).
+\end{equation}
+This average also follows by minimizing
+$\sum_b(f_{bj}(\boldsymbol f)-v_j)^2$ with respect to $v_j$, using the
+leaf-mean derivative in Appendix~\ref{app:workflow}. That appendix derives
+the ridge fit and the local-mean estimates used here. Neighbour distances
+use the training standard deviations; a constant feature uses divisor
+one. We use two timing repetitions for training and three for validation.
+Within each batch comparison, every strategy uses the same computer.
+Different training batches can use different computers, and the
+training response normalizes each cost to its own batch baseline.
+
+Validation considers decision margins $0,0.05,0.15$ in
+Eq.~\eqref{eq:workflow-choice}. It chooses the candidate and margin with
+the lowest complete cost separately for each graph. The controls are
+native choices, the deterministic sector-and-truncation rule, and the
+single strategy with the lowest geometric mean training cost for that
+graph. A fixed strategy can include the older equation filter. We enable
+the new model only when its validation cost ratio to the fastest control
+is at most $0.95$. Otherwise, the route uses that control. This threshold
+is a selection rule, not a significance test. Unknown graph structures
+and features outside the fitted range use native choices.
+
+The reserved comparison uses five repetitions of native choices, the
+deterministic rule, the fixed strategy per graph, and the selected route.
+The order rotates across batches and repetitions, giving every method
+the same number of appearances in each run position over the full test.
+Each run uses the same targets, prescribed basis, executable, and one
+processor. All methods retain the preceding exact implementation
+improvements, so the native control uses that same implementation with
+native selection rules. Full time includes input preparation, prediction, native IBP
+generation, exact reduction, coefficient checks, cleanup, and retries.
+Offline fitting, reference discovery, and saving measurement records stay
+outside the timer. Separate application checks receive the basis without
+target coefficients and compare their answers only after completion.
+The calling program and fitted parameters are loaded before the timing
+trials, and each trial starts a fresh Kira process. The additional
+application checks also record time with a newly started calling program;
+they do not supply a matched speed comparison for that condition.
+
+We combine five-run median ratios within each graph and then give the
+seven graphs equal weight, as derived in Appendix~\ref{app:workflow}.
+The aggregate intervals resample graph groups. Per-graph plot bars show
+the range across the two reserved kinematic profiles. Two profiles do not
+support a general significance claim for that integral type, so those
+bars are reported as ranges.

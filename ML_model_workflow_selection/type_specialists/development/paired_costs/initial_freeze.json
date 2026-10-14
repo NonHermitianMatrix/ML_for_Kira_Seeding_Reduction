@@ -1,0 +1,2993 @@
+{
+  "policies": {
+    "sunrise": {
+      "model": {
+        "name": "constant",
+        "type": "constant",
+        "value": [
+          0.0,
+          0.02092666166674925,
+          0.10844659691343793,
+          -0.026101767005080757,
+          0.043754246015922,
+          -0.04496551064956108,
+          0.24997330005849447,
+          0.10913476575834635,
+          0.04146302856181194
+        ]
+      },
+      "gate": 0.0,
+      "enabled": false,
+      "validation_control": "tight",
+      "best_fixed": "tight",
+      "validation": {
+        "model": "constant",
+        "gate": 0.0,
+        "ratio_to_control": 1.0,
+        "decisions": [
+          "tight",
+          "tight",
+          "native"
+        ]
+      },
+      "options": [
+        {
+          "model": "constant",
+          "gate": 0.0,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "tight",
+            "tight",
+            "native"
+          ]
+        },
+        {
+          "model": "constant",
+          "gate": 0.05,
+          "ratio_to_control": 1.0160623489221237,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "constant",
+          "gate": 0.15,
+          "ratio_to_control": 1.0160623489221237,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.0,
+          "ratio_to_control": 1.0137677095132689,
+          "decisions": [
+            "truncate1",
+            "tight",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.05,
+          "ratio_to_control": 1.0112920577145377,
+          "decisions": [
+            "native",
+            "tight",
+            "native"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.15,
+          "ratio_to_control": 1.0112920577145377,
+          "decisions": [
+            "native",
+            "tight",
+            "native"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.0,
+          "ratio_to_control": 1.015556786388309,
+          "decisions": [
+            "native",
+            "tight",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.05,
+          "ratio_to_control": 1.015556786388309,
+          "decisions": [
+            "native",
+            "tight",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.15,
+          "ratio_to_control": 1.0112920577145377,
+          "decisions": [
+            "native",
+            "tight",
+            "native"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.0,
+          "ratio_to_control": 1.015556786388309,
+          "decisions": [
+            "native",
+            "tight",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.05,
+          "ratio_to_control": 1.015556786388309,
+          "decisions": [
+            "native",
+            "tight",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.15,
+          "ratio_to_control": 1.0112920577145377,
+          "decisions": [
+            "native",
+            "tight",
+            "native"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.0,
+          "ratio_to_control": 1.015556786388309,
+          "decisions": [
+            "native",
+            "tight",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.05,
+          "ratio_to_control": 1.015556786388309,
+          "decisions": [
+            "native",
+            "tight",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.15,
+          "ratio_to_control": 1.0160623489221237,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.0,
+          "ratio_to_control": 1.015556786388309,
+          "decisions": [
+            "native",
+            "tight",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.05,
+          "ratio_to_control": 1.015556786388309,
+          "decisions": [
+            "native",
+            "tight",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.15,
+          "ratio_to_control": 1.0112920577145377,
+          "decisions": [
+            "native",
+            "tight",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.0,
+          "ratio_to_control": 1.015556786388309,
+          "decisions": [
+            "native",
+            "tight",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.05,
+          "ratio_to_control": 1.015556786388309,
+          "decisions": [
+            "native",
+            "tight",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.15,
+          "ratio_to_control": 1.0112920577145377,
+          "decisions": [
+            "native",
+            "tight",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.0,
+          "ratio_to_control": 1.015556786388309,
+          "decisions": [
+            "native",
+            "tight",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.05,
+          "ratio_to_control": 1.015556786388309,
+          "decisions": [
+            "native",
+            "tight",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.15,
+          "ratio_to_control": 1.0160623489221237,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.0,
+          "ratio_to_control": 1.01326547052211,
+          "decisions": [
+            "native",
+            "sector_truncate0",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.05,
+          "ratio_to_control": 1.01326547052211,
+          "decisions": [
+            "native",
+            "sector_truncate0",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.15,
+          "ratio_to_control": 1.0203471944331035,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.0,
+          "ratio_to_control": 1.015556786388309,
+          "decisions": [
+            "native",
+            "tight",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.05,
+          "ratio_to_control": 1.015556786388309,
+          "decisions": [
+            "native",
+            "tight",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.15,
+          "ratio_to_control": 1.0160623489221237,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        }
+      ],
+      "structure": {
+        "loops": [
+          "k1",
+          "k2"
+        ],
+        "external": [
+          "p"
+        ],
+        "physical": 3,
+        "propagators": [
+          [
+            "k1",
+            false
+          ],
+          [
+            "k2",
+            false
+          ],
+          [
+            "p-k1-k2",
+            false
+          ],
+          [
+            "p-k1",
+            true
+          ],
+          [
+            "p-k2",
+            true
+          ]
+        ],
+        "invariants": []
+      },
+      "features_min": [
+        2.0,
+        0.0,
+        0.0,
+        2.0,
+        2.0,
+        0.0,
+        0.0,
+        1.0,
+        3.0
+      ],
+      "features_max": [
+        3.0,
+        2.0,
+        2.0,
+        3.0,
+        3.0,
+        2.0,
+        2.0,
+        1.0,
+        3.0
+      ]
+    },
+    "double_box": {
+      "model": {
+        "type": "tree",
+        "nodes": [
+          {
+            "feature": 0,
+            "value": [
+              0.0,
+              0.057322647688076565,
+              0.05181789448825294,
+              0.008637416810765991,
+              0.04185312699900997,
+              0.11555012588348729,
+              0.237379479308073,
+              0.6108867767976901,
+              0.04876148561045715
+            ],
+            "rows": 6,
+            "threshold": 2.5,
+            "left": 1,
+            "right": 2
+          },
+          {
+            "feature": -1,
+            "value": [
+              0.0,
+              0.0,
+              -0.05372166312211222,
+              -0.12986681797362928,
+              -0.05372166312211222,
+              0.0,
+              0.34956561157019955,
+              1.0994363433248577,
+              0.015179599395373028
+            ],
+            "rows": 2
+          },
+          {
+            "feature": 0,
+            "value": [
+              0.0,
+              0.08598397153211484,
+              0.10458767329343552,
+              0.07788953420296363,
+              0.08964052205957107,
+              0.17332518882523093,
+              0.18128641317700964,
+              0.3666119935341063,
+              0.0655524287179992
+            ],
+            "rows": 4,
+            "threshold": 3.5,
+            "left": 3,
+            "right": 4
+          },
+          {
+            "feature": -1,
+            "value": [
+              0.0,
+              0.0,
+              0.019405683504160127,
+              -0.014694756197684618,
+              0.019405683504160127,
+              0.18032983221859128,
+              0.20382432341879242,
+              0.5350945941114187,
+              -0.052820357114235966
+            ],
+            "rows": 2
+          },
+          {
+            "feature": -1,
+            "value": [
+              0.0,
+              0.1719679430642297,
+              0.18976966308271093,
+              0.17047382460361188,
+              0.15987536061498203,
+              0.1663205454318706,
+              0.15874850293522688,
+              0.19812939295679383,
+              0.18392521455023436
+            ],
+            "rows": 2
+          }
+        ],
+        "name": "tree2"
+      },
+      "gate": 0.0,
+      "enabled": false,
+      "validation_control": "sector_truncate0",
+      "best_fixed": "native",
+      "validation": {
+        "model": "tree2",
+        "gate": 0.0,
+        "ratio_to_control": 0.9541117619956828,
+        "decisions": [
+          "order5",
+          "native",
+          "truncate1"
+        ]
+      },
+      "options": [
+        {
+          "model": "constant",
+          "gate": 0.0,
+          "ratio_to_control": 1.0321370447669984,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "constant",
+          "gate": 0.05,
+          "ratio_to_control": 1.0321370447669984,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "constant",
+          "gate": 0.15,
+          "ratio_to_control": 1.0321370447669984,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.0,
+          "ratio_to_control": 0.9631132692731023,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.05,
+          "ratio_to_control": 0.9631132692731023,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.15,
+          "ratio_to_control": 1.0321370447669984,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.0,
+          "ratio_to_control": 0.9541117619956828,
+          "decisions": [
+            "order5",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.05,
+          "ratio_to_control": 0.9541117619956828,
+          "decisions": [
+            "order5",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.15,
+          "ratio_to_control": 1.0321370447669984,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.0,
+          "ratio_to_control": 0.9541117619956828,
+          "decisions": [
+            "order5",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.05,
+          "ratio_to_control": 0.9541117619956828,
+          "decisions": [
+            "order5",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.15,
+          "ratio_to_control": 1.0321370447669984,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.0,
+          "ratio_to_control": 0.9541117619956828,
+          "decisions": [
+            "order5",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.05,
+          "ratio_to_control": 0.9631132692731023,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.15,
+          "ratio_to_control": 1.0321370447669984,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.0,
+          "ratio_to_control": 0.9541117619956828,
+          "decisions": [
+            "order5",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.05,
+          "ratio_to_control": 0.9541117619956828,
+          "decisions": [
+            "order5",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.15,
+          "ratio_to_control": 1.0321370447669984,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.0,
+          "ratio_to_control": 0.9541117619956828,
+          "decisions": [
+            "order5",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.05,
+          "ratio_to_control": 0.9631132692731023,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.15,
+          "ratio_to_control": 1.0321370447669984,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.0,
+          "ratio_to_control": 0.9541117619956828,
+          "decisions": [
+            "order5",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.05,
+          "ratio_to_control": 0.9631132692731023,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.15,
+          "ratio_to_control": 1.0321370447669984,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.0,
+          "ratio_to_control": 0.9541117619956828,
+          "decisions": [
+            "order5",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.05,
+          "ratio_to_control": 0.9541117619956828,
+          "decisions": [
+            "order5",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.15,
+          "ratio_to_control": 1.0321370447669984,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.0,
+          "ratio_to_control": 0.9631132692731023,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.05,
+          "ratio_to_control": 0.9631132692731023,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.15,
+          "ratio_to_control": 1.0321370447669984,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        }
+      ],
+      "structure": {
+        "loops": [
+          "k1",
+          "k2"
+        ],
+        "external": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "physical": 7,
+        "propagators": [
+          [
+            "k1",
+            true
+          ],
+          [
+            "k1-p1",
+            true
+          ],
+          [
+            "k1-p1-p2",
+            true
+          ],
+          [
+            "k2",
+            true
+          ],
+          [
+            "k2-p1-p2",
+            true
+          ],
+          [
+            "k2-p1-p2-p3",
+            true
+          ],
+          [
+            "k1-k2",
+            true
+          ],
+          [
+            "k1-p3",
+            true
+          ],
+          [
+            "k2-p1",
+            true
+          ]
+        ],
+        "invariants": []
+      },
+      "features_min": [
+        2.0,
+        0.0,
+        0.0,
+        5.0,
+        5.0,
+        0.0,
+        0.0,
+        1.0,
+        7.0
+      ],
+      "features_max": [
+        4.0,
+        2.0,
+        2.0,
+        7.0,
+        7.0,
+        2.0,
+        2.0,
+        1.0,
+        7.0
+      ]
+    },
+    "vacuum3": {
+      "model": {
+        "type": "tree",
+        "nodes": [
+          {
+            "feature": 0,
+            "value": [
+              0.0,
+              0.16706708089863256,
+              -0.017409687226300187,
+              -0.016514334178356717,
+              0.14170868685475424,
+              0.1292599816819926,
+              0.11881900379056508,
+              0.5802500577031494,
+              0.0397216294939015
+            ],
+            "rows": 4,
+            "threshold": 3.5,
+            "left": 1,
+            "right": 2
+          },
+          {
+            "feature": -1,
+            "value": [
+              0.0,
+              0.0,
+              -0.03708399917835367,
+              -0.015258680440300904,
+              -0.03708399917835367,
+              0.31572176205623825,
+              0.3179384842657337,
+              0.3140293152252356,
+              0.059589890300003556
+            ],
+            "rows": 2
+          },
+          {
+            "feature": -1,
+            "value": [
+              0.0,
+              0.33413416179726513,
+              0.0022646247257532984,
+              -0.017769987916412534,
+              0.3205013728878621,
+              -0.05720179869225309,
+              -0.08030047668460356,
+              0.8464708001810632,
+              0.019853368687799428
+            ],
+            "rows": 2
+          }
+        ],
+        "name": "tree1"
+      },
+      "gate": 0.05,
+      "enabled": false,
+      "validation_control": "native",
+      "best_fixed": "truncate0",
+      "validation": {
+        "model": "tree1",
+        "gate": 0.05,
+        "ratio_to_control": 0.9602854224020416,
+        "decisions": [
+          "native",
+          "equation"
+        ]
+      },
+      "options": [
+        {
+          "model": "constant",
+          "gate": 0.0,
+          "ratio_to_control": 1.0195212278243677,
+          "decisions": [
+            "truncate0",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "constant",
+          "gate": 0.05,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "constant",
+          "gate": 0.15,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.0,
+          "ratio_to_control": 0.9886932925946024,
+          "decisions": [
+            "truncate0",
+            "equation"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.05,
+          "ratio_to_control": 0.9602854224020416,
+          "decisions": [
+            "native",
+            "equation"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.15,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.0,
+          "ratio_to_control": 0.9886932925946024,
+          "decisions": [
+            "truncate0",
+            "equation"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.05,
+          "ratio_to_control": 0.9602854224020416,
+          "decisions": [
+            "native",
+            "equation"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.15,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.0,
+          "ratio_to_control": 0.9886932925946024,
+          "decisions": [
+            "truncate0",
+            "equation"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.05,
+          "ratio_to_control": 0.9602854224020416,
+          "decisions": [
+            "native",
+            "equation"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.15,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.0,
+          "ratio_to_control": 0.9886932925946024,
+          "decisions": [
+            "truncate0",
+            "equation"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.05,
+          "ratio_to_control": 0.9602854224020416,
+          "decisions": [
+            "native",
+            "equation"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.15,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.0,
+          "ratio_to_control": 0.9886932925946024,
+          "decisions": [
+            "truncate0",
+            "equation"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.05,
+          "ratio_to_control": 0.9602854224020416,
+          "decisions": [
+            "native",
+            "equation"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.15,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.0,
+          "ratio_to_control": 0.9886932925946024,
+          "decisions": [
+            "truncate0",
+            "equation"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.05,
+          "ratio_to_control": 0.9602854224020416,
+          "decisions": [
+            "native",
+            "equation"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.15,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.0,
+          "ratio_to_control": 1.0393206750168187,
+          "decisions": [
+            "truncate0",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.05,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.15,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.0,
+          "ratio_to_control": 0.9886932925946024,
+          "decisions": [
+            "truncate0",
+            "equation"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.05,
+          "ratio_to_control": 0.9602854224020416,
+          "decisions": [
+            "native",
+            "equation"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.15,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.0,
+          "ratio_to_control": 1.0393206750168187,
+          "decisions": [
+            "truncate0",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.05,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.15,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        }
+      ],
+      "structure": {
+        "loops": [
+          "k1",
+          "k2",
+          "k3"
+        ],
+        "external": [],
+        "physical": 6,
+        "propagators": [
+          [
+            "k1",
+            false
+          ],
+          [
+            "k2",
+            false
+          ],
+          [
+            "k3",
+            false
+          ],
+          [
+            "k1-k2",
+            false
+          ],
+          [
+            "k2-k3",
+            false
+          ],
+          [
+            "k1-k3",
+            false
+          ]
+        ],
+        "invariants": []
+      },
+      "features_min": [
+        3.0,
+        1.0,
+        0.0,
+        4.0,
+        4.0,
+        0.75,
+        0.0,
+        1.0,
+        6.0
+      ],
+      "features_max": [
+        4.0,
+        2.0,
+        0.0,
+        6.0,
+        6.0,
+        2.0,
+        0.0,
+        1.0,
+        6.0
+      ]
+    },
+    "ladder3": {
+      "model": {
+        "type": "tree",
+        "nodes": [
+          {
+            "feature": 0,
+            "value": [
+              0.0,
+              0.04073218205381513,
+              0.024332890581178063,
+              0.058221911984464324,
+              0.0038537668113135526,
+              0.06504172734223056,
+              0.15789883151819673,
+              0.2845744709084285,
+              0.08029456321788712
+            ],
+            "rows": 6,
+            "threshold": 2.0,
+            "left": 1,
+            "right": 2
+          },
+          {
+            "feature": -1,
+            "value": [
+              0.0,
+              0.0,
+              -0.15942711519662656,
+              -0.060928652780769275,
+              -0.15942711519662656,
+              0.0,
+              0.2652889034859121,
+              1.0159419553522429,
+              -0.0729032604701415
+            ],
+            "rows": 2
+          },
+          {
+            "feature": -1,
+            "value": [
+              0.0,
+              0.061098273080722694,
+              0.11621289347008038,
+              0.11779719436708111,
+              0.08549420781528362,
+              0.09756259101334583,
+              0.10420379553433902,
+              -0.08110927131347861,
+              0.15689347506190143
+            ],
+            "rows": 4
+          }
+        ],
+        "name": "tree1"
+      },
+      "gate": 0.0,
+      "enabled": true,
+      "validation_control": "native",
+      "best_fixed": "native",
+      "validation": {
+        "model": "tree1",
+        "gate": 0.0,
+        "ratio_to_control": 0.8713801820414874,
+        "decisions": [
+          "expanded",
+          "expanded",
+          "truncate0"
+        ]
+      },
+      "options": [
+        {
+          "model": "constant",
+          "gate": 0.0,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "constant",
+          "gate": 0.05,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "constant",
+          "gate": 0.15,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.0,
+          "ratio_to_control": 0.8713801820414874,
+          "decisions": [
+            "expanded",
+            "expanded",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.05,
+          "ratio_to_control": 0.8713801820414874,
+          "decisions": [
+            "expanded",
+            "expanded",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.15,
+          "ratio_to_control": 0.9620079338359006,
+          "decisions": [
+            "native",
+            "native",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.0,
+          "ratio_to_control": 0.8713801820414874,
+          "decisions": [
+            "expanded",
+            "expanded",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.05,
+          "ratio_to_control": 0.8713801820414874,
+          "decisions": [
+            "expanded",
+            "expanded",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.15,
+          "ratio_to_control": 0.9620079338359006,
+          "decisions": [
+            "native",
+            "native",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.0,
+          "ratio_to_control": 0.8713801820414874,
+          "decisions": [
+            "expanded",
+            "expanded",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.05,
+          "ratio_to_control": 0.8713801820414874,
+          "decisions": [
+            "expanded",
+            "expanded",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.15,
+          "ratio_to_control": 0.9620079338359006,
+          "decisions": [
+            "native",
+            "native",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.0,
+          "ratio_to_control": 0.8713801820414874,
+          "decisions": [
+            "expanded",
+            "expanded",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.05,
+          "ratio_to_control": 0.900224778355082,
+          "decisions": [
+            "native",
+            "expanded",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.15,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.0,
+          "ratio_to_control": 0.8713801820414874,
+          "decisions": [
+            "expanded",
+            "expanded",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.05,
+          "ratio_to_control": 0.8713801820414874,
+          "decisions": [
+            "expanded",
+            "expanded",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.15,
+          "ratio_to_control": 0.9620079338359006,
+          "decisions": [
+            "native",
+            "native",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.0,
+          "ratio_to_control": 0.8713801820414874,
+          "decisions": [
+            "expanded",
+            "expanded",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.05,
+          "ratio_to_control": 0.900224778355082,
+          "decisions": [
+            "native",
+            "expanded",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.15,
+          "ratio_to_control": 0.9620079338359006,
+          "decisions": [
+            "native",
+            "native",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.0,
+          "ratio_to_control": 0.900224778355082,
+          "decisions": [
+            "native",
+            "expanded",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.05,
+          "ratio_to_control": 0.9620079338359006,
+          "decisions": [
+            "native",
+            "native",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.15,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.0,
+          "ratio_to_control": 0.9311837095208633,
+          "decisions": [
+            "expanded",
+            "native",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.05,
+          "ratio_to_control": 0.9620079338359006,
+          "decisions": [
+            "native",
+            "native",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.15,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.0,
+          "ratio_to_control": 0.8713801820414874,
+          "decisions": [
+            "expanded",
+            "expanded",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.05,
+          "ratio_to_control": 0.900224778355082,
+          "decisions": [
+            "native",
+            "expanded",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.15,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        }
+      ],
+      "structure": {
+        "loops": [
+          "k1",
+          "k2",
+          "k3"
+        ],
+        "external": [
+          "p"
+        ],
+        "physical": 8,
+        "propagators": [
+          [
+            "k1",
+            false
+          ],
+          [
+            "k1-p",
+            true
+          ],
+          [
+            "k2",
+            true
+          ],
+          [
+            "k2-p",
+            true
+          ],
+          [
+            "k3",
+            true
+          ],
+          [
+            "k3-p",
+            true
+          ],
+          [
+            "k1-k2",
+            true
+          ],
+          [
+            "k2-k3",
+            true
+          ],
+          [
+            "k1-k3",
+            true
+          ]
+        ],
+        "invariants": []
+      },
+      "features_min": [
+        1.0,
+        0.0,
+        0.0,
+        6.0,
+        6.0,
+        0.0,
+        0.0,
+        1.0,
+        8.0
+      ],
+      "features_max": [
+        4.0,
+        2.0,
+        2.0,
+        8.0,
+        8.0,
+        2.0,
+        2.0,
+        1.0,
+        8.0
+      ]
+    },
+    "nonplanar_box": {
+      "model": {
+        "type": "tree",
+        "nodes": [
+          {
+            "feature": 0,
+            "value": [
+              0.0,
+              0.017448354141116288,
+              0.0013651717228600503,
+              -0.04142023129160079,
+              -0.006415183349242906,
+              0.06750278638473918,
+              0.090538268015226,
+              0.6022360266827497,
+              0.040905888546960346
+            ],
+            "rows": 6,
+            "threshold": 2.5,
+            "left": 1,
+            "right": 2
+          },
+          {
+            "feature": -1,
+            "value": [
+              0.0,
+              0.0,
+              -0.07657834136294786,
+              -0.18752589106862919,
+              -0.07657834136294786,
+              0.0,
+              0.2172518785624855,
+              1.4366544611000056,
+              0.01430360240751922
+            ],
+            "rows": 2
+          },
+          {
+            "feature": 0,
+            "value": [
+              0.0,
+              0.02617253121167443,
+              0.04033692826576401,
+              0.03163259859691342,
+              0.028666395657609575,
+              0.10125417957710878,
+              0.027181462741596246,
+              0.18502680947412167,
+              0.05420703161668092
+            ],
+            "rows": 4,
+            "threshold": 3.5,
+            "left": 3,
+            "right": 4
+          },
+          {
+            "feature": -1,
+            "value": [
+              0.0,
+              0.0,
+              -0.012806819149985178,
+              -0.020467946320257637,
+              -0.012806819149985178,
+              0.0893470944785873,
+              -0.03659680381681954,
+              0.38907002253575906,
+              0.008154380510328045
+            ],
+            "rows": 2
+          },
+          {
+            "feature": -1,
+            "value": [
+              0.0,
+              0.05234506242334886,
+              0.09348067568151319,
+              0.08373314351408448,
+              0.07013961046520432,
+              0.11316126467563027,
+              0.09095972930001203,
+              -0.01901640358751571,
+              0.10025968272303379
+            ],
+            "rows": 2
+          }
+        ],
+        "name": "tree2"
+      },
+      "gate": 0.0,
+      "enabled": true,
+      "validation_control": "truncate1",
+      "best_fixed": "truncate1",
+      "validation": {
+        "model": "tree2",
+        "gate": 0.0,
+        "ratio_to_control": 0.9090778360680138,
+        "decisions": [
+          "equation",
+          "expanded",
+          "truncate1"
+        ]
+      },
+      "options": [
+        {
+          "model": "constant",
+          "gate": 0.0,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "truncate1",
+            "truncate1",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "constant",
+          "gate": 0.05,
+          "ratio_to_control": 1.0232706018267936,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "constant",
+          "gate": 0.15,
+          "ratio_to_control": 1.0232706018267936,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.0,
+          "ratio_to_control": 0.9666441079759363,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.05,
+          "ratio_to_control": 0.9666441079759363,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.15,
+          "ratio_to_control": 0.9666441079759363,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.0,
+          "ratio_to_control": 0.9090778360680138,
+          "decisions": [
+            "equation",
+            "expanded",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.05,
+          "ratio_to_control": 0.9666441079759363,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.15,
+          "ratio_to_control": 0.9666441079759363,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.0,
+          "ratio_to_control": 0.9090778360680138,
+          "decisions": [
+            "equation",
+            "expanded",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.05,
+          "ratio_to_control": 0.9666441079759363,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.15,
+          "ratio_to_control": 0.9666441079759363,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.0,
+          "ratio_to_control": 0.9642353521661237,
+          "decisions": [
+            "truncate1",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.05,
+          "ratio_to_control": 0.9666441079759363,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.15,
+          "ratio_to_control": 0.9666441079759363,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.0,
+          "ratio_to_control": 0.9090778360680138,
+          "decisions": [
+            "equation",
+            "expanded",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.05,
+          "ratio_to_control": 0.9666441079759363,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.15,
+          "ratio_to_control": 0.9666441079759363,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.0,
+          "ratio_to_control": 0.9579348607166834,
+          "decisions": [
+            "equation",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.05,
+          "ratio_to_control": 0.9666441079759363,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.15,
+          "ratio_to_control": 0.9666441079759363,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.0,
+          "ratio_to_control": 0.9642353521661237,
+          "decisions": [
+            "truncate1",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.05,
+          "ratio_to_control": 0.9666441079759363,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.15,
+          "ratio_to_control": 0.9666441079759363,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.0,
+          "ratio_to_control": 0.9579348607166834,
+          "decisions": [
+            "equation",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.05,
+          "ratio_to_control": 0.9579348607166834,
+          "decisions": [
+            "equation",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.15,
+          "ratio_to_control": 1.0232706018267936,
+          "decisions": [
+            "native",
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.0,
+          "ratio_to_control": 0.9579348607166834,
+          "decisions": [
+            "equation",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.05,
+          "ratio_to_control": 0.9666441079759363,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.15,
+          "ratio_to_control": 0.9666441079759363,
+          "decisions": [
+            "native",
+            "native",
+            "truncate1"
+          ]
+        }
+      ],
+      "structure": {
+        "loops": [
+          "k1",
+          "k2"
+        ],
+        "external": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "physical": 7,
+        "propagators": [
+          [
+            "k1",
+            true
+          ],
+          [
+            "k2",
+            true
+          ],
+          [
+            "p1-k1",
+            true
+          ],
+          [
+            "p2-k2",
+            true
+          ],
+          [
+            "p1+p2-p3-k1",
+            true
+          ],
+          [
+            "p1-k1+k2",
+            true
+          ],
+          [
+            "p1-p3-k1+k2",
+            true
+          ],
+          [
+            "k1-p3",
+            true
+          ],
+          [
+            "k2-p1-p2",
+            true
+          ]
+        ],
+        "invariants": []
+      },
+      "features_min": [
+        2.0,
+        0.0,
+        0.0,
+        5.0,
+        5.0,
+        0.0,
+        0.0,
+        1.0,
+        7.0
+      ],
+      "features_max": [
+        4.0,
+        2.0,
+        2.0,
+        7.0,
+        7.0,
+        2.0,
+        2.0,
+        1.0,
+        7.0
+      ]
+    },
+    "pentagon": {
+      "model": {
+        "type": "tree",
+        "nodes": [
+          {
+            "feature": 0,
+            "value": [
+              0.0,
+              0.05868537133397757,
+              0.01878166953768901,
+              0.02104302619024907,
+              0.08792604470748075,
+              0.2969210282575152,
+              0.14554513678965553,
+              0.4271333892599645,
+              -0.015443189983462011
+            ],
+            "rows": 4,
+            "threshold": 3.5,
+            "left": 1,
+            "right": 2
+          },
+          {
+            "feature": -1,
+            "value": [
+              0.0,
+              0.0,
+              0.03895211198405759,
+              0.011913808859841314,
+              0.03895211198405759,
+              0.28903452308156097,
+              0.26620585161617794,
+              0.37189856921040443,
+              -0.030437816590870588
+            ],
+            "rows": 2
+          },
+          {
+            "feature": -1,
+            "value": [
+              0.0,
+              0.11737074266795514,
+              -0.0013887729086795673,
+              0.030172243520656825,
+              0.13689997743090393,
+              0.30480753343346945,
+              0.024884421963133153,
+              0.4823682093095245,
+              -0.000448563376053429
+            ],
+            "rows": 2
+          }
+        ],
+        "name": "tree1"
+      },
+      "gate": 0.0,
+      "enabled": false,
+      "validation_control": "sector_truncate0",
+      "best_fixed": "order5",
+      "validation": {
+        "model": "tree1",
+        "gate": 0.0,
+        "ratio_to_control": 1.0251296549281927,
+        "decisions": [
+          "order5",
+          "truncate0"
+        ]
+      },
+      "options": [
+        {
+          "model": "constant",
+          "gate": 0.0,
+          "ratio_to_control": 1.0576679871208827,
+          "decisions": [
+            "order5",
+            "order5"
+          ]
+        },
+        {
+          "model": "constant",
+          "gate": 0.05,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "constant",
+          "gate": 0.15,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.0,
+          "ratio_to_control": 1.0251296549281927,
+          "decisions": [
+            "order5",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.05,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.15,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.0,
+          "ratio_to_control": 1.0251296549281927,
+          "decisions": [
+            "order5",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.05,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.15,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.0,
+          "ratio_to_control": 1.0251296549281927,
+          "decisions": [
+            "order5",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.05,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.15,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.0,
+          "ratio_to_control": 1.0251296549281927,
+          "decisions": [
+            "order5",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.05,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.15,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.0,
+          "ratio_to_control": 1.0251296549281927,
+          "decisions": [
+            "order5",
+            "truncate0"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.05,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.15,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.0,
+          "ratio_to_control": 1.0576679871208827,
+          "decisions": [
+            "order5",
+            "order5"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.05,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.15,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.0,
+          "ratio_to_control": 1.0576679871208827,
+          "decisions": [
+            "order5",
+            "order5"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.05,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.15,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.0,
+          "ratio_to_control": 1.0344211535859251,
+          "decisions": [
+            "order5",
+            "truncate1"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.05,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.15,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.0,
+          "ratio_to_control": 1.0576679871208827,
+          "decisions": [
+            "order5",
+            "order5"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.05,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.15,
+          "ratio_to_control": 1.0452106212549124,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        }
+      ],
+      "structure": {
+        "loops": [
+          "k1"
+        ],
+        "external": [
+          "p1",
+          "p2",
+          "p3",
+          "p4"
+        ],
+        "physical": 5,
+        "propagators": [
+          [
+            "k1",
+            true
+          ],
+          [
+            "k1-p1",
+            true
+          ],
+          [
+            "k1-p1-p2",
+            true
+          ],
+          [
+            "k1-p1-p2-p3",
+            true
+          ],
+          [
+            "k1-p1-p2-p3-p4",
+            true
+          ]
+        ],
+        "invariants": []
+      },
+      "features_min": [
+        3.0,
+        1.0,
+        0.0,
+        3.0,
+        3.0,
+        0.75,
+        0.0,
+        1.0,
+        5.0
+      ],
+      "features_max": [
+        4.0,
+        2.0,
+        0.0,
+        5.0,
+        5.0,
+        2.0,
+        0.0,
+        1.0,
+        5.0
+      ]
+    },
+    "one_mass_box": {
+      "model": {
+        "type": "tree",
+        "nodes": [
+          {
+            "feature": 0,
+            "value": [
+              0.0,
+              -0.01240956763042412,
+              -0.009357980411875674,
+              0.010292812865268359,
+              -0.0387570534791613,
+              0.19219394742583654,
+              -0.02674501031543785,
+              0.061335949554735716,
+              -0.026774155067839714
+            ],
+            "rows": 4,
+            "threshold": 3.5,
+            "left": 1,
+            "right": 2
+          },
+          {
+            "feature": -1,
+            "value": [
+              0.0,
+              0.0,
+              -0.022199415831835746,
+              0.025550547855666024,
+              -0.022199415831835746,
+              0.2709986847600606,
+              -0.01579427090432844,
+              0.10393494350532809,
+              -0.014453599598621789
+            ],
+            "rows": 2
+          },
+          {
+            "feature": -1,
+            "value": [
+              0.0,
+              -0.02481913526084824,
+              0.003483455008084397,
+              -0.004964922125129308,
+              -0.05531469112648685,
+              0.11338921009161246,
+              -0.037695749726547254,
+              0.018736955604143356,
+              -0.03909471053705763
+            ],
+            "rows": 2
+          }
+        ],
+        "name": "tree1"
+      },
+      "gate": 0.05,
+      "enabled": false,
+      "validation_control": "sector_truncate0",
+      "best_fixed": "sector_truncate0",
+      "validation": {
+        "model": "tree1",
+        "gate": 0.05,
+        "ratio_to_control": 0.9945060432086861,
+        "decisions": [
+          "native",
+          "sector_truncate0"
+        ]
+      },
+      "options": [
+        {
+          "model": "constant",
+          "gate": 0.0,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "truncate0",
+            "sector_truncate0"
+          ]
+        },
+        {
+          "model": "constant",
+          "gate": 0.05,
+          "ratio_to_control": 1.0247979031679322,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "constant",
+          "gate": 0.15,
+          "ratio_to_control": 1.0247979031679322,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.0,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "truncate0",
+            "sector_truncate0"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.05,
+          "ratio_to_control": 0.9945060432086861,
+          "decisions": [
+            "native",
+            "sector_truncate0"
+          ]
+        },
+        {
+          "model": "tree1",
+          "gate": 0.15,
+          "ratio_to_control": 1.0247979031679322,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.0,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "truncate0",
+            "sector_truncate0"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.05,
+          "ratio_to_control": 0.9945060432086861,
+          "decisions": [
+            "native",
+            "sector_truncate0"
+          ]
+        },
+        {
+          "model": "tree2",
+          "gate": 0.15,
+          "ratio_to_control": 1.0247979031679322,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.0,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "truncate0",
+            "sector_truncate0"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.05,
+          "ratio_to_control": 0.9945060432086861,
+          "decisions": [
+            "native",
+            "sector_truncate0"
+          ]
+        },
+        {
+          "model": "tree3",
+          "gate": 0.15,
+          "ratio_to_control": 1.0247979031679322,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.0,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "truncate0",
+            "sector_truncate0"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.05,
+          "ratio_to_control": 0.9945060432086861,
+          "decisions": [
+            "native",
+            "sector_truncate0"
+          ]
+        },
+        {
+          "model": "forest16",
+          "gate": 0.15,
+          "ratio_to_control": 1.0247979031679322,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.0,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "truncate0",
+            "sector_truncate0"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.05,
+          "ratio_to_control": 0.9945060432086861,
+          "decisions": [
+            "native",
+            "sector_truncate0"
+          ]
+        },
+        {
+          "model": "ridge0.1",
+          "gate": 0.15,
+          "ratio_to_control": 1.0247979031679322,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.0,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "truncate0",
+            "sector_truncate0"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.05,
+          "ratio_to_control": 0.9945060432086861,
+          "decisions": [
+            "native",
+            "sector_truncate0"
+          ]
+        },
+        {
+          "model": "ridge1.0",
+          "gate": 0.15,
+          "ratio_to_control": 1.0247979031679322,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.0,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "truncate0",
+            "sector_truncate0"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.05,
+          "ratio_to_control": 1.0247979031679322,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "ridge10.0",
+          "gate": 0.15,
+          "ratio_to_control": 1.0247979031679322,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.0,
+          "ratio_to_control": 1.1587074222541303,
+          "decisions": [
+            "truncate0",
+            "tight"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.05,
+          "ratio_to_control": 1.1523415337424914,
+          "decisions": [
+            "native",
+            "tight"
+          ]
+        },
+        {
+          "model": "nearest1",
+          "gate": 0.15,
+          "ratio_to_control": 1.0247979031679322,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.0,
+          "ratio_to_control": 1.0,
+          "decisions": [
+            "truncate0",
+            "sector_truncate0"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.05,
+          "ratio_to_control": 1.0247979031679322,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        },
+        {
+          "model": "nearest3",
+          "gate": 0.15,
+          "ratio_to_control": 1.0247979031679322,
+          "decisions": [
+            "native",
+            "native"
+          ]
+        }
+      ],
+      "structure": {
+        "loops": [
+          "k1"
+        ],
+        "external": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "physical": 4,
+        "propagators": [
+          [
+            "k1",
+            true
+          ],
+          [
+            "k1-p1",
+            true
+          ],
+          [
+            "k1-p1-p2",
+            true
+          ],
+          [
+            "k1-p3",
+            true
+          ]
+        ],
+        "invariants": []
+      },
+      "features_min": [
+        3.0,
+        1.0,
+        0.0,
+        3.0,
+        3.0,
+        0.75,
+        0.0,
+        1.0,
+        4.0
+      ],
+      "features_max": [
+        4.0,
+        2.0,
+        0.0,
+        4.0,
+        4.0,
+        2.0,
+        0.0,
+        1.0,
+        4.0
+      ]
+    }
+  },
+  "manifest": {
+    "s00_study.py": "8fe0616063dc9d8309d3e9ab771788b86c50861807527960d86ed0082c91c9ca",
+    "s02_native.py": "64a48f5ca44deaf95de015377a34cb74f93c7b67489abc3e4f568046751d16a4",
+    "s03_truncate.py": "28793892050ac4c590d9ad21fa6cb85d06fff2aba70df7a52e564c1bdfe99f02",
+    "s04_train_test.py": "346b502bb15e55044a5c834b1305d1887d50c0e2697e8588ab7934923431a115",
+    "protocol.json": "47cbf938f30d4a39b0d0ee43dd82e33c8ac16dc00b777e1c9285e69d47f7a9a6"
+  },
+  "previous_freeze_sha256": "5034e9142f3332dc8cc504a4953da74bef05f2dad5ed9e56c7bd55979aa5136e",
+  "binary_sha256": "a3c75a6ad85ded98271970fb9e7ce088fb484ea8b31dbd3c143c6d3bcbf9ec74",
+  "repetitions": 5,
+  "tests_not_used": true
+}
