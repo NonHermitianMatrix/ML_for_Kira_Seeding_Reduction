@@ -37,3 +37,7 @@ They are not confidence intervals.
 The script `ML_model_workflow_selection/type_specialists/s05_analyze.py` generates the plot.
 Its input is the completed frozen test record.
 See [the study guide](../../ML_model_workflow_selection/type_specialists/README.md).
+
+## Selective seed expansion
+
+`basis_completion.pdf` compares the new route with the previous route and native choices. Ratios below one mean less time. Bars show the range over two reserved parameter profiles. The study script `../../ML_model_workflow_selection/basis_completion/s06_analyze.py` makes the plot from checked full-time records. The axes use the observed ratio ranges and include equal time at one.

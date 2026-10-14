@@ -8,7 +8,7 @@ import statistics
 
 HERE=Path(__file__).resolve().parent
 def main():
-    names=['report.tex','paper_appendices.tex','scattering_results.tex','workflow_results.tex','workflow_appendix.tex','type_specialist_results.tex','type_specialist_appendix.tex']
+    names=['report.tex','paper_appendices.tex','scattering_results.tex','workflow_results.tex','workflow_appendix.tex','type_specialist_results.tex','type_specialist_appendix.tex','basis_completion_results.tex','basis_completion_appendix.tex']
     source='\n'.join((HERE/n).read_text() for n in names)
     bib=(HERE/'paper_references.bib').read_text()
     cites={x.strip() for group in re.findall(r'\\cite\{([^}]+)\}',source) for x in group.split(',')}
@@ -100,12 +100,27 @@ def main():
     for name,data in [('model_test/summary.json',specialist),('evidence_validation.json',specialist_audit)]:
         path=HERE.parent/'ML_model_workflow_selection/type_specialists'/name
         if path.exists():assert json.loads(path.read_text())==data
+    completion=json.loads((HERE/'basis_completion_figure_data.json').read_text())
+    completion_audit=json.loads((HERE/'basis_completion_validation.json').read_text())
+    assert completion['complete'] and completion['all_exact'] and completion_audit['complete']
+    assert completion['workflows']==720 and completion['applications']==36
+    assert completion_audit['public_applications']==7
+    denominators={'selected_to_native':('selected','native'),'selected_to_previous':('selected','previous'),'selected_to_fixed':('selected','family_fixed'),'previous_to_native':('previous','native'),'fixed_to_previous':('family_fixed','previous')}
+    for row in completion['cases']:
+        for key,(a,b) in denominators.items():assert abs(row['ratios'][key]-row['median_seconds'][a]/row['median_seconds'][b])<1e-12
+    for key,row in completion['aggregate'].items():
+        expected=math.exp(statistics.mean(math.log(r[key]) for r in completion['by_topology'].values()))
+        assert abs(row['ratio']-expected)<1e-12
+    for name,data in [('model_test/summary.json',completion),('evidence_validation.json',completion_audit)]:
+        path=HERE.parent/'ML_model_workflow_selection/basis_completion'/name
+        if path.exists():assert json.loads(path.read_text())==data
     result=dict(external_citation_keys=len(cites),internal_references=len(refs),figures=len(figs),
         self_repository_citations=0,original_notes_reconstructable=True,terminology_updated_as_requested=True,
         original_supporting_files_preserved=len(archive['supporting_files']),
         complete_cost_workflows=workflow['workflows'],joint_request_workflows=batching['workflows'],
         applications_without_reference_answers=applications,
         specialist_workflows=specialist['workflows'],specialist_applications=43,specialist_candidates=70,
+        basis_completion_workflows=completion['workflows'],basis_completion_applications=43,
         pdf_sha256={n:hashlib.sha256((HERE/(n+'.pdf')).read_bytes()).hexdigest() for n in ['report','notes']})
     (HERE/'paper_validation.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(result))

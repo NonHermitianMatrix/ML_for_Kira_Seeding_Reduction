@@ -1,0 +1,85 @@
+\section{Reducing the cost of seed expansion}
+\label{sec:basis-completion}
+The preceding graph-specific study records more solver time in symbolic
+equation regeneration than in any other instrumented stage. Some batches
+need larger seed regions to reach the prescribed masters, so generating
+fewer unnecessary equations in those regions can reduce the remaining
+cost. We test six ways to increase selected seed limits and two ways to
+reduce first to a temporary basis. The latter methods then reduce the
+remaining basis integrals and combine their exact coefficients. They
+retain the same final master-basis requirement. Appendix~\ref{app:basis-completion}
+defines all candidates and derives the basis conversion.
+
+For each development batch, we retain its fastest new candidate if it
+saves at least ten percent against the preceding route. The preceding
+route also remains available. Let $B_c=(r_c,s_c,q_c)$ be the initial valid seed limits for target batch $c$. They bound the sum of positive indices, numerator rank, and number of extra denominator powers, respectively. The selected candidates are Preceding route, Full-sector basis completion, $B_c+(1,0,0)$, $B_c+(0,1,0)$, $B_c+(1,1,0)$.
+Development measurements guide this choice; they do not enter the
+reserved comparison. We train on 36 new batches, select settings on 18
+validation batches, and reserve 36 further batches. All use new rational
+kinematic profiles of the same seven graphs, with symbolic $d$ and the
+target patterns defined in Appendix~\ref{app:type-specialists}.
+
+We fit ten predictors per graph using the earlier nine target features.
+They predict full time relative to the preceding route. Validation
+compares each predictor with that route and with a single fixed strategy
+chosen from training for each graph. A new predictor must save at least
+five percent against the faster control before it is enabled. Otherwise,
+the selected route uses the control. These comparisons measure the effect of the new seed options and the
+additional effect of the full selection procedure. A fixed candidate can itself call the preceding learned route; this control measures the extra choice among the new candidates.
+Validation enables a new predictor for 3 of the seven graphs. The final training and validation records contain 1,731.7 seconds of measured reductions; fitting the seventy candidates takes 0.88 seconds. These offline costs exclude reference construction and development and remain outside the reserved reduction timer.
+
+The reserved test compares native choices, the preceding route, the new
+fixed strategy, and the selected route. Five repetitions give 720 full
+calculations. All pass exact coefficient checks, and all 43 further
+applications pass checks when target coefficients are withheld during
+reduction. The new route has time ratio $0.9115$ with descriptive interval $[0.8105,0.9980]$
+to the preceding route, corresponding to 8.8\% less time. Its ratio to
+native choices measured in the same experiment is $0.8516$ with descriptive interval $[0.7282,0.9647]$,
+or 14.8\% less time. Its ratio to the new fixed strategy is
+$0.9264$ with descriptive interval $[0.8760,0.9747]$.
+
+For one execution of each of the 36 reserved batches, the sum of median reduction times is 106.24 seconds for native choices, 96.32 seconds for the preceding route, and 77.03 seconds for the new route. This workload total weights each requested batch once; the geometric means above give each graph equal weight.
+
+Across 180 timed runs per method, symbolic equation regeneration takes 138.02 seconds for the preceding route and 80.58 seconds for the new route. The new route makes 0 fallback attempts, compared with 0 for the preceding route and 40 for native choices. Planned second-stage basis reductions are counted in full time and are separate from fallback attempts.
+
+The fixed-strategy comparison supports a further saving from the selection procedure on these inputs. This procedure combines validation-based control choices with target-dependent predictions.
+
+\begin{table}[!htbp]
+\centering\small
+\caption{Full reduction times for the new reserved profiles. Times are
+geometric means of batch medians in seconds. Ratios below one indicate a
+faster new route. The policy is the fitted predictor or fixed control
+chosen by validation. Each graph has two reserved parameter profiles.}
+\label{tab:basis-completion}
+\begin{tabular}{@{}llrrrr@{}}\toprule
+Graph & Policy & Previous (s) & New (s) & New/previous & New/native\\\midrule
+Sunrise & Add $s$ & 0.596 & 0.593 & 0.995 & 0.979\\
+Planar box & Tree depth 1 & 2.422 & 2.062 & 0.851 & 0.735\\
+Vacuum & Complete basis & 0.928 & 0.941 & 1.013 & 1.016\\
+Ladder & Tree depth 1 & 4.477 & 3.007 & 0.672 & 0.584\\
+Nonplanar box & Tree depth 1 & 4.091 & 3.550 & 0.868 & 0.759\\
+Pentagon & Previous & 0.723 & 0.754 & 1.043 & 0.998\\
+Virtuality box & Previous & 0.580 & 0.582 & 1.003 & 1.004\\
+\bottomrule\end{tabular}
+\end{table}
+
+\begin{figure}[!htbp]
+\centering\includegraphics[width=\linewidth]{paper_figures/basis_completion.pdf}
+\caption{Selective choices change complete reduction time. Left: the new
+fixed strategy and selected route relative to the preceding route.
+Right: the preceding and new routes relative to native choices in the
+same test. Values below one are faster. Bars show the range over the two
+reserved profiles; they are not significance intervals.}
+\label{fig:basis-completion}
+\end{figure}
+\FloatBarrier
+
+Three graph groups take more time than the preceding route: vacuum, 1.3\%; pentagon, 4.3\%; virtuality box, 0.3\%.
+
+The result includes prediction, native IBP generation, exact algebra,
+checks, cleanup, and fallback. It measures an additional change from the
+preceding method and a direct comparison with native choices. It does
+not multiply speedups from earlier experiments. The graphs and target
+patterns are known during training; the new parameter profiles test
+transfer within those inputs. General symbolic kinematics and arbitrary
+high-loop graphs remain outside this new measurement.

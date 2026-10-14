@@ -1,0 +1,126 @@
+\section{Selective seed expansion and exact basis completion}
+\label{app:basis-completion}
+We keep the seven integral definitions in Appendix~\ref{app:workflow} and
+the target formulas in Appendix~\ref{app:type-specialists}. Development
+uses profile $h=71$, training uses $h=72,73$, validation uses $h=74$, and
+the reserved test uses $h=75,76$. These are separate rational parameter
+profiles. The graph structures and target index patterns occur in all
+splits, and $d$ remains symbolic.
+
+\subsection{Changing individual seed bounds}
+The bounds $B_c=(r_c,s_c,q_c)$ retain the definitions in
+Appendix~\ref{app:workflow}: $r_c$ bounds the sum of positive indices,
+$s_c$ bounds the numerator rank, and $q_c$ bounds the number of extra
+denominator powers. Each component starts from the largest value among
+the requested targets. We first enforce the sector lower bound in
+Eq.~\eqref{eq:type-valid-bound}. The six new direct reductions use
+\begin{equation}
+ B_c+\boldsymbol\delta,\qquad
+ \boldsymbol\delta\in\{(1,0,0),(0,1,0),(0,0,1),
+                         (1,0,1),(1,1,0),(0,1,1)\}.
+ \label{eq:basis-deltas}
+\end{equation}
+For a seed with $t$ positive indices, summing $a_i=1+(a_i-1)$ over those
+indices gives $r=t+q$. The positive-index and extra-power limits can
+therefore overlap, and different requested triples can give the same
+seed region after all limits are applied. The candidate labels specify
+the requested settings. They do not assert distinct equation sets or
+sufficiency for every target. They let the model request extra numerator identities
+without also increasing both denominator bounds, for example. Each direct
+reduction keeps the prescribed-basis check described in Ref.~\cite{Kira3}.
+If it fails, the calculation calls the preceding frozen graph-specific
+route and includes both attempts in its time.
+
+\subsection{Completing a temporary basis}
+We also test two ways to complete a smaller reduction. The first stage
+uses $B_c$ and supplies the preferred masters, while allowing Kira to
+return additional integrals. Kira supports this behaviour when its early
+master-basis check is disabled~\cite{Kira3}. Let $M_m$ denote prescribed
+masters and let $U_u$ denote additional integrals that remain in the
+first-stage output. For target $I_t$, this stage returns exact relations
+\begin{equation}
+ I_t=\sum_m A_{tm}M_m+\sum_u C_{tu}U_u.
+ \label{eq:basis-intermediate}
+\end{equation}
+Here $A_{tm}$ is the coefficient of prescribed master $M_m$, and
+$C_{tu}$ is the coefficient of unresolved integral $U_u$. These
+coefficients are rational functions of the kinematics and $d$.
+The $U_u$ need not form an independent master basis for the full family.
+They are unresolved integrals of the smaller equation system. Their
+indices, rather than the original target indices, define the second
+reduction request. That request uses its own componentwise target bounds
+plus $(1,1,1)$ and again supplies the prescribed basis. One candidate uses
+the maximal sectors of the $U_u$ and their subsectors; the other keeps the
+original top-level sectors. Both retain the positive-index lower bound.
+
+If the second reduction succeeds, it gives
+\begin{equation}
+ U_u=\sum_m H_{um}M_m.
+ \label{eq:basis-bridge}
+\end{equation}
+The coefficient $H_{um}$ multiplies master $M_m$ in the reduction of $U_u$.
+Substitution of Eq.~\eqref{eq:basis-bridge} into
+Eq.~\eqref{eq:basis-intermediate} yields
+\begin{align}
+ I_t
+ &=\sum_m A_{tm}M_m+\sum_u C_{tu}\sum_mH_{um}M_m\\
+ &=\sum_m\left(A_{tm}+\sum_uC_{tu}H_{um}\right)M_m.
+ \label{eq:basis-compose}
+\end{align}
+Thus the final coefficient matrix is $A+CH$. We compute the sums and
+products exactly in the rational-function field, cancel common factors,
+and reject an output that contains an integral outside the prescribed
+basis. When either reduction fails, the preceding route supplies a full
+fallback. If no additional integral occurs, the second reduction is
+unnecessary. All basis conversion and fallback costs enter the timer.
+Independent reference coefficients check the final result only; the
+policy and the two reduction stages do not receive them.
+
+\subsection{Fitting, freezing, and comparison}
+The development set compares the preceding route, six direct expansions,
+and two basis-completion choices. We retain the preceding route and each
+case's fastest candidate when it lowers that case's complete time by at
+least ten percent. This rule selects candidates before training and does
+not inspect reserved data.
+
+We then fit the ten model types and nine target features defined in
+Appendix~\ref{app:type-specialists}, separately for each graph. The new
+response is $\log(t_{cj}/t_{c\mathrm{prev}})$, so it directly measures
+improvement over the preceding route. Here $t_{cj}$ is the median complete
+time of candidate $j$ on batch $c$, and $t_{c\mathrm{prev}}$ is the
+corresponding time of the preceding route. Two repetitions supply each
+training label, and three repetitions supply each validation cost. A
+fixed strategy minimizes geometric mean training time for each graph.
+Validation first selects the faster control between that fixed strategy
+and the preceding route. It then tests the fitted predictors at margins
+$0,0.05,0.15$ and enables one only when it lowers the control's validation
+time by at least five percent. The fitting formulas and their derivations
+remain those in Appendices~\ref{app:workflow} and
+\ref{app:type-specialists}.
+
+A fixed candidate can call the preceding learned route. Thus the fixed
+control isolates the extra choice among the new candidates, rather than
+removing all earlier learning.
+
+The chosen graph policy and candidate set are fixed before the reserved
+tests. Inputs with another graph structure or target features outside the
+training range use the preceding route. That route retains its own
+native fallback. Each reserved batch compares native choices, the
+preceding route, the new fixed strategy, and the selected new route on
+the same computer. Five repetitions use a rotating order. All methods
+use the same executable and exact final coefficient checks. The time
+includes preparation, prediction, Kira, any basis conversion, checking,
+cleanup, and every retry. Offline training, independent reference
+generation, and writing benchmark records remain outside these times.
+The selection program and fitted parameters are loaded
+before these trials; each attempt starts a fresh Kira process. Separate
+application tests start a new caller and supply only the targets, family,
+and prescribed basis. They check the coefficients after the reduction.
+
+We first take the median time for each batch and method, then combine
+ratios within each graph and give all seven graphs equal weight. The
+geometric-mean derivation in Appendix~\ref{app:workflow} also applies here.
+Descriptive aggregate intervals resample the seven graph groups. The
+per-graph bars show the range over the two reserved parameter profiles.
+These ranges describe the tested profiles and do not establish a gain
+for all integrals with the same graph.

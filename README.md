@@ -123,3 +123,7 @@ These results give no speed guarantee for other inputs.
 See the study guide for the graph results and limits.
 
 <!-- END GRAPH POLICY RESULTS -->
+
+## Selective seed expansion
+
+Use [the selective-seeding route](ML_model_workflow_selection/basis_completion/README.md) for the latest checked application on the stated target domain. The reserved test gives 8.8 percent less complete reduction time than the preceding route and 14.8 percent less than native choices in the same test. It contains 720 timing trials and 43 further applications. All pass exact checks. The study uses seven known graphs at one through three loops, new rational parameter profiles, and symbolic dimension. The caller and model are loaded before timing. The report gives per-graph results and descriptive intervals. These gains are not multiplied by earlier results.

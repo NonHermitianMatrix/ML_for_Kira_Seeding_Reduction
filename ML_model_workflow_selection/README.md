@@ -226,3 +226,7 @@ These results give no speed guarantee for other inputs.
 See the study guide for the graph results and limits.
 
 <!-- END GRAPH POLICY RESULTS -->
+
+## Selective seed expansion
+
+The [basis-completion study](basis_completion/README.md) adds selective seed limits and tests exact conversion of a temporary basis. Its public entry point is `basis_completion/s07_reduce.py`. It uses the previous frozen route when a new strategy fails or the input is outside its trained domain. The earlier routes remain available for comparison. The new comparison includes complete reduction and exact checks.

@@ -20,3 +20,7 @@ The current notes include the new result section and mathematical appendix for p
 The added blocks keep the original notes recoverable through `notes_revision.json`.
 The notes use `type_specialist_references.bib` for the added external citation.
 The original supporting files remain unchanged.
+
+## Selective seed expansion
+
+The current-update blocks also include the new seed-expansion results and derivation. The preservation check still reconstructs the original notes and verifies all 91 earlier supporting files.

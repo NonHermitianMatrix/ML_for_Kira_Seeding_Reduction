@@ -69,3 +69,7 @@ The `type_specialist_figure_data.json` file contains the compact result summary.
 The `type_specialist_validation.json` file records exact checks, split checks, and storage checks.
 The `s01_check_paper.py` script checks these data against the report and preserved notes.
 See [the study guide](../ML_model_workflow_selection/type_specialists/README.md) for source code, fitting, tests, and limits.
+
+## Selective seed expansion
+
+`basis_completion_results.tex` gives the new methods and measured results. `basis_completion_appendix.tex` defines the inputs, candidates, exact basis conversion, model selection, and comparison. `basis_completion_figure_data.json` contains the compact plot and table values. `basis_completion_validation.json` records the completed evidence checks. The [study guide](../ML_model_workflow_selection/basis_completion/README.md) explains all code and data. `s01_check_paper.py` also checks the new summaries against their scientific sources on Hoffman.

@@ -156,3 +156,7 @@
 
 - Develop and train separate models for different integral types when measured performance supports this choice. Select the model and reduction strategy from validation results, then compare full calculation times on fresh reserved inputs. Use the best measured model within the tested domain without an architecture restriction.
 - Continue the authorized work automatically. Preserve earlier tests and distinguish gains from learned decisions from gains due to exact rules, shared work or implementation changes. Update the report, notes, affected READMEs and GitHub with measured results. A finite test cannot establish a speedup for every possible integral.
+
+## Further reduction-time improvement (October 14, 2026)
+
+- Continue improving complete reduction time from the published graph-specific route. Use fresh development, training, validation, and reserved inputs for changed policies. Preserve the published models and measurements. Test exact basis conversion and selective seed expansion when they can avoid larger equation systems. Include all conversion, prediction, verification, and retry costs. Update the report, notes, READMEs, Hoffman, and GitHub, and keep the existing resource limits.

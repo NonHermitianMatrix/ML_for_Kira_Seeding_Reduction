@@ -26,7 +26,7 @@
 \maketitle
 
 \begin{abstract}
-We study learned choices of seeds, elimination rows and equations during exact Feynman integral reduction with Kira. We include prediction, algebra, checks and retries in the measured time. Original tests give an 8.6\% saving from seed selection with supplied equations and a 5.7\% saving from equation selection in four native graph structures. Row selection gives no reliable saving and is omitted. A later global cost predictor gives no reliable extra gain over native controls. We therefore fit seventy candidates with separate models for seven graph structures. The selected route gives 6.3\% less time in 720 reserved trials, with a time ratio of $0.9368$ to native choices and $0.9441$ to a fixed strategy per graph. Every trial passes exact checks. Combining compatible requests gives a separate 48.3\% saving through shared reduction. Exact recurrences and reuse give a 543.8-fold saving in a restricted vacuum family through twelve loops. The native studies cover known graph structures at one through three loops; the results retain their stated inputs, controls and timing conditions.
+We study learned choices of seeds, elimination rows and equations during exact Feynman integral reduction with Kira. We include prediction, algebra, checks and retries in the measured time. Original tests give an 8.6\% saving from seed selection with supplied equations and a 5.7\% saving from equation selection in four native graph structures. Row selection gives no reliable saving and is omitted. A later global cost predictor gives no reliable extra gain over native controls. We therefore fit seventy candidates with separate models for seven graph structures. The selected route gives 6.3\% less time in 720 reserved trials, with a time ratio of $0.9368$ to native choices and $0.9441$ to a fixed strategy per graph. Every trial passes exact checks. A further study of selective seed expansion gives 8.8\% less time against that route and 14.8\% less time against native choices in 720 new trials. Combining compatible requests gives a separate 48.3\% saving through shared reduction. Exact recurrences and reuse give a 543.8-fold saving in a restricted vacuum family through twelve loops. The native studies cover known graph structures at one through three loops; the results retain their stated inputs, controls and timing conditions.
 \end{abstract}
 
 \section{Introduction}
@@ -38,7 +38,7 @@ We study three choices: which seeds generate equations, which row eliminates an 
 
 We first define the notation used in this paper and explain how the three choices enter Kira. We then describe the data, each model and its tests. We use these results
 to study complete-cost model selection and shared reductions for compatible
-requests. We then test separate policies for each graph with new seed strategies. We compare full calculation times because fewer equations or accurate predictions alone do not show that a reduction is faster. The appendices give the integral definitions, derivations and detailed measurement rules.
+requests. We then test separate policies for each graph with new seed strategies and selectively expand seed limits to reduce the remaining cost. We compare full calculation times because fewer equations or accurate predictions alone do not show that a reduction is faster. The appendices give the integral definitions, derivations and detailed measurement rules.
 
 \section{How Kira reduces Feynman integrals}
 \label{sec:reduction}
@@ -189,6 +189,8 @@ The seven batches contain 88 targets and give seventy comparison calculations. A
 
 \input{type_specialist_results}
 
+\input{basis_completion_results}
+
 \section{Overall results}
 \label{sec:overall}
 The original comparisons support learned seeds for the tested supplied-equation requests and learned equations for the tested native families. They give no reliable saving from learned row selection. Table~\ref{tab:overall} separates these results because they use different inputs and time different amounts of work. Multiplying the speedups would not give a measured combined speedup. The original native equation experiment also gives no established gain from activating both selectors together. Section~\ref{sec:adaptation} reports the separate scattering-training study.
@@ -200,6 +202,7 @@ The separate graph-specific study in Section~\ref{sec:type-specialists}
 gives 6.3\% less time relative to native choices and ratio $0.9441$
 to the fixed strategy per graph. Its gains cannot be multiplied by the
 joint-request saving because the two studies use different requests.
+Section~\ref{sec:basis-completion} then measures 8.8\% less time relative to the preceding route and 14.8\% less time relative to native choices on new profiles.
 
 \begin{table}[!htbp]
 \centering\small
@@ -213,6 +216,7 @@ Row policy & Native symbolic elimination & No reliable saving\\
 Original equation tree & Three new scattering structures & 25.2\% more time\\
 Complete-cost model & Seven known graph structures, loops 1--3 & No reliable gain over native controls\\
 Policies per graph & Higher powers and lower sectors, loops 1--3 & 6.3\% less time\\
+Selective seed expansion & Known graphs, new profiles, loops 1--3 & 14.8\% less time than native\\
 Joint integrated reduction & Two compatible requests in seven graph structures & 48.3\% less time\\
 Exact recurrences and reuse & Restricted vacuum family, loops 1--12 & $543.8\times$ faster\\\bottomrule
 \end{tabularx}
@@ -245,6 +249,8 @@ All 720 timing trials and 43 further applications pass exact checks.
 The per-graph measurements and controls show where learned selection,
 fixed settings, or fallback determine the result.
 
+The subsequent seed-expansion study gives 8.8\% less time against that graph-specific route and 14.8\% less time against native choices, with all 720 trials and 43 applications passing exact checks. Its comparison with the new fixed strategy has ratio $0.9264$. This separates the effect of choosing seed regions from the extra contribution of target-dependent prediction.
+
 Sharing compatible requests gives a separate 48.3\% saving. The
 543.8-fold saving through twelve loops comes from exact recurrences and
 reuse in a restricted vacuum family. These results measure different
@@ -260,6 +266,7 @@ globally optimal reduction paths remain outside the demonstrated results.
 \input{paper_appendices}
 \input{workflow_appendix}
 \input{type_specialist_appendix}
+\input{basis_completion_appendix}
 \begingroup
 \small
 \setlength{\parskip}{0pt}
