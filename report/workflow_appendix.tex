@@ -1,12 +1,12 @@
 \section{Learning the cost of a complete reduction}
 \label{app:workflow}
-The cost model receives a vector $\boldsymbol f_c$ for target batch $c$.
+This appendix defines the complete-time prediction problem, derives the fitted models, and specifies the physical inputs used in Section~\ref{sec:workflow}. The cost model receives a feature vector $\boldsymbol f_c$ for target batch $c$.
 Its entries are the number of loops, external momenta, inverse propagators,
 physical propagators and symbolic invariants; $\log(1+n_c)$, where $n_c$ is
 the number of targets; the maximum dot count, maximum numerator rank, mean dot count and mean numerator rank;
 the number of target sectors; and seven indicators for the graph structures.
 An indicator is one for its graph and zero for the other graphs.
-There are eighteen entries in total.
+Together these quantities give eighteen inputs, all available from the requested targets and family before reduction.
 
 For an index vector $\boldsymbol a$, define
 \begin{equation}
@@ -20,8 +20,7 @@ follow directly by counting the denominator and numerator factors.
 The initial bounds $B_c=(r_c,s_c,q_c)$ are the componentwise maxima over
 the targets. The trial seed regions use $B_c$, $B_c-(1,1,1)$,
 $B_c-(1,0,1)$, or $B_c+(1,1,1)$. Negative bounds are set to zero.
-These choices restrict equation generation. They do not assert that a
-smaller region always supplies a complete reduction.
+The choices change the region in which equations are generated. Since a smaller region can omit required relations, every attempt must still pass the prescribed-basis check.
 
 Let $t_{cj}$ be the median complete time of strategy $j$ on training batch
 $c$, and let $t_{c0}$ be the time of the integrated native strategy.
@@ -30,10 +29,7 @@ The training response is
  y_{cj}=\log\frac{t_{cj}}{t_{c0}}.
  \label{eq:workflow-label}
 \end{equation}
-Each time includes unsuccessful attempts and the successful fallback.
-Thus the response penalizes a strategy that omits required equations.
-A smaller response means a smaller ratio because the logarithm is
-strictly increasing on positive numbers.
+Each time includes unsuccessful attempts and the eventual successful fallback, so a strategy that omits necessary equations is penalized by the extra calculation. The logarithm preserves the ordering of positive time ratios; minimizing the response therefore also minimizes the complete time relative to the common baseline.
 
 We fit constant, tree, linear and nearest-neighbour predictors of this
 response. The constant predictor averages each strategy's training
@@ -51,11 +47,10 @@ Each split minimizes the sum of squared errors over the seven strategies.
 The tested maximum depths are two, four and six. Each depth is tested
 with a minimum of either one or three training batches per child.
 
-For the linear models, we subtract each feature's training mean and
+For the linear models, we first subtract the training mean of each feature and
 divide by its training population standard deviation, computed with
 divisor equal to the number of training batches. A constant feature uses
-divisor one. Let $Z$ contain these standardized feature rows with an
-leading intercept column, and let $Y$ contain the responses.
+divisor one. Let $Z$ contain these standardized feature rows with a leading intercept column, and let $Y$ contain the responses.
 Ridge regression minimizes
 \begin{equation}
  J(W)=\|ZW-Y\|_F^2+\lambda\operatorname{tr}(W^TPW),
@@ -70,9 +65,7 @@ Differentiating each entry of $W$ gives
 \end{equation}
 We solve this system for $\lambda=0.1,1,10$.
 
-The nearest-neighbour predictors restrict neighbours to the same graph,
-loop count, external-momentum count, propagator counts and number of
-symbolic invariants. They choose up to two or four training batches with
+The nearest-neighbour models estimate a cost from similar training batches. Eligible neighbours must have the same graph, loop count, external-momentum count, propagator counts, and number of symbolic invariants. They choose up to two or four training batches with
 the smallest squared distance in standardized features. The predicted
 response is the mean of their response vectors. The leaf-mean derivative
 above also derives this local constant estimate. If no eligible neighbour
@@ -98,8 +91,7 @@ This finite comparison establishes the best measured candidate within
 the study. It does not prove a globally optimal reduction strategy.
 
 \subsection{Parameter points and target lists}
-The complete-cost study keeps the seven denominator routings and their
-kinematic conventions defined earlier. Let $h$ identify a rational
+The comparison uses the sunrise, planar box, three-loop vacuum, three-loop ladder, nonplanar box, pentagon, and box with external virtuality, with the same denominator routings and kinematic conventions as the preceding tests. The definitions below specify the parameter values and target lists for each split. Let $h$ identify a rational
 parameter profile. Training uses $h=41,42$, validation uses $h=43$, and
 testing uses $h=44,45$. In a common squared-momentum unit, the sunrise has
 squared masses $(2,7,11)$ and $p^2=-1009-12h$. The planar box has
@@ -113,9 +105,7 @@ The scattering assignments are
  &=(-11-20h,-13-20h,-17-20h,-19-20h,-23-20h),\\
  (s,t,v)_{\rm box}&=(-113-18h,-127-10h,-149-12h).
 \end{align}
-These equations specify the selected input values. The dimension remains
-symbolic. The symbolic batches keep all independent invariants of their
-scattering graph symbolic.
+These assignments fix the rational parameter values in each profile while leaving the dimension symbolic. The additional symbolic batches instead retain all independent invariants of their scattering graph as symbols.
 
 For the four earlier multiloop graphs, we retain the ordered target list
 that starts with the corner, raises each physical denominator power once,
@@ -138,12 +128,7 @@ The joint-request test uses the larger rational batch at $h=44$ for each
 graph and the three symbolic test batches. The symbolic virtuality box
 also includes $(1,1,1,3)$, so it can supply two disjoint requests. A group
 of $n$ targets is divided after entry $\lfloor n/2\rfloor$, with the first
-request containing that many entries. The two requests have identical
-family definitions and are available together. Their union contains each
-target once. Linearity of the reduction lets us return the coefficients
-for each original request by selecting its target rows from the joint
-result. This changes no coefficient and requires no additional integral
-identity. The test reuses reserved parameter points and keeps the learned
+request containing that many entries. The two requests share the same family definition and are available together, and their union contains each target once. By linearity, selecting the corresponding target rows from the joint reduction returns the coefficients for each original request. This separation leaves every coefficient unchanged and requires no new integral identity. The test reuses reserved parameter points and keeps the learned
 model fixed.
 
 \subsection{Combining the measured times}

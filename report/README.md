@@ -6,6 +6,27 @@ Both documents include the new complete-cost study.
 The paper cites external sources and derives the model equations in its appendices.
 It does not cite this repository.
 
+## Language and structure
+
+The paper now groups the three local models before the models that select a complete calculation.
+Each section explains its question, method, result, and limits.
+The comparison text names the baseline and explains the reported time measure.
+The appendices keep the equations and add clearer explanations around them.
+Shared section files also update the current additions in the notes.
+
+The revision used [Mensh and Kording's guide](https://doi.org/10.1371/journal.pcbi.1005619) for paper structure.
+It also examined the [Kira paper](https://arxiv.org/abs/1705.05610),
+[Kira 3](https://arxiv.org/html/2505.20197v1), and
+[the seed-optimization study](https://arxiv.org/abs/2502.09544) as examples of physics papers.
+The revision uses original wording.
+These writing references explain the editorial approach; the paper bibliography supports its scientific claims.
+
+`editorial_revision.json` records the preserved equations, table values, figure paths, citations, and source checks.
+This revision changes no model, dataset, or measured result.
+Keep the edited section files as the current prose sources.
+Older experiment scripts can regenerate result text and replace these edits.
+Review their output before replacing an edited section.
+
 ## Build and check
 
 Run `make` in this folder to build both PDFs.

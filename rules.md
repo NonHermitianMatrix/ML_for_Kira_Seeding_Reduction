@@ -162,3 +162,10 @@
 - Continue improving complete reduction time from the published graph-specific route. Use fresh development, training, validation, and reserved inputs for changed policies. Preserve the published models and measurements. Test exact basis conversion and selective seed expansion when they can avoid larger equation systems. Include all conversion, prediction, verification, and retry costs. Update the report, notes, READMEs, Hoffman, and GitHub, and keep the existing resource limits.
 
 - Optimize both the learned choice and its interaction with Kira. Make decisions before the algebraic work they can avoid. Compare the new route with the latest published route and matched controls on fresh reserved inputs. Select the fastest configuration supported by these measurements and document the tested limits; do not claim global optimality.
+
+## Clear research-paper prose (October 14, 2026)
+
+- Write the report in clear, connected academic English. Explain the purpose of a section before its methods and results, and state how its conclusion leads to the next question. Organize the argument by the scientific questions rather than the order of experiments.
+- Use related research papers and established scientific-writing guidance to improve structure and clarity without copying their prose. Define terms when they first appear, name the baseline for each comparison, and explain what each reported number measures.
+- Avoid detached strings of short statements, unexplained shorthand, and repeated generic labels such as "the route" or "the previous method." Use explicit names and connected paragraphs. The chat sentence-length limits do not apply to the paper.
+- During an editorial revision, preserve equations, measurements, references, and scientific limits. Rebuild and inspect the PDF, update the folder documentation, and synchronize the report on Hoffman, GitHub, and the local machine.

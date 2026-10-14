@@ -1,7 +1,6 @@
 \section{Selective seed expansion and exact basis completion}
 \label{app:basis-completion}
-We keep the seven integral definitions in Appendix~\ref{app:workflow} and
-the target formulas in Appendix~\ref{app:type-specialists}. Development
+The seed-expansion study asks whether a smaller first calculation and an exact conversion of its remaining integrals can be cheaper than one large reduction. It uses the seven families in Appendix~\ref{app:workflow} and the target definitions in Appendix~\ref{app:type-specialists}. Development
 uses profile $h=71$, training uses $h=72,73$, validation uses $h=74$, and
 the reserved test uses $h=75,76$. These are separate rational parameter
 profiles. The graph structures and target index patterns occur in all
@@ -23,13 +22,10 @@ Eq.~\eqref{eq:type-valid-bound}. The six new direct reductions use
 For a seed with $t$ positive indices, summing $a_i=1+(a_i-1)$ over those
 indices gives $r=t+q$. The positive-index and extra-power limits can
 therefore overlap, and different requested triples can give the same
-seed region after all limits are applied. The candidate labels specify
-the requested settings. They do not assert distinct equation sets or
-sufficiency for every target. They let the model request extra numerator identities
-without also increasing both denominator bounds, for example. Each direct
+seed region after all limits are applied. The labels therefore identify requested limits rather than necessarily distinct equation sets. Their purpose is to allow selective expansion, such as requesting more numerator identities without also increasing both denominator limits. Sufficiency remains a property to check for the resulting system. Each direct
 reduction keeps the prescribed-basis check described in Ref.~\cite{Kira3}.
-If it fails, the calculation calls the preceding frozen graph-specific
-route and includes both attempts in its time.
+If it fails, the calculation calls the preceding fixed graph-specific
+method and includes both attempts in its time.
 
 \subsection{Completing a temporary basis}
 We also test two ways to complete a smaller reduction. The first stage
@@ -45,10 +41,7 @@ first-stage output. For target $I_t$, this stage returns exact relations
 Here $A_{tm}$ is the coefficient of prescribed master $M_m$, and
 $C_{tu}$ is the coefficient of unresolved integral $U_u$. These
 coefficients are rational functions of the kinematics and $d$.
-The $U_u$ need not form an independent master basis for the full family.
-They are unresolved integrals of the smaller equation system. Their
-indices, rather than the original target indices, define the second
-reduction request. That request uses its own componentwise target bounds
+The integrals $U_u$ are unresolved in the smaller first-stage system and need not be independent masters of the full family. Their index vectors define the targets of the second reduction, allowing that calculation to focus on the integrals that actually remain. That request uses its own componentwise target bounds
 plus $(1,1,1)$ and again supplies the prescribed basis. One candidate uses
 the maximal sectors of the $U_u$ and their subsectors; the other keeps the
 original top-level sectors. Both retain the positive-index lower bound.
@@ -67,18 +60,15 @@ Eq.~\eqref{eq:basis-intermediate} yields
  &=\sum_m\left(A_{tm}+\sum_uC_{tu}H_{um}\right)M_m.
  \label{eq:basis-compose}
 \end{align}
-Thus the final coefficient matrix is $A+CH$. We compute the sums and
-products exactly in the rational-function field, cancel common factors,
-and reject an output that contains an integral outside the prescribed
-basis. When either reduction fails, the preceding route supplies a full
+The final coefficient matrix is therefore $A+CH$. Computing its entries exactly in the rational-function field, cancelling common factors, and checking the final integral labels gives a reduction in the prescribed basis. When either reduction fails, the preceding method supplies a full
 fallback. If no additional integral occurs, the second reduction is
 unnecessary. All basis conversion and fallback costs enter the timer.
 Independent reference coefficients check the final result only; the
 policy and the two reduction stages do not receive them.
 
-\subsection{Fitting, freezing, and comparison}
-The development set compares the preceding route, six direct expansions,
-and two basis-completion choices. We retain the preceding route and each
+\subsection{Training, model selection, and comparison}
+The development set compares the preceding method, six direct expansions,
+and two basis-completion choices. We retain the preceding method and each
 case's fastest candidate when it lowers that case's complete time by at
 least ten percent. This rule selects candidates before training and does
 not inspect reserved data.
@@ -86,27 +76,25 @@ not inspect reserved data.
 We then fit the ten model types and nine target features defined in
 Appendix~\ref{app:type-specialists}, separately for each graph. The new
 response is $\log(t_{cj}/t_{c\mathrm{prev}})$, so it directly measures
-improvement over the preceding route. Here $t_{cj}$ is the median complete
+improvement over the preceding method. Here $t_{cj}$ is the median complete
 time of candidate $j$ on batch $c$, and $t_{c\mathrm{prev}}$ is the
-corresponding time of the preceding route. Two repetitions supply each
+corresponding time of the preceding method. Two repetitions supply each
 training label, and three repetitions supply each validation cost. A
 fixed strategy minimizes geometric mean training time for each graph.
 Validation first selects the faster control between that fixed strategy
-and the preceding route. It then tests the fitted predictors at margins
+and the preceding method. It then tests the fitted predictors at margins
 $0,0.05,0.15$ and enables one only when it lowers the control's validation
 time by at least five percent. The fitting formulas and their derivations
 remain those in Appendices~\ref{app:workflow} and
 \ref{app:type-specialists}.
 
-A fixed candidate can call the preceding learned route. Thus the fixed
-control isolates the extra choice among the new candidates, rather than
-removing all earlier learning.
+The fixed control may call the learned method retained from the preceding study. Its purpose is to isolate the benefit of the new choice among candidates while preserving the earlier improvements in every method.
 
 The chosen graph policy and candidate set are fixed before the reserved
 tests. Inputs with another graph structure or target features outside the
-training range use the preceding route. That route retains its own
+training range use the preceding method. That method retains its own
 native fallback. Each reserved batch compares native choices, the
-preceding route, the new fixed strategy, and the selected new route on
+preceding method, the new fixed strategy, and the selected new method on
 the same computer. Five repetitions use a rotating order. All methods
 use the same executable and exact final coefficient checks. The time
 includes preparation, prediction, Kira, any basis conversion, checking,

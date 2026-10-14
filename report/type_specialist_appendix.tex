@@ -1,7 +1,6 @@
 \section{Separate cost models for each graph}
 \label{app:type-specialists}
-This experiment retains the seven denominator definitions and profile
-formulas in Appendix~\ref{app:workflow}. Development uses profile $h=61$,
+The graph-specific study changes the target batches and available strategies while retaining the seven denominator definitions and parameter formulas in Appendix~\ref{app:workflow}. This appendix specifies those changes and the rule for deciding whether a new predictor is used. Development uses profile $h=61$,
 training uses $h=62,63$, validation uses $h=64$, and the reserved test uses
 $h=65,66$. The dimension remains symbolic. Related target batches share
 the same split, so their rational kinematic values cannot pass from the
@@ -27,8 +26,7 @@ taking the first available indices in increasing order.
 The third batch uses the original corner $\boldsymbol b$ and contains
 $\boldsymbol b-2\boldsymbol e_j$ for the first three auxiliary entries,
 or all auxiliary entries when fewer than three exist. When a family has no auxiliary entry, this construction
-repeats the first batch and we remove the duplicate. These formulas define
-the inputs; they do not infer their coefficients from the masters.
+repeats the first batch and we remove the duplicate. These formulas specify the requested integral indices. Their master coefficients are obtained by exact reduction and are not used to construct the model inputs.
 
 \subsection{The allowed changes to Kira}
 For target batch $\mathcal T$ and a target $\boldsymbol a$, let $S(\boldsymbol a)=\{i:a_i>0\}$ be its
@@ -45,9 +43,7 @@ consider the shifted integrals produced by the IBP derivative. A raised
 index $a_i+1$ carries a factor $a_i$, and the other shifts lower an index.
 If $a_i=0$, the raising term vanishes; if $a_i<0$, raising it once leaves
 it nonpositive. Thus an IBP equation seeded in one sector stays in that
-sector or its subsectors. This observation does not prove that the
-restricted pool contains every relation useful for a chosen master basis.
-We therefore retain the basis check and full-sector fallback.
+sector or its subsectors. The sector property makes this restriction a useful candidate, but it does not establish that the restricted pool contains every relation needed for the prescribed basis. We therefore retain the basis check and the option to repeat the calculation with the full sector set.
 
 Another strategy uses Kira's numerator truncation~\cite{Kira3}. In a sector
 with $t$ positive indices, Kira restricts the inherited numerator bound by
@@ -75,8 +71,7 @@ $r_{\rm req}$ is the requested positive-index bound, the actual bound is
 \end{equation}
 Each positive index is at least one, so a seed in sector $S$ has
 $\sum_{i\in S}a_i\geq|S|$. This proves the lower bound used in
-Eq.~\eqref{eq:type-valid-bound}. The correction prevents an invalid
-configuration from adding a failed startup to any method's cost.
+Eq.~\eqref{eq:type-valid-bound}. Enforcing this bound prevents an invalid configuration from causing a failed startup before any meaningful reduction can occur.
 Identical input configurations share one training or validation measurement.
 If a proposed reduction fails, it retries with native choices at $B_c$
 and then at $B_c+(1,1,1)$. The recorded cost includes every attempt.
@@ -88,8 +83,7 @@ strategy $j$ on batch $c$ and zero denotes native choices. The nine input
 features are the target count; maximum dot count and numerator rank;
 minimum and maximum positive-index counts; mean dot count and numerator
 rank; number of maximal target sectors; and number of physical
-propagators. These features use the requested indices and family
-definition. They contain no reduced coefficients.
+propagators. The features are calculated from the requested indices and the family definition, so no reduced coefficients enter the prediction.
 
 We fit ten candidates per graph: one constant predictor, trees of maximum
 depth one, two and three, a bagged ensemble of sixteen depth-three trees,
@@ -120,12 +114,11 @@ native choices, the deterministic sector-and-truncation rule, and the
 single strategy with the lowest geometric mean training cost for that
 graph. A fixed strategy can include the older equation filter. We enable
 the new model only when its validation cost ratio to the fastest control
-is at most $0.95$. Otherwise, the route uses that control. This threshold
-is a selection rule, not a significance test. Unknown graph structures
+is at most $0.95$. Otherwise, the method uses that control. The threshold determines when the model is enabled; statistical interpretation comes from the separately reported test measurements. Unknown graph structures
 and features outside the fitted range use native choices.
 
 The reserved comparison uses five repetitions of native choices, the
-deterministic rule, the fixed strategy per graph, and the selected route.
+deterministic rule, the fixed strategy per graph, and the selected method.
 The order rotates across batches and repetitions, giving every method
 the same number of appearances in each run position over the full test.
 Each run uses the same targets, prescribed basis, executable, and one
@@ -144,6 +137,4 @@ they do not supply a matched speed comparison for that condition.
 We combine five-run median ratios within each graph and then give the
 seven graphs equal weight, as derived in Appendix~\ref{app:workflow}.
 The aggregate intervals resample graph groups. Per-graph plot bars show
-the range across the two reserved kinematic profiles. Two profiles do not
-support a general significance claim for that integral type, so those
-bars are reported as ranges.
+the range across the two reserved kinematic profiles. These ranges show the variation observed in two profiles. The sample is too small to support a general significance claim for the integral type.

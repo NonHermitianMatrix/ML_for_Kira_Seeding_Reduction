@@ -1,8 +1,11 @@
-\section{Training on the missing scattering structures}
-\label{sec:adaptation}
-The earlier equation model had no training examples from the nonplanar box, pentagon or box with external virtuality. To test whether training on these structures helps, we fit a new seed tree and equation tree for each structure. We preserve the original models and their tests. Appendix~\ref{app:models} defines the new labels and models.
+\providecommand{\StudySection}{\section}
+\providecommand{\StudySubsection}{\subsection}
 
-The study uses separate training, validation and test batches. Table~\ref{tab:scattering-split} gives their sizes. Rational batches use different invariant values in each split. Symbolic batches keep all independent invariants symbolic and use disjoint target lists within the symbolic split. The graph structures are shared across splits, so this tests adaptation within these structures.
+\StudySection{Training on the additional scattering structures}
+\label{sec:adaptation}
+The transfer failures raise a specific question: can examples from the missing structures teach a filter to retain enough equations? To test this, we train a new seed tree and equation tree for each of the nonplanar box, pentagon, and box with external virtuality. The original models remain fixed for comparison. Appendix~\ref{app:models} defines the new reference labels and tree fits.
+
+Table~\ref{tab:scattering-split} separates the training, validation, and test batches. Rational batches use different invariant values in each split, while symbolic batches keep the independent invariants symbolic and use disjoint target lists. The graph structures occur in all three splits. Thus the test measures learning within these structures and separates that question from transfer to an unseen graph.
 
 \begin{table}[!htbp]
 \centering\small
@@ -16,13 +19,9 @@ Testing & 6 & 3 & 108\\\bottomrule
 \end{tabular}
 \end{table}
 
-Each tree has maximum depth twelve. The seed trees use sixteen features and assign the same score to all operators of a seed. The equation trees use seventeen features, including the operator index. Kira enumerates its usual seed region, and the selected model filters equations before coefficient construction. Both methods preserve native elimination. These are new tree models fitted on native reductions; the original neural networks remain unchanged.
+Each tree has maximum depth twelve. The seed tree uses sixteen features and gives all operators of a seed the same score; the equation tree also receives the operator index, giving seventeen features and allowing different decisions for different operators. In both cases Kira enumerates its usual seed region, the tree filters candidates before coefficient construction, and native elimination remains active. These fits produce new trees trained on native reductions, while the original neural networks remain unchanged.
 
-Validation compares three score thresholds and fixes the best setting before testing. The test compares native choices, the original equation tree, the new seed tree and the new equation tree on identical targets. It includes prediction, exact algebra, coefficient checks, cleanup and fallback. Reference discovery, training and later record archiving remain outside the timer. Five repetitions give 180 test calculations. Separate applications receive a master basis without access to target reference coefficients, and their returned coefficients are checked afterward.
-
-
-
-The new fit uses 59,706 equation records and 4,674 grouped seed records. These counts include repeated candidate patterns in different training batches. Table~\ref{tab:scattering-fit} gives the sizes of the fitted trees. No test record enters these fits.
+The fits use 59,706 equation records and 4,674 grouped seed records, including candidate patterns repeated in different training batches. Table~\ref{tab:scattering-fit} gives the tree sizes. Validation compares three score thresholds and fixes a setting before the reserved test. The four test methods are native choices, the original equation tree, the new seed tree, and the new equation tree. Five repetitions on identical targets give 180 calculations, with prediction, exact algebra, coefficient checks, cleanup, and fallback included in the timer. Reference discovery, training, and later recording of results are excluded.
 
 \begin{table}[!htbp]
 \centering\small
@@ -37,9 +36,9 @@ Box with virtuality & 90 & 11 & 630 & 81 \\
 \end{tabular}
 \end{table}
 
-All 180 test calculations pass exact coefficient checks, covering 9,880 returned coefficient entries. All eighteen basis-only applications also pass their separate coefficient checks. Each new selector completes all 45 first attempts without fallback. The original equation model requires fallback in all 45 trials on these same new test cases.
+All 180 calculations pass exact checks of 9,880 returned coefficient entries. Eighteen additional applications receive the target and prescribed basis without reference coefficients, and their answers also pass an independent comparison after reduction. Each new selector completes all 45 timed attempts without fallback, whereas the original equation model needs fallback in all 45 trials. The new training therefore improves sufficiency on these inputs.
 
-Removing fallback improves the learned methods relative to the original filter, but does not establish a saving against native Kira. The new seed model's full-time ratio is $1.027$, with descriptive 95\% interval $[0.995,1.086]$. The new equation model's ratio is $1.017$, with interval $[0.988,1.054]$. Their measured average times are therefore 2.7\% and 1.7\% higher than native time. The original filter's ratio on this new test is $1.368$, or 36.8\% more time. This differs from the earlier 25.2\% result because the parameter points and symbolic targets differ.
+The timing result is more limited. Relative to native choices, the new seed model has ratio $1.027$ with descriptive 95\% interval $[0.995,1.086]$, and the new equation model has ratio $1.017$ with interval $[0.988,1.054]$. Their measured average times are 2.7\% and 1.7\% higher, respectively. The original filter has ratio $1.368$, or 36.8\% more time, on this new test. Its earlier 25.2\% overhead refers to different parameter points and symbolic targets. The additional training removes much of the fallback cost but does not establish an overall saving against native Kira.
 
 \begin{table}[!htbp]
 \centering\small
@@ -61,13 +60,11 @@ Geometric mean ratio & --- & 1.368 & 1.027 & 1.017\\\bottomrule
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:scattering-time} and Figures~\ref{fig:adapted-time}--\ref{fig:adapted-sufficiency} show the distinction between enough equations and faster reduction. Some cases become faster and others become slower. We keep native choices as the application default for these scattering cases because the reserved test gives no reliable overall saving. The trained models remain available for further comparisons.
-
-The result supports adding examples from the missing structures to improve equation sufficiency. It does not prove that missing data were the only cause of the original failure. This study also fits separate trees for each graph and changes the seed-model architecture. It tests adaptation within three structures, rather than transfer to arbitrary new graphs or higher loops. The timing intervals resample the three graph groups and describe this small comparison. They do not establish performance over all scattering integrals.
+The individual results in Table~\ref{tab:scattering-time} and Figures~\ref{fig:adapted-time}--\ref{fig:adapted-sufficiency} explain this distinction. Some new filters reduce time, while others add overhead to cases that native Kira already solves quickly. We therefore retain native choices as the default for this scattering study. The result supports training on the missing structures to improve sufficiency, although it cannot isolate missing data as the sole cause of the original failure: the study also changes the seed-model architecture and fits separate trees for each graph. The intervals resample the three graph groups and describe this limited comparison.
 
 \begin{figure}[tbp]
 \centering\includegraphics[width=\linewidth]{paper_figures/scattering_training.pdf}
-\caption{Training on the three structures removes much of the original filter's overhead, but gives no overall saving against native Kira. Points compare five-run median full times, including prediction, checks and fallback. The dashed line marks equal time. No per-case uncertainty interval is inferred from five repetitions.}
+\caption{Training on the three structures removes much of the original filter's overhead, but gives no overall saving against native Kira. Points compare five-run median complete times, including prediction, checks and fallback. The dashed line marks equal time. No per-case uncertainty interval is inferred from five repetitions.}
 \label{fig:adapted-time}
 \end{figure}
 
@@ -76,4 +73,5 @@ The result supports adding examples from the missing structures to improve equat
 \caption{The new selectors provide sufficient equations on every first attempt. Each method has 45 trials across nine batches. Native fallback lets the original filter eventually complete, and its added time remains in the comparison above.}
 \label{fig:adapted-sufficiency}
 \end{figure}
+
 \FloatBarrier
