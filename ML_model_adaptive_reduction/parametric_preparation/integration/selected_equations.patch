@@ -1,0 +1,59 @@
+--- adaptive/kira.cpp
++++ parametric/kira.cpp
+@@ -1058,7 +1058,32 @@
+ 
+   EquationGetter treateq2{outputDir, integralfamily.name, topologyNames,
+                          mastersMap, /*do not write SYSTEMconfig file*/1, 0, 1/*do fill vector*/};
+-  sys.generate_retrieve(std::move(selection.first), treateq2, treatcoeff);
++  bool replay_ready = std::getenv("KIRA_REUSE_SELECTED_EQUATIONS") != nullptr
++      && selection.first.size()<=4096;
++  const std::vector<std::size_t> replay_ids = replay_ready ? selection.first : std::vector<std::size_t>();
++  std::size_t replay_limit=4*1024*1024;
++  if (const char* limit=std::getenv("KIRA_SELECTED_CACHE_BYTES"))
++    replay_limit=std::min<std::size_t>(replay_limit,std::strtoull(limit,nullptr,10));
++  std::vector<eqdata> replay_rows;
++  if (replay_ready) replay_rows.reserve(4096);
++  std::size_t replay_bytes=0;
++  std::mutex replay_mutex;
++  const std::function<void(eqdata&&)> collect_selected = [&](eqdata&& row) {
++    std::lock_guard<std::mutex> lock(replay_mutex);
++    if (replay_ready) {
++      std::size_t bytes=sizeof(eqdata)+row.size()*sizeof(eqdata::value_type);
++      for (const auto& term: row) bytes += term.second.size()+1;
++      if (replay_rows.size()>=4096 || bytes>replay_limit-replay_bytes) {
++        replay_ready=false;
++        std::vector<eqdata>().swap(replay_rows);
++      } else {
++        replay_rows.push_back(row);
++        replay_bytes += bytes;
++      }
++    }
++    treateq2(std::move(row));
++  };
++  sys.generate_retrieve(std::move(selection.first), collect_selected, treatcoeff);
+   treateq2.finalize();
+ 
+   auto newmandatory=mandatory;
+@@ -1108,7 +1133,21 @@
+     selection = sys.select(newmandatory, {});
+     EquationGetter treateq{outputDir, integralfamily.name, topologyNames,
+                          mastersMap, generateFlag, 0, fillVector};
+-    sys.generate_retrieve(std::move(selection.first), treateq, treatcoeff);
++    if (replay_ready && selection.first==replay_ids) {
++      Clock replay_clock;
++      for (const auto& saved: replay_rows) {
++        eqdata row(saved);
++        treateq(std::move(row));
++      }
++      if (const char* path=std::getenv("KIRA_STAGE_METRICS")) {
++        std::ofstream metric(path,std::ios::app);
++        metric << "{\"stage\":\"selected_equation_replay\",\"seconds\":"
++               << replay_clock.eval_time() << ",\"rows\":" << replay_rows.size()
++               << ",\"accounted_bytes\":" << replay_bytes << "}\n";
++      }
++    } else {
++      sys.generate_retrieve(std::move(selection.first), treateq, treatcoeff);
++    }
+     treateq.finalize();
+   }
+ /*

@@ -1,5 +1,13 @@
 # Adaptive Kira reduction
 
+<!-- BEGIN PARAMETRIC UPDATE -->
+
+The current interface is `s24_parametric_runtime.py`. Read [the revised preparation guide](parametric_preparation/README.md).
+The earlier `s17_reduce.py` interface remains available as the matched baseline.
+
+<!-- END PARAMETRIC UPDATE -->
+
+
 Use [the current portfolio guide](selective_expansion/README.md) for the final model and application.
 The current entry point is `s17_reduce.py`.
 The first study below explains the earlier cost model and exact preprocessing.

@@ -4,12 +4,11 @@
 
 ## Current reduction method
 
-The current application uses a [validated complete-cost portfolio](ML_model_adaptive_reduction/selective_expansion/README.md).
-It compares selective seed expansion, earlier learned settings, and one or two workers.
-The final test uses fresh inputs and compares the previous workflow and fixed choices per graph.
-Exact preprocessing is common to these controls and has separate measured gains.
-Read `ML_model_adaptive_reduction/selective_expansion/summary.json` for checked results.
-The added outer prediction has no stable aggregate saving over the fixed control.
+Use the [revised exact preparation with the learned portfolio](ML_model_adaptive_reduction/parametric_preparation/README.md).
+The application keeps the trained policies and reduces repeated preparation around their choices.
+Read its checked results for the previous implementation, native choices, and fixed portfolio controls.
+The new gain comes from exact integration changes. The study does not attribute this gain to new model training.
+The earlier [portfolio comparison](ML_model_adaptive_reduction/selective_expansion/README.md) remains available.
 
 <!-- END ADAPTIVE REDUCTION -->
 

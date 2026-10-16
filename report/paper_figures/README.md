@@ -1,5 +1,14 @@
 # Paper figures
 
+<!-- BEGIN PARAMETRIC UPDATE -->
+
+`parametric_results.pdf` compares unchanged learned choices before and after exact preparation changes.
+Its second panel compares the added prediction with a fixed portfolio.
+`ML_model_adaptive_reduction/s30_analyze_parametric.py` creates this figure.
+
+<!-- END PARAMETRIC UPDATE -->
+
+
 Each plot uses saved measurements. Lower time ratios mean faster calculations.
 The caption states the comparison and the tested scope.
 

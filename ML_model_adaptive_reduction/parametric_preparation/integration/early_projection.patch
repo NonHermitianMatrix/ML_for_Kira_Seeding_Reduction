@@ -1,0 +1,44 @@
+--- adaptive/trivial_sym.cpp
++++ parametric/trivial_sym.cpp
+@@ -198,10 +198,25 @@
+   possymbol* feynman = new possymbol[integralfamily.jule];
+   generate_symbols(feynman, "b", integralfamily.jule);
+ 
++  // All later polynomial uses restrict to a declared sector. Polynomial
++  // substitution commutes with determinants, adjugates and coefficient sums.
++  // Keep the full propagator list for IBP and numerator transformations.
++  const bool early_projection = std::getenv("KIRA_PROJECT_PARAMETRIC")
++      && std::getenv("KIRA_RESTRICT_SECTOR_INIT")
++      && !integralfamily.topLevelSectors.empty()
++      && integralfamily.cutProps.empty() && integralfamily.symbolicIBP.empty();
++  uint32_t parametric_domain = (1u << integralfamily.jule)-1;
++  if (early_projection) {
++    parametric_domain=0;
++    for (uint32_t top: integralfamily.topLevelSectors) parametric_domain |= top;
++  }
+   ex schwinger;
+   for (uint32_t i = 0; i < integralfamily.jule; i++) {
+-    schwinger += -feynman[i] * integralfamily.props[i].expand();
+-  }
++    if (parametric_domain & (1u<<i))
++      schwinger += -feynman[i] * integralfamily.props[i].expand();
++  }
++  logger << "Parametric domain: " << parametric_domain
++         << "; early projection: " << early_projection << "\n";
+ 
+   lst kinematic4sym;
+ 
+@@ -300,6 +315,13 @@
+ 
+   integralfamily.Gsym = integralfamily.U + integralfamily.F;
+   integralfamily.G = expand(integralfamily.Gsym.subs(invariants4symRev));
++  if (const char* metric_path=std::getenv("KIRA_STAGE_METRICS")) {
++    std::ofstream metric(metric_path,std::ios::app);
++    metric << "{\"stage\":\"parametric_construction\",\"seconds\":"
++           << clock.eval_time() << ",\"early_projection\":"
++           << (early_projection ? "true" : "false") << "}\n";
++  }
++
+ 
+   ifstream input;
+   string inputName = outputDir + "/sectormappings/" + integralfamily.name +

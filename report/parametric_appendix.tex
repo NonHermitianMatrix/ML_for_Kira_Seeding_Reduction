@@ -1,0 +1,53 @@
+\section{Exact restrictions and selected-equation reuse}
+\label{app:parametric}
+\subsection{Restricting before constructing the polynomials}
+Let $b_i$ be the Schwinger parameter associated with inverse propagator $D_i$. For algebraic preparation, suppress its infinitesimal prescription and write the quadratic form with the same Minkowski sign convention as the integral definition:
+\begin{equation}
+-\sum_i b_iD_i=-\boldsymbol\ell^{\mathsf T}H(b)\boldsymbol\ell
+ +2w(b)^{\mathsf T}\boldsymbol\ell+J(b).
+\end{equation}
+Here $H$ is a symmetric $L\times L$ matrix of scalar coefficients, $w$ is a vector whose entries are external-momentum combinations, and $J$ contains no loop momentum. Lorentz contractions are implicit in the quadratic form. Completing the square gives
+\begin{equation}
+-(\boldsymbol\ell-H^{-1}w)^{\mathsf T}H(\boldsymbol\ell-H^{-1}w)
+ +J+w^{\mathsf T}H^{-1}w.
+\end{equation}
+The standard parametric construction~\cite{BognerWeinzierl2010}, with an inessential normalization scale suppressed, therefore uses the polynomials
+\begin{equation}
+U=\det H,\qquad F=J\det H+w^{\mathsf T}\operatorname{adj}(H)w,
+\label{eq:parametric-uf}
+\end{equation}
+where $\operatorname{adj}(H)$ is the adjugate matrix. The inverse serves only in the derivation; Eq.~\eqref{eq:parametric-uf} remains a polynomial identity when a substituted matrix is singular.
+
+Let $B$ contain the propagator positions that occur in at least one declared top sector. Define $R_B$ by setting $b_i=0$ for $i\notin B$. Substitution preserves addition and multiplication. Expanding the determinant over permutations $\pi$ gives
+\begin{align}
+R_B(\det H)
+ &=R_B\left(\sum_{\pi}\operatorname{sgn}(\pi)\prod_{j=1}^L H_{j,\pi(j)}\right)\\
+ &=\sum_{\pi}\operatorname{sgn}(\pi)\prod_{j=1}^L R_B(H_{j,\pi(j)})
+ =\det(R_BH).
+\end{align}
+Each entry of the adjugate is a signed minor, so the same argument gives
+$R_B\operatorname{adj}(H)=\operatorname{adj}(R_BH)$. Applying these equalities to Eq.~\eqref{eq:parametric-uf} shows that constructing $U,F$ after the substitution produces exactly $R_BU,R_BF$.
+
+Every admitted sector $S$ is a subset of $B$. Setting the remaining absent parameters to zero then gives
+\begin{equation}
+R_SR_BP=R_SP
+\end{equation}
+for any polynomial $P$. The sector polynomials used in zero-sector and symmetry checks are consequently identical to those obtained from the full construction. The Euler criterion also agrees because substitution commutes with differentiation in every retained variable, as derived in Appendix~\ref{app:adaptive}. This proof concerns sector polynomials. It does not set an auxiliary inverse propagator to zero in an integral numerator. The implementation retains those propagators in all IBP and numerator operations. It enables the restriction only for declared-sector calculations without cuts or symbolic propagator powers.
+
+\subsection{Reusing an unchanged set of exact equations}
+For one generated system, let $Q=(q_1,\ldots,q_k)$ be its ordered list of selected source-equation numbers and let $E_q=\sum_i c_{qi}I_i$ be the corresponding unmodified symbolic row. The first retrieval supplies $E_{q_1},\ldots,E_{q_k}$ to the basis check. If the subsequent selection returns $Q'=Q$, then
+\begin{equation}
+(E_{q'_1},\ldots,E_{q'_k})=(E_{q_1},\ldots,E_{q_k}).
+\end{equation}
+Passing the saved rows to the final reduction therefore supplies the same exact identities. Copies of the original rows preserve them when the basis check sorts or alters its working rows. We require equality of the full ordered source list, keep the same system and coefficient treatment, and use ordinary regeneration when that condition fails. Storage allows at most 4,096 rows and 4 MiB of accounted row payload, plus bounded container overhead. A development check forces a one-byte allowance and confirms that ordinary regeneration returns the same coefficients. This is within-calculation reuse, with no transfer of coefficients between target requests.
+
+\subsection{Reserved inputs and comparison definitions}
+The rational families and target construction follow Appendix~\ref{app:adaptive} with $h=307$ and $j=0,1,2$. The planar double box and connected bubble boxes use $s=-4693$ and $t=-5319$, and the two-point families use $p^2=-4693$. The nonplanar and virtuality boxes use $s=-5639$ and $t=-3197$, with virtuality $v=-3833$ for the latter. The pentagon invariants $(s_{12},s_{23},s_{34},s_{45},s_{51})$ are $(-6151,-6153,-6157,-6159,-6163)$. The three-loop vacuum uses the squared masses stated there with the last value $53+2h=667$. Graph-specific momentum conventions remain those of Appendix~\ref{app:families}; the connected bubble boxes retain Appendix~\ref{app:higher-scattering}'s convention. Each dots, mixed, or pinched batch contains up to three distinct indexed targets. The symbolic nonplanar and pentagon targets have power three on the fifth physical denominator. The symbolic virtuality box has power two on its first and fourth denominators. Other physical powers are one and other auxiliary powers are zero.
+
+References use $(r_0+1,s_0+1,d_0+1)$, followed by an independent check with numerator-rank limit increased by one more unit. The four-loop bubble reference instead uses $(12,1,2)$ and $(12,2,2)$, fixed before testing. The first calculation uses the new exact preparation, and the second uses the previous executable. The model files and decision rules remain frozen throughout the comparison. The definitions of complete-time aggregation and relative speedup are those in Appendix~\ref{app:portfolio}. All repetitions and individual batch results remain available; no confidence interval is inferred from three runs.
+
+For the common-dispatch sensitivity calculation, let $D_{bcr}$ be the measured input-check and outer-proposal interval for batch $b$, control $c$, and repetition $r$. We subtract that interval before taking the median:
+\begin{equation}
+T_c^{\rm optimistic}=\sum_b\operatorname{median}_{r=1,2,3}(T_{bcr}-D_{bcr}).
+\end{equation}
+The unused proposal occupies only part of $D_{bcr}$. Holding the remaining measured work fixed, removing all of $D_{bcr}$ therefore overstates the saving available from removing that proposal alone. This is a sensitivity calculation on the recorded timings, not a prediction of how a different executable would interact with the operating system.

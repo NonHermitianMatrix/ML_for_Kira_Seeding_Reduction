@@ -1,5 +1,14 @@
 # Paper and notes
 
+<!-- BEGIN PARAMETRIC UPDATE -->
+
+`parametric_results.tex` contains the latest complete-time comparison.
+`parametric_appendix.tex` derives the exact changes. `parametric_data.json` supplies its checked numbers.
+The paper and notes include the new comparison and preserve the earlier results.
+
+<!-- END PARAMETRIC UPDATE -->
+
+
 `report.tex` and `report.pdf` contain the research paper.
 `notes.tex` and `notes.pdf` contain the detailed notes and earlier experiments.
 Both documents include the new complete-cost study.

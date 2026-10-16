@@ -29,7 +29,7 @@
 
 
 \begin{abstract}
-Integration-by-parts reduction expresses Feynman integrals in terms of master integrals, but the choice of seeds and reduction settings can change its cost. We train models on complete Kira timings and use validation to select among seed strategies, equation settings, and one or two workers. The final portfolio retains earlier strategies and uses a new prediction only where validation supports it. All choices preserve exact algebra and include recovery from insufficient seed sets. On 26 reserved batches from known graph structures through four loops, the selected portfolio takes 85.50 seconds, compared with 108.03 seconds for native choices, 95.38 seconds for the previous workflow, and 86.81 seconds for a fixed portfolio choice per graph. These are sums of batch median times in the same improved executable. The small saving relative to the fixed portfolio changes sign when all repetitions are summed, so the added outer prediction has no stable aggregate advantage. All 390 timed reductions and 26 additional applications reproduce independent reference coefficients exactly. Separate controls measure the effect of exact sector-file indexing and projection of the zero-sector criterion. Learned row elimination remains excluded because it has not given a reliable complete-time saving. The results identify where the measured strategies help, with explicit limits on graph structure, target patterns, and symbolic kinematics.
+Integration-by-parts reduction expresses Feynman integrals in a master basis, while the chosen equations and implementation determine its cost. We train models to select seeds, equations, and complete Kira strategies using measured calculation time. Validation selects useful learned decisions and retains fixed choices elsewhere. We then reduce the exact work around those decisions by restricting sector polynomials before construction and reusing unchanged selected equations within one reduction. On 26 fresh batches from nine known graph structures through four loops, the same frozen model choices take 64.183 seconds with the revised preparation and 79.784 seconds with the previous preparation, or 19.6\% less time. These totals sum three-run batch medians. All 312 timed reductions and 26 further applications agree exactly with independently checked reference coefficients. Matched native and fixed-portfolio controls separate the role of the learned decisions from the exact implementation changes. Learned row elimination remains excluded because it has not given a reliable complete-time gain. The results concern the tested graph structures, target patterns, and prescribed master bases; they do not establish a fastest method for arbitrary loop integrals.
 \end{abstract}
 
 \section{Introduction}
@@ -218,11 +218,12 @@ These experiments also raise an attribution question: how much of the saving com
 
 \input{higher_scattering_results}
 \input{portfolio_results}
+\input{parametric_results}
 
 \section{Overall performance and physical scope}
 \label{sec:overall}
 \subsection{What the model comparisons establish}
-The final portfolio selects a complete calculation before equation generation. On its 26 fresh test batches, it takes 85.497 seconds against 95.382 seconds for the previous workflow and 86.809 seconds for graph-specific fixed portfolio choices. Section~\ref{sec:portfolio} gives the matched conditions and the individual graph results. The comparison with the previous workflow measures the practical change from the earlier method, while the fixed-portfolio comparison isolates the added outer prediction.
+The latest comparison keeps every trained model fixed and reduces exact preparation around its decisions. On 26 new batches, complete time changes from 79.784 to 64.183 seconds, or 19.6\% less time. Section~\ref{sec:parametric} gives the matched controls and graph results. With the revised preparation held fixed, the selected portfolio uses 4.7\% less time than the fixed portfolio by summed medians and 5.0\% less time across all repetitions. The previous portfolio study in Section~\ref{sec:portfolio} remains a separate comparison on different targets.
 
 The earlier model tests and the exact preprocessing study answer separate questions. Seed and equation selection help in their measured domains, while learned row selection remains omitted. Exact preprocessing reduces costs shared by every portfolio candidate. Restricted vacuum recurrence and repeated-request reuse supply further savings under their own assumptions. These experiments use different inputs and controls, so their speedup factors cannot be multiplied.
 
@@ -233,8 +234,8 @@ The earlier model tests and the exact preprocessing study answer separate questi
 \begin{tabularx}{\linewidth}{@{}lYY@{}}\toprule
 Method & Tested calculation & Result for complete time\\\midrule
 % BEGIN FINAL PORTFOLIO SUMMARY
-Final portfolio & Fresh known-graph batches, loops 1--4 & 10.4\% less time than the previous workflow\\
-Added portfolio prediction & Same batches and exact preprocessing & 1.5\% less time than the graph-specific fixed portfolio\\
+Revised exact preparation & Fresh known-graph batches, loops 1--4 & 19.6\% less time than the previous implementation\\
+Added outer prediction & Same revised preparation & 4.7\% less time by medians; 5.0\% less across repetitions\\
 % END FINAL PORTFOLIO SUMMARY
 % BEGIN CURRENT COST SUMMARY
 New cost model & Known graph structures, loops 1--4 & 0.5\% less time than native choices in the improved executable\\
@@ -268,15 +269,13 @@ The comparison uses eight fresh groups, each containing three mass profiles with
 This result depends on the structure of the family. The benchmark constructs Euler and mass partial-fraction identities rather than a general high-loop IBP system. Earlier checks at loop orders 13, 16, 24, and 32 use the same family, and the recurrence proof applies to every positive integer loop order under its stated assumptions. The demonstrated high-loop result therefore concerns this restricted vacuum problem; the connected scattering comparisons in Sections~\ref{sec:components} and~\ref{sec:adaptive} have separate definitions and timings.
 
 \section{Conclusion}
-We have trained and tested models that choose the calculation used to reduce Feynman integrals with Kira. The final method compares complete strategies, including selective seed expansion, the earlier learned policies, and one or two workers. Its labels include failed attempts, exact checks, and recovery. Validation selects fixed settings for each graph and enables an additional prediction only where the measured validation saving supports it.
+We have trained and tested models for decisions that affect exact Feynman integral reduction with Kira. The retained method chooses seeds and complete strategies before equation generation, uses equation selection in its validated domains, and keeps native row elimination. Its complete-time comparisons include prediction, exact algebra, checks, and recovery.
 
-On 26 fresh batches, the selected portfolio takes 85.497 seconds in summed batch median time. It uses 20.9\% less time than native choices, 10.4\% less time than the previous workflow, and 1.5\% less time than the graph-specific fixed portfolio. All 390 timed reductions and 26 further applications agree exactly with their reference coefficients. Individual graph results and CPU times identify both savings and remaining costs. The row model remains excluded because its complete-time tests do not show a reliable benefit.
+The latest comparison keeps every trained model fixed and reduces exact preparation around its decisions. On 26 new batches, complete time changes from 79.784 to 64.183 seconds, or 19.6\% less time. Section~\ref{sec:parametric} gives the matched controls and graph results. With the revised preparation held fixed, the selected portfolio uses 4.7\% less time than the fixed portfolio by summed medians and 5.0\% less time across all repetitions. The previous portfolio study in Section~\ref{sec:portfolio} remains a separate comparison on different targets.
 
-Across all repetitions, the selected portfolio uses 9.4\% less time than the previous workflow and 0.4\% more time than the fixed portfolio. The added outer prediction therefore has no stable aggregate advantage over the stronger fixed control. The revised strategy set and its integration with Kira account for much of the practical saving.
+The latest gain comes from restricting polynomial construction to the declared sector domain and reusing an unchanged ordered set of selected equations within a calculation. These are exact changes around the frozen models. All 312 timed comparisons and 26 additional applications reproduce their checked reference coefficients. The fixed control and the native control identify the separate effect of the learned choices, including regressions on individual batches.
 
-The exact implementation changes make a separate contribution by avoiding searches for absent sector files and simplifying the zero-sector criterion within the declared sector domain. Their matched controls distinguish this contribution from prediction. The earlier recurrence and shared-request methods remain separate forms of exact reuse.
-
-The completed tests cover known graph structures, fresh rational kinematics, selected symbolic targets, and connected scattering families through four loops. They assume a prescribed master basis. Broader higher-loop scattering, unrestricted symbolic kinematics, and globally optimal reduction paths remain unverified. The current evidence supports the measured choices within this domain and provides explicit fallback and resource limits for other requests.
+The tests cover known graph structures, fresh rational parameters, selected symbolic targets, and connected scattering through four loops with supplied master bases. The earlier recurrence result through twelve loops retains its separate restricted-vacuum scope. General higher-loop scattering, arbitrary symbolic kinematics, and global optimality remain unverified. The measured application supplies exact recovery and resource limits within this stated scope.
 
 \appendix
 \section{Earlier models for complete calculations}
@@ -298,6 +297,7 @@ The local-model tests show that useful equations, accurate labels, and faster in
 \input{adaptive_results}
 \input{adaptive_appendix}
 \input{portfolio_appendix}
+\input{parametric_appendix}
 \begingroup
 \small
 \setlength{\parskip}{0pt}
