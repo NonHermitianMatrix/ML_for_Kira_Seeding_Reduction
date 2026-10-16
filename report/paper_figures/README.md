@@ -99,3 +99,8 @@ The producer is `ML_model_adaptive_reduction/s16_portfolio_analyze.py`.
 The input evidence is `report/portfolio_data.json`.
 
 <!-- END PORTFOLIO FIGURES -->
+
+<!-- BEGIN COVERAGE STUDY -->
+`coverage_grid.pdf` shows verified native coverage and its limits.
+`coverage_times.pdf` separates complete native requests from restricted vacuum identities.
+<!-- END COVERAGE STUDY -->

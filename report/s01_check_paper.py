@@ -8,7 +8,7 @@ import statistics
 
 HERE=Path(__file__).resolve().parent
 def main():
-    names=['report.tex','paper_appendices.tex','scattering_results.tex','workflow_results.tex','workflow_appendix.tex','type_specialist_results.tex','type_specialist_appendix.tex','basis_completion_results.tex','basis_completion_appendix.tex','ordering_policy_results.tex','ordering_policy_appendix.tex','thread_policy_results.tex','thread_policy_appendix.tex','higher_scattering_results.tex','higher_scattering_appendix.tex','adaptive_results.tex','adaptive_appendix.tex','portfolio_results.tex','portfolio_appendix.tex','parametric_results.tex','parametric_appendix.tex']
+    names=['report.tex','paper_appendices.tex','scattering_results.tex','workflow_results.tex','workflow_appendix.tex','type_specialist_results.tex','type_specialist_appendix.tex','basis_completion_results.tex','basis_completion_appendix.tex','ordering_policy_results.tex','ordering_policy_appendix.tex','thread_policy_results.tex','thread_policy_appendix.tex','higher_scattering_results.tex','higher_scattering_appendix.tex','adaptive_results.tex','adaptive_appendix.tex','portfolio_results.tex','portfolio_appendix.tex','parametric_results.tex','parametric_appendix.tex','coverage_results.tex','coverage_appendix.tex']
     source='\n'.join((HERE/n).read_text() for n in names)
     bib=(HERE/'paper_references.bib').read_text()
     cites={x.strip() for group in re.findall(r'\\cite\{([^}]+)\}',source) for x in group.split(',')}

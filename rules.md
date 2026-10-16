@@ -199,3 +199,7 @@ Keep the notes, affected guides, cluster files, GitHub, and local report copy cu
 
 - Choose and train models from measured complete Kira reduction cost. Existing model types, methods, and integrations do not constrain new designs. Replace ineffective deployment choices when separate validation supports a better choice, while preserving earlier scientific evidence.
 - Include model decisions, equation generation, exact algebra, failed attempts, recovery, and application loading where applicable. Compare the previous deployed method and strong fixed controls on reserved inputs. Document the supported domain and any regressions. Complete the code, tests, READMEs, report, notes, GitHub publication, and local report synchronization under the existing resource limits.
+
+## Broad coverage and overall time (October 16, 2026)
+
+- Test the complete method across a defined range of integral types and every loop order in the existing one-through-twelve-loop scope. Include matched total-time controls, master discovery where supported, exact checks, slower cases, failures, and application limits. Keep separate results for native IBP generation and supplied exact identities. A finite set cannot establish all integral types or unbounded loop orders. Update both documents, guides, cluster files, GitHub, and the local report.

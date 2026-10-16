@@ -164,3 +164,8 @@ The original cost-policy study remains in the paper appendix and in the notes.
 Use `s11_finalize.py` to rebuild the evidence and both documents in order.
 
 <!-- END PORTFOLIO REPORT -->
+
+<!-- BEGIN COVERAGE STUDY -->
+`coverage_results.tex` and `coverage_appendix.tex` describe the broader tests.
+`coverage_data.json` supplies their measured values. The new figures show coverage and matched complete times.
+<!-- END COVERAGE STUDY -->

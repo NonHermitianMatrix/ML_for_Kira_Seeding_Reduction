@@ -1,0 +1,221 @@
+{
+  "cases": [
+    {
+      "id": "coverage_vacuum_r2",
+      "family": "coupled_vacuum_unit_massless",
+      "mass_scale_squared": 1,
+      "mass_ratios": [
+        823,
+        829
+      ],
+      "targets": [
+        [
+          5,
+          1
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          3
+        ]
+      ],
+      "loops": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": "coverage_vacuum_r3",
+      "family": "coupled_vacuum_unit_massless",
+      "mass_scale_squared": 1,
+      "mass_ratios": [
+        823,
+        829,
+        853
+      ],
+      "targets": [
+        [
+          2,
+          2,
+          2
+        ],
+        [
+          3,
+          2,
+          1
+        ],
+        [
+          0,
+          1,
+          5
+        ],
+        [
+          1,
+          1,
+          4
+        ],
+        [
+          0,
+          2,
+          4
+        ],
+        [
+          1,
+          5,
+          0
+        ]
+      ],
+      "loops": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": "coverage_vacuum_r4",
+      "family": "coupled_vacuum_unit_massless",
+      "mass_scale_squared": 1,
+      "mass_ratios": [
+        823,
+        829,
+        853,
+        857
+      ],
+      "targets": [
+        [
+          1,
+          2,
+          3,
+          0
+        ],
+        [
+          0,
+          2,
+          2,
+          2
+        ],
+        [
+          1,
+          0,
+          2,
+          3
+        ],
+        [
+          3,
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          2,
+          3,
+          1
+        ],
+        [
+          4,
+          1,
+          1,
+          0
+        ]
+      ],
+      "loops": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    }
+  ],
+  "modes": [
+    "original",
+    "dense",
+    "extreme",
+    "learned",
+    "recurrence"
+  ],
+  "repetitions": 3,
+  "model": "depth4.json",
+  "frozen_deployment": {
+    "control": "extreme",
+    "deployed_mode": "extreme",
+    "learned_over_control": 1.0173478139781191,
+    "model": "depth4.json",
+    "selection": "Three-repeat median external complete costs, geometric mean across six validation batches; use learned route only if at least 2 percent below the best simple control.",
+    "shared_loop_variable": "z=L*(d-2)",
+    "validation_ratios_to_dense": {
+      "dense:None": 1.0,
+      "extreme:None": 0.949412300131293,
+      "first:None": 0.9639006725328293,
+      "largest:None": 0.9927645911942341,
+      "learned:depth12.json": 0.9890756636329252,
+      "learned:depth4.json": 0.9658825281025087,
+      "learned:depth8.json": 0.966573860167929,
+      "smallest:None": 0.9763649263493797
+    }
+  },
+  "source_sha256": "03e809cf80d0f3ba7ad26fc1badf90fdb57f0d0804f7fdd60faa848f049cd008",
+  "model_sha256": "29c287841e42deea69fd9bfff717f775dc5ea085694543acce659bb8fc387892",
+  "previous_source_sha256": "3f5873b4485523428e9da7ff20476cbd3da42f9e5b446b482b769afbab78d1a4",
+  "scope": "Unit massless powers and distinct massive denominators with a common total loop momentum. Exact Euler and partial-fraction identities supplied to Kira; not native high-loop IBP generation.",
+  "time": "Complete input checking, model load, equation generation from supplied identities, Kira, export reading, exact substitution and coefficient verification. One loop per request, plus separate shared requests for all twelve orders.",
+  "exact_deployment": {
+    "best_fixed_policy": "extreme",
+    "learned_beats_best_fixed_by_two_percent": false,
+    "mode": "native_binary",
+    "policy": null,
+    "selection_metric": "complete process time plus output decoding",
+    "validation_ratios": {
+      "baseline": 1.0,
+      "integer": 0.9953883967896424,
+      "learned": 0.8496693496410932,
+      "native_binary": 0.8588369301236478,
+      "native_binary_ascending": 0.8607922266055312,
+      "native_binary_descending": 0.8675194028953334,
+      "native_binary_first": 0.8902969177072338,
+      "native_binary_mass_gap": 0.8885437167581659,
+      "native_json": 0.9753514818833547
+    }
+  },
+  "exact_model_sha256": "aeba8816a282db1c1cb843cd052ee29c22d269bb72a96d34336acbd49863d446",
+  "original_binary_sha256": "c1aaa3350575539064c5178a4a51149101354549e93798b51b7441f42c588215",
+  "unchanged": true
+}

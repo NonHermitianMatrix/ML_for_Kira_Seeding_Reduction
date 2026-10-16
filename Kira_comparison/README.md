@@ -922,3 +922,7 @@ It also records connected scattering tests, initialization costs, and incomplete
 Read its summary for the measured contributions and tested domain.
 
 <!-- END HIGHER SCATTERING VERIFICATION -->
+
+<!-- BEGIN COVERAGE STUDY -->
+The [coverage study](coverage_study/README.md) compares complete reductions and records unsupported or failed cases.
+<!-- END COVERAGE STUDY -->

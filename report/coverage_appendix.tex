@@ -1,0 +1,60 @@
+\section{Definitions and timing for the coverage grid}
+\label{app:coverage}
+The new grid uses the integral convention in Eq.~\eqref{eq:family}; every denominator includes the same implicit Feynman prescription. Let $Q=\sum_{i=1}^{L}\ell_i$. For $L\geq2$, the vacuum families have physical denominators
+\begin{equation}
+D_i=\ell_i^2-m_i^2\quad(1\leq i\leq L),\qquad
+D_{L+1}=Q^2-m_{L+1}^2.
+\end{equation}
+The one-mass case sets $m_1^2=\cdots=m_L^2=0$ and $m_{L+1}^2=835$. The fully massive case sets $m_i^2=837+6(i-1)$ for each physical position. At one loop we instead use the single massive tadpole denominator $D_1=\ell_1^2-835$, since the two putative vacuum denominators would have dependent scalar-product coefficients. These numbers use a common squared-momentum unit.
+
+The two-point families replace the final vacuum denominator by
+\begin{equation}
+D_{L+1}=(p-Q)^2-m_{L+1}^2,\qquad p^2=-847.
+\end{equation}
+The massless case sets every mass to zero; the massive case uses the same distinct squared masses as the fully massive vacuum. The four-point ladders and boxes with bubble subgraphs use Eqs.~\eqref{eq:higher-ladder} and~\eqref{eq:higher-bubble-box}, with $s=-5917$ and $t=-6747$. The main grid uses profile $h=409$. It defines these families through twelve loops before applying the current support limit. The two coincident one-loop definitions are included only once.
+
+For $E$ independent external momenta, the scalar products consist of $L$ loop squares, $L(L-1)/2$ products of distinct loop momenta, and $LE$ loop--external products. Their total is therefore
+\begin{equation}
+N=L+\frac{L(L-1)}2+LE=\frac{L(L+1)}2+LE.
+\end{equation}
+This is the complete representation required for native IBP generation~\cite{Kira3}. We append candidate squared momentum differences only when their exact coefficient vector increases the rank of the physical denominator list. The resulting $N\times N$ coefficient matrix has rank $N$ for every declared family. This construction defines numerator coordinates even for cases that cannot enter the current application. In this grid the 31-index limit permits vacuum definitions through seven loops, two-point definitions through six loops, and four-point definitions through five loops. Permitted input size does not imply completion within the common limits.
+
+Let $n$ be the number of physical denominators and let $\boldsymbol a^{(0)}$ have entries one on these denominators and zero on the auxiliary ones. The target batch is
+\begin{equation}
+\mathcal T=\{\boldsymbol a^{(0)},\ \boldsymbol a^{(0)}+\boldsymbol e_1\}
+\cup\{\boldsymbol a^{(0)}-\boldsymbol e_{n+1}\ \text{if }N>n\},
+\end{equation}
+where $\boldsymbol e_i$ has unit entry at position $i$. The full comparison and first reference use positive-index bound $r=n+1$, numerator bound $s=1$, and dot bound one. The independent reference check raises the numerator bound to two. The full comparisons receive no preferred master list. The application comparisons receive the checked basis and retain their frozen learned choices, domain guards, and expansion recovery.
+
+The symbolic additions are the one-loop tadpole, the one-loop massless two-point family, massive two-point families at one and two loops, and four-point ladders at one and two loops. Their nonzero squared masses and external invariants remain independent symbols. The nonplanar box, pentagon, and virtuality-box definitions in Appendix~\ref{app:families} add rational and symbolic requests. Their rational profile is $h=411$ in the previously defined parameter formulas. Each of these three structures uses the corner target and one extra power on its last physical denominator. These finite cases do not span arbitrary symbolic kinematics.
+
+The additional massive two-point batches use rational profile $h=419$, so $p^2=-867$ and $m_i^2=857+6(i-1)$. Their symbolic variants retain independent masses and $p^2$. The target set includes $\boldsymbol a^{(0)}$, every $\boldsymbol a^{(0)}+\boldsymbol e_i$, every $\boldsymbol a^{(0)}+2\boldsymbol e_i$, and every $\boldsymbol a^{(0)}+\boldsymbol e_i+\boldsymbol e_j$ with $1\leq i<j\leq n$. It contains $1+2n+n(n-1)/2$ targets. The last count follows from choosing an unordered pair of distinct physical denominators. The expanded region uses $r=n+2$, numerator bound one, and dot bound two; the independent check raises the numerator bound to two. These batches supply a separate test of nontrivial reductions after the initial small requests, without replacing the original outcomes.
+
+For the separate restricted vacuum study, the squared-mass ratios are the first $R$ entries of $(823,829,853,857)$, with $R=2,3,4$. We choose six distinct exponent vectors $\boldsymbol b$ with $\sum_j b_j=6$ and at least two positive entries. The vectors are fixed before the comparisons. Each request uses either one loop order or all twelve orders together. The exact recurrence and the Taylor check use the derivations in \CoverageVacuumDerivation{}; this study does not infer those identities from a high-loop native reduction. The original Kira control generates and solves the full supplied identity system separately at each loop order. Other identity-based controls and the recurrence can substitute $z=L(d-2)$ after their shared calculation.
+
+
+\begin{table}[!htbp]\centering\small
+\caption{The six target exponent vectors for each restricted vacuum profile.}\label{tab:coverage-targets}
+\begin{tabular}{@{}cl@{}}\toprule
+$R$ & Target vectors $\boldsymbol b$\\\midrule
+2 & $(5,1),\;(1,5),\;(4,2)$\\
+ & $(2,4),\;(3,3)$\\
+3 & $(2,2,2),\;(3,2,1),\;(0,1,5)$\\
+ & $(1,1,4),\;(0,2,4),\;(1,5,0)$\\
+4 & $(1,2,3,0),\;(0,2,2,2),\;(1,0,2,3)$\\
+ & $(3,0,1,2),\;(0,2,3,1),\;(4,1,1,0)$\\
+\bottomrule\end{tabular}
+\end{table}
+
+For method $m$, request $c$, and repetition $j$, let $T_{mcj}$ denote measured complete time. The matched total and reported ratio are
+\begin{equation}
+S_m(\mathcal C)=\sum_{c\in\mathcal C}\operatorname{median}_{j=1,2,3}T_{mcj},
+\qquad R_{A/B}=\frac{S_A(\mathcal C)}{S_B(\mathcal C)}.
+\end{equation}
+The set $\mathcal C$ contains only requests with three exact completions for both compared methods. It is specified separately for each pair; no failed case receives an imputed completed time. The fractional time saving follows directly by subtracting the revised total from the control total and dividing by the control total:
+\begin{equation}
+\frac{S_B-S_A}{S_B}=1-\frac{S_A}{S_B}=1-R_{A/B}.
+\end{equation}
+The coverage table retains every excluded case. This separates a conditional timing gain from the probability that a request completes. Three timing repetitions supply the stated medians, not a confidence interval or a proof of global optimality.
+
+The supplied-identity Kira workers use a 90-second solver limit, a 1,800 MiB address-space limit, a 1,500 MiB process-tree memory limit, and a 64 MiB temporary-file limit. The recurrence works within the same scheduler allocation and checks the expanded coefficients independently. Native and vacuum calculations run sequentially, so their temporary storage does not overlap.

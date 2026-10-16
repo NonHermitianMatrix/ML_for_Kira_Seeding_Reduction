@@ -167,3 +167,7 @@ It also records connected scattering tests, initialization costs, and incomplete
 Read its summary for the measured contributions and tested domain.
 
 <!-- END HIGHER SCATTERING VERIFICATION -->
+
+<!-- BEGIN COVERAGE STUDY -->
+Read [the broader coverage study](Kira_comparison/coverage_study/README.md) for full-basis calculations, all twelve restricted vacuum loop orders, and remaining limits.
+<!-- END COVERAGE STUDY -->

@@ -29,7 +29,7 @@
 
 
 \begin{abstract}
-Integration-by-parts reduction expresses Feynman integrals in a master basis, while the chosen equations and implementation determine its cost. We train models to select seeds, equations, and complete Kira strategies using measured calculation time. Validation selects useful learned decisions and retains fixed choices elsewhere. We then reduce the exact work around those decisions by restricting sector polynomials before construction and reusing unchanged selected equations within one reduction. On 26 fresh batches from nine known graph structures through four loops, the same frozen model choices take 64.183 seconds with the revised preparation and 79.784 seconds with the previous preparation, or 19.6\% less time. These totals sum three-run batch medians. All 312 timed reductions and 26 further applications agree exactly with independently checked reference coefficients. Matched native and fixed-portfolio controls separate the role of the learned decisions from the exact implementation changes. Learned row elimination remains excluded because it has not given a reliable complete-time gain. The results concern the tested graph structures, target patterns, and prescribed master bases; they do not establish a fastest method for arbitrary loop integrals.
+Integration-by-parts reduction expresses Feynman integrals in a master basis, while equation choices and exact preparation determine its cost. We train models to select seeds, equations, and complete Kira strategies, and retain fixed choices where validation gives no learned benefit. Exact changes restrict sector polynomial construction and reuse unchanged selected equations within a reduction. An earlier known-graph comparison gives 19.6\% less time with the same model decisions. We then define 90 native requests across vacuum, two-point, and scattering structures through twelve loops; 54 fit the current interface, and 39 complete three checked nontrivial revised full calculations. On 37 matched completed requests, full reduction takes 88.2\% less time than the saved original Kira executable, including master discovery. On the wider grid, the application controls establish no reliable additional gain from learned choices alone. A restricted supplied-identity vacuum study verifies all twelve loop orders. Failed and unsupported cases remain in the coverage record, and learned row elimination remains excluded. The results establish improvements within the measured domains, not universal performance across all loop integrals.
 \end{abstract}
 
 \section{Introduction}
@@ -219,11 +219,14 @@ These experiments also raise an attribution question: how much of the saving com
 \input{higher_scattering_results}
 \input{portfolio_results}
 \input{parametric_results}
+\input{coverage_results}
 
 \section{Overall performance and physical scope}
 \label{sec:overall}
 \subsection{What the model comparisons establish}
-The latest comparison keeps every trained model fixed and reduces exact preparation around its decisions. On 26 new batches, complete time changes from 79.784 to 64.183 seconds, or 19.6\% less time. Section~\ref{sec:parametric} gives the matched controls and graph results. With the revised preparation held fixed, the selected portfolio uses 4.7\% less time than the fixed portfolio by summed medians and 5.0\% less time across all repetitions. The previous portfolio study in Section~\ref{sec:portfolio} remains a separate comparison on different targets.
+The broader coverage study in Section~\ref{sec:coverage} defines 90 native-family requests through twelve loops. The current interface accepts 54 of them, and 39 complete three checked nontrivial full reductions with revised preparation. On 37 matched completed requests, the revised full calculation takes 88.2\% less time than the saved original Kira executable. The supplied-basis selected application takes 0.1\% less time than the revised native control on its separate matched set. The approximately 0.1\% difference from the revised native control establishes no reliable additional learned gain on this wider set. Unsupported, failed, and identity-only requests remain outside these timing ratios.
+
+The preparation comparison keeps every trained model fixed and reduces exact preparation around its decisions. On 26 new batches, complete time changes from 79.784 to 64.183 seconds, or 19.6\% less time. Section~\ref{sec:parametric} gives the matched controls and graph results. With the revised preparation held fixed, the selected portfolio uses 4.7\% less time than the fixed portfolio by summed medians and 5.0\% less time across all repetitions. The previous portfolio study in Section~\ref{sec:portfolio} remains a separate comparison on different targets.
 
 The earlier model tests and the exact preprocessing study answer separate questions. Seed and equation selection help in their measured domains, while learned row selection remains omitted. Exact preprocessing reduces costs shared by every portfolio candidate. Restricted vacuum recurrence and repeated-request reuse supply further savings under their own assumptions. These experiments use different inputs and controls, so their speedup factors cannot be multiplied.
 
@@ -271,11 +274,13 @@ This result depends on the structure of the family. The benchmark constructs Eul
 \section{Conclusion}
 We have trained and tested models for decisions that affect exact Feynman integral reduction with Kira. The retained method chooses seeds and complete strategies before equation generation, uses equation selection in its validated domains, and keeps native row elimination. Its complete-time comparisons include prediction, exact algebra, checks, and recovery.
 
-The latest comparison keeps every trained model fixed and reduces exact preparation around its decisions. On 26 new batches, complete time changes from 79.784 to 64.183 seconds, or 19.6\% less time. Section~\ref{sec:parametric} gives the matched controls and graph results. With the revised preparation held fixed, the selected portfolio uses 4.7\% less time than the fixed portfolio by summed medians and 5.0\% less time across all repetitions. The previous portfolio study in Section~\ref{sec:portfolio} remains a separate comparison on different targets.
+The preparation comparison keeps every trained model fixed and reduces exact preparation around its decisions. On 26 new batches, complete time changes from 79.784 to 64.183 seconds, or 19.6\% less time. Section~\ref{sec:parametric} gives the matched controls and graph results. With the revised preparation held fixed, the selected portfolio uses 4.7\% less time than the fixed portfolio by summed medians and 5.0\% less time across all repetitions. The previous portfolio study in Section~\ref{sec:portfolio} remains a separate comparison on different targets.
 
-The latest gain comes from restricting polynomial construction to the declared sector domain and reusing an unchanged ordered set of selected equations within a calculation. These are exact changes around the frozen models. All 312 timed comparisons and 26 additional applications reproduce their checked reference coefficients. The fixed control and the native control identify the separate effect of the learned choices, including regressions on individual batches.
+The preparation gain comes from restricting polynomial construction to the declared sector domain and reusing an unchanged ordered set of selected equations within a calculation. These are exact changes around the frozen models. All 312 timed comparisons and 26 additional applications reproduce their checked reference coefficients. The fixed control and the native control identify the separate effect of the learned choices, including regressions on individual batches.
 
-The tests cover known graph structures, fresh rational parameters, selected symbolic targets, and connected scattering through four loops with supplied master bases. The earlier recurrence result through twelve loops retains its separate restricted-vacuum scope. General higher-loop scattering, arbitrary symbolic kinematics, and global optimality remain unverified. The measured application supplies exact recovery and resource limits within this stated scope.
+The broader coverage study in Section~\ref{sec:coverage} defines 90 native-family requests through twelve loops. The current interface accepts 54 of them, and 39 complete three checked nontrivial full reductions with revised preparation. On 37 matched completed requests, the revised full calculation takes 88.2\% less time than the saved original Kira executable. The supplied-basis selected application takes 0.1\% less time than the revised native control on its separate matched set. The approximately 0.1\% difference from the revised native control establishes no reliable additional learned gain on this wider set. Unsupported, failed, and identity-only requests remain outside these timing ratios.
+
+The independent restricted-vacuum comparison verifies every loop order from one through twelve under its stated identity assumptions. The expanded native grid records the cases that exceed the interface, memory, or time limits. These results support measured improvements on completed inputs and do not establish a speedup for every integral type or loop order.
 
 \appendix
 \section{Earlier models for complete calculations}
@@ -298,6 +303,7 @@ The local-model tests show that useful equations, accurate labels, and faster in
 \input{adaptive_appendix}
 \input{portfolio_appendix}
 \input{parametric_appendix}
+\input{coverage_appendix}
 \begingroup
 \small
 \setlength{\parskip}{0pt}
