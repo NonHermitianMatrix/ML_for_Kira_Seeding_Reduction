@@ -1,0 +1,70 @@
+--- src/kira/kira.cpp
++++ src/kira/kira.cpp
+@@ -2308,6 +2308,44 @@
+ }
+ 
+ 
++
++#include <dirent.h>
++#include <cstdlib>
++// Enumerate sector files in the same increasing order as the original scan.
++// An unavailable directory falls back to the original exhaustive loop.
++static bool kira_existing_sectors(const std::string& directory,
++    const std::string& topology, uint32_t limit, std::vector<uint32_t>& result) {
++  DIR* dir = opendir(directory.c_str());
++  if (!dir) return false;
++  const std::string prefix = "SYSTEM_" + topology + "_";
++  const std::string prefix_x = "SYSTEMx_" + topology + "_";
++  std::set<uint32_t> sectors;
++  while (dirent* entry = readdir(dir)) {
++    const std::string name(entry->d_name);
++    const bool plain = name.compare(0,prefix_x.size(),prefix_x)==0;
++    const std::string& start = plain ? prefix_x : prefix;
++    if (name.compare(0,start.size(),start)!=0) continue;
++    const std::string tail = name.substr(start.size());
++    size_t n=0;
++    while (n<tail.size() && tail[n]>='0' && tail[n]<='9') ++n;
++    if (!n || n>10 || (n>1 && tail[0]=='0')) continue;
++    const std::string suffix=tail.substr(n);
++    bool valid=plain ? suffix.empty() : suffix==".gz";
++    if (!plain && suffix.size()>4 && suffix[0]=='_' &&
++        suffix.substr(suffix.size()-3)==".gz") {
++      valid=true;
++      for (size_t j=1;j<suffix.size()-3;++j)
++        if (suffix[j]<'0'||suffix[j]>'9') valid=false;
++    }
++    if (!valid) continue;
++    unsigned long long sector=std::strtoull(tail.substr(0,n).c_str(),nullptr,10);
++    if (sector<limit) sectors.insert(static_cast<uint32_t>(sector));
++  }
++  closedir(dir);
++  result.assign(sectors.begin(),sectors.end());
++  return true;
++}
++
+ void Kira::complete_triangular(vector<pyred::Weight>& mandatory) {
+   logger << "\n***** Bring system in triangular form *********************\n";
+ 
+@@ -2320,11 +2358,17 @@
+   std::unordered_map<pyred::Weight, int> rdy2F;
+ 
+   for (unsigned k = 0; k < collectReductions.size(); k++) {
+-    for (uint32_t sectorNumber = 0; sectorNumber < (1u << integralfamily.jule);
+-         sectorNumber++) {
+-
+-      load_triangular(k, sectorNumber, forwardRed, reduce_please,
+-                      rdy2F);
++    std::vector<uint32_t> existing;
++    const bool indexed = std::getenv("KIRA_INDEX_SECTOR_FILES") &&
++        kira_existing_sectors(outputDir + "/tmp/" + integralfamily.name,
++                              collectReductions[k], (1u << integralfamily.jule), existing);
++    if (indexed) {
++      for (uint32_t sectorNumber : existing)
++        load_triangular(k, sectorNumber, forwardRed, reduce_please, rdy2F);
++      logger << "Indexed triangular sectors: " << existing.size() << "\n";
++    } else {
++      for (uint32_t sectorNumber=0; sectorNumber<(1u << integralfamily.jule); ++sectorNumber)
++        load_triangular(k, sectorNumber, forwardRed, reduce_please, rdy2F);
+     }
+   }
+ 

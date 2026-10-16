@@ -1,0 +1,38 @@
+\section{Complete-cost portfolio: definitions and derivation}
+\label{app:portfolio}
+\subsection{Targets and seed choices}
+For a batch $\mathcal T$ of index vectors $\mathbf a$, define
+\begin{equation}
+r_0=\max_{\mathbf a\in\mathcal T}\sum_i\max(a_i,0),\qquad
+s_0=\max_{\mathbf a\in\mathcal T}\sum_i\max(-a_i,0),\qquad
+d_0=\max_{\mathbf a\in\mathcal T}\sum_i\max(a_i-1,0).
+\end{equation}
+These definitions count positive powers, numerator rank, and dots separately. Selective expansion uses $(r_0,s_0+1,d_0)$, with the positive-index limit floored at the largest declared top-sector size. The full expansion uses $(r_0+1,s_0+1,d_0+1)$. The five portfolio choices combine the earlier validated policy or selective expansion with one or two workers, and retain the previous workflow as a fifth choice. A failed new-policy attempt proceeds to native seeds and then full expansion. Skipping identical effective configurations removes a repeated calculation with the same equations, ordering, basis, and filter; it introduces no new algebraic relation.
+
+The training and validation cases are the 47 and 26 cases defined in Appendix~\ref{app:adaptive}. The reserved rational cases use the same family definitions at $h=306$ and the target constructions with $j=0,1,2$. The three symbolic graphs instead use the corner target with $a_4=3$, so the fourth physical denominator has power three. For the four-loop bubble box, the reference uses $(r,s,d_{\rm dots})=(12,1,2)$ and its independent check uses $(12,2,2)$. All other reserved references use full expansion and then raise its numerator-rank bound by one more unit. These limits were fixed before any new reserved calculation. A common supplied basis permits exact coefficient comparisons; these checks do not prove its minimality.
+
+\subsection{Learning relative complete cost}
+Let $T_{ba}>0$ denote the measured complete time for training batch $b$ and portfolio choice $a$. Let $a_0$ denote the earlier cost policy with one worker. We define
+\begin{equation}
+y_{ba}=\log\frac{T_{ba}}{T_{ba_0}}.
+\label{eq:portfolio-label}
+\end{equation}
+For the same batch, subtracting two labels gives $y_{ba}-y_{ba'}=\log(T_{ba}/T_{ba'})$. Since the logarithm is increasing, the choice with the smallest exact label also has the smallest measured time. A regression model $f$ estimates the five labels from the twenty features $x_b$ given in Appendix~\ref{app:adaptive}. Its fitted objective is
+\begin{equation}
+\mathcal L(f)=\sum_{b\in\mathcal B_{\rm train}}\sqrt{T_{ba_0}}\sum_a\bigl[f_a(x_b)-y_{ba}\bigr]^2.
+\end{equation}
+The positive weight increases the influence of costly training batches without changing their preferred action. It is a chosen training objective, not a proof that the fitted model minimizes future wall time. Each label includes native recovery, so an unsuccessful first attempt carries its measured cost.
+
+We fit nine global models: a regression tree, a 48-tree random forest, and a 48-tree extremely randomized ensemble at depths 3, 5, and 8. Each leaf has at least two training cases. Graphs with at least four training cases also receive three local regression trees at depths 1, 2, and 3. Tree methods follow the cited constructions~\cite{CART1984,Breiman2001Forest,Geurts2006ExtraTrees}. The saved evaluator reproduces the fitted predictions before validation begins.
+
+\subsection{Validation and the deployment guard}
+For graph $g$, let $c_g$ be the fixed portfolio choice with the smallest sum of validation batch median times. If $a_\star=\arg\min_a f_a(x)$, a predictor with gate $\gamma$ proposes $a_\star$ only when
+\begin{equation}
+f_{a_\star}(x)<f_{c_g}(x)-\gamma,\qquad \gamma\in\{0,0.05,0.15\}.
+\end{equation}
+Otherwise it uses $c_g$. Under exact labels, exponentiation gives $T_{ba_\star}/T_{bc_g}<e^{-\gamma}$; with fitted labels this is a predicted saving, not a guarantee. Validation selects the predictor and gate for each graph. Deployment enables this outer prediction only if its summed validation median time is at most $0.98$ times the fixed-control time and it wins both validation repetitions. The alternative is $c_g$. Graph structure and feature-range checks send unsupported inputs to native settings. A fixed portfolio choice can contain the earlier policy; the outer guard evaluates only the added decision.
+
+\subsection{Correctness and timing}
+The input to each reduction is the family, target batch, and prescribed master basis. Kira generates the exact identities and returns symbolic coefficients in that basis. The test then checks each coefficient by exact rational-function subtraction against the independently checked reference. The caller does not provide those reference coefficients to the deployed predictor or to the application. Thus the learned choice affects which calculation is attempted, while the algebraic identities determine the returned relation. Failure to reach the supplied basis triggers recovery; exhausting the bounded attempts returns failure.
+
+For method $m$, the reported aggregate is $\sum_b\operatorname{median}_{r=1,2,3}T_{bmr}$. The speedup relative to control $c$ is the ratio of its aggregate to the selected aggregate. This follows by dividing the times required for the same collection of batches. We also report totals over all repetitions and process CPU times. These summaries describe the measured collection; they are not statistical confidence intervals or guarantees for unseen integral families. All methods use the same exact executable and two-core allocation. The earlier preparation study uses a separate one-core allocation, so its speedup factors are not multiplied by these portfolio ratios.

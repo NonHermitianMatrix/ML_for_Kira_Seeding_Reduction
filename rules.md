@@ -169,3 +169,33 @@
 - Use related research papers and established scientific-writing guidance to improve structure and clarity without copying their prose. Define terms when they first appear, name the baseline for each comparison, and explain what each reported number measures.
 - Avoid detached strings of short statements, unexplained shorthand, and repeated generic labels such as "the route" or "the previous method." Use explicit names and connected paragraphs. The chat sentence-length limits do not apply to the paper.
 - During an editorial revision, preserve equations, measurements, references, and scientific limits. Rebuild and inspect the PDF, update the folder documentation, and synchronize the report on Hoffman, GitHub, and the local machine.
+
+
+## Runtime-focused model redesign (October 15, 2026)
+
+Pause the remaining verification comparison when requested. Preserve completed scientific evidence.
+Develop, train, integrate, and test new machine learning methods against complete Kira reduction time.
+The new design can replace earlier methods and refactor unnecessary implementation. Choose methods from measured results, without requiring a relationship to the earlier architecture.
+Keep exact algebra, matching fixed controls, prediction and fallback costs, separate training and test inputs, and the existing storage and memory limits.
+Update the repository, report, notes, and affected guides with the resulting methods and measured benefits. A finite search does not prove a globally fastest method.
+
+<!-- BEGIN HIGHER SCATTERING VERIFICATION -->
+
+## Component attribution and higher-loop verification (October 15, 2026)
+
+Verify defined higher-loop scattering families and compare the separate contributions of the models and reuse on matching physical targets.
+Keep exact coefficient and basis checks, preserve failed cases, and count retries and prediction costs.
+Distinguish learned decisions from fixed strategies, initialization changes, and mathematical reuse.
+Revise the whole paper in clear, connected English so that its abstract, methods, results, and conclusion agree with the measured evidence.
+Keep the notes, affected guides, cluster files, GitHub, and local report copy current under the existing resource rules.
+
+<!-- END HIGHER SCATTERING VERIFICATION -->
+
+## Unrestricted method redesign (October 16, 2026)
+
+- The current redesign may replace earlier model types and integration methods. Choose models and Kira settings from complete-time training and independent tests, compare the previous best workflow, preserve earlier evidence, and update both documents and GitHub. A finite study does not establish the fastest possible method for all integrals.
+
+## Method redesign and measured deployment (October 15, 2026)
+
+- Choose and train models from measured complete Kira reduction cost. Existing model types, methods, and integrations do not constrain new designs. Replace ineffective deployment choices when separate validation supports a better choice, while preserving earlier scientific evidence.
+- Include model decisions, equation generation, exact algebra, failed attempts, recovery, and application loading where applicable. Compare the previous deployed method and strong fixed controls on reserved inputs. Document the supported domain and any regressions. Complete the code, tests, READMEs, report, notes, GitHub publication, and local report synchronization under the existing resource limits.

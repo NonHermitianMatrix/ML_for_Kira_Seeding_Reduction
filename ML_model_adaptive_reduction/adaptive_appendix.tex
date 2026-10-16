@@ -1,0 +1,119 @@
+\section{A single policy for complete reduction cost}
+\label{app:adaptive}
+The new policy selects a calculation before Kira generates its equations. This appendix specifies its inputs, training objective, recovery rule, and exact preprocessing changes. The measured results appear in Section~\ref{sec:adaptive}.
+
+\subsection{Inputs and allowed calculations}
+For a target set $\mathcal{T}$, define
+\begin{equation}
+ r_{\mathcal{T}}=\max_{\boldsymbol a\in\mathcal{T}}\sum_i\max(a_i,0),\qquad
+ s_{\mathcal{T}}=\max_{\boldsymbol a\in\mathcal{T}}\sum_i\max(-a_i,0),\qquad
+ d_{\mathcal{T}}=\max_{\boldsymbol a\in\mathcal{T}}\sum_i\max(a_i-1,0).
+ \label{eq:adaptive-bounds}
+\end{equation}
+These definitions give the largest sum of positive indices, numerator rank, and number of extra denominator powers among the targets. The last quantity counts the powers above one, often called dots. The policy chooses from seven calculations. Four use integral ordering 1 and seed limits $(r_{\mathcal{T}},s_{\mathcal{T}},d_{\mathcal{T}})$, $(r_{\mathcal{T}}-1,s_{\mathcal{T}}-1,d_{\mathcal{T}}-1)$, $(r_{\mathcal{T}}-1,s_{\mathcal{T}},d_{\mathcal{T}}-1)$, or $(r_{\mathcal{T}},s_{\mathcal{T}}-1,d_{\mathcal{T}})$. Negative limits are replaced by zero, and the positive-index limit is at least the number of positive indices in the largest declared top sector. A fifth calculation uses the first set of limits with Kira ordering 5. A sixth applies the previously fitted equation filter with the first set of limits. The seventh calculation starts directly with each native limit increased by one. The equation-filter parameters remain fixed during this study.
+
+The input vector contains 18 quantities obtained from the family and targets. They describe the number of loops, external momenta, inverse propagators, physical propagators, and symbolic invariants; the natural logarithm of one plus the target count; maximum and mean dots and numerator ranks; minimum and maximum positive-index counts; target-sector count; massive-denominator count; and three measures of loop incidence in physical denominators. The final input is the mean number of external momenta present in a denominator momentum. A loop occurs in a denominator when its momentum appears in that denominator's momentum expression. The incidence measures count denominators involving several loops, the largest number of loops in one denominator, and the largest number of denominators containing one loop. Target coefficients and reference reductions are absent from these inputs.
+
+\subsection{Physical inputs and target construction}
+The seven earlier graph structures retain the ordered denominator momenta and scalar-product conventions of Appendix~\ref{app:families}. In a common squared-momentum unit, the sunrise has squared masses $(3,7,13)$ and the vacuum has squared masses $(1,1,1,13,13,53+2h)$. The two-point ladder has squared masses $(1,0,0,0,0,0,0,0)$ on its physical denominators. The planar double box, nonplanar box, pentagon, and virtuality box have massless internal denominators. The parameter assignments are
+\begin{align}
+ p^2_{\rm sunrise}=p^2_{\rm ladder}&=-1009-12h,\nonumber\\
+ (s,t)_{\rm DB}&=(-1009-12h,-1021-14h),\nonumber\\
+ (s,t)_{\rm NP}&=(-113-18h,-127-10h),\nonumber\\
+ (s_{12},s_{23},s_{34},s_{45},s_{51})_{\rm P}
+ &=(-11-20h,-13-20h,-17-20h,-19-20h,-23-20h),\nonumber\\
+ (s,t,v)_{\rm box}&=(-113-18h,-127-10h,-149-12h).
+ \label{eq:adaptive-kinematics}
+\end{align}
+Here $h$ is the integer profile number, $v$ is the external virtuality of the box, and the remaining invariants have their family-specific definitions in Appendix~\ref{app:families}. These assignments leave the dimension symbolic. The connected bubble boxes instead use Eq.~\eqref{eq:higher-kinematics} and its rational profile formula.
+
+The seven earlier graph structures use profiles $h=301,302$ for training, $h=303$ for validation, and $h=304$ for testing. Each profile supplies three target patterns: two extra powers on a denominator; a dot with an auxiliary numerator, or two dots when no auxiliary entry exists; and a removed denominator with a dot on an adjacent denominator. Each batch has up to three targets, with positions shifted by the profile. The three- and four-loop bubble boxes of Eq.~\eqref{eq:higher-bubble-box} use profiles $301,303,304$ and the full-sector, one-dot, and one-numerator targets. The symbolic nonplanar box, pentagon, and external-virtuality box use one target per split, with power three on the first, second, or third physical denominator. Their target lists are disjoint. Thus the tests measure new kinematics and targets within known graph structures.
+
+The following rule specifies the rational target lists. Let $n$ be the number of physical denominators, let $N$ be the total number of family entries, and let $\boldsymbol a^{(0)}$ contain $n$ ones followed by $N-n$ zeros. For $j=0,1,2$, set $i_j=1+[(h+j)\bmod n]$ and $i_j^+=1+(i_j\bmod n)$. With $\boldsymbol e_i$ the unit index vector, the dotted and pinched targets have indices
+\begin{equation}
+ \boldsymbol a^{\rm dots}_j=\boldsymbol a^{(0)}+2\boldsymbol e_{i_j},\qquad
+ \boldsymbol a^{\rm pinched}_j=\boldsymbol a^{(0)}-\boldsymbol e_{i_j}+\boldsymbol e_{i_j^+}.
+ \label{eq:adaptive-targets}
+\end{equation}
+For the mixed targets with $N>n$, set $k_j=n+1+[(h+j)\bmod(N-n)]$ and use $\boldsymbol a^{(0)}+\boldsymbol e_{i_j}-\boldsymbol e_{k_j}$. When $N=n$, use $\boldsymbol a^{(0)}+\boldsymbol e_{i_j}+\boldsymbol e_{i_j^+}$. Repeated vectors are kept once. The target patterns are shared across the rational splits, and some index sets recur; their kinematic profiles remain separate. The comparison therefore does not test arbitrary unseen index patterns.
+
+The common basis for each batch comes from a native reduction with seed limits $(r_{\mathcal{T}}+1,s_{\mathcal{T}}+1,d_{\mathcal{T}}+1)$. For a reserved batch, a second native reduction uses $(r_{\mathcal{T}}+1,s_{\mathcal{T}}+2,d_{\mathcal{T}}+1)$ and must reproduce the reference coefficients in the same basis. Both calculations keep the positive-index floor specified above. A failed reference or enlarged check excludes that batch from speedup estimates. The conditional four-loop confirmation, when needed, uses the separately stated pair of nested regions.
+
+\subsection{Training from measured cost}
+Let $T_{ca}$ be the measured complete time for training case $c$ and initial choice $a$, including every recovery attempt. Let $a=0$ denote native equation choices with the unshifted target limits. We fit the log time ratio
+\begin{equation}
+ y_{ca}=\log\frac{T_{ca}}{T_{c0}},\qquad
+ \mathcal L=\sum_c \sqrt{T_{c0}}\sum_a
+       \left[f_a(\boldsymbol x_c)-y_{ca}\right]^2.
+ \label{eq:adaptive-loss}
+\end{equation}
+Here $\boldsymbol x_c$ is the input vector and $f_a$ predicts the cost of choice $a$ relative to the native choice. The square-root weight gives longer calculations more influence without making the training loss proportional to their full duration. This weighting is a design choice of this study.
+
+We compare a regression tree, a random forest, and an ensemble of extremely randomized trees~\cite{CART1984,Breiman2001Forest,Geurts2006ExtraTrees}. Each ensemble has 48 trees. The candidate depths are 3, 5, and 8, and each leaf requires at least two training cases. Every tree predicts all seven costs. For an ensemble with $B$ trees, the prediction is the arithmetic mean
+\begin{equation}
+ f_a(\boldsymbol x)=\frac1B\sum_{b=1}^{B}f_{ba}(\boldsymbol x),
+ \label{eq:adaptive-forest}
+\end{equation}
+where $f_{ba}$ is tree $b$'s prediction for choice $a$. The production evaluator follows the fitted tree splits directly, and its predictions are checked against the training library before validation.
+
+For any fixed case, $T_{c0}>0$ is independent of the selected choice. Since the logarithm is strictly increasing,
+\begin{equation}
+ \mathop{\rm argmin}_a T_{ca}
+ =\mathop{\rm argmin}_a \frac{T_{ca}}{T_{c0}}
+ =\mathop{\rm argmin}_a y_{ca}.
+ \label{eq:adaptive-argmin}
+\end{equation}
+This identity explains the use of relative log time as the training target; it does not make a fitted prediction exact. Validation selects the ensemble and a gate $g\in\{0,0.05,0.15\}$. The predicted best choice is used only when its predicted log cost is at least $g$ below that of the best fixed validation choice. Otherwise the fixed choice is used. Equivalently, the required predicted time ratio is at most $e^{-g}$. Selection minimizes the sum of validation batch median times, and the model then remains fixed during testing. The fixed comparison uses the same validation-selected setting for every test case.
+
+If the selected calculation cannot reduce the targets into the supplied master basis, the driver tries native choices and then increases each native seed limit by one. The original policy removes repeated action names; different names can still produce equal effective bounds. The later portfolio also removes these equivalent attempts. If the last attempt fails, the request is recorded as unfinished. In timed tests, exact rational-function comparison checks every returned coefficient against the reference. Additional applications withhold the reference coefficients until the selected reduction has finished. Reference construction and training have separate cost records. Initial loading of the caller and model occurs outside the repeated timer, so these measurements do not describe the latency of starting a new application. The comparisons concern repeated reductions with an available basis, rather than the full cost of discovering that basis for a new problem.
+
+\subsection{Comparison with a fixed setting for each graph}
+Let $\mathcal V_H$ be the validation cases for graph structure $H$, and let $\widetilde T_{ca}$ be the median of the two validation times for case $c$ and initial choice $a$. The fixed setting for that graph is
+\begin{equation}
+ a_H=\mathop{\rm argmin}_a\sum_{c\in\mathcal V_H}\widetilde T_{ca}.
+ \label{eq:adaptive-graph-fixed}
+\end{equation}
+This definition chooses the least measured validation cost subject to using one setting for the whole graph. It supplies a stronger fixed control than a setting shared by all graphs.
+
+For each graph with at least four training cases, we also fit three regression trees with maximum depths one, two, and three and a minimum of two training cases per leaf. Two additional inputs describe how extra denominator powers are distributed. For case $c$ with target set $\mathcal{T}_c$, define
+\begin{equation}
+ A_c=\max_{\boldsymbol a\in\mathcal{T}_c}\max_i a_i,\qquad
+ B_c=\frac{1}{|\mathcal{T}_c|}\sum_{\boldsymbol a\in\mathcal{T}_c}\sum_i\mathbf 1_{a_i>1},\qquad
+ \boldsymbol z_c=(\boldsymbol x_c,A_c,B_c).
+ \label{eq:adaptive-local-inputs}
+\end{equation}
+The indicator $\mathbf 1_{a_i>1}$ equals one when the propagator power exceeds one and zero otherwise. Thus $A_c$ is the largest individual propagator power and $B_c$ is the mean number of dotted propagators per target. The patterns $(3,1,\ldots)$ and $(2,2,\ldots)$ both contain two dots, while these inputs record their different distributions. The local trees use Eq.~\eqref{eq:adaptive-loss} with the 20-component vector $\boldsymbol z_c$ and the same labels and weights, restricted to that graph's training cases. The global model continues to use the first 18 components.
+
+Validation compares these local trees with the selected global model and considers gates $0,0.05,0.15$, now measured against $a_H$. It selects the predictor and gate with the least summed batch median cost. The graph-specific trees use no new reduction labels and remain fixed during the comparison.
+
+Write $\pi_H(\boldsymbol z_c)$ for the resulting prediction in graph $H$. The deployed policy uses $\pi_H$ only when
+\begin{equation}
+ \sum_{c\in\mathcal V_H}\widetilde T_{c,\pi_H(\boldsymbol z_c)}
+ \leq 0.98\sum_{c\in\mathcal V_H}\widetilde T_{c,a_H},
+ \label{eq:adaptive-graph-guard}
+\end{equation}
+and the predicted-choice total is strictly smaller in each of the two validation repetitions. Otherwise it uses $a_H$. The factor $0.98$ is a chosen two-percent margin. The local-model fitting and selection procedure was specified before any reserved timings were collected. This rule compares measured validation cost; it is not a probability that a future request will be faster. It preserves the global model's weights and the exact recovery sequence.
+
+Three rotated repetitions compare graph-specific fixed settings, the frozen cost model, and this validated policy on each reference-checked reserved batch. These are separate matched measurements from the native and global-fixed comparison. The public interface also checks the denominator structure and target-feature ranges against the training definitions. Unknown structures or values outside those ranges retain native choices. These checks restrict deployment to the recorded domain without asserting that the model generalizes beyond it.
+
+Validation selects from the measured candidate-reduction costs. The reserved comparisons additionally time the actual feature construction, prediction, and deployment checks. They therefore measure any overhead that the cost-based validation selection omits.
+
+\subsection{An exact simplification of sector initialization}
+Kira's zero-sector test uses the parametric polynomials $U$ and $F$~\cite{Lee2014LiteRed,Kira3}. A sector is zero when its integrals vanish in dimensional regularization. The present change simplifies the input polynomial of the existing test within the declared sector domain. It preserves the full polynomials used by other Kira operations.
+
+Let $\mathcal A$ contain all propagator indices present in at least one declared top sector, and let $R_{\mathcal A}$ set the Feynman parameter $b_j$ to zero for every $j\notin\mathcal A$. For a polynomial $P(\boldsymbol b)$, write the weighted Euler expression used in the criterion as
+\begin{equation}
+ C_{\boldsymbol\kappa}[P]
+ =\sum_j\kappa_j b_j\frac{\partial P}{\partial b_j}-P.
+ \label{eq:adaptive-euler}
+\end{equation}
+The unknown constants $\kappa_j$ are the coefficients determined by the sector test. Apply $R_{\mathcal A}$ to each term. If $j\notin\mathcal A$, the explicit factor $b_j$ makes the term zero. If $j\in\mathcal A$, substitution in the other variables commutes with differentiation in $b_j$. Therefore
+\begin{align}
+ R_{\mathcal A} C_{\boldsymbol\kappa}[P]
+ &=\sum_{j\in\mathcal A}\kappa_j b_j R_{\mathcal A}\frac{\partial P}{\partial b_j}-R_{\mathcal A} P\nonumber\\
+ &=\sum_{j\in\mathcal A}\kappa_j b_j\frac{\partial(R_{\mathcal A} P)}{\partial b_j}-R_{\mathcal A} P.
+ \label{eq:adaptive-projection}
+\end{align}
+For every admitted sector $S\subseteq\mathcal A$, its further substitution satisfies $R_S R_{\mathcal A}=R_S$. Constructing the criterion from $R_{\mathcal A}U$ and $R_{\mathcal A}F$ therefore gives the same polynomial constraints as constructing the full criterion and then restricting it to $S$. The implementation applies this simplification only together with declared-sector initialization, without cut propagators or symbolic propagator powers. The derivation concerns the zero-sector criterion; it does not remove auxiliary numerator factors from the integrals.
+
+A second exact change enumerates the sector files that exist before triangular reduction and back-substitution. It reads those files in the original sector order with the original loading functions. Missing files contain no equations, so removing their repeated existence checks leaves the loaded system unchanged. Both preprocessing changes are deterministic. Their timing benefit is measured separately from the policy's choice of equations and seed limits.

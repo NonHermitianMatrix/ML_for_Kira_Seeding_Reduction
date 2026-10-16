@@ -1,0 +1,42 @@
+--- restricted/trivial_sym.cpp
++++ projected/trivial_sym.cpp
+@@ -333,18 +333,32 @@
+       return 0;
+   }
+ 
++  ex criterionU=integralfamily.U, criterionF=integralfamily.F, criterionG=integralfamily.G;
++  if (std::getenv("KIRA_PROJECT_ZERO_CRITERION") && std::getenv("KIRA_RESTRICT_SECTOR_INIT")
++      && !integralfamily.topLevelSectors.empty() && integralfamily.cutProps.empty()
++      && integralfamily.symbolicIBP.empty()) {
++    uint32_t admitted_parameters=0;
++    for (uint32_t top: integralfamily.topLevelSectors) admitted_parameters |= top;
++    lst projection;
++    for (uint32_t i=0;i<integralfamily.jule;++i)
++      if (!(admitted_parameters & (1u<<i))) projection.append(feynman[i]==0);
++    criterionU=criterionU.subs(projection);
++    criterionF=criterionF.subs(projection);
++    criterionG=criterionG.subs(projection);
++    logger << "Projected zero-sector criterion onto declared parameters.\n";
++  }
+   /*initialize Lee's zero sector criterium*/
+   possymbol* unknown = new possymbol[integralfamily.jule];
+   generate_symbols(unknown, "k", integralfamily.jule);
+   ex kriterium = 0, kriterium2 = 0, kritU = 0, kritF = 0;
+   for (uint32_t i = 0; i < integralfamily.jule; i++) {
+-    kriterium += unknown[i] * feynman[i] * integralfamily.G.diff(feynman[i]);
+-    kritU += unknown[i] * feynman[i] * integralfamily.U.diff(feynman[i]);
+-    kritF += unknown[i] * feynman[i] * integralfamily.F.diff(feynman[i]);
+-  }
+-  kriterium = expand(kriterium - integralfamily.G);
+-  kritU = expand(kritU - integralfamily.U);
+-  kritF = expand(kritF - integralfamily.F);
++    kriterium += unknown[i] * feynman[i] * criterionG.diff(feynman[i]);
++    kritU += unknown[i] * feynman[i] * criterionU.diff(feynman[i]);
++    kritF += unknown[i] * feynman[i] * criterionF.diff(feynman[i]);
++  }
++  kriterium = expand(kriterium - criterionG);
++  kritU = expand(kritU - criterionU);
++  kritF = expand(kritF - criterionF);
+ 
+   vector<int> seedInit;
+   vector<int> holesInit;

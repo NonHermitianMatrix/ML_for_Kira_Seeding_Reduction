@@ -238,3 +238,26 @@ The [ordering study](ordering_policy/README.md) selects native integral ordering
 ## Worker-count comparison
 
 The [worker-count study](thread_policy/README.md) chooses one, two, or four Kira workers before reduction. Its public entry point is `thread_policy/s07_reduce.py`. The experiment uses four slots for its controls. The retained policy needs at most two slots; use `thread_policy/s17_application.sh`. The previous learned seed strategy stays active. Unknown input structures use the previous one-worker route. This interface handles one application at a time because it scopes native settings for the duration of each application.
+
+<!-- BEGIN ADAPTIVE REDUCTION -->
+
+## Current reduction method
+
+The current application uses a [validated complete-cost portfolio](../ML_model_adaptive_reduction/selective_expansion/README.md).
+It compares selective seed expansion, earlier learned settings, and one or two workers.
+The final test uses fresh inputs and compares the previous workflow and fixed choices per graph.
+Exact preprocessing is common to these controls and has separate measured gains.
+Read `ML_model_adaptive_reduction/selective_expansion/summary.json` for checked results.
+
+<!-- END ADAPTIVE REDUCTION -->
+
+<!-- BEGIN HIGHER SCATTERING VERIFICATION -->
+
+## Independent component checks
+
+The [component and higher-loop study](../Kira_comparison/higher_scattering/README.md) tests each decision with matching targets and exact checks.
+It preserves the earlier models and results.
+It also records connected scattering tests, initialization costs, and incomplete calculations.
+Read its summary for the measured contributions and tested domain.
+
+<!-- END HIGHER SCATTERING VERIFICATION -->

@@ -1500,3 +1500,26 @@ It retains the earlier model weights and results.
 Its native cases cover seven graph structures at one through three loops.
 The restricted vacuum results through twelve loops remain a separate result.
 See that folder for the frozen model, test summaries and application commands.
+
+<!-- BEGIN ADAPTIVE REDUCTION -->
+
+## Current reduction method
+
+The current application uses a [validated complete-cost portfolio](../ML_model_adaptive_reduction/selective_expansion/README.md).
+It compares selective seed expansion, earlier learned settings, and one or two workers.
+The final test uses fresh inputs and compares the previous workflow and fixed choices per graph.
+Exact preprocessing is common to these controls and has separate measured gains.
+Read `ML_model_adaptive_reduction/selective_expansion/summary.json` for checked results.
+
+<!-- END ADAPTIVE REDUCTION -->
+
+<!-- BEGIN HIGHER SCATTERING VERIFICATION -->
+
+## Independent component checks
+
+The [component and higher-loop study](../Kira_comparison/higher_scattering/README.md) tests each decision with matching targets and exact checks.
+It preserves the earlier models and results.
+It also records connected scattering tests, initialization costs, and incomplete calculations.
+Read its summary for the measured contributions and tested domain.
+
+<!-- END HIGHER SCATTERING VERIFICATION -->

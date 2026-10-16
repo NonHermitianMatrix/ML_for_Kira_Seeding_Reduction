@@ -1,0 +1,22 @@
+{
+  "registered_utc": "2026-10-16T01:27:58.223272+00:00",
+  "training_records": 329,
+  "validation_records": 78,
+  "test_records": 0,
+  "control": "Best single setting per graph, using validation batch-median totals only.",
+  "guard": "Use the best validation-selected predictor in a graph only when its validation total is at least 2 percent lower than the graph fixed setting and both validation repetition totals beat that fixed setting. Otherwise use the fixed setting.",
+  "comparison": "Three rotated repetitions of graph_fixed, learned (original global model), guarded (validated graph predictor or fixed setting) on every successfully reference-checked reserved case. Same native executable, targets, prescribed basis and resources.",
+  "frozen_weights": "Keep the global model unchanged. Fit graph candidates from training records only. This procedure is specified before any reserved timing. Freeze graph choices before the stronger matched comparison.",
+  "public_application": "The current public interface uses the validated graph guard once available. Unknown graph structures retain native choices.",
+  "expert_revision_utc": "2026-10-16T01:43:49.580949+00:00",
+  "expert_revision_validation_records": 294,
+  "expert_revision_test_records": 0,
+  "expert_candidates": "For each graph with at least four training cases, fit regression trees of depths 1,2,3 with minimum leaf size 2, using the same measured log cost labels and weights. Compare these with the selected global model. Test prediction gates 0,0.05,0.15 against the graph fixed setting. Select only from validation costs.",
+  "source_files": {
+    "s08_reduce.py": "cd605bdc882c6695a393798112729aaa67f9ebfd3e994d655e57a2a212dcb8ad",
+    "s09_integration_check.py": "b638e4ccf954e252d19fd2ee4895ef919bedae4d25e6562f63efb545ab25ea7a",
+    "s12_graph_policy.py": "da521ddcee11b87b43d0ee4b4ca9aa5a4bdb6388bbdfa5a13db05d883613d2aa"
+  },
+  "sources_registered_utc": "2026-10-16T02:07:35.334285+00:00",
+  "expert_features": "The 18 global inputs plus the largest individual propagator power and mean number of dotted propagators per target. These distinguish two dots on one line from one dot on each of two lines."
+}

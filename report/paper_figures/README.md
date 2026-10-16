@@ -49,3 +49,44 @@ See [the study guide](../../ML_model_workflow_selection/type_specialists/README.
 ## Worker-count comparison
 
 `thread_policy.pdf` compares selected and fixed counts with the previous route. A second panel shows the always-four-worker control. Ratios below one mean less time. Bars show the range over two reserved parameter profiles. The study script `../../ML_model_workflow_selection/thread_policy/s08_analyze.py` makes the plot from checked full-time records. The axes use the observed ratio ranges and include equal time at one. The always-four-worker control separates the choice of worker count from extra-core effects.
+
+<!-- BEGIN ADAPTIVE REDUCTION -->
+
+## Adaptive reduction figures
+
+`adaptive_reduction.pdf` compares learned time with native and fixed controls after the same exact improvements.
+It divides sums of batch median times within each graph structure.
+`adaptive_integration.pdf` separates file indexing, zero-sector projection, and the validated policy.
+`adaptive_graph_controls.pdf` compares predictions and the validated policy with the best fixed setting for each graph.
+Both figures use matched three-run medians.
+Only `adaptive_integration.pdf` uses a logarithmic time axis. The control figure uses linear time ratios.
+The producer is `ML_model_adaptive_reduction/s06_analyze.py`.
+The figure data are in `report/adaptive_reduction_data.json`.
+
+<!-- END ADAPTIVE REDUCTION -->
+
+<!-- BEGIN HIGHER SCATTERING VERIFICATION -->
+
+## Component comparison figure
+
+`component_ablation.pdf` compares complete strategies and separately disables one learned decision at a time.
+The upper panel uses all fourteen target batches.
+The lower panel uses the graph subset on which each model is enabled.
+Each value divides sums of three-run batch medians.
+The panels retain the equal-time reference and use separate readable axis ranges.
+The source is `Kira_comparison/higher_scattering/s07_analyze.py`.
+The figure gives measured changes on these batches, not a universal ML speedup.
+
+<!-- END HIGHER SCATTERING VERIFICATION -->
+
+<!-- BEGIN PORTFOLIO FIGURES -->
+
+## Portfolio figures
+
+`portfolio_controls.pdf` compares the final portfolio with the previous workflow and the graph-specific fixed portfolio.
+Its line segments show the range of three repetition totals, not confidence intervals.
+`portfolio_totals.pdf` compares complete wall and process CPU time.
+The producer is `ML_model_adaptive_reduction/s16_portfolio_analyze.py`.
+The input evidence is `report/portfolio_data.json`.
+
+<!-- END PORTFOLIO FIGURES -->

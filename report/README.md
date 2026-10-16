@@ -22,7 +22,7 @@ The revision uses original wording.
 These writing references explain the editorial approach; the paper bibliography supports its scientific claims.
 
 `editorial_revision.json` records the preserved equations, table values, figure paths, citations, and source checks.
-This revision changes no model, dataset, or measured result.
+The October 14 editorial revision changed no model, dataset, or measured result. The October 15 verification adds the measurements described below.
 Keep the edited section files as the current prose sources.
 Older experiment scripts can regenerate result text and replace these edits.
 Review their output before replacing an edited section.
@@ -102,3 +102,56 @@ See [the study guide](../ML_model_workflow_selection/type_specialists/README.md)
 ## Worker-count comparison
 
 `thread_policy_results.tex` gives the new methods and measured results. `thread_policy_appendix.tex` defines the inputs, candidates, worker-count invariance, model selection, and comparison. `thread_policy_figure_data.json` contains the compact plot and table values. `thread_policy_validation.json` records the completed evidence checks. The [study guide](../ML_model_workflow_selection/thread_policy/README.md) explains all code and data. `s01_check_paper.py` also checks the new summaries against their scientific sources on Hoffman.
+
+<!-- BEGIN ADAPTIVE REDUCTION -->
+
+## Adaptive policy and exact preprocessing
+
+`adaptive_results.tex` reports the new model and its complete-cost tests.
+`adaptive_appendix.tex` defines its inputs, training objective, and recovery rule.
+It also derives the exact zero-sector projection.
+`adaptive_reduction_data.json` contains the checked compact results.
+`higher_scattering_results.tex` records the earlier component controls and bounded scattering attempts.
+Both the paper and notes include these additions.
+The archived notes can still be reconstructed exactly by removing their marked current-update blocks.
+Run the new study's `s06_analyze.py` and `s07_report.py` before rebuilding both PDFs.
+Then run `report/s01_check_paper.py`.
+The current study changes the implementation, model, measurements, and report.
+The earlier editorial audit remains a historical record.
+
+<!-- END ADAPTIVE REDUCTION -->
+
+<!-- BEGIN HIGHER SCATTERING VERIFICATION -->
+
+## Component effects and higher-loop scattering
+
+`higher_scattering_results.tex` compares the methods on common targets and records the new scattering tests.
+`higher_scattering_appendix.tex` defines the families and derives the initialization-domain restriction.
+`higher_scattering_data.json` contains compact measured values.
+`higher_scattering_validation.json` records the evidence audit.
+The new section separates learned decisions, fixed strategies, shared requests, and the restricted vacuum recurrence.
+It retains failed cases and gives no speedup for an unfinished calculation.
+The initial editorial audit remains a record of the earlier language-only revision.
+The current revision adds new scientific results.
+Run the [study analysis](../Kira_comparison/higher_scattering/s07_analyze.py) before rebuilding its figure.
+Run both report checks after building the PDFs.
+The main paper and the current additions in the notes include the new results.
+
+<!-- END HIGHER SCATTERING VERIFICATION -->
+
+The workflow appendix now states sunrise masses `(3,7,13)` and vacuum masses `(1,1,1,13,13,53+2h)`.
+These values match the stored workflow and specialist case definitions.
+This correction changes the description only; the saved calculations and timings remain unchanged.
+
+<!-- BEGIN PORTFOLIO REPORT -->
+
+## Final complete-cost portfolio
+
+`portfolio_results.tex` gives the current method and its matched results.
+`portfolio_appendix.tex` derives the cost labels and prediction gate.
+`portfolio_data.json` contains compact checked evidence without model weights.
+`notes_native_families.tex` supplies the denominator definitions needed to read the notes independently.
+The original cost-policy study remains in the paper appendix and in the notes.
+Use `s11_finalize.py` to rebuild the evidence and both documents in order.
+
+<!-- END PORTFOLIO REPORT -->

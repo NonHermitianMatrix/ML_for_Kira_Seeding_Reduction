@@ -900,3 +900,25 @@ PY
 - [pilot_adapter_v1](pilot_adapter_v1/README.md).
 
 - [results](results/README.md).
+
+<!-- BEGIN ADAPTIVE REDUCTION -->
+
+## Current complete-cost comparison
+
+The [adaptive reduction study](../ML_model_adaptive_reduction/README.md) trains one new policy on complete native costs.
+It retains exact coefficient checks and compares the learned choice with native and fixed controls.
+The earlier component comparison is preserved in `higher_scattering/`.
+Its remaining repetitions were paused for this redesign.
+
+<!-- END ADAPTIVE REDUCTION -->
+
+<!-- BEGIN HIGHER SCATTERING VERIFICATION -->
+
+## Component and higher-loop verification
+
+The [component and higher-loop study](higher_scattering/README.md) tests each decision with matching targets and exact checks.
+It preserves the earlier models and results.
+It also records connected scattering tests, initialization costs, and incomplete calculations.
+Read its summary for the measured contributions and tested domain.
+
+<!-- END HIGHER SCATTERING VERIFICATION -->

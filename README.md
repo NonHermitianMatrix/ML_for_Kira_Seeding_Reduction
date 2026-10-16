@@ -1,16 +1,29 @@
 # Project guide
 
+<!-- BEGIN ADAPTIVE REDUCTION -->
+
+## Current reduction method
+
+The current application uses a [validated complete-cost portfolio](ML_model_adaptive_reduction/selective_expansion/README.md).
+It compares selective seed expansion, earlier learned settings, and one or two workers.
+The final test uses fresh inputs and compares the previous workflow and fixed choices per graph.
+Exact preprocessing is common to these controls and has separate measured gains.
+Read `ML_model_adaptive_reduction/selective_expansion/summary.json` for checked results.
+The added outer prediction has no stable aggregate saving over the fixed control.
+
+<!-- END ADAPTIVE REDUCTION -->
+
 This project studies machine learning for exact Feynman integral reduction with Kira.
 A seed is an integral index vector that supplies integration-by-parts identities.
 A master integral is a retained basis integral.
 A target is an integral or an expression that must be reduced.
 
-For the latest measured single-batch route, use [worker-count selection](ML_model_workflow_selection/thread_policy/README.md).
+The earlier single-batch comparison uses [worker-count selection](ML_model_workflow_selection/thread_policy/README.md).
 It retains the preceding learned seed strategy and chooses the Kira worker count once per batch.
 The measured scope is seven known graphs at one through three loops, with new rational parameter values.
 Summed median time changes from 82.21 to 78.73 seconds in the reserved comparison.
 The retained frozen policy uses at most two Kira workers. Use the two-core application wrapper.
-Use [the preceding route](ML_model_workflow_selection/basis_completion/README.md) when one core is available.
+The earlier one-core comparison uses [selective seed expansion](ML_model_workflow_selection/basis_completion/README.md).
 
 Read [the paper](report/report.pdf) for the methods, derivations, results and limits.
 Read [the notes](report/notes.pdf) for the earlier experiments.
@@ -133,12 +146,25 @@ See the study guide for the graph results and limits.
 
 ## Selective seed expansion
 
-Use [the selective-seeding route](ML_model_workflow_selection/basis_completion/README.md) for the latest checked application on the stated target domain. The reserved test gives 8.8 percent less complete reduction time than the preceding route and 14.8 percent less than native choices in the same test. It contains 720 timing trials and 43 further applications. All pass exact checks. The study uses seven known graphs at one through three loops, new rational parameter profiles, and symbolic dimension. The caller and model are loaded before timing. The report gives per-graph results and descriptive intervals. These gains are not multiplied by earlier results.
+The earlier [selective-seeding study](ML_model_workflow_selection/basis_completion/README.md) covers the stated target domain. The reserved test gives 8.8 percent less complete reduction time than the preceding route and 14.8 percent less than native choices in the same test. It contains 720 timing trials and 43 further applications. All pass exact checks. The study uses seven known graphs at one through three loops, new rational parameter profiles, and symbolic dimension. The caller and model are loaded before timing. The report gives per-graph results and descriptive intervals. These gains are not multiplied by earlier results.
 
 ## Ordering comparison
 
-The [ordering comparison](ML_model_workflow_selection/ordering_policy/README.md) does not improve the preceding route. Keep the preceding route as the default. The reserved test gives 1.4 percent more complete reduction time than the preceding route and 15.0 percent less than native choices in the same test. It contains 720 timing trials and 43 further applications. All pass exact checks. The study uses seven known graphs at one through three loops, new rational parameter profiles, and symbolic dimension. The caller and model are loaded before timing. The report gives per-graph results and descriptive intervals. These gains are not multiplied by earlier results.
+The [ordering comparison](ML_model_workflow_selection/ordering_policy/README.md) does not improve the preceding route. That study retained the preceding route. The reserved test gives 1.4 percent more complete reduction time than the preceding route and 15.0 percent less than native choices in the same test. It contains 720 timing trials and 43 further applications. All pass exact checks. The study uses seven known graphs at one through three loops, new rational parameter profiles, and symbolic dimension. The caller and model are loaded before timing. The report gives per-graph results and descriptive intervals. These gains are not multiplied by earlier results.
 
 ## Worker-count comparison
 
-The [worker-count study](ML_model_workflow_selection/thread_policy/README.md) compares one, two, and four Kira workers in the same four-core allocation. The reserved comparison gives 1.8 percent less graph-weighted complete time than the preceding route and 15.4 percent less than native choices. Summed batch medians change from 82.21 to 78.73 seconds. It includes 900 timed reductions and 50 additional applications. All pass exact checks. The report separates summed workload time, per-graph effects, and CPU cost. The earlier ordering study remains available and is not the default. Use this route for the tested workload when two cores are available.
+The [worker-count study](ML_model_workflow_selection/thread_policy/README.md) compares one, two, and four Kira workers in the same four-core allocation. The reserved comparison gives 1.8 percent less graph-weighted complete time than the preceding route and 15.4 percent less than native choices. Summed batch medians change from 82.21 to 78.73 seconds. It includes 900 timed reductions and 50 additional applications. All pass exact checks. The report separates summed workload time, per-graph effects, and CPU cost. The earlier ordering study remains available and is not the default. That comparison used two cores in its retained application.
+
+
+
+<!-- BEGIN HIGHER SCATTERING VERIFICATION -->
+
+## Component and higher-loop verification
+
+The [component and higher-loop study](Kira_comparison/higher_scattering/README.md) tests each decision with matching targets and exact checks.
+It preserves the earlier models and results.
+It also records connected scattering tests, initialization costs, and incomplete calculations.
+Read its summary for the measured contributions and tested domain.
+
+<!-- END HIGHER SCATTERING VERIFICATION -->

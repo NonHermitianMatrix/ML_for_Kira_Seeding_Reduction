@@ -1,0 +1,53 @@
+--- src/kira/trivial_sym.cpp
++++ src/kira/trivial_sym.cpp
+@@ -1,3 +1,4 @@
++#include <cstdlib>
+ /*
+ Copyright (C) 2017-2025 The Kira Developers (see AUTHORS file)
+ 
+@@ -367,14 +368,33 @@
+   Pak pak(kritF + kritU, integralfamily.jule, seedInit, holesInit);
+ 
+   uint32_t countLoop = 0;
+-  uint32_t loopSIZE = (1 << integralfamily.jule);
++  uint32_t loopSIZE = (1u << integralfamily.jule);
++  std::vector<uint32_t> admitted_sectors;
++  const bool restrict_sector_init = std::getenv("KIRA_RESTRICT_SECTOR_INIT")
++      && !integralfamily.topLevelSectors.empty()
++      && integralfamily.cutProps.empty() && integralfamily.symbolicIBP.empty();
++  if (restrict_sector_init) {
++    uint32_t largest = 0;
++    for (uint32_t top : integralfamily.topLevelSectors) largest = std::max(largest, top);
++    for (uint32_t candidate = 0; candidate <= largest; ++candidate) {
++      for (uint32_t top : integralfamily.topLevelSectors) {
++        if ((candidate & top) == candidate) {
++          admitted_sectors.push_back(candidate);
++          break;
++        }
++      }
++    }
++    loopSIZE = admitted_sectors.size();
++    logger << "Declared-sector initialization: " << loopSIZE << " sectors.\n";
++  }
+   std::mutex m;
+   std::condition_variable cond_var;
+   bool processed = false;
+ 
+   if (loopSIZE != 0) {
+-    for (uint32_t sector_number = 0; sector_number < (1u << integralfamily.jule);
+-         sector_number++) {
++    for (uint32_t sector_task = 0; sector_task < loopSIZE; ++sector_task) {
++      const uint32_t sector_number = restrict_sector_init
++          ? admitted_sectors[sector_task] : sector_task;
+       pool->enqueue([this, sector_number, &pak, &numberOfNonTrivialSectors,
+                      &countLoop, &processed, &loopSIZE, &cond_var, &m]() {
+         int userSetZero = 0;
+@@ -449,7 +469,7 @@
+         {
+           std::lock_guard<std::mutex> lock(m);
+           countLoop++;
+-          load_bar(sector_number + 1, (1u << integralfamily.jule), 50, 100);
++          load_bar(countLoop, loopSIZE, 50, 100);
+           if (countLoop == loopSIZE) {
+             processed = true;
+             cond_var.notify_one();

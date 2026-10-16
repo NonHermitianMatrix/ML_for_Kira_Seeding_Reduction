@@ -1,0 +1,69 @@
+\section{Connected scattering families and the initialization test}
+\label{app:higher-scattering}
+The restricted vacuum recurrence uses a particular denominator structure. To examine a different physical problem, we construct connected massless four-point families with three independent external momenta. Let $p_1+p_2+p_3+p_4=0$, $p_i^2=0$, $P=p_1+p_2$, and $Q=p_1+p_2+p_3=-p_4$. We define
+\begin{equation}
+ \begin{aligned}
+ s&=P^2,\qquad t=(p_2+p_3)^2,\\
+ 2p_1\!\cdot p_2&=s,\qquad 2p_2\!\cdot p_3=t,\\
+ 2p_1\!\cdot p_3&=-s-t.
+ \end{aligned}
+ \label{eq:higher-kinematics}
+\end{equation}
+The first two scalar-product relations follow by expanding the squared momenta and using $p_i^2=0$. Expanding $Q^2=p_4^2=0$ then gives the third relation. Dimension $d$ remains symbolic. Rational profiles use $s=-1009-12h$ and $t=-1021-14h$ in a common squared-momentum unit. The initial probes use $h=211$, the short comparison uses $h=223,224$, and the longer comparison uses $h=225$. A separate initial probe keeps both $s$ and $t$ symbolic.
+
+For an $L$-loop four-point ladder, the physical inverse propagators are
+\begin{equation}
+ \begin{aligned}
+ D_i&=\ell_i^2,\qquad D_{L+i}=(\ell_i-P)^2 \quad(1\leq i\leq L),\\
+ D_{2L+i}&=(\ell_i-\ell_{i+1})^2 \quad(1\leq i<L),\\
+ D_{3L}&=(\ell_1-p_1)^2,\qquad D_{3L+1}=(\ell_L-Q)^2.
+ \end{aligned}
+ \label{eq:higher-ladder}
+\end{equation}
+The Feynman prescription of Eq.~\eqref{eq:family} is implicit. There are $2L+(L-1)+2=3L+1$ physical propagators. The differences between adjacent loop momenta connect the loops, while the two end propagators carry the external momentum dependence. This four-point ladder differs from the three-loop two-point ladder in the earlier comparisons.
+
+The second family is a box with massless bubble subgraphs. Its physical inverse propagators are
+\begin{equation}
+ \begin{aligned}
+ D_1&=\ell_1^2,\qquad D_2=(\ell_1-p_1)^2,\\
+ D_3&=(\ell_1-P)^2,\qquad D_4=(\ell_1-Q)^2,\\
+ D_{2j+1}&=\ell_j^2,\qquad D_{2j+2}=(\ell_j-\ell_1)^2
+ \quad(2\leq j\leq L).
+ \end{aligned}
+ \label{eq:higher-bubble-box}
+\end{equation}
+There are $4+2(L-1)=2L+2$ physical propagators. Each additional loop couples to the box momentum $\ell_1$. The family admits subloop integration, so it is a restricted scattering class; it does not represent an arbitrary $L$-loop graph.
+
+For three independent external momenta, a complete scalar-product representation has
+\begin{equation}
+ N=L+\frac{L(L-1)}2+3L=\frac{L(L+7)}2
+ \label{eq:higher-count}
+\end{equation}
+entries. The three terms count loop squares, distinct products of two loop momenta, and loop--external products. This is the usual counting used to complete Kira families~\cite{Kira3}. Thus $N=15,22,30,39$ for $L=3,4,5,6$. We append independent auxiliary inverse propagators until this rank is reached. The candidates are $\ell_i^2$ and $(\ell_i-v_j)^2$, where the ordered list of $v_j$ contains the remaining loop momenta followed by $p_1,p_2,p_3$. Exact row reduction of their scalar-product coefficients retains a candidate only when it increases the rank.
+
+Each new scattering batch contains the full-sector integral, the integral with $D_1$ raised to power two, and the integral with one power of the first auxiliary inverse propagator in the numerator. All other physical indices are one and all remaining auxiliary indices are zero. A reference reduction uses positive-index limit $n+2$, numerator limit one, and dot limit two, where $n$ is the number of physical propagators. A second reduction increases the numerator limit to two and must reproduce all coefficients in the reference basis. At least one target must have a nonzero reduction that differs from the identity. A failed reference or failed enlargement prevents a completed-speedup claim for that case.
+
+\subsection{Why the declared sector domain closes under IBP}
+The initialization experiment restricts zero-sector classification to the declared top sectors and their subsectors. This restriction requires a mathematical justification because an omitted equation can otherwise prevent a complete reduction. Consider an index $a_j\leq0$ for a propagator outside the declared sector. Differentiating its factor gives
+\begin{equation}
+ \frac{\partial}{\partial\ell_k^\mu}D_j^{-a_j}
+ =-a_jD_j^{-a_j-1}\frac{\partial D_j}{\partial\ell_k^\mu}.
+ \label{eq:higher-closure}
+\end{equation}
+The only increase of $a_j$ is therefore multiplied by $a_j$. At $a_j=0$ this term vanishes, and at $a_j<0$ the increased index remains nonpositive. Rewriting scalar products in the numerator as linear combinations of inverse propagators can lower indices, but cannot introduce a new positive index. Consequently, IBP equations seeded in a sector remain within that sector and its subsectors. The union of several such domains also closes under these equations.
+
+The test applies the existing zero-sector criterion within this domain. It does not declare omitted integrals to be zero. The experiment uses a single family, no cut propagators, and no symbolic propagator powers. It retains Kira's exact elimination and admits only the prescribed final basis. Comparisons with the unchanged initialization check the coefficients on the seven earlier graph types before the new scattering tests are interpreted. This establishes the stated restricted implementation on the tested inputs; it does not prove that every optional symmetry or extra-relation procedure can be restricted in the same way.
+
+For a single top sector containing $n$ positive indices, its subsectors number $2^n$, since each propagator is either present or absent. Classifying all $N$ family entries instead considers $2^N$ sectors. At four loops this changes the candidate count from $2^{22}$ to $2^{13}$ for the ladder and to $2^{10}$ for the bubble box. These are counts of initialization candidates, not predictions of total runtime.
+
+\subsection{Separating the contributions to complete time}
+The component comparison uses the seven earlier graphs at profiles $h=221,222$ and the three full-sector targets with one physical propagator raised from power one to power three. The construction uses the first three physical propagators. It compares ten methods on the same targets and prescribed basis: native choices, fixed and learned graph strategies, fixed and learned seed expansion, fixed and learned worker counts, the equation filter, the seed filter, and the row model. Fixed settings come from the earlier training data, and all model parameters remain frozen.
+
+Every completed method has three timing repetitions. The method order rotates within each case and repetition, and every method receives the same two-core allocation. The complete timer includes decisions, preparation, exact algebra, coefficient checks, retries, and cleanup. It excludes offline reference construction, training, and the initial loading of the caller and models. A larger reference reduction must reproduce the coefficients before a case enters the timing comparison. Ratios compare batch medians on matching completed inputs, using the complete-time definitions of this study. Cases that cannot complete remain in the failure table and receive no completed-time ratio.
+
+The first scattering comparisons allow 120 seconds per native attempt, including a ten-second reserve for export checking and cleanup. A follow-up increases this allowance to 600 seconds. Both initially limit solver address space to 2,400 MiB and summed resident memory to 2,100 MiB. When the larger reference checks reach the memory limit, a further comparison reserves more memory through the scheduler and raises these limits to 6,144 and 5,200 MiB, respectively. Its native and learned methods use identical limits. Temporary files remain bounded by 32 MiB, and all earlier failed attempts remain in the results. A completed earlier reference can be reused as an offline coefficient check; every reported follow-up time comes from a new reduction.
+
+The fixed control at each stage can retain choices from earlier stages. The first controls use the best fixed training settings. A further 96 paired reductions disable only the current learned decision and use its fixed validation control, while retaining earlier stages. This second comparison isolates the added choice more directly, while comparison with native choices measures the combined strategy. These effects need not add or multiply across stages, since a changed seed region alters the equations and later algebra. The new scattering comparison additionally tests the frozen equation and row models, the complete strategy selector with its domain checks, and two separate requests against their combined reduction. The separated requests use the same frozen seed limits as the combined request, which isolates repeated work under those settings. Failed filtered attempts retry with native choices and retain that cost.
+
+\subsection{Why the vacuum formula does not establish a scattering reduction}
+For the vacuum family, the derivation above gives closed recurrences in $z=L(d-2)$ under its specific denominator and mass assumptions. The families in Eqs.~\eqref{eq:higher-ladder} and \eqref{eq:higher-bubble-box} also depend on two external invariants. Dimensional scaling alone therefore permits dependence on their ratio $t/s$; it cannot determine that dependence from $z$. Applying the vacuum formula would require a new identity relating these scattering coefficients, which the vacuum derivation does not supply. We consequently exclude that formula from the scattering comparison. Combining compatible target requests remains a separate, generally applicable use of the linear reduction map, as derived in Appendix~\ref{app:workflow}.
