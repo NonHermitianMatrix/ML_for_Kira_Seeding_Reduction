@@ -109,3 +109,9 @@ Run `s14_finish.py` after both reserved test jobs and the validation helper fini
 It checks the application, writes both documents, and checks their evidence.
 It does not publish files or change fitted models.
 <!-- END FINISH SCRIPT -->
+
+
+<!-- BEGIN FOLLOWUP APPLICATION -->
+The [joint-configuration study](../joint_policy/README.md) extends this application.
+This folder preserves its earlier fitted models and measurements unchanged.
+<!-- END FOLLOWUP APPLICATION -->

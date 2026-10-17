@@ -149,3 +149,11 @@ Only completed native comparisons appear. These savings are mathematical, not le
 The dashed line marks equal time.
 The axes include this reference and every measured point.
 <!-- END SEED GEOMETRY FIGURE -->
+
+
+<!-- BEGIN JOINT CONFIGURATION -->
+`joint_policy_times.pdf` shows first-request ratios and separate scale-sequence ratios.
+The first panel retains individual slower requests.
+The second includes the initial solve in every sequence.
+`../../ML_model_seed_selection/joint_policy/s09_document.py` generates it from completed measurements.
+<!-- END JOINT CONFIGURATION -->

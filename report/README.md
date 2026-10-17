@@ -223,3 +223,12 @@ The first evolved boundary and the broader cost-selection study have separate co
 Both documents include these results.
 See `../ML_model_seed_selection/cost_geometry/README.md` for the code and full records.
 <!-- END COST-TRAINED SEED RESULTS -->
+
+
+<!-- BEGIN JOINT CONFIGURATION -->
+`joint_policy_results.tex` gives the latest model and exact scale-reuse comparisons.
+`joint_policy_appendix.tex` defines the cases and derives the scale identity.
+`joint_policy_data.json` contains the compact measured evidence.
+`joint_policy_validation.json` records the final checks.
+Read `../ML_model_seed_selection/joint_policy/README.md` for the full data and commands.
+<!-- END JOINT CONFIGURATION -->

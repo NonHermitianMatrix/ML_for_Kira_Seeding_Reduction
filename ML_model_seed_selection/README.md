@@ -756,3 +756,11 @@ Read its summary for the measured contributions and tested domain.
 The [cost geometry study](cost_geometry/README.md) trains seed boundaries from complete Kira times.
 It includes fitted models, separate test cases, exact checks, and the complete application.
 <!-- END COST-TRAINED SEED STUDY -->
+
+
+<!-- BEGIN JOINT CONFIGURATION -->
+The [joint-policy study](joint_policy/README.md) tests combined seed and Kira configuration choices using complete reduction time.
+Validation retains the preceding ML application for both graphs.
+It also implements a separately derived scale transformation for exact reuse.
+The guide gives the current application and measured controls.
+<!-- END JOINT CONFIGURATION -->

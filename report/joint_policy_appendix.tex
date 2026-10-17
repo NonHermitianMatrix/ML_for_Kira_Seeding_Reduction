@@ -1,0 +1,66 @@
+\section{Joint configuration choice and exact scale transformation}
+\label{app:joint-policy}
+\subsection{Inputs, candidate reductions, and training objective}
+The integral definitions are the planar and nonplanar massless two-loop boxes in Appendix~\ref{app:seed-geometry}. We keep their propagator order and supplied master indices. Every target has seven unit positive physical powers and two auxiliary indices whose nonpositive powers sum to numerator rank $R\in\{2,3,4\}$. For a single powered auxiliary entry, its position is $8+(\kappa\bmod 2)$. For two powered entries, that position has power $-\lfloor R/2\rfloor$, and the other has power $-\lceil R/2\rceil$. Here $\kappa$ labels the rational kinematic profile. The planar profiles have $(s,t)=(-1009-12\kappa,-1021-14\kappa)$, and the nonplanar profiles have $(s,t)=(-113-18\kappa,-127-10\kappa)$.
+
+Development uses profile 901 with the single-entry rank-three target and both rank-four patterns. For each graph, training uses profiles 911 and 912, validation uses 921 and 922, and testing uses 931 and 932. Each of these profiles contributes both numerator patterns at all three ranks. Thus each graph has twelve training, twelve validation, and twelve test requests. These splits separate kinematic values while retaining known graphs and some recurring index patterns.
+
+The sparse boundary is defined in Appendix~\ref{app:seed-geometry}; its seven parameters retain the same order. Development compares the native region, the preceding application, eight integral orderings with a fixed sparse boundary, four alternative boundaries, and two internal propagator-permutation settings. The planar fixed boundary is $(1,0,0,-1,0,1,0)$, while the nonplanar fixed boundary is $(1,0,0,0,1,1,0)$. The four alternatives are $(0,0,0,0,0,1,0)$, $(1,0,0,-2,0,1,0)$, $(2,0,0,0,0,1,0)$, and $(1,0,0,1,0,1,-1/4)$. The alternative boundaries use integral ordering 1. The two permutation settings also use ordering 1 and the fixed boundary. These are available Kira configuration choices~\cite{Kira2,Kira3}.
+
+For each graph, the candidate set retains the four fastest aggregate development configurations and the fastest configuration for each individual development target. Duplicate configurations are removed, and the native region is included. The preceding application is measured separately as a baseline. Each candidate uses exactly the same retry sequence: an unfiltered attempt with native integral ordering at the tuned bounds, followed by native and expanded bounds when required. Duplicate attempts are skipped.
+
+Let $T_{ij}$ be the complete measured time for training request $i$ and candidate $j$, including any failed attempt and recovery. We use the dimensionless response
+\begin{equation}
+ y_{ij}=\log\!\left(\frac{T_{ij}}{T_{i0}}\right),
+ \qquad
+ \widehat{\boldsymbol y}_i=f_{\boldsymbol w}(\boldsymbol z_i),
+ \label{eq:joint-response}
+\end{equation}
+where candidate 0 is the native control, $\boldsymbol z_i$ contains the 68 target and family features defined in Appendix~\ref{app:seed-geometry}, and $\boldsymbol w$ denotes the fitted tree parameters. We fit each regression tree by reducing squared prediction error, as in the established tree and ensemble methods~\cite{CART1984,Breiman2001Forest,Geurts2006ExtraTrees}. Dividing by $T_{i0}$ puts different request costs on a common relative scale. Because the logarithm is strictly increasing, minimizing the exact $y_{ij}$ for a fixed request selects the same candidate as minimizing $T_{ij}$.
+
+The fitted alternatives are a single regression tree, a random forest of 48 trees, and an ensemble of 48 extremely randomized trees. Each uses maximum depth 2, 3, or 4 and a minimum leaf size of one training request. These choices give nine fitted models per graph. Validation tests each model with decision margin $\delta\in\{0,0.03,0.08\}$. If $j_*$ minimizes the predicted response and $j_f$ is the fastest fixed validation configuration, the choice is
+\begin{equation}
+ j_{\mathrm{use}}=
+ \begin{cases}
+ j_*,&\widehat y_{ij_*}<\widehat y_{ij_f}-\delta,\\
+ j_f,&\text{otherwise}.
+ \end{cases}
+ \label{eq:joint-choice}
+\end{equation}
+This condition follows by comparing the two predicted log costs; exponentiation gives a predicted cost ratio below $e^{-\delta}$. A second validation condition requires at least 2\% less summed time than the fixed choice before prediction is enabled. Deployment also requires at least 2\% less time than the preceding application. Otherwise that application remains in use. Validation ranks the choices from recorded candidate-reduction times, while the frozen tests also measure actual model loading and prediction. These margins control deployment; they are not confidence intervals or proofs of a gain on an untested request.
+
+\subsection{Derivation of exact reuse under a common scale change}
+Consider a massless family whose inverse propagators are homogeneous quadratic functions of loop and external momenta. Define $\nu(\boldsymbol a)=\sum_i a_i$, including negative numerator indices. Scale every external scalar product by the same positive number $\lambda$, and change integration variables to $\ell_h=\sqrt{\lambda}\,k_h$. Each loop measure supplies $\lambda^{d/2}$ and each inverse propagator supplies $\lambda$, which gives
+\begin{align}
+ I_{\boldsymbol a}(\lambda\boldsymbol x,d)
+ &=\int\prod_{h=1}^{L}\frac{\lambda^{d/2}d^dk_h}{i\pi^{d/2}}
+       \prod_i\bigl[\lambda D_i(\boldsymbol k,\boldsymbol p)\bigr]^{-a_i}
+ \nonumber\\
+ &=\lambda^{Ld/2-\nu(\boldsymbol a)}I_{\boldsymbol a}(\boldsymbol x,d).
+ \label{eq:joint-homogeneity}
+\end{align}
+The positive scale preserves the signs of the invariants and the Feynman prescription. The identity extends by analytic continuation in $d$ wherever the original dimensionally regulated reduction applies.
+
+Suppose an exact reduction is already available at $\boldsymbol x$:
+\begin{equation}
+ I_{\boldsymbol a}(\boldsymbol x,d)
+ =\sum_m r_{\boldsymbol a m}(\boldsymbol x,d)
+   I_{\boldsymbol b_m}(\boldsymbol x,d),
+ \label{eq:joint-known}
+\end{equation}
+where $\boldsymbol b_m$ is the index vector of master $m$. Substituting Eq.~\eqref{eq:joint-homogeneity} for the target and each master into Eq.~\eqref{eq:joint-known} yields
+\begin{align}
+ I_{\boldsymbol a}(\lambda\boldsymbol x,d)
+ &=\sum_m\lambda^{Ld/2-\nu(\boldsymbol a)}
+       r_{\boldsymbol a m}(\boldsymbol x,d)
+       \lambda^{-Ld/2+\nu(\boldsymbol b_m)}
+       I_{\boldsymbol b_m}(\lambda\boldsymbol x,d)
+ \nonumber\\
+ &=\sum_m\lambda^{\nu(\boldsymbol b_m)-\nu(\boldsymbol a)}
+       r_{\boldsymbol a m}(\boldsymbol x,d)
+       I_{\boldsymbol b_m}(\lambda\boldsymbol x,d).
+ \label{eq:joint-scale-derivation}
+\end{align}
+Thus the dimension-dependent powers cancel between target and master, leaving the integer exponent in Eq.~\eqref{eq:joint-scale-rule}. Rational positive $\lambda$ gives an exact rational multiplier, so the transformation needs neither a new IBP system nor an approximation to $d$.
+
+The implementation applies this identity only to the two verified massless graph definitions. It compares every external scalar product after division by the absolute value of the first nonzero one, and also requires the same propagator definitions, target indices, and master basis. This checks all dimensionless ratios. Symbolic scalar products, nonzero masses, and changed invariant ratios bypass reuse. Each stored result comes from a completed exact reduction in the current application session. The measured sequences use scale factors $1$, $3/2$, and $2$, with the initial reduction included in the total time. Independent native calculations at all three scales check the transformed coefficients.

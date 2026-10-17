@@ -25,8 +25,7 @@
 Feynman integral calculations are an important component of multiloop amplitude calculations in quantum field theory. In Quantum Chromodynamics (QCD), multiloop amplitudes and their associated Feynman integrals arise in higher-order perturbative calculations and can become increasingly complex at higher loop orders. Recent progress has automated these calculations to some extent using the framework Kira, which organizes target integrals into integral families and sectors, generate algebraic relations among the integrals by using integration by parts (IBP) identities, and reduce the resulting system to expressions in terms of a finite set of master integrals. We aim to explore the application of machine learning models to accelerate the IBP reduction process by investigating if learned models can improve seed selection. These models can predict the most useful integrals from which to generate IBP relations while minimizing redundant calculations. We will also explore machine learning models for learning efficient reduction and elimination sequences to minimize the number of algebraic operations required to express target integrals in terms of master integrals. Because the machine learning models will serve as decision-makers while the underlying IBP reduction and verification remain exact, these models can improve computational efficiency without compromising the correctness of the resulting reductions.
 \end{abstract}
 % BEGIN CURRENT WORKFLOW UPDATE
-\paragraph{Current measured method.} The target-batch comparison in Section~\ref{sec:batch-policy} gives 1.5\% more time than the previous undivided workflow across 96 matched batches with up to 11 targets. Its additional change relative to fixed partitions with the same filters is 0.8\% more time, with ratio interval $[0.988, 1.035]$. Validation disables the new predictor, so this comparison establishes no additional ML gain from batch selection. Every successful reduction passes exact coefficient checks. This is a separate workload from the smaller-batch filter study.
-The separate analytic specialization reduces scalar massless banana targets through one corner master, with a derived coefficient valid at every positive loop count. Its 9 completed native comparisons give a speedup of 21.3--357.8 times for the stated targets. These gains come from exact mathematics and are separate from the ML gains (Section~\ref{sec:banana}).
+\paragraph{Current measured method.} Section~\ref{sec:joint-policy} retains the preceding ML application because neither new joint predictor clears the 2\% validation threshold. On 24 first requests, the retained application with the new interface gives 1.2\% less time, with time-ratio interval $[0.975,1.024]$ relative to its preceding interface. This difference supplies no evidence of a gain from the new predictors. The separate scale sequences give 64.4\% less time than the preceding application without reuse, including the initial Kira solve. This additional saving comes from the derived scale identity, while the first reduction still uses the preceding ML decisions. All 480 first-request reductions and 144 requests in the scale sequences pass exact coefficient checks. The tests use the two known massless two-loop box graphs at rational kinematics, with symbolic dimension and supplied masters.
 % END CURRENT WORKFLOW UPDATE
 
 \clearpage
@@ -1145,7 +1144,7 @@ loops with new rational profiles and repeated target patterns.
 % END CURRENT WORKFLOW UPDATE
 % BEGIN CURRENT WORKFLOW UPDATE
 % BEGIN CURRENT PORTFOLIO CONCLUSION
-The latest comparison keeps every trained model fixed and reduces exact preparation around its decisions. On 26 new batches, complete time changes from 79.784 to 64.183 seconds, or 19.6\% less time. Section~\ref{sec:parametric} gives the matched controls and graph results. With the revised preparation held fixed, the selected portfolio uses 4.7\% less time than the fixed portfolio by summed medians and 5.0\% less time across all repetitions. The previous portfolio study in Section~\ref{sec:portfolio} remains a separate comparison on different targets.
+The preparation comparison keeps every trained model fixed and reduces exact preparation around its decisions. On 26 new batches, complete time changes from 79.784 to 64.183 seconds, or 19.6\% less time. Section~\ref{sec:parametric} gives the matched controls and graph results. With the revised preparation held fixed, the selected portfolio uses 4.7\% less time than the fixed portfolio by summed medians and 5.0\% less time across all repetitions. The previous portfolio study in Section~\ref{sec:portfolio} remains a separate comparison on different targets.
 % END CURRENT PORTFOLIO CONCLUSION
 
 % BEGIN CURRENT COVERAGE CONCLUSION
@@ -1158,6 +1157,7 @@ The broader coverage study in Section~\ref{sec:coverage} defines 90 native-famil
 \input{equation_refinement_results}
 \input{batch_policy_results}
 \input{seed_geometry_results}
+\input{joint_policy_results}
 \input{massless_banana_results}
 The new seed-bound study in Section~\ref{sec:learned-bounds} isolates a learned choice with all earlier models disabled. On 68 matched nontrivial batches, complete application time changes from 164.926 seconds under native bounds and 119.717 seconds under tuned fixed settings to 119.081 seconds with the new model. This gives 27.8\% less time than native bounds and 0.5\% less time than the tuned fixed control. The comparison includes model loading, native IBP generation, exact reduction, coefficient checks, and recovery, with a supplied basis. It uses known structures at one through four loops and separate rational profiles; the additional saving over tuned fixed settings remains within timing variation.
 % END CURRENT WORKFLOW UPDATE
@@ -1181,6 +1181,7 @@ The new seed-bound study in Section~\ref{sec:learned-bounds} isolates a learned 
 \input{batch_policy_appendix}
 \input{massless_banana_appendix}
 \input{seed_geometry_appendix}
+\input{joint_policy_appendix}
 % END CURRENT WORKFLOW UPDATE
 \bibliographystyle{unsrt}
 \bibliography{references,type_specialist_references}

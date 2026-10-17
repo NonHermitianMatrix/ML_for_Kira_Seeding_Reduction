@@ -1,20 +1,16 @@
 # Project guide
 
 <!-- BEGIN ADAPTIVE REDUCTION -->
-
 ## Current reduction interface
 
-Use [the integrated seed-policy application](ML_model_seed_selection/cost_geometry/README.md).
-It first checks the exact scalar massless banana formula.
-It then applies sparse seed selection in its validated domain.
-Other supported inputs use the preceding Kira batch and equation workflow.
-Kira keeps native row elimination and exact algebra.
-Validation enables model predictions only when they improve complete time.
-Native reductions require a supplied master basis.
-Read the measured results and limits in the guide and paper.
-Earlier studies remain available for comparison.
-Their speedup factors use different workloads and cannot be multiplied.
-
+Use [the joint-configuration application](ML_model_seed_selection/joint_policy/README.md).
+It retains the preceding ML decisions for the fitted two-loop inputs.
+New joint predictors remain disabled because validation found less than 2% improvement.
+A request sequence can reuse exact results under a common positive momentum-scale change.
+Other inputs retain the preceding analytic and native paths.
+Kira keeps native row choices and exact algebra.
+Read the guide for controls, measured limits, and input requirements.
+Earlier studies remain available; their speedup factors cannot be multiplied.
 <!-- END ADAPTIVE REDUCTION -->
 
 This project studies machine learning for exact Feynman integral reduction with Kira.
@@ -221,3 +217,18 @@ double_box: Validation retains the fixed sparse boundary.
 nonplanar_box: Validation enables the cost predictor.
 
 <!-- END COST-TRAINED SEED APPLICATION -->
+
+
+<!-- BEGIN JOINT CONFIGURATION RESULTS -->
+Use [joint seed choices and scale reuse](ML_model_seed_selection/joint_policy/README.md) for the updated application.
+Validation retains the preceding ML application for both graphs.
+Neither new joint predictor clears the 2% replacement threshold.
+Across 24 reserved first requests, the selected application uses 1.2% less time than the preceding application.
+It uses 18.0% less time than tuned native Kira.
+Its comparison with the fixed configuration gives 5.7% less time.
+The separate three-scale sequences use 64.4% less time than the preceding application without reuse.
+Each sequence includes its first Kira solve.
+All 480 first-request reductions and 144 sequence requests pass exact checks.
+Read `summary.json` for intervals, individual slower requests, and all controls.
+These results use known massless two-loop boxes, rational kinematics, symbolic dimension, and supplied masters.
+<!-- END JOINT CONFIGURATION RESULTS -->

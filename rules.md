@@ -220,3 +220,10 @@ Compare tuned native Kira, fixed sparse choices, and the preceding application o
 Retain exact checks, recovery, unsuccessful trials, and separate attribution for learned and fixed choices.
 Keep the report, notes, guides, cluster, repository, and local report current under the existing resource limits.
 <!-- END SPARSE SEED COST TRAINING -->
+
+
+<!-- BEGIN JOINT ML AND EXACT REDUCTION -->
+Improve complete reduction time using unrestricted ML choices and exact mathematical methods where applicable.
+Keep model, fixed-control, and exact-reuse gains separate, with first-use and retry costs included.
+Retain independent tests, exact checks, previous evidence, resource limits, and the required documentation and publication copies.
+<!-- END JOINT ML AND EXACT REDUCTION -->
