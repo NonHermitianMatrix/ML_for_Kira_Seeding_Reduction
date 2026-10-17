@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_equation_selection/bound_refinement/s02_train.py", line 76, in <module>
+    print(json.dumps(dict(stage='trained',shortlist=shortlist)),flush=True)
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_equation_selection/bound_refinement/s02_train.py", line 40, in main
+    data[split]=[r for c in protocol['splits'][split] if (r:=collect(c,split,cfg)) is not None]
+AssertionError
+Traceback (most recent call last):
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_equation_selection/bound_refinement/s04_pipeline.py", line 5, in <module>
+    if not (HERE/'trained_model/freeze.json').exists():subprocess.run([sys.executable,str(HERE/name),*args],check=True)
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/subprocess.py", line 528, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/.tools/seed-model/venv/bin/python', '/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_equation_selection/bound_refinement/s02_train.py']' returned non-zero exit status 1.

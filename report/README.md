@@ -169,3 +169,25 @@ Use `s11_finalize.py` to rebuild the evidence and both documents in order.
 `coverage_results.tex` and `coverage_appendix.tex` describe the broader tests.
 `coverage_data.json` supplies their measured values. The new figures show coverage and matched complete times.
 <!-- END COVERAGE STUDY -->
+
+
+
+
+
+
+<!-- BEGIN LEARNED SEED BOUNDS -->
+`learned_bounds_results.tex` describes the new model and matched controls.
+`learned_bounds_appendix.tex` defines the inputs and derives the cost formulas.
+`learned_bounds_data.json` contains the compact test evidence.
+`learned_bounds_validation.json` records the completed checks.
+The figures show complete-time effects and generated-equation counts.
+Both PDFs include these results.
+<!-- END LEARNED SEED BOUNDS -->
+
+<!-- BEGIN EQUATION REFINEMENT -->
+`equation_refinement_results.tex` explains the new filter and complete-time comparison.
+`equation_refinement_appendix.tex` gives the sampling weights, models, and evaluation definitions.
+`equation_refinement_data.json` stores the compact result summary.
+`equation_refinement_validation.json` records the final checks.
+Both PDFs include the new results.
+<!-- END EQUATION REFINEMENT -->

@@ -203,3 +203,8 @@ Keep the notes, affected guides, cluster files, GitHub, and local report copy cu
 ## Broad coverage and overall time (October 16, 2026)
 
 - Test the complete method across a defined range of integral types and every loop order in the existing one-through-twelve-loop scope. Include matched total-time controls, master discovery where supported, exact checks, slower cases, failures, and application limits. Keep separate results for native IBP generation and supplied exact identities. A finite set cannot establish all integral types or unbounded loop orders. Update both documents, guides, cluster files, GitHub, and the local report.
+
+## Measurable ML benefit (October 16, 2026)
+
+- Make learned decisions produce a meaningful measured saving in complete Kira time. Model type, model count, training method, and integration point are unrestricted. Review current primary research and replace ineffective deployment choices while preserving prior evidence.
+- Use equally optimized controls with every ML prediction and model load disabled. Separate learned benefits from exact algorithm changes. Include inference, loading where applicable, algebra, checks, and failed attempts. Freeze models before reserved tests and retain all outcomes. Update both documents, guides, cluster files, GitHub, and the local report under the existing resource limits.

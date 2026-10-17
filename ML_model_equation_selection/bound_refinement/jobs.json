@@ -1,0 +1,63 @@
+{
+  "development": "15186777",
+  "pipeline": "15186806",
+  "collection_retry": "15186868",
+  "validation_resume": "15186939",
+  "documents": {
+    "job": "15187430",
+    "command": [
+      "qsub",
+      "-terse",
+      "-q",
+      "pod_smp.q,campus2.q",
+      "-pe",
+      "shared",
+      "1",
+      "-l",
+      "h_rt=01:00:00,h_data=8G",
+      "-o",
+      "ML_model_equation_selection/bound_refinement/documents.log",
+      "ML_model_equation_selection/bound_refinement/s01_job.sh",
+      "s09_finish.py"
+    ],
+    "submitted_utc": "2026-10-17T03:56:52Z"
+  },
+  "documents_final": {
+    "job": "15187431",
+    "command": [
+      "qsub",
+      "-terse",
+      "-q",
+      "pod_smp.q,campus2.q",
+      "-pe",
+      "shared",
+      "1",
+      "-l",
+      "h_rt=01:00:00,h_data=4G",
+      "-o",
+      "ML_model_equation_selection/bound_refinement/documents_final.log",
+      "ML_model_equation_selection/bound_refinement/s01_job.sh",
+      "s09_finish.py"
+    ],
+    "submitted_utc": "2026-10-17T04:01:30Z"
+  },
+  "visual_revision": {
+    "job": "15187436",
+    "command": [
+      "qsub",
+      "-terse",
+      "-q",
+      "pod_smp.q,campus2.q",
+      "-pe",
+      "shared",
+      "1",
+      "-l",
+      "h_rt=01:00:00,h_data=4G",
+      "-o",
+      "ML_model_equation_selection/bound_refinement/visual_revision.log",
+      "ML_model_equation_selection/bound_refinement/s01_job.sh",
+      "s09_finish.py"
+    ],
+    "submitted_utc": "2026-10-17T04:09:53Z"
+  }
+}

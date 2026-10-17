@@ -104,3 +104,19 @@ The input evidence is `report/portfolio_data.json`.
 `coverage_grid.pdf` shows verified native coverage and its limits.
 `coverage_times.pdf` separates complete native requests from restricted vacuum identities.
 <!-- END COVERAGE STUDY -->
+
+
+
+
+
+
+<!-- BEGIN LEARNED SEED BOUNDS -->
+`learned_bounds_times.pdf` compares graph times and total matched workload time.
+`learned_bounds_effects.pdf` shows all batch ratios and equation counts.
+Run `ML_model_adaptive_reduction/learned_seed_bounds/s08_analyze.py` to regenerate them.
+<!-- END LEARNED SEED BOUNDS -->
+
+<!-- BEGIN EQUATION REFINEMENT -->
+`equation_refinement_times.pdf` measures the added effect of the equation model after seed tuning.
+Run `ML_model_equation_selection/bound_refinement/s05_analyze.py` to regenerate it.
+<!-- END EQUATION REFINEMENT -->

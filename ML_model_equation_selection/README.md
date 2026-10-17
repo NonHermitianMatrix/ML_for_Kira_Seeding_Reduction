@@ -1523,3 +1523,12 @@ It also records connected scattering tests, initialization costs, and incomplete
 Read its summary for the measured contributions and tested domain.
 
 <!-- END HIGHER SCATTERING VERIFICATION -->
+
+
+
+<!-- BEGIN EQUATION REFINEMENT -->
+Read [equation refinement](bound_refinement/README.md) for the new trained filters.
+They use labels collected with tuned seed bounds.
+The control disables all ML while retaining the same exact calculation settings.
+Read the measured domain and timing intervals before deployment.
+<!-- END EQUATION REFINEMENT -->

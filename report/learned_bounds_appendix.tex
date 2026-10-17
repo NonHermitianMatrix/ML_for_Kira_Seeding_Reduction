@@ -1,0 +1,83 @@
+\section{Learning seed bounds: inputs, objective, and timing definitions}
+\label{app:learned-bounds}
+\subsection{Integral definitions and target batches}
+The new study uses the family definition of Eq.~\eqref{eq:family}. The sunrise, planar double box, three-loop vacuum, and massive three-loop two-point ladder retain the ordered denominator momenta in Appendix~\ref{app:families}, with the masses and kinematic assignments in Eq.~\eqref{eq:adaptive-kinematics}. The nonplanar box, pentagon, and external-virtuality box use that equation's corresponding assignments and the denominator definitions in the same appendix. The three- and four-loop boxes with bubbles use Eq.~\eqref{eq:higher-bubble-box}. The four-loop massless two-point family uses $D_i=\ell_i^2$ for $i=1,\ldots,4$ and $D_5=(p-\ell_1-\ell_2-\ell_3-\ell_4)^2$, with $p^2=-2h-29$. Auxiliary squared momentum differences complete its scalar-product coordinates as in Appendix~\ref{app:coverage}. The training profiles are $h=511,512$, validation uses $h=513$, and the reserved test uses $h=515,516$. Development uses $h=501$ and supplies no reserved labels.
+
+Write $n$ for the number of physical denominators, $N$ for the total number of family entries, and $\boldsymbol a^{(0)}=(1,\ldots,1,0,\ldots,0)$ with $n$ leading ones. For $j=0,1,2$, define $i_j=1+[(h+j)\bmod n]$ and $i_j^+=1+(i_j\bmod n)$. When $N>n$, define $k_j=n+1+[(h+j)\bmod(N-n)]$. The first seven structures use four target patterns:
+\begin{align}
+\boldsymbol a^{\rm dots}_j&=\boldsymbol a^{(0)}+2\boldsymbol e_{i_j},&
+\boldsymbol a^{\rm pinch}_j&=\boldsymbol a^{(0)}-\boldsymbol e_{i_j}+\boldsymbol e_{i_j^+},\nonumber\\
+\boldsymbol a^{\rm mixed}_j&=\boldsymbol a^{(0)}+\boldsymbol e_{i_j}-\boldsymbol e_{k_j},&
+\boldsymbol a^{\rm rank2}_j&=\boldsymbol a^{(0)}-2\boldsymbol e_{k_j}.
+\label{eq:bounds-targets}
+\end{align}
+Here $\boldsymbol e_i$ is the unit index vector. For families without auxiliary entries, the last two patterns become $\boldsymbol a^{(0)}+\boldsymbol e_{i_j}+\boldsymbol e_{i_j^+}$ and $\boldsymbol a^{\rm dots}_j$. The remaining three structures use the corner, $\boldsymbol a^{(0)}+\boldsymbol e_{i_j}$, and $\boldsymbol a^{(0)}-\boldsymbol e_{k_j}$. Repeated vectors within a batch appear once. These equations define the requested integrals directly, with no assumed optimal reduction path.
+
+\subsection{The ten candidate configurations}
+Let $(r_0,s_0,d_0)$ be the target maxima in Eq.~\eqref{eq:adaptive-bounds}, and let $t_{\rm top}$ be the largest number of positive indices in a declared top sector. Table~\ref{tab:bounds-actions} specifies the ten candidates as changes to these maxima. Negative bounds become zero, and the positive-index bound is at least $t_{\rm top}$. The word ``native'' in the table denotes the unshifted target-bound configuration.
+\begin{table}[!htbp]\centering\small
+\caption{Candidate seed settings. A dash means that the lower sector truncation is disabled.}
+\label{tab:bounds-actions}
+\begin{tabular}{@{}lrrrr@{}}\toprule
+Choice & $\Delta r$ & $\Delta s$ & $\Delta d_0$ & $l$\\\midrule
+Native bounds &0&0&0&---\\
+Numerator expansion &0&1&0&---\\
+Tight bounds &$-1$&$-1$&$-1$&---\\
+Reduced dots &$-1$&0&$-1$&---\\
+Reduced numerator rank &0&$-1$&0&---\\
+Full expansion &1&1&1&---\\
+Truncated native &0&0&0&$t_{\rm top}-s_0$\\
+Truncated numerator expansion &0&1&0&$t_{\rm top}-s_0$\\
+Truncated reduced dots &$-1$&0&$-1$&$t_{\rm top}-s_0$\\
+Relaxed truncation &0&0&0&$t_{\rm top}-s_0-1$\\
+\bottomrule\end{tabular}
+\end{table}
+Kira's lower sector restriction has the form~\cite{Kira3}
+\begin{equation}
+ s\leq\max\{1,t-l+1,s_{\max,\mathrm{sector}}\},
+\label{eq:bounds-truncate}
+\end{equation}
+where $t$ is the number of positive indices in that sector, $l$ is the chosen truncation parameter, and $s_{\max,\mathrm{sector}}$ is an explicitly assigned sector limit. This bound supplements the candidate seed limits. Every unsuccessful candidate is followed by native bounds and full expansion, with repeated effective bound-and-truncation pairs removed. All attempts use integral ordering 1 and one worker.
+
+\subsection{Features and fitted objective}
+The first eighteen features are those defined in Appendix~\ref{app:adaptive}. The remaining nine are the minimum dots and numerator rank, mean number of positive indices, largest absolute index, mean dots on massive entries, mean numerator-weighted loop incidence, mean dot-weighted loop incidence, maximum sum of positive indices, and maximum number of absent physical denominators. All means run over the target batch. If $B_{i\ell}=1$ when loop momentum $\ell$ appears in denominator momentum $q_i$ and zero otherwise, the two weighted incidence quantities are
+\begin{equation}
+ \frac1{|\mathcal T|}\sum_{\boldsymbol a\in\mathcal T}\sum_i\max(-a_i,0)\sum_\ell B_{i\ell},
+ \qquad
+ \frac1{|\mathcal T|}\sum_{\boldsymbol a\in\mathcal T}\sum_i\max(a_i-1,0)\sum_\ell B_{i\ell}.
+\label{eq:bounds-incidence}
+\end{equation}
+These definitions describe index structure; they do not encode a target's reference reduction or measured runtime.
+
+For a training case $c$ and candidate $a$, let $T_{ca}>0$ be its measured time with recovery, and let $a=0$ denote native bounds. We fit $y_{ca}=\log(T_{ca}/T_{c0})$. Subtracting two such labels gives
+\begin{equation}
+ y_{ca}-y_{cb}=\log T_{ca}-\log T_{cb}=\log(T_{ca}/T_{cb}).
+\end{equation}
+The logarithm is increasing, so minimizing the exact label selects the least measured time for that case. This statement concerns the labels; prediction error can change the selected configuration. The tree models fit weighted squared errors with $w_c=\sqrt{T_{c0}/\operatorname{median}_{c'}T_{c'0}}$. The twelve single trees have maximum depths $2,3,5,8$ and minimum leaf sizes $1,2,4$. Six ensembles combine random forests or extremely randomized trees with depths $3,5,8$, 48 trees, and minimum leaf size two~\cite{CART1984,Breiman2001Forest,Geurts2006ExtraTrees}.
+
+The twelve neural candidates use hidden widths $(16)$, $(32)$, or $(32,16)$, a rectified-linear or hyperbolic-tangent activation, and regularization parameter $0.01$ or $0.1$. They standardize features using training means and standard deviations, fit unweighted squared errors with a squared-weight penalty, and use L-BFGS with a 1,500-iteration limit~\cite{Pedregosa2011Bounds}. Their hidden states satisfy $\boldsymbol h^{(j+1)}=\sigma(W_j^\mathsf{T}\boldsymbol h^{(j)}+\boldsymbol b_j)$, while the output layer is linear. This equation defines the implemented network. Validation compares actual candidate costs, so differences between the fitting objectives do not determine the final choice by themselves. Every stochastic fit uses random seed 41.
+
+Let $b_H$ be the fixed candidate with the smallest summed training-plus-validation time for graph $H$, and let $a_\star=\arg\min_a f_a(\boldsymbol x_c)$ be the predicted best candidate. A model with gate $g$ uses $a_\star$ when
+\begin{equation}
+ f_{a_\star}(\boldsymbol x_c)<f_{b_H}(\boldsymbol x_c)-g,
+ \qquad g\in\{0,0.03,0.10,0.20\},
+\label{eq:bounds-gate}
+\end{equation}
+and otherwise uses $b_H$. Under exact labels, this inequality becomes $T_{ca_\star}/T_{cb_H}<e^{-g}$ by exponentiation. With fitted labels it expresses a predicted saving. Validation selects the model and gate with the lowest sum of recorded configuration times. No reserved result enters that choice. The saved evaluator is checked against the training library for every validation prediction before the model is frozen.
+
+\subsection{Measured ratios, uncertainty, and training cost}
+Let $\widetilde T_{cm}$ be the median of five complete times for case $c$ and method $m$. For a matched set $\mathcal C$, define
+\begin{equation}
+ Q_m=\sum_{c\in\mathcal C}\widetilde T_{cm},\qquad
+ R_b=Q_{\rm ML}/Q_b,\qquad S_b=1/R_b.
+\label{eq:bounds-times}
+\end{equation}
+Summing accounts for the time required by the same batch collection; division gives its relative time, and inversion gives its speedup factor. The percentage time saving is $100(1-R_b)$. Matched cases must complete all methods and repetitions with a nontrivial reduction. We also retain the total elapsed time and completion counts for every timed request, including failures and identity-only outputs.
+
+For the graph interval, we sample the observed graph groups with replacement and recompute $R_b$, preserving each selected graph's complete batch block. For the repetition interval, each batch samples five paired repetition positions with replacement and recomputes its medians and then $R_b$. Both calculations use 5,000 draws and report the 2.5th and 97.5th percentiles. These are descriptive resampling intervals for the specified collection. The graph count is small, and repeated index patterns remain correlated within a graph.
+
+Let $T_{\rm off}$ be the recorded development, training, validation, and associated reference cost, including fitting. If the future mean saving equals the estimate from the matched workload $\Delta_b=(Q_b-Q_{\rm ML})/|\mathcal C|>0$, then $N$ requests recover this cost when $N\Delta_b\geq T_{\rm off}$. Solving this inequality gives
+\begin{equation}
+ N_{\rm break}=\left\lceil T_{\rm off}/\Delta_b\right\rceil.
+\end{equation}
+This calculation excludes reserved-test expense and assumes that an appropriate master basis is already available. It states the cost of collecting the model's evidence as well as its application saving. It does not prove that future workloads will have the same mean saving.

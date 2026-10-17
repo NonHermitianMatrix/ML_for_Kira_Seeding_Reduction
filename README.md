@@ -4,11 +4,13 @@
 
 ## Current reduction method
 
-Use the [revised exact preparation with the learned portfolio](ML_model_adaptive_reduction/parametric_preparation/README.md).
-The application keeps the trained policies and reduces repeated preparation around their choices.
-Read its checked results for the previous implementation, native choices, and fixed portfolio controls.
-The new gain comes from exact integration changes. The study does not attribute this gain to new model training.
-The earlier [portfolio comparison](ML_model_adaptive_reduction/selective_expansion/README.md) remains available.
+Use [the equation filter](ML_model_equation_selection/bound_refinement/README.md) with the tuned fixed seed configurations.
+The policy enables a trained filter where complete-cost validation supports its use.
+It keeps native row elimination and the exact preparation improvements.
+The independent test measures the additional learned effect against the same calculation with all ML disabled.
+Read the measured graph results, failures, and domain limits.
+The [seed-cost comparison](ML_model_adaptive_reduction/learned_seed_bounds/README.md) records the separate effect of seed tuning.
+Its additional learned gain over tuned fixed settings remains within timing variation.
 
 <!-- END ADAPTIVE REDUCTION -->
 
@@ -171,3 +173,11 @@ Read its summary for the measured contributions and tested domain.
 <!-- BEGIN COVERAGE STUDY -->
 Read [the broader coverage study](Kira_comparison/coverage_study/README.md) for full-basis calculations, all twelve restricted vacuum loop orders, and remaining limits.
 <!-- END COVERAGE STUDY -->
+
+
+
+<!-- BEGIN EQUATION REFINEMENT -->
+The [new equation filter](ML_model_equation_selection/bound_refinement/README.md) is trained on the tuned seed configurations.
+Its test separates additional ML savings from fixed seed and exact implementation gains.
+Read the graph results, failures, and timing intervals in that guide.
+<!-- END EQUATION REFINEMENT -->

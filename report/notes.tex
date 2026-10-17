@@ -24,6 +24,10 @@
 \begin{abstract}
 Feynman integral calculations are an important component of multiloop amplitude calculations in quantum field theory. In Quantum Chromodynamics (QCD), multiloop amplitudes and their associated Feynman integrals arise in higher-order perturbative calculations and can become increasingly complex at higher loop orders. Recent progress has automated these calculations to some extent using the framework Kira, which organizes target integrals into integral families and sectors, generate algebraic relations among the integrals by using integration by parts (IBP) identities, and reduce the resulting system to expressions in terms of a finite set of master integrals. We aim to explore the application of machine learning models to accelerate the IBP reduction process by investigating if learned models can improve seed selection. These models can predict the most useful integrals from which to generate IBP relations while minimizing redundant calculations. We will also explore machine learning models for learning efficient reduction and elimination sequences to minimize the number of algebraic operations required to express target integrals in terms of master integrals. Because the machine learning models will serve as decision-makers while the underlying IBP reduction and verification remain exact, these models can improve computational efficiency without compromising the correctness of the resulting reductions.
 \end{abstract}
+% BEGIN CURRENT WORKFLOW UPDATE
+% EQUATION REFINEMENT CURRENT
+\paragraph{Current measured method.} The latest comparison keeps tuned seed bounds and trains classifiers that select equations before symbolic coefficient construction. It gives 4.8\% less complete time across 68 matched batches, including 8.0\% less time on the 32 batches where the frozen policy enables filtering. Both controls use the same exact implementation and native row elimination. Section~\ref{sec:equation-refinement} gives the models, exact checks, failures, intervals, and physical scope. The earlier experiments remain below as the detailed record of the study.
+% END CURRENT WORKFLOW UPDATE
 
 \clearpage
 \input{background}
@@ -1148,6 +1152,12 @@ The latest comparison keeps every trained model fixed and reduces exact preparat
 The broader coverage study in Section~\ref{sec:coverage} defines 90 native-family requests through twelve loops. The current interface accepts 54 of them, and 39 complete three checked nontrivial full reductions with revised preparation. On 37 matched completed requests, the revised full calculation takes 88.2\% less time than the saved original Kira executable. The supplied-basis selected application takes 0.1\% less time than the revised native control on its separate matched set. Unsupported, failed, and identity-only requests remain outside these timing ratios. The small difference from the revised native control establishes no reliable additional learned gain on the wider set.
 % END CURRENT COVERAGE CONCLUSION
 % END CURRENT WORKFLOW UPDATE
+% BEGIN CURRENT WORKFLOW UPDATE
+% LEARNED BOUNDS CURRENT
+\input{learned_bounds_results}
+\input{equation_refinement_results}
+The new seed-bound study in Section~\ref{sec:learned-bounds} isolates a learned choice with all earlier models disabled. On 68 matched nontrivial batches, complete application time changes from 164.926 seconds under native bounds and 119.717 seconds under tuned fixed settings to 119.081 seconds with the new model. This gives 27.8\% less time than native bounds and 0.5\% less time than the tuned fixed control. The comparison includes model loading, native IBP generation, exact reduction, coefficient checks, and recovery, with a supplied basis. It uses known structures at one through four loops and separate rational profiles; the additional saving over tuned fixed settings remains within timing variation.
+% END CURRENT WORKFLOW UPDATE
 \clearpage
 \renewcommand{\refname}{Citations}
 % BEGIN CURRENT WORKFLOW UPDATE
@@ -1163,6 +1173,8 @@ The broader coverage study in Section~\ref{sec:coverage} defines 90 native-famil
 \input{portfolio_appendix}
 \input{parametric_appendix}
 \input{coverage_appendix}
+\input{learned_bounds_appendix}
+\input{equation_refinement_appendix}
 % END CURRENT WORKFLOW UPDATE
 \bibliographystyle{unsrt}
 \bibliography{references,type_specialist_references}

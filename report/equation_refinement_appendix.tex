@@ -1,0 +1,81 @@
+\section{Equation refinement: fitting and evaluation}
+\label{app:equation-refinement}
+\subsection{Inputs available before coefficient construction}
+Let $\boldsymbol\sigma$ be a seed with $N$ indices, and let $\mathcal T$ be the target batch. Define the number of positive indices, the extra denominator powers, and the numerator rank by
+\begin{equation}
+ n_+(\boldsymbol\sigma)=\sum_i\mathbf 1[\sigma_i>0],\qquad
+ \delta(\boldsymbol\sigma)=\sum_i\max(\sigma_i-1,0),\qquad
+ \rho(\boldsymbol\sigma)=\sum_i\max(-\sigma_i,0).
+\end{equation}
+The target maxima are $\delta_{\max}=\max_{\boldsymbol a\in\mathcal T}\delta(\boldsymbol a)$ and $\rho_{\max}=\max_{\boldsymbol a\in\mathcal T}\rho(\boldsymbol a)$. For the seed's sector $S$, let $b_S$ be one if the batch contains a target in that sector and zero otherwise. Define $\delta_S,\rho_S$ as the corresponding maxima over targets in $S$, or zero when that sector has no target. The minimum target distance is
+\begin{equation}
+ \Delta(\boldsymbol\sigma,\mathcal T)
+ =\min_{\boldsymbol a\in\mathcal T}\sum_i|\sigma_i-a_i|.
+\end{equation}
+These quantities depend only on indices. Table~\ref{tab:refinement-features} specifies the complete input vector. The power differences are signed; a negative value means that the seed has fewer powers than the stated target maximum. Here $L$ is the number of loops, $E$ is the number of independent external momenta, and $o$ is the operator index in Kira's candidate list.
+
+\begin{table}[!htbp]\centering\small
+\caption{The seventeen inputs to the new equation classifiers. A whole-seed choice uses the same inputs with the operator index removed.}
+\label{tab:refinement-features}
+\begin{tabular}{@{}lp{0.57\linewidth}r@{}}\toprule
+Group & Quantities & Number\\\midrule
+Family and request & $L,E,N,\log(1+|\mathcal T|)$ & 4\\
+Seed powers & $n_+(\boldsymbol\sigma),\delta(\boldsymbol\sigma),\rho(\boldsymbol\sigma)$ & 3\\
+Target differences & $\delta(\boldsymbol\sigma)-\delta_{\max}$ and $\rho(\boldsymbol\sigma)-\rho_{\max}$ & 2\\
+Sector information & $b_S$, $\delta(\boldsymbol\sigma)-\delta_S$, and $\rho(\boldsymbol\sigma)-\rho_S$ & 3\\
+Target proximity & $\Delta(\boldsymbol\sigma,\mathcal T)$ and $\mathbf 1[\boldsymbol\sigma\in\mathcal T]$ & 2\\
+Operator & Index $o$ for an IBP or Lorentz-invariance identity & 1\\
+Overall limits & $\delta_{\max},\rho_{\max}$ & 2\\\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Sampling and tree scores}
+The physical families, target patterns, and tuned seed configurations are those in Appendix~\ref{app:learned-bounds}. Training uses $h=511,512$, validation uses $h=513$, and the new reserved test uses $h=525,526$. The earlier reserved profiles $515,516$ supply no training or validation labels for this filter. Within a batch $c$, let $N_{cy}$ be the number of native equation records with label $y\in\{0,1\}$ and let $N_c=N_{c0}+N_{c1}$. We sample $n_{cy}=\min(2000,N_{cy})$ records without replacement from each nonempty class, using a deterministic batch-specific random seed. For fitting, every sampled record in that class receives weight
+\begin{equation}
+ w_{cy}=\frac{N_{cy}}{n_{cy}N_c}.
+\label{eq:refinement-weight}
+\end{equation}
+For fitting, its class has total sampled weight $n_{cy}w_{cy}=N_{cy}/N_c$, so summing over classes gives unit weight per batch. This calculation explains both the correction for class sampling and the equal batch contribution. Validation recall and retained fractions instead use $N_{cy}/n_{cy}$, which reconstructs native record counts across the validation batches.
+
+For a tree leaf $\ell$, let $W_{\ell 1}$ and $W_{\ell 0}$ be the sums of these weights for positive and negative training records. Its score is
+\begin{equation}
+ p_\ell=\frac{W_{\ell 1}}{W_{\ell 0}+W_{\ell 1}}.
+\label{eq:refinement-leaf}
+\end{equation}
+This is the weighted positive fraction in the leaf. It does not assert calibrated probabilities for new equations. The tree chooses splits through weighted Gini impurity~\cite{CART1984}, using the classification-tree implementation of Ref.~\cite{Pedregosa2011Bounds}. At a node, let $W_0$ and $W_1$ be the negative and positive total weights, $W=W_0+W_1$, and $p=W_1/W$. The weighted impurity is
+\begin{equation}
+ G=W[1-p^2-(1-p)^2]
+   =2Wp(1-p)=\frac{2W_0W_1}{W_0+W_1}.
+ \label{eq:refinement-gini}
+\end{equation}
+The equalities follow by expanding the two squares and substituting the weighted class fractions. For each allowed split, subtract the two child impurities from the parent impurity. The tree selects the largest decrease, subject to its depth, leaf-count, and minimum-population limits. The eight depth and leaf-size choices appear in the main text. We compare shared fits with separate fits for each graph before the complete-cost validation. All fits use random seed 611.
+
+\subsection{Validation and frozen deployment}
+For each graph, candidate thresholds include $10^{-12}$, 0.01, 0.05, 0.1, 0.25, and 0.5, together with the 0, 0.1, 0.5, 1, and 2 percentiles of positive validation scores. For each required weighted recall of 0.9999, 0.995, and 0.98, we choose the tree and threshold with the smallest retained fraction among candidates that meet that recall. Repeated choices appear once. These thresholds concern reference labels; they do not guarantee a complete reduction.
+
+We run each shortlisted filter and the all-ML-disabled control three times for every validation batch. For each graph, we sum the per-batch median times and choose the cheapest candidate, retaining it only if it beats the control by at least 5\%. This threshold for deployment is fixed before the reserved experiment. For the shortlisted source trees, we also calculate the maximum score over operators and select seed thresholds using the same recall levels and retained-fraction criterion. The seed threshold grid adds 0.75, 0.9, and 1 to the equation grid. We compare up to three seed variants with the equation filters in the same complete-cost validation. The selected filters are
+\begin{table}[!htbp]\centering\small
+\caption{Filters fixed by complete-time validation. The columns give the filter type, compiled node count, source-tree depth limit, minimum leaf population, and original score threshold.}
+\begin{tabular}{@{}llrrrr@{}}\toprule
+Graph & Filter & Nodes & Depth limit & Leaf size & Threshold\\\midrule
+Planar double box & Equation & 1161 & 18 & 16 & 1e-12\\
+Massive vacuum & Equation & 369 & 14 & 4 & 1e-12\\
+Massive three-loop ladder & Seed & 60 & 14 & 16 & 0.02232\\
+Nonplanar box & Seed & 57 & 14 & 4 & 0.05\\
+\bottomrule\end{tabular}
+\end{table}
+The model tests 17 features before symbolic coefficient construction. It retains a candidate when $p_\ell\geq\tau$, where $\tau$ is the graph's threshold. If that attempt fails, the next attempt uses the tuned seed setting without the model. Native and fully expanded bounds follow if necessary, with identical configurations removed. Every attempt must express all mandatory targets in the prescribed basis. Independent exact coefficient comparisons then check the exported answer. Every failed attempt remains in the timing record.
+
+\subsection{A learned choice of whole seeds}
+For a seed $\boldsymbol\sigma$, target batch $\mathcal T$, and candidate operator $o$, let $p_\theta(\boldsymbol\sigma,o,\mathcal T)$ be the equation score. The equation filter retains the candidate when this score is at least $\tau$. Its whole-seed variant instead uses
+\begin{equation}
+ K_\theta(\boldsymbol\sigma,\mathcal T)
+ =\mathbf 1\!\left[\max_{o\in\mathcal O}p_\theta(\boldsymbol\sigma,o,\mathcal T)\geq\tau\right].
+ \label{eq:seed-union-choice}
+\end{equation}
+Here $\mathcal O$ is the finite list of candidate operators, and $\mathbf 1$ is one when its condition holds and zero otherwise. A maximum reaches $\tau$ exactly when at least one member reaches it. Therefore Eq.~\eqref{eq:seed-union-choice} is the logical union of the original equation decisions. If $K_\theta=1$, all operators from that seed remain available. The resulting set contains every equation that the source filter would retain, although it can contain more. This inclusion does not prove that the reduction will complete.
+
+For $L$ loop momenta and $E$ independent external momenta, Kira's candidate list contains $L(L+E)$ IBP operators and $E(E-1)/2$ external Lorentz-invariance operators~\cite{KiraOriginal}. The first count follows by choosing a loop derivative and a contraction vector from the loop and external momenta. The second counts unordered pairs of external vectors for antisymmetric contractions. These are candidate counts before redundancies are removed. The seed filter takes the maximum over that full list. Its decision no longer depends on which operator is being considered, so it uses sixteen of the seventeen features. We evaluate the same logical decision directly during generation and check its equivalence to the original operator scores. Kira still enumerates the configured seed region, applies its native symmetries, and performs exact algebra.
+
+\subsection{Ratios and uncertainty}
+For each complete matched batch, take the median of five times for each method, then sum the medians as in Eq.~\eqref{eq:bounds-times}. This gives the learned-to-control ratio and the percentage saving $100(1-R)$. The active subset consists of batches for which the frozen domain and graph policy enable a filter. It uses the same ratio definition. We resample paired repetition positions within each batch 5,000 times and report the 2.5th and 97.5th percentiles. Failed reference checks, incomplete method comparisons, and identity-only targets remain outside the nontrivial paired ratios. Their counts remain in the main results.

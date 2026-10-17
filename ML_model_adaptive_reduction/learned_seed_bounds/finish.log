@@ -1,0 +1,27 @@
+{"complete": true, "all_successful_outputs_exact": true, "failed_files": [], "counts": {"training": 700, "coefficient_checks": 49218, "validation": 350, "model_test": 1050, "application_test": 81}, "distinct_coefficient_pairs": 3088, "disjoint_physical_split_inputs": true, "unique_physical_inputs": {"training": 68, "validation": 34, "reserved": 68}, "no_earlier_models_in_primary_comparison": true, "production_choice_reproduced": true, "domain_checks": true, "model_sha256": "98edd3a5bcf8b9e9eb04432158e22148fe806c0e5c34d1cf24efb8a1b615485b", "protocol_sha256": "726ff4a184026f6e29c15c948499cb81f59a2b62cbd5fd0d8e3dda658224c757"}
+Traceback (most recent call last):
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/learned_seed_bounds/s08_analyze.py", line 82, in <module>
+    if __name__=='__main__':main()
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/learned_seed_bounds/s08_analyze.py", line 62, in main
+    plot(out)
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/learned_seed_bounds/s08_analyze.py", line 68, in plot
+    fig,axes=plt.subplots(1,2,figsize=(9.0,5.0),gridspec_kw={'width_ratios':[1.6,1]},layout='constrained')
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/site-packages/matplotlib/_api/deprecation.py", line 471, in wrapper
+    return func(*args, **kwargs)
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/site-packages/matplotlib/pyplot.py", line 1439, in subplots
+    fig = figure(**fig_kw)
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/site-packages/matplotlib/pyplot.py", line 797, in figure
+    manager = new_figure_manager(
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/site-packages/matplotlib/pyplot.py", line 316, in new_figure_manager
+    return _backend_mod.new_figure_manager(*args, **kwargs)
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/site-packages/matplotlib/backend_bases.py", line 3544, in new_figure_manager
+    fig = fig_cls(*args, **kwargs)
+TypeError: __init__() got an unexpected keyword argument 'layout'
+Traceback (most recent call last):
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/learned_seed_bounds/s13_finish.py", line 19, in <module>
+    if __name__=='__main__':main()
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/learned_seed_bounds/s13_finish.py", line 8, in main
+    subprocess.run([sys.executable,str(HERE/n)],check=True)
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/subprocess.py", line 528, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/.tools/seed-model/venv/bin/python', '/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/learned_seed_bounds/s08_analyze.py']' returned non-zero exit status 1.

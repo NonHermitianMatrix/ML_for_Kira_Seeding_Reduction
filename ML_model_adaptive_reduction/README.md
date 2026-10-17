@@ -1,15 +1,25 @@
 # Adaptive Kira reduction
 
+<!-- BEGIN LEARNED SEED BOUNDS -->
+Read [learned seed bounds](learned_seed_bounds/README.md) for the new cost-trained comparison.
+Its native and fixed controls disable every earlier model.
+Read its domain limits before use.
+The earlier portfolio remains available for comparison.
+<!-- END LEARNED SEED BOUNDS -->
+
+
+
+
 <!-- BEGIN PARAMETRIC UPDATE -->
 
-The current interface is `s24_parametric_runtime.py`. Read [the revised preparation guide](parametric_preparation/README.md).
+The previous interface is `s24_parametric_runtime.py`. Read [the revised preparation guide](parametric_preparation/README.md).
 The earlier `s17_reduce.py` interface remains available as the matched baseline.
 
 <!-- END PARAMETRIC UPDATE -->
 
 
-Use [the current portfolio guide](selective_expansion/README.md) for the final model and application.
-The current entry point is `s17_reduce.py`.
+Use [the earlier portfolio guide](selective_expansion/README.md) for that model and application.
+The earlier entry point is `s17_reduce.py`.
 The first study below explains the earlier cost model and exact preprocessing.
 
 This folder contains models for a policy that selects a complete reduction calculation.
@@ -262,3 +272,10 @@ Failed controls receive no completion-time median or speedup factor.
 The three-loop matched comparison and the four-loop indexing-to-projection comparison retain their completed repetitions.
 
 <!-- END BOUNDED CONTROL -->
+
+
+
+<!-- BEGIN EQUATION REFINEMENT -->
+The [equation refinement study](../ML_model_equation_selection/bound_refinement/README.md) keeps tuned seed settings and trains an earlier equation filter.
+Its comparison measures the added ML effect after seed tuning.
+<!-- END EQUATION REFINEMENT -->
