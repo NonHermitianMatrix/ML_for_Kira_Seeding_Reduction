@@ -1,0 +1,25 @@
+\section{Inputs and independent recurrence for the extended tests}
+\label{app:extended-coverage}
+The vacuum, two-point, ladder, and bubble-box denominators are those in Appendix~\ref{app:coverage}. The new rational grid uses $h=1001$ in
+\begin{equation}
+ \begin{aligned}
+ m_{\mathrm{one}}^2&=2h+17, & m_i^2&=2h+19+6(i-1),\\
+ p^2&=-2h-29,\\
+ s&=-1009-12h, & t&=-1021-14h.
+ \end{aligned}
+\end{equation}
+These are definitions of the test points in a common squared-momentum unit. Only the quantities needed by each graph are present. Symbolic grid members use the same denominators with independent nonzero squared masses and invariants, and profile label $h=1002$. The extra nonplanar box, pentagon, and virtuality-box definitions use Appendix~\ref{app:families}, with rational profile $h=1003$ and separate symbolic variants. The two additional rank-three box requests use the definitions in Appendix~\ref{app:joint-policy}, with profile $h=1009$ and numerator powers split as one and two across the two auxiliary coordinates.
+
+The ordinary grid targets are the corner, one extra power on the first physical denominator, and one numerator power on the first auxiliary entry when present. The three extra scattering structures instead raise the last physical denominator. Every massive two-point batch contains all physical dot patterns through two extra powers: the corner, each single dot, each double dot, and each pair of distinct single dots. This gives the target count derived in Appendix~\ref{app:coverage}. Enlarged reference bounds add one to the maximum positive-power sum, numerator rank, and dot count of the target batch. The check increases the numerator bound once more and changes integral ordering from one to two. The complete scalar-product count remains $N=L(L+1)/2+LE$, so the current 31-index input guard admits vacuum graphs through seven loops, two-point graphs through six loops, and four-point graphs through five loops. This guard is a limit of the tested interface, not a mathematical upper limit on IBP reduction.
+
+For the analytic checks, retain only the $n=L+1$ physical massless denominators of $B_L(\boldsymbol a;p^2,d)$ from Appendix~\ref{app:banana}. The targets are $\boldsymbol 1$, $\boldsymbol 1+\boldsymbol e_1$, $\boldsymbol 1+3\boldsymbol e_n$, and $\boldsymbol 1+\boldsymbol e_1+\boldsymbol e_n$, where $\boldsymbol e_j$ raises physical power $j$. We use $p^2=-2051$ and, separately, symbolic $p^2$. These follow from the predefined profile $h=1011$.
+
+To obtain an independent recurrence, let $A=\sum_i a_i$ and raise $a_j$ by one in the gamma expression of Eq.~\eqref{eq:banana-gamma}. The identity $\Gamma(z+1)=z\Gamma(z)$ changes the global numerator factor by $A-Ld/2$, the inverse global gamma factor by $nd/2-A-1$, the line gamma factor by $1/(d/2-a_j-1)$, and $1/\Gamma(a_j)$ by $1/a_j$. The phase and integer momentum power combine into $1/p^2$ in the same convention as Eq.~\eqref{eq:banana-ratio}. Therefore
+\begin{equation}
+ \frac{B_L(\boldsymbol a+\boldsymbol e_j;p^2,d)}{B_L(\boldsymbol a;p^2,d)}
+ =\frac{(A-Ld/2)(nd/2-A-1)}{(d/2-a_j-1)a_jp^2}.
+ \label{eq:extended-raising}
+\end{equation}
+Starting from the corner coefficient one, we apply this rational recurrence until the target powers are reached and compare the result by exact subtraction. The comparison uses a separate symbolic implementation and does not call the application's finite-product coefficient routine. Both expressions follow from the same analytic identity, so this checks implementation consistency rather than supplying an independent high-loop native IBP proof. The result holds by meromorphic continuation in $d$ for generic nonzero $p^2$, as in the preceding derivation.
+
+For each fixed matched workload, the timing interval resamples the three repetition indices with replacement within each request, using the same indices for both compared methods. Each of 2,000 resamples sums the resulting request medians and takes their ratio. The endpoints are the empirical 2.5 and 97.5 percentiles. This describes variation within the measured repetitions and does not justify extrapolation to new topologies.

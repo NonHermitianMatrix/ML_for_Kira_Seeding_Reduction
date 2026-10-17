@@ -926,3 +926,5 @@ Read its summary for the measured contributions and tested domain.
 <!-- BEGIN COVERAGE STUDY -->
 The [coverage study](coverage_study/README.md) compares complete reductions and records unsupported or failed cases.
 <!-- END COVERAGE STUDY -->
+
+`extended_coverage/` tests the frozen application on a new native grid through twelve loops. It also checks the exact scalar two-point formula at every studied loop order. The folder retains complete outcomes, including resource failures and input limits.

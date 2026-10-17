@@ -232,3 +232,5 @@ All 480 first-request reductions and 144 sequence requests pass exact checks.
 Read `summary.json` for intervals, individual slower requests, and all controls.
 These results use known massless two-loop boxes, rational kinematics, symbolic dimension, and supplied masters.
 <!-- END JOINT CONFIGURATION RESULTS -->
+
+The current frozen application has a broader test in `Kira_comparison/extended_coverage/`. It records native completion, failures, input limits, and separate exact analytic checks through twelve loops. Read that folder and the new report section for the measured scope.

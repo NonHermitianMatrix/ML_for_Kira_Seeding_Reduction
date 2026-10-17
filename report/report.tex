@@ -30,7 +30,7 @@
 
 
 \begin{abstract}
-Integration-by-parts reduction expresses Feynman integrals in a master basis. We train models to select seeds and equations before Kira performs the exact algebra, using complete reduction time as the cost. We also test new models that jointly select seed boundaries and Kira settings. Validation retains the preceding ML application for both tested graphs because the replacements do not reach the required 2\% improvement. On 24 reserved planar and nonplanar two-loop requests, the retained workflow gives 18.0\% less time than tuned native Kira. A derived scale identity reuses completed reductions when all invariants change by a common positive factor. Four three-scale sequences give 64.4\% less time than the preceding application without reuse, with the first reduction included. All timed outputs pass exact coefficient checks. These tests use rational kinematics, symbolic dimension, and supplied master bases; timings include decisions, algebra, checks, and retries. Earlier equation-filter tests give 4.8\% less time on 68 matched batches at one through four loops. Learned row selection remains omitted because its tests show no reliable gain. We report learned and exact-method gains separately within their tested physical domains.
+Integration-by-parts reduction expresses Feynman integrals in a master basis. We train models to select seeds and equations before Kira performs the exact algebra, using complete reduction time as the cost. We also test new models that jointly select seed boundaries and Kira settings. Validation retains the preceding ML application for both tested graphs because the replacements do not reach the required 2\% improvement. On 24 reserved planar and nonplanar two-loop requests, the retained workflow gives 18.0\% less time than tuned native Kira. A derived scale identity reuses completed reductions when all invariants change by a common positive factor. Four three-scale sequences give 64.4\% less time than the preceding application without reuse, with the first reduction included. All completed outputs in these earlier comparisons pass exact coefficient checks. These tests use rational kinematics, symbolic dimension, and supplied master bases; timings include decisions, algebra, checks, and retries. Earlier equation-filter tests give 4.8\% less time on 68 matched batches at one through four loops. Learned row selection remains omitted because its tests show no reliable gain. We report learned and exact-method gains separately within their tested physical domains. A broader frozen-application test completes all comparisons on 29 of 84 native requests defined through twelve loops. The matched nontrivial subset has selected-to-native time ratio 1.003; input and resource limits remain explicit. Separate exact scalar checks pass at every loop order from one through twelve.
 \end{abstract}
 
 \section{Introduction}
@@ -46,9 +46,10 @@ The next comparison trains a model to choose which targets Kira reduces together
 
 We then train a seed boundary directly from complete Kira times. This model changes which seeds generate identities, and a second model predicts which fitted boundary to use for a target. The comparison includes tuned native Kira, a fixed sparse boundary, and the preceding application. It therefore tests both the benefit of a learned region and the additional value of selecting a region for each request.
 % BEGIN JOINT POLICY INTRO
-The final study tests joint choices of seed boundaries and Kira settings using complete reduction time, including retries. Neither new predictor improves enough to replace the preceding ML application. We retain that application and add exact reuse when all invariants change by the same positive factor. Separate tests measure first-request time and sequence time with the initial reduction included.
+A further study tests joint choices of seed boundaries and Kira settings using complete reduction time, including retries. Neither new predictor improves enough to replace the preceding ML application. We retain that application and add exact reuse when all invariants change by the same positive factor. Separate tests measure first-request time and sequence time with the initial reduction included.
 
 % END JOINT POLICY INTRO
+We then keep that application fixed and test broader vacuum, two-point, and scattering families through twelve loop orders. The new coverage study reports completed reductions, failed references, and input limits separately from exact scalar checks at every studied loop order.
 
 
 We first define the notation used in this paper and explain the reduction procedure. We then compare learned seed bounds with tuned fixed settings and use that result to motivate the new equation filters. The main results measure their added effect on complete calculation time. The final sections distinguish learned gains from exact implementation changes and state the physical scope. The appendices retain earlier model tests, wider coverage checks, integral definitions, model specifications, and derivations.
@@ -114,6 +115,7 @@ The following comparisons retain native row elimination. The original row networ
 \input{batch_policy_results}
 \input{seed_geometry_results}
 \input{joint_policy_results}
+\input{extended_coverage_results}
 \input{massless_banana_results}
 
 \section{Overall performance and physical scope}
@@ -206,6 +208,8 @@ The comparison uses eight fresh groups, each containing three mass profiles with
 This result depends on the structure of the family. The benchmark constructs Euler and mass partial-fraction identities rather than a general high-loop IBP system. Earlier checks at loop orders 13, 16, 24, and 32 use the same family, and the recurrence proof applies to every positive integer loop order under its stated assumptions. The demonstrated high-loop result therefore concerns this restricted vacuum problem; the connected scattering comparisons in Sections~\ref{sec:components} and~\ref{sec:adaptive} have separate definitions and timings.
 
 \section{Conclusion}
+The expanded test defines 84 native family requests at one through twelve loops. 29 requests complete all methods and exact checks, while 36 exceed the current 31-index interface limit. The remaining requests retain their recorded failures. The separate analytic test verifies 24 scalar massless two-point batches, covering every loop order from one through twelve at both rational and symbolic momentum. The native matched time ratio is 1.003. These broader outcomes do not extend the isolated learned gains to every family. Section~\ref{sec:extended-coverage} retains the complete coverage record.
+
 % BEGIN JOINT POLICY CONCLUSION
 Section~\ref{sec:joint-policy} retains the preceding ML application because neither new joint predictor clears the 2\% validation threshold. On 24 first requests, the retained application with the new interface gives 1.2\% less time, with time-ratio interval $[0.975,1.024]$ relative to its preceding interface. This difference supplies no evidence of a gain from the new predictors. The separate scale sequences give 64.4\% less time than the preceding application without reuse, including the initial Kira solve. This additional saving comes from the derived scale identity, while the first reduction still uses the preceding ML decisions.
 % END JOINT POLICY CONCLUSION
@@ -385,6 +389,7 @@ The local-model tests show that useful equations, accurate labels, and faster in
 \input{massless_banana_appendix}
 \input{seed_geometry_appendix}
 \input{joint_policy_appendix}
+\input{extended_coverage_appendix}
 \begingroup
 \small
 \setlength{\parskip}{0pt}

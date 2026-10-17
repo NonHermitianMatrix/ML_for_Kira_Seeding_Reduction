@@ -232,3 +232,5 @@ See `../ML_model_seed_selection/cost_geometry/README.md` for the code and full r
 `joint_policy_validation.json` records the final checks.
 Read `../ML_model_seed_selection/joint_policy/README.md` for the full data and commands.
 <!-- END JOINT CONFIGURATION -->
+
+The extended coverage section tests the frozen application on 84 native requests through twelve loops. Its separate analytic tests cover every loop order. Read the coverage table before using the matched time ratios. `extended_coverage_data.json` stores the measured results. The source scripts are in `Kira_comparison/extended_coverage/`.

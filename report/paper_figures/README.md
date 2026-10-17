@@ -157,3 +157,5 @@ The first panel retains individual slower requests.
 The second includes the initial solve in every sequence.
 `../../ML_model_seed_selection/joint_policy/s09_document.py` generates it from completed measurements.
 <!-- END JOINT CONFIGURATION -->
+
+`extended_coverage.pdf` shows native coverage by loop order and matched complete-time ratios by integral type. Failures and input limits remain visible.
