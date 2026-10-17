@@ -141,3 +141,11 @@ Both times include exact coefficient checks.
 The logarithmic axis shows the large time difference.
 Only completed native comparisons appear. These savings are mathematical, not learned.
 <!-- END BANANA -->
+
+
+<!-- BEGIN SEED GEOMETRY FIGURE -->
+`seed_geometry_times.pdf` compares complete time with tuned native and fixed sparse controls.
+`../../ML_model_seed_selection/cost_geometry/s10_document.py` generates the figure from saved test results.
+The dashed line marks equal time.
+The axes include this reference and every measured point.
+<!-- END SEED GEOMETRY FIGURE -->

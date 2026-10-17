@@ -1,0 +1,79 @@
+\section{Cost-trained seed regions}
+\label{app:seed-geometry}
+\subsection{The selected integral lattice}
+We specify a seed by its integer index vector $\boldsymbol\sigma$. Let $P$ be its positive-index set, let $n_{\rm top}$ be the largest number of propagators in a declared top sector, and let $h=n_{\rm top}-|P|$ be the number of absent propagators relative to that count. The number of extra denominator powers and the numerator rank are
+\begin{equation}
+ D(\boldsymbol\sigma)=\sum_i\max(0,\sigma_i-1),\qquad
+ R(\boldsymbol\sigma)=\sum_i\max(0,-\sigma_i).
+ \label{eq:geometry-degrees}
+\end{equation}
+For a target $\boldsymbol a$, write $v_i=\max(0,-a_i)$, while $u_i=\max(0,-\sigma_i)$ denotes a seed numerator power. We measure how far the seed lies outside the target's numerator-power box by
+\begin{equation}
+ q(\boldsymbol\sigma,\mathcal T)
+ =\min_{\boldsymbol a\in\mathcal T}\sum_{i\notin P}\max(0,u_i-v_i).
+ \label{eq:geometry-distance}
+\end{equation}
+Here $\mathcal T$ is the requested target set. To obtain this expression, project each coordinate $u_i$ onto the interval $[0,v_i]$. Since $u_i\geq0$, the shortest coordinate distance is $\max(0,u_i-v_i)$. Adding these distances gives the distance in the sum-of-absolute-values norm, and minimizing over the targets gives the distance to their union of boxes. With several numerator directions this union can contain a box with a nonzero interior; the construction does not impose the zigzag paths of Ref.~\cite{TubeSeeding2026}.
+
+Let $R_T$ and $D_T$ be the maximum target rank and extra denominator power. A parameter vector $\boldsymbol\theta=(\theta_0,\ldots,\theta_6)$ defines the additional inequalities
+\begin{align}
+ q(\boldsymbol\sigma,\mathcal T)&\leq
+ \max\!\left(0,\left\lfloor\theta_0+\theta_1h+
+                  \theta_2D(\boldsymbol\sigma)+\theta_6R(\boldsymbol\sigma)\right\rfloor\right),\\
+ R(\boldsymbol\sigma)&\leq
+ \max\!\left(0,\left\lfloor R_T+\theta_3-\theta_4h\right\rfloor\right),\\
+ D(\boldsymbol\sigma)&\leq\max\!\left(0,\left\lfloor D_T+\theta_5\right\rfloor\right).
+ \label{eq:geometry-boundaries}
+\end{align}
+The outer Kira bounds and its fixed subsector truncation also apply. The generator adds admissible target and master seeds and retains sector corners. These additions preserve useful starting identities but do not prove that the selected system is sufficient. The comparisons keep all positive target powers equal to one, so $D_T=0$. The dot-dependent extension therefore remains untested; five boundary parameters affect the numerator-only search, while $\theta_5=1$ remains fixed.
+
+The geometric restriction can reduce the growth with numerator rank. For one numerator direction of degree $R_T$, suppose a surrounding width $w$ stays fixed and there are $n_\perp$ other numerator directions. Distributing at most $w$ powers over these transverse directions gives $\binom{n_\perp+w}{w}$ assignments. This count follows by adding a nonnegative slack variable to make the sum equal to $w$ and counting the resulting compositions. The parallel coordinate has at most $R_T+w+1$ values, so
+\begin{equation}
+ N_{\mathrm{seed}}\leq
+ (R_T+w+1)\binom{n_\perp+w}{w}
+ \label{eq:geometry-count}
+\end{equation}
+for this fixed-sector, fixed-denominator-power example. Thus the bound grows linearly in $R_T$ when $w$ and $n_\perp$ remain fixed. A changing learned width or several simultaneously powered numerator directions need not have this scaling. The timing results use measured reductions and do not infer a general speedup from this counting argument.
+
+\subsection{Training on completed reductions}
+For each graph, the first search starts from complete Kira reductions at three training targets. It evaluates twenty-four boundary proposals through three populations. The four proposals with the lowest mean log-time ratio determine the mean and component standard deviations for the next Gaussian population, with a minimum standard deviation of $0.2$. We round parameters to quarter units and clip them to the chosen ranges: $\theta_0\in[0,3]$, $\theta_1,\theta_2\in[-1,1]$, $\theta_3\in[-1,2]$, $\theta_4\in[0,2]$, and $\theta_6\in[-1,1/2]$, with $\theta_5=1$. These choices define a finite search and do not establish a globally optimal seed set. Evolutionary optimization of IBP seed decisions is also used in Ref.~\cite{TubeSeeding2026}; the present search directly measures complete Kira time with symbolic dimension.
+
+For training request $b$, let $T_b(\boldsymbol\theta)$ include seed prediction, every reduction attempt, recovery, and the exact reference comparison. Let $T_b^{(0)}$ be the corresponding time with the tuned native seed settings. The objective is
+\begin{equation}
+ J(\boldsymbol\theta)=\frac1B\sum_{b=1}^{B}
+       \log\frac{T_b(\boldsymbol\theta)}{T_b^{(0)}}.
+ \label{eq:geometry-objective}
+\end{equation}
+Exponentiating the mean gives the geometric mean of the complete-time ratios, which explains the equal weight assigned to each request. A failed bounded reduction receives a cost of 300 seconds when forming the objective. This is a training penalty, not a successful measured reduction time. Successful recovery contributes its actual elapsed time.
+
+The first planar-box fit selects
+\begin{equation}
+ \boldsymbol\theta^*=(7/4,\;1/4,\;1/4,\;3/4,\;0,\;1,\;-1/4).
+ \label{eq:geometry-first-fit}
+\end{equation}
+The fixed control uses $(1,0,0,1,0,1,0)$, and the fitted vector allows the seed-distance bound to change with rank through its last component. Its second component changes the allowed width after a physical propagator is removed. Both choices retain the same exact Kira algebra and recovery procedure.
+
+The second stage adds twelve training requests per graph, covering ranks two, three, and four with one or two powered auxiliary entries at two new rational profiles. It compares the preceding fitted boundaries, independently varied rank allowances, two fixed surrounding widths, and unfiltered Kira. Six regression models comprise trees, random forests, and extremely randomized forests with depths two or four; forests contain 32 trees and every leaf has at least two training examples~\cite{CART1984,Breiman2001Forest,Geurts2006ExtraTrees}. Their targets are the measured log-time ratios for each boundary. Inputs include the physical family and index summaries of Appendix~\ref{app:learned-bounds}, the individual numerator and extra denominator powers, and the number of powered numerator directions. Reference coefficients do not enter these inputs.
+
+Ten separate validation requests per graph cover ranks two through four. Repeated complete reductions select a fixed sparse boundary for each graph and compare it with the cost predictors. If $\widehat y_j$ is a predicted log cost and $f$ is the fixed choice, the model selects candidate $j$ only when
+\begin{equation}
+ \widehat y_j<\widehat y_f-\eta,
+ \qquad\eta\in\{0,0.03,0.1\}.
+ \label{eq:geometry-gate}
+\end{equation}
+Exponentiating the difference gives the equivalent predicted ratio condition $\exp(\widehat y_j-\widehat y_f)<\exp(-\eta)$. Validation selects the margin and enables the cost predictor only when its total recorded time is at least three percent lower than the separately selected fixed sparse choice. Otherwise the deployment retains that fixed choice. The validation ranking uses recorded candidate costs; the independent application comparisons also include model loading and forecasting. This gate is a selection rule, rather than a proof of a future saving.
+
+\subsection{Exactness, controls, and physical coverage}
+Removing seeds removes rows from an exact IBP system. Every remaining row still follows from an integration-by-parts identity, and exact row combinations preserve those identities. The final coefficients therefore remain valid if the selected system reaches the prescribed basis. Kira checks basis membership, and the experiments compare every returned coefficient with a separately computed unfiltered reduction. An insufficient sparse system first repeats the same outer region without the sparse restriction; native and enlarged bounds follow when required. All repeated work enters the complete-time measurement.
+
+The first independent test uses eight planar-box requests at new rational profiles. The second uses ten requests each for the planar and nonplanar boxes. Both retain symbolic $d$ and a supplied master basis. The physical denominators follow Appendix~\ref{app:families}; each target has unit positive physical indices and total auxiliary numerator rank two, three, or four. A single-direction target puts the full rank on one auxiliary entry. A distributed target splits it into $\lceil R_T/2\rceil$ and $\lfloor R_T/2\rfloor$ powers on two entries. The chosen auxiliary entry changes between the two profiles. Some index patterns recur across training and testing, so these comparisons test new kinematics within known structures and target patterns. Master discovery precedes the repeated timer.
+
+Let $\kappa$ be an integer that labels a kinematic profile. In a common squared-momentum unit, the profiles are defined by
+\begin{align}
+ (s,t)_{\rm planar}&=(-1009-12\kappa,-1021-14\kappa),\nonumber\\
+ (s,t)_{\rm nonplanar}&=(-113-18\kappa,-127-10\kappa).
+ \label{eq:geometry-profiles}
+\end{align}
+These are chosen kinematic inputs, with the graph-specific scalar-product conventions in Appendix~\ref{app:families}. The first search uses $\kappa=811,812$ for training, $\kappa=813,814$ for validation, and $\kappa=821,822$ for testing. The larger cost study uses $\kappa=831,832$, $\kappa=841,842$, and $\kappa=851,852$ for those three splits. A single-direction target places its numerator on auxiliary index $8+(\kappa\bmod2)$. A distributed target places the ceiling power on $8+((\kappa+1)\bmod2)$ and the floor power on the other auxiliary index. Together with the seven unit physical powers, these rules specify the tested integrals. The second reserved set contains single-direction ranks two, three, and four, and distributed ranks three and four at each profile.
+
+Seven repetitions rotate method order on the same worker for every request, using one Kira thread. Different requests can use different cluster workers. The native control disables all learned decisions and keeps the tuned outer bounds. The fixed sparse control retains one validation-selected boundary per graph, including boundaries found during training, and performs no cost prediction. It therefore isolates the additional value of request-dependent prediction. The previous application uses the preceding published batch and equation policies. Failed references and incomplete calculations remain in the record and outside matched successful timing ratios. Paired repetition resampling describes timing variation on this fixed workload; it does not establish transfer to arbitrary graphs, masses, symbolic invariants, or higher loop orders.

@@ -4,15 +4,15 @@
 
 ## Current reduction interface
 
-Use [the combined interface](ML_model_adaptive_reduction/massless_banana/README.md).
-It first checks whether the scalar massless banana formula applies.
-Other supported requests use native Kira with the frozen batch and equation choices.
-Native row elimination and exact coefficient checks remain in place.
-The batch predictor is enabled by validation: False.
-On 96 matched nontrivial batches, the selected native workflow uses 0.1% less time than separately tuned fixed partitions with all ML disabled.
-Read the graph results, failures, and limits in [the batch study](ML_model_adaptive_reduction/batch_policy/README.md).
-The analytic formula supplies separate mathematical savings.
-Earlier studies remain available in their folders and in the notes.
+Use [the integrated seed-policy application](ML_model_seed_selection/cost_geometry/README.md).
+It first checks the exact scalar massless banana formula.
+It then applies sparse seed selection in its validated domain.
+Other supported inputs use the preceding Kira batch and equation workflow.
+Kira keeps native row elimination and exact algebra.
+Validation enables model predictions only when they improve complete time.
+Native reductions require a supplied master basis.
+Read the measured results and limits in the guide and paper.
+Earlier studies remain available for comparison.
 Their speedup factors use different workloads and cannot be multiplied.
 
 <!-- END ADAPTIVE REDUCTION -->
@@ -204,3 +204,20 @@ The formula covers scalar massless banana integrals.
 The native models apply within their recorded physical domains.
 The paper separates analytic gains, learned gains, failed requests, and regressions.
 <!-- END BANANA -->
+
+
+<!-- BEGIN COST-TRAINED SEED APPLICATION -->
+Use `ML_model_seed_selection/cost_geometry/s11_integrated.py` for the updated application.
+See [the seed-policy guide](ML_model_seed_selection/cost_geometry/README.md) for inputs, execution, and controls.
+The first evolved seed boundary uses 22.3% less time than tuned native Kira on eight planar requests.
+It uses 6.5% less time than the initial fixed-width control.
+The broader selected workflow uses 22.2% less time than tuned native Kira on 20 matched two-loop requests.
+It uses 22.6% less time than the preceding application.
+Its comparison with the fixed sparse control gives 3.6% less time.
+All successful outputs pass exact coefficient checks.
+The fixed sparse control can use a boundary discovered during training.
+See `ML_model_seed_selection/cost_geometry/summary.json` for intervals, individual times, failures, and scope.
+double_box: Validation retains the fixed sparse boundary.
+nonplanar_box: Validation enables the cost predictor.
+
+<!-- END COST-TRAINED SEED APPLICATION -->

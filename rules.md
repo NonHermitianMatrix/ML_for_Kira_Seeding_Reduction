@@ -212,3 +212,11 @@ Keep the notes, affected guides, cluster files, GitHub, and local report copy cu
 ## Further target-batch optimization (October 16, 2026)
 
 Use current primary research and measured complete reduction time to improve ML decisions and their integration with Kira. Test target grouping and other supported choices against the previous deployed method and separately tuned controls. Preserve exact checks, training separation, failures, historical evidence, and the combined 10 GB limit. Update both documents, guides, Hoffman and GitHub. State the tested physical range; finite experiments cannot establish a fastest method for all integral types or unbounded loop orders.
+
+
+<!-- BEGIN SPARSE SEED COST TRAINING -->
+Train seed choices from measured complete reduction time and integrate them before equation generation.
+Compare tuned native Kira, fixed sparse choices, and the preceding application on frozen reserved inputs.
+Retain exact checks, recovery, unsuccessful trials, and separate attribution for learned and fixed choices.
+Keep the report, notes, guides, cluster, repository, and local report current under the existing resource limits.
+<!-- END SPARSE SEED COST TRAINING -->

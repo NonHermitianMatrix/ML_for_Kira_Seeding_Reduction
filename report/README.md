@@ -213,3 +213,13 @@ The study guide explains how to reproduce the calculation.
 `integral_route_data.json` gives the combined-interface application results.
 The source and full records are in `ML_model_adaptive_reduction/massless_banana/`.
 <!-- END BANANA -->
+
+
+<!-- BEGIN COST-TRAINED SEED RESULTS -->
+`seed_geometry_results.tex` gives the new seed-policy measurements.
+`seed_geometry_appendix.tex` defines the model and derives its distance and counting formulas.
+`seed_geometry_data.json` contains the compact timing evidence.
+The first evolved boundary and the broader cost-selection study have separate controls.
+Both documents include these results.
+See `../ML_model_seed_selection/cost_geometry/README.md` for the code and full records.
+<!-- END COST-TRAINED SEED RESULTS -->

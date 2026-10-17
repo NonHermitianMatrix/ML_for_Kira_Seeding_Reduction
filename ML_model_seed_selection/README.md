@@ -750,3 +750,9 @@ It also records connected scattering tests, initialization costs, and incomplete
 Read its summary for the measured contributions and tested domain.
 
 <!-- END HIGHER SCATTERING VERIFICATION -->
+
+
+<!-- BEGIN COST-TRAINED SEED STUDY -->
+The [cost geometry study](cost_geometry/README.md) trains seed boundaries from complete Kira times.
+It includes fitted models, separate test cases, exact checks, and the complete application.
+<!-- END COST-TRAINED SEED STUDY -->
