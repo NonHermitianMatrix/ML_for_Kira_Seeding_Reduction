@@ -1,0 +1,186 @@
+\section{An exact reduction for massless banana integrals}
+\label{app:banana}
+\subsection{Definition and convolution}
+Consider the massless two-point family
+\begin{equation}
+ B_L(\boldsymbol a;p^2,d)=
+ \int\prod_{j=1}^{L}\frac{d^d\ell_j}{i\pi^{d/2}}
+ \frac{1}{\prod_{j=1}^{L}(\ell_j^2+i0)^{a_j}
+ [(p-\sum_{j=1}^{L}\ell_j)^2+i0]^{a_{L+1}}}.
+ \label{eq:banana-family}
+\end{equation}
+Here $L\geq1$, all $a_i$ are positive integers, and $p^2\ne0$. The family
+has two vertices joined by $L+1$ massless lines and is often called a banana
+or watermelon diagram. The implemented specialization covers the displayed
+scalar integrals. Auxiliary denominator entries may be present in the Kira
+definition, but their target indices must be zero. The proof does not cover
+arbitrary numerator insertions or other propagator structures.
+
+The one-loop convolution underlying this calculation is standard~\cite{Grozin2004Banana}.
+For completeness, write its Euclidean form as
+\begin{equation}
+ E_1(a,b;p_E^2)=\int\frac{d^d k_E}{\pi^{d/2}}
+                 (k_E^2)^{-a}[(p_E-k_E)^2]^{-b}.
+\end{equation}
+Here $k_E$ and $p_E$ are Euclidean loop and external momenta, and $a,b$
+are the two denominator powers. The Euler Gamma function is
+$\Gamma(z)=\int_0^\infty \eta^{z-1}e^{-\eta}d\eta$ for $\operatorname{Re}z>0$.
+Changing the integration variable to $\eta=tD$ gives the Schwinger
+representation $D^{-a}=\Gamma(a)^{-1}\int_0^\infty t^{a-1}e^{-tD}dt$
+for positive $D$ in its convergence domain. Applying this representation
+to both denominators and completing the square gives
+\begin{equation}
+ t k_E^2+u(p_E-k_E)^2
+ =(t+u)\left(k_E-\frac{u}{t+u}p_E\right)^2
+  +\frac{tu}{t+u}p_E^2.
+\end{equation}
+For $\alpha>0$, squaring $\int_{\mathbb R}e^{-\alpha x^2}dx$ gives
+a two-dimensional Gaussian integral. Polar coordinates evaluate it as
+$2\pi\int_0^\infty r e^{-\alpha r^2}dr=\pi/\alpha$.
+The positive square root and the product over momentum components give
+the normalized Gaussian momentum integral $(t+u)^{-d/2}$, continued in
+$d$ from integer dimension. Thus the Schwinger parameters $t,u>0$ give
+\begin{equation}
+ E_1=\frac{1}{\Gamma(a)\Gamma(b)}
+ \int_0^\infty dt\,du\,
+ t^{a-1}u^{b-1}(t+u)^{-d/2}
+ \exp\left[-\frac{tu}{t+u}p_E^2\right].
+\end{equation}
+Set $t=\lambda x$, $u=\lambda(1-x)$, with Jacobian $\lambda$,
+$\lambda>0$, and $0<x<1$. The $\lambda$ integral gives
+$\Gamma(a+b-d/2)[x(1-x)p_E^2]^{d/2-a-b}$. The remaining integral is
+$\int_0^1 x^{d/2-b-1}(1-x)^{d/2-a-1}dx$. To evaluate it, apply the same
+sum-and-fraction change of variables to the two integrals defining
+$\Gamma(z)\Gamma(w)$. The sum integral gives $\Gamma(z+w)$, which yields
+\begin{equation}
+ \int_0^1 x^{z-1}(1-x)^{w-1}dx
+ =\frac{\Gamma(z)\Gamma(w)}{\Gamma(z+w)}
+ \quad (\operatorname{Re}z,\operatorname{Re}w>0).
+\end{equation}
+Taking $z=d/2-b$ and $w=d/2-a$ then gives
+\begin{equation}
+ E_1=(p_E^2)^{d/2-a-b}G(a,b),\qquad
+ G(a,b)=\frac{\Gamma(a+b-d/2)\Gamma(d/2-a)\Gamma(d/2-b)}
+ {\Gamma(a)\Gamma(b)\Gamma(d-a-b)}.
+ \label{eq:banana-convolution}
+\end{equation}
+The parameter integrations first hold in a common convergence region.
+Analytic continuation defines the dimensionally regulated expression
+outside that region, as in the usual one-loop formula~\cite{Grozin2004Banana}.
+
+Let $E_L$ be the Euclidean version of Eq.~\eqref{eq:banana-family}, with
+measure $\prod_j d^d\ell_{j,E}/\pi^{d/2}$, and write $n=L+1$ and
+$A=\sum_{i=1}^{n}a_i$. Integrating the last loop combines
+the last two indices into $b=a_L+a_{L+1}-d/2$. Applying
+Eq.~\eqref{eq:banana-convolution} and then the $(L-1)$-loop formula cancels
+the factors $\Gamma(b)$ and $\Gamma(d-a_L-a_{L+1})$ between the two stages.
+Induction from $L=1$ therefore gives
+\begin{equation}
+ E_L(\boldsymbol a;p_E^2,d)=
+ (p_E^2)^{Ld/2-A}
+ \frac{\Gamma(A-Ld/2)}{\Gamma(nd/2-A)}
+ \prod_{i=1}^{n}\frac{\Gamma(d/2-a_i)}{\Gamma(a_i)}.
+ \label{eq:banana-gamma}
+\end{equation}
+Wick rotation to the denominator convention in Eq.~\eqref{eq:banana-family}
+gives one factor of $i$ per loop measure, cancelling its normalization,
+and changes the sign of each quadratic denominator. It therefore
+replaces the power factor by $(-1)^A(-p^2-i0)^{Ld/2-A}$. The remaining
+Gamma factors stay unchanged. This sign convention matters when reducing
+an integral with an additional denominator power.
+
+\subsection{Rational coefficients in a single master}
+Choose $M_L=B_L(1,\ldots,1;p^2,d)$ and define $b_i=a_i-1\geq0$ and
+$K=\sum_i b_i=A-n$. The Gamma function recurrence gives
+\begin{equation}
+ \frac{\Gamma(z+K)}{\Gamma(z)}=(z)_K,\qquad
+ \frac{\Gamma(z)}{\Gamma(z-K)}=(-1)^K(1-z)_K,
+\end{equation}
+where $(z)_K=\prod_{j=0}^{K-1}(z+j)$ and $(z)_0=1$. Integration by parts
+in the defining Gamma integral gives $\Gamma(z+1)=z\Gamma(z)$ when the
+boundary terms vanish; analytic continuation extends the relation.
+Applying this recurrence repeatedly gives the first identity. Reversing the
+finite product and factoring out $-1$ from each factor gives the second.
+In the ratio of Eq.~\eqref{eq:banana-gamma} to its corner value, the
+dimension-independent index factors give $\Gamma(1)/\Gamma(a_i)=1/b_i!$.
+The shifted factors satisfy
+\begin{equation}
+ \prod_i\frac{\Gamma(d/2-1-b_i)}{\Gamma(d/2-1)}
+   =\frac{(-1)^K}{\prod_i(2-d/2)_{b_i}}.
+\end{equation}
+This sign cancels the sign from the inverse Gamma ratio. The remaining
+Minkowski power factor is
+$(-1)^K(-p^2-i0)^{-K}=(p^2+i0)^{-K}$ because $K$ is an integer.
+Thus the required reduction is
+\begin{equation}
+ \boxed{\displaystyle
+ B_L(\boldsymbol a;p^2,d)=
+ \frac{(n-Ld/2)_K\,(n+1-nd/2)_K}
+ {(p^2)^K\prod_{i=1}^{n}(2-d/2)_{b_i}\,b_i!}\,M_L.}
+ \label{eq:banana-ratio}
+\end{equation}
+We understand the rational coefficient by meromorphic continuation in $d$
+and generic nonzero $p^2$. The corner value is generically nonzero, and
+Eq.~\eqref{eq:banana-ratio} expresses every scalar target in this class
+through it. This establishes a one-element basis for the stated scalar
+class without a new master-discovery calculation.
+
+The implementation forms finite products of linear factors in $d$ and
+cancels common factors with exact rational arithmetic before formatting
+the result. It uses no trained model to predict a coefficient. The domain
+check verifies the physical denominator momenta, zero masses, the single
+external squared momentum, positive physical indices, and zero auxiliary
+indices. If the caller supplies a basis, that basis must contain $M_L$.
+The implementation caps the loop count at 64 and the total extra powers
+at 256 to bound work; the mathematical identity holds for every positive
+integer loop count under the stated assumptions.
+
+\subsection{Independent comparisons}
+The native comparison uses three targets at each of one through six loops,
+with rational squared momentum $p^2=-1651$, and repeats the calculation
+three times. A second comparison keeps $p^2$ symbolic at one through four
+loops. The requested indices raise one physical power by one or two.
+Kira receives the corner basis, generates native IBP equations with all ML
+disabled, and returns rational coefficients. Exact subtraction checks these
+coefficients against Eq.~\eqref{eq:banana-ratio}. Both reported timings include
+their coefficient check; the direct formula also includes its domain check.
+Shared Python imports precede these timings.
+
+Eight initial higher-loop requests fail, including corner-basis rejections
+and an allocation failure in the six-loop preparation. We retain them and
+make a separate fixed-seed comparison. Let $r$ be the
+largest sum of positive target indices, $s$ the largest numerator rank,
+and $q$ the largest number of extra denominator powers. Development at
+$p^2=-1649$ compares seed bounds $(r-1,s,q-1)$, $(r,s,q)$,
+$(r,s+1,q)$, and $(r+1,s+1,q+1)$; the positive-power limit never falls
+below the number of physical denominators. Symbolic development changes
+the raised propagator positions at the same index profile. For each loop
+count and kinematic form, the fastest successful complete development
+calculation fixes the seed choice. A new comparison at $p^2=-1655$, or
+symbolic $p^2$ with the new index profile, uses three repetitions of that
+fixed choice. Timed failures remain separate from matched speedup ratios.
+
+Further checks use one through twelve loops and loop counts 16, 24, and 32,
+with eight distributions of one through eight extra powers at each loop
+count. The direct rational result is compared with the uncancelled Gamma
+ratio from Eq.~\eqref{eq:banana-gamma} at $d=257/101$ and $d=401/97$.
+The evaluation uses 70-digit arithmetic and a relative error threshold of
+$10^{-55}$ with denominator $\max(1,|r|)$, where $r$ is the Gamma-ratio
+value. These numerical checks supplement the derivation. Native timing
+ratios are reported only where the native calculation completes; no native
+speedup is assigned to the higher-loop cases checked by the formula alone.
+
+The combined-interface application check uses a fresh process for each
+request. Four scalar banana requests at one, four, eight, and twelve loops
+use an independent symbolic implementation of Eq.~\eqref{eq:banana-ratio}
+as their reference. It constructs rising factorials directly and does not
+call the live factor-cancellation routine. The native application requests
+use the independently checked IBP references of the target-batch study.
+All reference construction precedes application timing. Both comparison
+strategies use the same analytic route; their difference on native requests
+comes from the frozen learned or fixed reduction choices.
+Exact rational checks at $d=257/101$ also test the implemented power limit:
+one- and 64-loop targets have 256 extra powers on one denominator. A direct
+product calculation checks the factored result without expanding its
+polynomials. Further checks verify the corner identity and reject requests
+beyond the implemented loop or power limits.

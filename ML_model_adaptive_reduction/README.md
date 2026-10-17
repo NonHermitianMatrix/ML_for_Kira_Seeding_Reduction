@@ -279,3 +279,22 @@ The three-loop matched comparison and the four-loop indexing-to-projection compa
 The [equation refinement study](../ML_model_equation_selection/bound_refinement/README.md) keeps tuned seed settings and trains an earlier equation filter.
 Its comparison measures the added ML effect after seed tuning.
 <!-- END EQUATION REFINEMENT -->
+
+
+
+<!-- BEGIN BATCH POLICY -->
+## Target batch selection
+
+Read [batch_policy/README.md](batch_policy/README.md) for the learned division of target batches.
+The study compares the previous workflow and separately tuned controls.
+It retains exact checks and failed requests.
+<!-- END BATCH POLICY -->
+
+<!-- BEGIN BANANA -->
+## Analytic and learned routing
+
+The [massless banana guide](massless_banana/README.md) describes the combined interface.
+A physical-domain check selects a proved formula for one scalar two-point family.
+Other supported requests use the frozen native batch workflow.
+Analytic savings and ML savings remain separate.
+<!-- END BANANA -->

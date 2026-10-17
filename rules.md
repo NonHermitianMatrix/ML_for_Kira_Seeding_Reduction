@@ -208,3 +208,7 @@ Keep the notes, affected guides, cluster files, GitHub, and local report copy cu
 
 - Make learned decisions produce a meaningful measured saving in complete Kira time. Model type, model count, training method, and integration point are unrestricted. Review current primary research and replace ineffective deployment choices while preserving prior evidence.
 - Use equally optimized controls with every ML prediction and model load disabled. Separate learned benefits from exact algorithm changes. Include inference, loading where applicable, algebra, checks, and failed attempts. Freeze models before reserved tests and retain all outcomes. Update both documents, guides, cluster files, GitHub, and the local report under the existing resource limits.
+
+## Further target-batch optimization (October 16, 2026)
+
+Use current primary research and measured complete reduction time to improve ML decisions and their integration with Kira. Test target grouping and other supported choices against the previous deployed method and separately tuned controls. Preserve exact checks, training separation, failures, historical evidence, and the combined 10 GB limit. Update both documents, guides, Hoffman and GitHub. State the tested physical range; finite experiments cannot establish a fastest method for all integral types or unbounded loop orders.

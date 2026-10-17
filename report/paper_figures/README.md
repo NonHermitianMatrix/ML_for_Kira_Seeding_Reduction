@@ -120,3 +120,24 @@ Run `ML_model_adaptive_reduction/learned_seed_bounds/s08_analyze.py` to regenera
 `equation_refinement_times.pdf` measures the added effect of the equation model after seed tuning.
 Run `ML_model_equation_selection/bound_refinement/s05_analyze.py` to regenerate it.
 <!-- END EQUATION REFINEMENT -->
+
+
+
+<!-- BEGIN BATCH POLICY -->
+## Target batch timing plot
+
+`batch_policy_times.pdf` compares complete time with the previous workflow and separately tuned partitions with all models disabled.
+The producer is `ML_model_adaptive_reduction/batch_policy/s07_analyze.py`.
+Points divide summed batch median times. The dashed line marks equal time.
+Segments describe paired repetition variation on the stated workload.
+<!-- END BATCH POLICY -->
+
+<!-- BEGIN BANANA -->
+## Scalar banana timing plot
+
+`massless_banana_times.pdf` compares native Kira with the proved coefficient formula.
+The producer is `ML_model_adaptive_reduction/massless_banana/s06_document.py`.
+Both times include exact coefficient checks.
+The logarithmic axis shows the large time difference.
+Only completed native comparisons appear. These savings are mathematical, not learned.
+<!-- END BANANA -->

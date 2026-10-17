@@ -191,3 +191,25 @@ Both PDFs include these results.
 `equation_refinement_validation.json` records the final checks.
 Both PDFs include the new results.
 <!-- END EQUATION REFINEMENT -->
+
+
+
+<!-- BEGIN BATCH POLICY -->
+## Target batch comparison
+
+`batch_policy_results.tex` gives the model and measured results.
+`batch_policy_appendix.tex` defines the physical requests and derives the method.
+`batch_policy_data.json` contains the checked timing summaries.
+`batch_policy_validation.json` identifies the final checks and rendered PDFs.
+The study guide explains how to reproduce the calculation.
+<!-- END BATCH POLICY -->
+
+<!-- BEGIN BANANA -->
+## Exact higher-loop specialization
+
+`massless_banana_results.tex` gives the physics and results.
+`massless_banana_appendix.tex` derives the formula and defines each comparison.
+`massless_banana_data.json` and `massless_banana_followup_data.json` contain timing and check summaries.
+`integral_route_data.json` gives the combined-interface application results.
+The source and full records are in `ML_model_adaptive_reduction/massless_banana/`.
+<!-- END BANANA -->

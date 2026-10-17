@@ -1,0 +1,225 @@
+\section{Target partitions, cost learning, and exact checks}
+\label{app:batch-policy}
+\subsection{Why target grouping changes the seed region}
+Let $\mathcal T$ be a finite batch of distinct index vectors from one family.
+For a vector $\boldsymbol a$, define its extra denominator powers and numerator
+rank as $\delta(\boldsymbol a)=\sum_i\max(a_i-1,0)$ and
+$\rho(\boldsymbol a)=\sum_i\max(-a_i,0)$, as in
+Appendix~\ref{app:equation-refinement}. A partition
+$\Pi=\{\mathcal T_1,\ldots,\mathcal T_K\}$ consists of disjoint nonempty
+subsets whose union is $\mathcal T$. The number $K$ is the number of separate
+reductions. For each part, the corresponding maxima obey
+\begin{equation}
+ \max_{\boldsymbol a\in\mathcal T_k}\delta(\boldsymbol a)
+ \leq\max_{\boldsymbol a\in\mathcal T}\delta(\boldsymbol a),\qquad
+ \max_{\boldsymbol a\in\mathcal T_k}\rho(\boldsymbol a)
+ \leq\max_{\boldsymbol a\in\mathcal T}\rho(\boldsymbol a).
+ \label{eq:batch-maxima}
+\end{equation}
+These inequalities follow because each maximum on the left runs over a
+subset of the indices on the right. They explain how a partition can lower
+one or both seed limits. They do not imply a time saving: separate parts can
+generate the same intermediate equations and repeat the preparation.
+For example, one part can contain targets with large $\delta$ and zero
+$\rho$, while another contains targets with zero $\delta$ and large $\rho$.
+Their union requires both large bounds simultaneously. Kira's lower-sector
+truncation remains active in every comparison where the fixed seed policy
+requests it~\cite{Kira3}.
+
+The five candidate partitions keep the batch together, group equal values of
+$\rho$, group equal values of $\delta$, group equal sets of positive indices,
+or divide the given target sequence into consecutive groups of at most three.
+The first three group definitions depend on integral powers, and the fourth
+uses the set of positive indices that defines a sector. The last definition
+also depends on the order supplied by the caller. Every target occurs in
+exactly one part. The learned method selects one partition before equation
+generation and processes its parts sequentially with one Kira worker.
+An additional candidate keeps the batch together and disables the equation
+filter. Thus the cost predictor compares six calculations. This candidate
+allows a target-dependent decision to avoid a filter whose retry cost exceeds
+its saving.
+When a batch has at most three targets and all targets have equal rank,
+equal extra denominator powers, and the same sector, all five partitions
+contain just that batch. If the earlier policy also disables its equation
+filter on this batch, the application skips loading the cost model and uses
+the undivided unfiltered request. This follows directly from the partition
+definitions and preserves the available reduction choice.
+
+If a completed part gives
+$I_{\boldsymbol a}=\sum_m r_{\boldsymbol a m}M_m$ for every
+$\boldsymbol a\in\mathcal T_k$, then the union of these relations supplies
+the reduction of every target in $\mathcal T$. Indeed, disjointness assigns
+each target to one part, and the union property ensures that no target is
+missing. All parts use the same prescribed master basis. For a target
+expression $T=\sum_{\boldsymbol a\in\mathcal T}c_{\boldsymbol a}
+I_{\boldsymbol a}$, substitution and interchange of the finite sums gives
+\begin{equation}
+ T=\sum_{k=1}^{K}\sum_{\boldsymbol a\in\mathcal T_k}
+       c_{\boldsymbol a}\sum_m r_{\boldsymbol a m}M_m
+  =\sum_m\left(\sum_{k=1}^{K}\sum_{\boldsymbol a\in\mathcal T_k}
+       c_{\boldsymbol a}r_{\boldsymbol a m}\right)M_m.
+ \label{eq:batch-merge}
+\end{equation}
+The model changes the division of the calculation. Equation~\eqref{eq:batch-merge}
+shows how the exact part reductions provide the same requested expression.
+
+\subsection{Physical requests and reference construction}
+The denominator momenta, masses, and rational kinematic profiles are those
+specified in Appendix~\ref{app:learned-bounds}. The ten structures are the
+sunrise, planar double box, massive three-loop vacuum, massive three-loop
+ladder, nonplanar box, pentagon, external-virtuality box, three- and four-loop
+boxes with bubbles, and four-loop massless two-point family. The dimension
+$d$ remains symbolic. For the first seven structures, let $D$, $R$, $X$, and
+$P$ denote the three-target sets with extra denominator powers, rank two,
+mixed powers, and a pinched propagator in Eq.~\eqref{eq:bounds-targets}.
+The requested batches are $D$, $R$, $X$, $D\cup R$, $P\cup R$, and
+$D\cup R\cup X\cup P$. The two bubble-box structures and the massless
+two-point family use the corresponding one-dot, one-numerator, and corner
+sets from that appendix, with the corner set also taking the place of $P$.
+Repeated index vectors and identical complete batches at a profile appear
+once. Development uses $h=701$, training uses $h=711$, validation uses
+$h=712$, and the reserved comparison uses $h=721,722$.
+
+Each component first receives a native reduction with expanded seed limits.
+We collect the resulting master indices into a common basis, reduce the
+components in that basis, and check each coefficient again after increasing
+the numerator limit by one. The checked component relations form the
+reference for each union. A failure in discovery, common-basis reduction, or
+the enlarged check excludes that batch from the timed comparison and remains
+in the record. Agreement with this finite enlargement does not prove a
+minimal basis. Reference construction remains outside the application timer;
+the timed request receives the basis and generates its own IBP equations.
+
+\subsection{Predictor inputs and objective}
+The predictor uses the 27 family and target quantities specified in
+Appendix~\ref{app:learned-bounds}, together with five descriptions of the
+distribution of powers within the batch:
+\begin{equation}
+ |\{\delta(\boldsymbol a):\boldsymbol a\in\mathcal T\}|,\quad
+ |\{\rho(\boldsymbol a):\boldsymbol a\in\mathcal T\}|,\quad
+ \delta_{\max}-\delta_{\min},\quad
+ \rho_{\max}-\rho_{\min},\quad
+ \frac{1}{|\mathcal T|}\sum_{\boldsymbol a\in\mathcal T}
+             \delta(\boldsymbol a)\rho(\boldsymbol a).
+\end{equation}
+Here $|\cdot|$ denotes the number of members, and the maxima and minima run
+over the batch. The last quantity distinguishes targets that carry both
+kinds of power from a batch in which different targets carry them separately.
+No reference coefficient, measured test time, or kinematic profile number
+enters the features.
+
+Candidate definitions can produce identical ordered parts on a particular
+batch. Such candidates share the same measured training or validation cost,
+and the record identifies the common measurement. The reserved comparison
+still executes every complete application method separately, including its
+own selection and loading costs.
+
+For training batch $b$ and partition $a$, let $\bar T_{ba}$ be the median of
+two complete timings when both reductions succeed. A failed candidate
+receives a training cost equal to the larger of 300 seconds and the sum of
+its measured attempt times. This chosen penalty makes a bounded failure
+costly to the predictor; it is not an observed completion time. With
+$a=0$ denoting the undivided batch, the labels and normalized weights are
+\begin{equation}
+ y_{ba}=\log\frac{\bar T_{ba}}{\bar T_{b0}},\qquad
+ u_b=\sqrt{\min_a\bar T_{ba}},\qquad
+ w_b=\frac{u_b}{B^{-1}\sum_{b'=1}^{B}u_{b'}}.
+\end{equation}
+The positive integer $B$ is the number of usable training batches. The
+normalization gives $B^{-1}\sum_b w_b=1$ by direct substitution. The fitted
+multi-output regressors use weighted squared error,
+\begin{equation}
+ \mathcal L(\theta)=\sum_{b=1}^{B}w_b\sum_a
+       \bigl[f_{\theta,a}(x_b)-y_{ba}\bigr]^2.
+ \label{eq:batch-loss}
+\end{equation}
+Here $x_b$ is the feature vector, $\theta$ denotes the fitted regressor
+parameters, and $f_{\theta,a}$ is the predicted log-cost ratio for partition $a$. Since
+$y_{ba}-y_{ba'}=\log(\bar T_{ba}/\bar T_{ba'})$ and the logarithm is increasing,
+the smallest exact label corresponds to the smallest assigned cost. Fitting
+Eq.~\eqref{eq:batch-loss} approximates these labels; it supplies no guarantee
+that a prediction is optimal on a new batch.
+
+We fit eighteen candidates: regression trees, random forests with 32 trees,
+and extremely randomized forests with 32 trees, each with maximum depth
+2, 4, or 6 and minimum leaf population 1 or 3~\cite{CART1984,Breiman2001Forest,Geurts2006ExtraTrees}.
+The implementation uses Ref.~\cite{Pedregosa2011Bounds}. Three complete
+validation repetitions select a fixed partition $c_g$ for each graph $g$.
+A model proposes $a_\star=\arg\min_a f_{\theta,a}(x)$ when
+\begin{equation}
+ f_{\theta,a_\star}(x)<f_{\theta,c_g}(x)-\gamma,
+ \qquad \gamma\in\{0,0.02,0.05,0.1\};
+\end{equation}
+otherwise it uses $c_g$. Validation chooses the model and margin together.
+Deployment requires at least a three-percent saving in summed validation
+cost relative to the graph-specific fixed partitions. A separate validation
+run with every ML model disabled selects the fixed control for that condition.
+Ordered physical structures and target-count and power ranges constrain
+deployment; an unmatched input retains an undivided batch.
+
+To measure the remaining opportunity within this candidate pool, we also
+sum the smallest recorded cost for each validation batch:
+\begin{equation}
+ T_{\mathrm{min,recorded}}=\sum_b\min_a\bar T_{ba}
+ \leq\sum_b\bar T_{b,c_{g(b)}}=T_{\mathrm{fixed}}.
+\end{equation}
+Here $g(b)$ is the graph of batch $b$, and the sums run over validation
+batches. Each minimum is no greater than the chosen fixed candidate's
+cost, which proves the inequality after summation. This retrospective
+quantity uses measured costs that a new request does not supply. It is
+neither an achieved prediction time nor a lower bound on all possible
+reduction methods.
+
+\subsection{Timed scope and failures}
+The application loads the policy for each request. Each part uses the fixed
+seed configuration for its physical graph. The previous equation filter is
+available only inside its original checked domain, with its weights and
+threshold unchanged. An insufficient filtered system retries without the
+filter, then uses unshifted and expanded seed limits where distinct. A failed
+partition can retry the undivided unfiltered calculation if time remains.
+The common request budget is 150 seconds, and each native attempt has at most
+60 seconds. A request that exhausts this budget remains a failure.
+
+The reserved test rotates five methods through five repetition positions:
+the previous undivided workflow, that workflow with every ML model disabled,
+the new graph-specific fixed partitions with filters available, independently
+tuned fixed partitions with every ML model disabled, and the learned
+partition choice with filters available. Every method uses the same exact
+implementation, worker count, basis, and coefficient checks. Initial Python
+imports precede these repeated timers. The separate application check starts
+a new Python process and includes imports, output, and the exact comparison.
+
+For deployment, we retain the frozen domain limits, fixed choices, and
+prediction margin. We retain the tree arrays only when validation enables
+the predictor. When the predictor is disabled, its choice rule returns
+before consulting those arrays, so removing them leaves each choice
+unchanged. We check equality of the returned choices on every training,
+validation, and reserved input. This check uses no reserved timing or
+coefficient outcome. The repeated test retains its original frozen
+implementation; the fresh-process application check uses the compact
+deployment form. All ML-disabled controls keep their existing behavior.
+
+We sum per-batch median times over requests for which all methods and all
+repetitions succeed and whose output is not entirely the identity. Failed
+references, incomplete timed batches, and identity-only batches remain
+separate. The ratio of two such sums compares the same completed workload.
+Paired resampling of the five repetition positions within each batch gives
+5,000 ratios; the 2.5th and 97.5th percentiles describe timing variation for
+this specified collection. They do not establish transfer to untested
+topologies or loop orders. Some index sets recur across rational profiles,
+and the report records this overlap.
+
+Independent graph groups run on two workers during data collection and
+four workers during the reserved comparison. This shortens
+the experiment without parallelizing an individual timed reduction.
+Every reserved batch keeps all methods and repetitions on the same worker,
+with the same rotated order described above. Complete training measurements
+made before this scheduling change remain in the training record.
+
+If a cluster allocation ends during a comparison, we retain each complete
+batch and repeat every method and repetition for an unfinished batch on
+one replacement worker. The saved partial comparison remains in a separate
+archive and does not enter the timing ratios. We assign the remaining whole
+batches from validation costs and keep the frozen models, global method
+rotation, exact checks, and timing definitions unchanged. The audit checks
+the worker identity for every completed comparison batch.

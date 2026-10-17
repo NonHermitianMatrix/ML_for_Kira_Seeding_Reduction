@@ -1,0 +1,27 @@
+{
+  "job": "15188123",
+  "worker": 0,
+  "requested_wall_seconds": 10800,
+  "requested_memory_gib": 8,
+  "validation_estimated_trial_seconds": 4157.920458968729,
+  "reason": "Validation costs predict more than one hour for the nonplanar group. Extend the running allocation without restarting any measurement.",
+  "timing_protocol_changed": false,
+  "additional_workers": [
+    {
+      "worker": 1,
+      "job": "15188124",
+      "requested_wall_seconds": 7200,
+      "requested_memory_gib": 8,
+      "reason": "First-profile reductions and reference construction leave limited time for the second profile under a one-hour limit. Preserve the ongoing matched comparisons."
+    },
+    {
+      "worker": 3,
+      "job": "15188126",
+      "requested_wall_seconds": 7200,
+      "requested_memory_gib": 8,
+      "reason": "First-profile reductions and reference construction leave limited time for the second profile under a one-hour limit. Preserve the ongoing matched comparisons."
+    }
+  ],
+  "previous_requested_wall_seconds": 7200,
+  "further_extension_reason": "The first-profile nonplanar reductions and references take longer on the allocated worker than the validation estimate. Preserve every ongoing comparison under unchanged per-attempt limits."
+}

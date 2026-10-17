@@ -2,15 +2,18 @@
 
 <!-- BEGIN ADAPTIVE REDUCTION -->
 
-## Current reduction method
+## Current reduction interface
 
-Use [the equation filter](ML_model_equation_selection/bound_refinement/README.md) with the tuned fixed seed configurations.
-The policy enables a trained filter where complete-cost validation supports its use.
-It keeps native row elimination and the exact preparation improvements.
-The independent test measures the additional learned effect against the same calculation with all ML disabled.
-Read the measured graph results, failures, and domain limits.
-The [seed-cost comparison](ML_model_adaptive_reduction/learned_seed_bounds/README.md) records the separate effect of seed tuning.
-Its additional learned gain over tuned fixed settings remains within timing variation.
+Use [the combined interface](ML_model_adaptive_reduction/massless_banana/README.md).
+It first checks whether the scalar massless banana formula applies.
+Other supported requests use native Kira with the frozen batch and equation choices.
+Native row elimination and exact coefficient checks remain in place.
+The batch predictor is enabled by validation: False.
+On 96 matched nontrivial batches, the selected native workflow uses 0.1% less time than separately tuned fixed partitions with all ML disabled.
+Read the graph results, failures, and limits in [the batch study](ML_model_adaptive_reduction/batch_policy/README.md).
+The analytic formula supplies separate mathematical savings.
+Earlier studies remain available in their folders and in the notes.
+Their speedup factors use different workloads and cannot be multiplied.
 
 <!-- END ADAPTIVE REDUCTION -->
 
@@ -181,3 +184,23 @@ The [new equation filter](ML_model_equation_selection/bound_refinement/README.md
 Its test separates additional ML savings from fixed seed and exact implementation gains.
 Read the graph results, failures, and timing intervals in that guide.
 <!-- END EQUATION REFINEMENT -->
+
+
+
+<!-- BEGIN BATCH POLICY -->
+## Target batch selection
+
+The new [batch policy](ML_model_adaptive_reduction/batch_policy/README.md) chooses which targets Kira reduces together.
+Read its guide for the current deployment choice and measured limits.
+The [paper](report/report.pdf) and [notes](report/notes.pdf) contain the physics, model, and results.
+Earlier studies remain available. Their speedup factors use different workloads and cannot be multiplied.
+<!-- END BATCH POLICY -->
+
+<!-- BEGIN BANANA -->
+## Combined integral interface
+
+Read [the routing guide](ML_model_adaptive_reduction/massless_banana/README.md) for the exact specialization and native learned workflow.
+The formula covers scalar massless banana integrals.
+The native models apply within their recorded physical domains.
+The paper separates analytic gains, learned gains, failed requests, and regressions.
+<!-- END BANANA -->

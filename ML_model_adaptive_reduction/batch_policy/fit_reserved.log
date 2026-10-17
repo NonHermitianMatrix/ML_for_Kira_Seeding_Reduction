@@ -1,0 +1,15 @@
+FROZEN {"enabled": false, "gate": 0.02, "fixed_by_graph": {"bubble_box3": "whole", "bubble_box4": "whole", "double_box": "whole_off", "ladder3": "whole_off", "massless4": "dots", "nonplanar_box": "whole_off", "one_mass_box": "whole", "pentagon": "whole", "sunrise": "whole", "vacuum3": "whole"}, "selected": {"kind": "extra", "depth": 6, "min_leaf": 1, "gate": 0.02, "validation_cost": 163.6939384844154, "ratio": 0.9934051797713702, "choices": ["whole_off", "whole_off", "whole_off", "whole", "whole_off", "whole", "whole_off", "whole_off", "whole_off", "whole_off", "whole", "whole_off", "whole", "whole", "whole", "whole_off", "whole", "whole", "whole", "whole_off", "whole_off", "whole_off", "rank", "whole_off", "rank", "whole_off", "rank", "whole_off", "whole_off", "whole_off", "whole", "whole_off", "whole_off", "whole_off", "whole_off", "whole_off", "whole_off", "whole_off", "whole_off", "whole", "whole_off", "whole", "whole_off", "whole_off", "whole_off", "dots", "dots", "rank", "whole_off"]}, "validation_fixed_cost": 164.78063716366887, "minimum_gain": 0.03, "training_cases": 49, "validation_cases": 49, "actions": ["whole", "rank", "dots", "sector", "chunks3", "whole_off"], "loss": "Weighted squared error of log complete-time ratios to whole batches; failed actions carry at least 300 seconds.", "parity_checks": 882, "fitting_seconds": 8.864338343963027, "frozen_utc": "2026-10-17T07:35:45Z", "test_profiles": [721, 722], "test_repetitions": 5, "native_sha256": "27eb052f8ff4c4c8ed3bcb253371595b6b5ef4349bcded88e59026a89524aa53", "filter_source_sha256": "6ebe8cd5eab61a1df0473b2ddf013d98630dba52e602c34afda7db48112148b9"}
+Traceback (most recent call last):
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/batch_policy/s13_reserved_workers.py", line 39, in <module>
+    if a.mode=='fit_submit':fit_submit()
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/batch_policy/s13_reserved_workers.py", line 30, in fit_submit
+    jobs.append(subprocess.check_output(args,text=True).strip().split('.')[0])
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/subprocess.py", line 424, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/subprocess.py", line 505, in run
+    with Popen(*popenargs, **kwargs) as process:
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/subprocess.py", line 951, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/subprocess.py", line 1821, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'qsub'

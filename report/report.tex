@@ -22,7 +22,7 @@
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \title{Machine learning and exact preprocessing for Feynman integral reduction with Kira}
 \author{Rushil Saraswat}
-\date{October 16, 2026}
+\date{October 17, 2026}
 \newcommand{\StudySection}{\subsection}
 \newcommand{\StudySubsection}{\subsubsection}
 \begin{document}
@@ -30,17 +30,22 @@
 
 
 \begin{abstract}
-Integration-by-parts reduction expresses Feynman integrals in a master basis, and its cost depends partly on the equations constructed for the requested targets. We train classification trees to select equations before Kira constructs their symbolic coefficients. Separate validation compares shared and graph-specific trees, including a variant that retains all operators from a selected seed. Both timing controls use the same tuned seed limits, exact implementation, master basis, and native row elimination. On 68 matched nontrivial test batches of one to three integrals at one through four loops, the learned policy changes summed median time from 153.937 to 146.586 seconds, a saving of 4.8\%. The 32 batches where the frozen policy enables filtering take 8.0\% less time, with a learned-to-control ratio interval of $[0.916, 0.927]$ from paired timing repetitions. The measurements include prediction, equation generation, exact algebra, checks, and retries. Every successful output matches its exact reference. A separate check with 24 new index batches takes 6.7\% less time under the unchanged models. A comparison of learned seed bounds finds no reliable extra gain after fixed tuning, and learned row selection remains excluded. The new test uses rational kinematics, symbolic dimension, and known graph structures; broader high-loop and symbolic comparisons retain their separate limits.
+Integration-by-parts reduction expresses Feynman integrals in a master basis, and its cost depends partly on the equations generated for the targets. We train equation filters and complete-time predictors while retaining exact algebra and native row elimination in Kira. The equation-filter comparison gives 4.8\% less time on 68 matched batches at one through four loops, including 8.0\% less time on the 32 batches where validation enables filtering. Validation retains fixed target partitions. The separate target-batch comparison gives 1.5\% more time than the preceding undivided workflow across 96 matched requests. It uses 0.8\% more time than fixed partitions with the same filters and 0.1\% less time than a separately tuned control with all ML disabled. Validation disables the new predictor, so this comparison establishes no additional ML gain from batch selection. All successful coefficients match exact references, and timing includes model loading, prediction, equation generation, algebra, checks, and recovery. The native ML comparisons use rational kinematics, symbolic dimension, supplied master bases, and known graph structures. Learned row selection remains excluded because it gives no reliable complete-time benefit.
+% BEGIN BANANA ABSTRACT
+For scalar massless two-point banana families, a separate exact formula gives a speedup of 21.3--357.8 times on 9 native comparisons at one through five loops. The formula has a derivation at arbitrary positive loop order under the stated assumptions; these gains are analytic.
+% END BANANA ABSTRACT
 \end{abstract}
 
 \section{Introduction}
-Higher-order perturbative corrections to scattering amplitudes and particle decay amplitudes require integrals over loop momenta. As the loop order increases, a calculation produces many integrals with related numerator and denominator structures. Integration-by-parts (IBP) identities connect these integrals and allow them to be expressed in terms of a smaller set of master integrals. This reduction is an essential step in many multiloop calculations in quantum field theory~\cite{Weinzierl2022,ChetyrkinTkachov}.
+Higher-order perturbative corrections to scattering amplitudes and particle decay amplitudes require integrals over loop momenta. As the loop order increases, a calculation produces many integrals with related numerator and denominator structures, and integration-by-parts (IBP) identities allow them to be expressed in terms of a smaller set of master integrals. This reduction is an essential step in many multiloop calculations in quantum field theory~\cite{Weinzierl2022,ChetyrkinTkachov}.
 
 Kira automates the reduction by generating algebraic identities and solving the resulting linear system~\cite{Laporta,KiraOriginal}. Although the identities are exact, the amount of work depends on which equations are generated and how the system is solved. Modern Kira versions already use improved seed and equation selection to reduce unnecessary work~\cite{Kira3}. We call the requested integrals the targets and ask whether models trained on earlier reductions can reduce the time needed to express them in a master basis.
 
 We investigate three places where a learned choice can affect the calculation: selecting the seeds from which IBP identities are generated, selecting the row used in an elimination step, and selecting individual equations before their symbolic coefficients are constructed. Earlier work has used machine-assisted search to discover seed-selection rules~\cite{Song2025}. Here we assess each model through the time required to complete the reduction, including prediction, exact checks, and any repeated calculation after an unsuccessful choice. This criterion matters because an accurate prediction or a smaller equation set can still lead to a slower calculation.
 
 The main comparisons separate two levels of decision. We first train models to choose the bounds of the seed region, using measured complete reduction times as labels. Tuned fixed bounds explain nearly all of that saving. We therefore hold those bounds fixed and train shared and graph-specific classification trees to select individual equations or whole seeds inside the region. This second comparison measures the additional effect of learned filtering. Earlier tests of row selection, exact preprocessing, and restricted high-loop recurrences provide the separate evidence needed to identify where each saving comes from.
+
+The next comparison trains a model to choose which targets Kira reduces together. This choice changes the seed limits of each group and can trade repeated preparation for a smaller equation system. We compare its complete time with the preceding undivided workflow and with separately tuned fixed partitions.
 
 We first define the notation used in this paper and explain the reduction procedure. We then compare learned seed bounds with tuned fixed settings and use that result to motivate the new equation filters. The main results measure their added effect on complete calculation time. The final sections distinguish learned gains from exact implementation changes and state the physical scope. The appendices retain earlier model tests, wider coverage checks, integral definitions, model specifications, and derivations.
 
@@ -92,7 +97,7 @@ Every completed target must reach the prescribed master basis. In the comparison
 \label{tab:decisions}
 \begin{tabularx}{\linewidth}{@{}lYY@{}}\toprule
 Model & Decision & Possible saving\\\midrule
-Seed selection & Which index vectors supply IBP identities? & Generate fewer groups of equations.\\
+Seed and batch selection & Which seed regions and target groups should Kira use? & Limit equation generation and repeated work.\\
 Row selection & Which allowed row eliminates the next integral? & Reduce intermediate expressions and operations.\\
 Equation selection & Which seed--operator pairs are useful? & Avoid constructing unnecessary coefficients.\\\bottomrule
 \end{tabularx}
@@ -102,10 +107,18 @@ The following comparisons retain native row elimination. The original row networ
 
 \input{learned_bounds_results}
 \input{equation_refinement_results}
+\input{batch_policy_results}
+\input{massless_banana_results}
 
 \section{Overall performance and physical scope}
 \label{sec:overall}
+% BEGIN BANANA OVERALL
+The separate analytic specialization reduces scalar massless banana targets through one corner master, with a derived coefficient valid at every positive loop count. Its 9 completed native comparisons give a speedup of 21.3--357.8 times for the stated targets. These gains come from exact mathematics and are separate from the ML gains (Section~\ref{sec:banana}).
+% END BANANA OVERALL
 \subsection{What the model comparisons establish}
+% BEGIN BATCH POLICY OVERALL
+The target-batch comparison in Section~\ref{sec:batch-policy} gives 1.5\% more time than the previous undivided workflow across 96 matched batches with up to 11 targets. Its additional change relative to fixed partitions with the same filters is 0.8\% more time, with ratio interval $[0.988, 1.035]$. Validation disables the new predictor, so this comparison establishes no additional ML gain from batch selection. Every successful reduction passes exact coefficient checks. This is a separate workload from the smaller-batch filter study.
+% END BATCH POLICY OVERALL
 % BEGIN EQUATION REFINEMENT OVERALL
 After fixed seed tuning, newly trained equation filters give 8.0\% less complete time on 32 matched batches where validation enables them, with 4.8\% time saving across all 68 matched batches. These controls disable all ML and retain the same seed settings and exact implementation. Section~\ref{sec:equation-refinement} gives the failures, timing intervals, and physical limits.
 % END EQUATION REFINEMENT OVERALL
@@ -125,6 +138,9 @@ The earlier model tests and the exact preprocessing study answer separate questi
 \label{tab:overall}
 \begin{tabularx}{\linewidth}{@{}lYY@{}}\toprule
 Method & Tested calculation & Result for complete time\\\midrule
+% BEGIN BATCH POLICY TABLE
+Target batch choice & 96 matched batches; up to 11 targets & 1.5\% more time than previous; 0.8\% more time than fixed partitions\\
+% END BATCH POLICY TABLE
 % BEGIN EQUATION REFINEMENT TABLE
 Trained equation filters & 68 matched batches; loops 1--4 & 4.8\% less time than tuned ML-off control; 8.0\% on 32 active batches\\
 % END EQUATION REFINEMENT TABLE
@@ -167,14 +183,21 @@ The comparison uses eight fresh groups, each containing three mass profiles with
 This result depends on the structure of the family. The benchmark constructs Euler and mass partial-fraction identities rather than a general high-loop IBP system. Earlier checks at loop orders 13, 16, 24, and 32 use the same family, and the recurrence proof applies to every positive integer loop order under its stated assumptions. The demonstrated high-loop result therefore concerns this restricted vacuum problem; the connected scattering comparisons in Sections~\ref{sec:components} and~\ref{sec:adaptive} have separate definitions and timings.
 
 \section{Conclusion}
+% BEGIN BATCH POLICY CONCLUSION
+The target-batch comparison in Section~\ref{sec:batch-policy} gives 1.5\% more time than the previous undivided workflow across 96 matched batches with up to 11 targets. Its additional change relative to fixed partitions with the same filters is 0.8\% more time, with ratio interval $[0.988, 1.035]$. Validation disables the new predictor, so this comparison establishes no additional ML gain from batch selection. Every successful reduction passes exact coefficient checks. This is a separate workload from the smaller-batch filter study.
+% END BATCH POLICY CONCLUSION
+
 We train models for decisions that affect exact Feynman integral reduction and evaluate their effect on complete calculation time. The new equation filters act before symbolic coefficient construction, using target and seed indices to select individual identities or whole groups from a seed. Kira performs exact elimination and retries without the filter when the first equation set is insufficient.
 
 With tuned seed bounds and exact implementation changes held fixed, the reserved comparison changes summed median time from 153.937 to 146.586 seconds across 68 matched nontrivial batches. Filtering is enabled on 32 batches, whose corresponding times are 91.707 and 84.384 seconds. The 95\% paired-repetition interval for this subset's time ratio is $[0.916, 0.927]$. The comparison includes prediction and recovery, and every successful output passes exact coefficient checks. The separate index-transfer check takes 6.7\% less time across 24 matched batches, with ratio interval $[0.928, 0.940]$. Section~\ref{sec:equation-refinement} reports individual graphs, incomplete references, and the fresh-application check.
 
 The seed-bound study explains why a matched fixed control is necessary. Its learned choice saves 27.8\% against unshifted bounds, but the additional 0.5\% over tuned fixed settings lies within timing variation. Learned row elimination also supplies no reliable gain in its recorded comparisons, so the retained application uses native row choices. These results guide deployment: use the validated filters with tuned seed settings and retain exact fallback.
 
-The earlier full-calculation comparison gives 88.2\% less time than the saved original executable on 37 matched requests, including master discovery. That saving comes from exact implementation changes and has a different workload. The restricted vacuum recurrence verifies all twelve studied loop orders under its identity assumptions. Neither result can be multiplied by the new filter gain. The new ML test supplies a master basis and covers known structures at one through four loops with rational kinematics and symbolic dimension. Larger target batches, general high-loop scattering, unrestricted symbolic kinematics, and globally minimal reduction paths remain outside its demonstrated scope.
+The earlier full-calculation comparison gives 88.2\% less time than the saved original executable on 37 matched requests, including master discovery. That saving comes from exact implementation changes and has a different workload. The restricted vacuum recurrence verifies all twelve studied loop orders under its identity assumptions. Neither result can be multiplied by the new filter gain. The new ML test supplies a master basis and covers known structures at one through four loops with rational kinematics and symbolic dimension. The target-partition study extends the tested batch sizes as described in Section~\ref{sec:batch-policy}. General high-loop scattering, unrestricted symbolic kinematics, and globally minimal reduction paths remain outside the demonstrated scope.
 
+% BEGIN BANANA CONCLUSION
+The separate analytic specialization reduces scalar massless banana targets through one corner master, with a derived coefficient valid at every positive loop count. Its 9 completed native comparisons give a speedup of 21.3--357.8 times for the stated targets. These gains come from exact mathematics and are separate from the ML gains (Section~\ref{sec:banana}).
+% END BANANA CONCLUSION
 \appendix
 \renewcommand{\thesection}{\AlphAlph{\value{section}}}
 \renewcommand{\theHsection}{appendix.\arabic{section}}
@@ -327,6 +350,8 @@ The local-model tests show that useful equations, accurate labels, and faster in
 \input{coverage_appendix}
 \input{learned_bounds_appendix}
 \input{equation_refinement_appendix}
+\input{batch_policy_appendix}
+\input{massless_banana_appendix}
 \begingroup
 \small
 \setlength{\parskip}{0pt}
