@@ -1,5 +1,12 @@
+<!-- BEGIN COMPLETE TIME SELECTION -->
+The current combined application is ML_model_adaptive_reduction/hybrid_experts/s01_runtime.py.
+Read its README for exact routes, the sparse expert, complete-time controls, and measured limits.
+The preceding broad comparison remains in refined_time_policy/.
+The current paper and detailed notes retain all three new comparisons.
+<!-- END COMPLETE TIME SELECTION -->
+
 <!-- BEGIN THIRTEEN LOOP BLOCKS -->
-Use `ML_model_adaptive_reduction/factorized_policy/s08_reduce.py` for the checked block extension.
+The earlier checked block extension uses `ML_model_adaptive_reduction/factorized_policy/s08_reduce.py`.
 Read its README for exact formulas, learned seed bounds, complete tests, and limits through thirteen loops.
 The report separates ML gains from exact changes and records incomplete coupled reductions.
 <!-- END THIRTEEN LOOP BLOCKS -->
@@ -257,3 +264,6 @@ These results use known massless two-loop boxes, rational kinematics, symbolic d
 The current frozen application has a broader test in `Kira_comparison/extended_coverage/`. It records native completion, failures, input limits, and separate exact analytic checks through twelve loops. Read that folder and the new report section for the measured scope.
 
 ML_model_adaptive_reduction/portfolio_policy contains the new family-aware seed-cost models and complete-time comparisons. It also records the higher-loop sector-storage change and scalar full-coordinate checks.
+
+
+

@@ -1,0 +1,24 @@
+\section{Details of complete-time selection}
+\label{app:total-time-details}
+The training parameter profile is 1901 and the validation profile is 1907. Training targets use dots, a dot with one numerator power, and numerator rank two; exact formulas remove some requests before native collection. Validation uses the first two shapes. Reserved native requests use profile 2011 and additionally include pinched targets; products use $2027+4L$, analytic requests use 2039, and the three-loop ladder uses 2053. No reserved measurement changes the trained selector. We collected the unadjusted native-bound candidate after the six adjusted candidates, before model fitting. The reserved comparison then times all four methods in rotated order on the same worker for each request.
+
+The candidates use seven seed settings, thirty tree or forest structures, two possible anchor settings where distinct, and margins $0$, $0.03$, $0.08$, or $0.15$. A forest draws sixteen bootstrap samples, each the size of the training collection, and samples fourteen features at each node. Leaves store mean complete costs. A single tree examines all features. Threshold searches use at most seventeen feature values. The split must save more than $0.002$ seconds per request in its training node. The feature-range guard checks loop and external-momentum counts, index counts, symbolic-invariant counts, maximum dots and rank, positive-index counts, massive and coupled denominators, loop incidence and degree, maximum positive-power sum, target-sector deficit, and the basis dot gap.
+
+Validation chooses d2\_n4\_t16\_a0\_m0.0. Model fitting takes 5.667 seconds; the timed collection of native training labels is a separate cost. The deployment flag is enabled. The table below preserves coverage at every loop order.
+\begin{center}\small
+\begin{tabular}{@{}rrrrr@{}}\toprule
+Loops & Requested & Learned verified & Native verified & Fixed verified\\\midrule
+1 & 23 & 23 & 23 & 23\\
+2 & 29 & 29 & 29 & 29\\
+3 & 15 & 14 & 14 & 14\\
+4 & 6 & 6 & 6 & 6\\
+5 & 6 & 6 & 6 & 6\\
+6 & 6 & 6 & 6 & 6\\
+7 & 6 & 6 & 6 & 6\\
+8 & 6 & 6 & 6 & 6\\
+9 & 6 & 6 & 6 & 6\\
+10 & 6 & 6 & 6 & 6\\
+11 & 6 & 6 & 6 & 6\\
+12 & 6 & 6 & 6 & 6\\
+13 & 6 & 6 & 6 & 6\\
+\bottomrule\end{tabular}\end{center}

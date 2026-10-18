@@ -1,0 +1,19 @@
+\section{A tighter condition for the master-basis cutoff}
+\label{app:refined-time}
+The cost objective, target definitions, and 51 inputs remain those in Appendix~\ref{app:total-time}. The new model learns from fresh profiles, and all nine candidate costs for one request are measured together on the same worker. The notes give the training and test profiles and the selected model parameters.
+
+Kira restricts the numerator rank in a sector through~\cite{Kira3}
+\begin{equation}
+ s\leq\max\{1,t-\ell+1,s_{\mathrm{set}}\}.
+ \label{eq:refined-cutoff}
+\end{equation}
+Here $t$ is the sector's positive-index count, $\ell$ is the truncation parameter, and $s_{\mathrm{set}}$ is the rank limit explicitly assigned to that sector. A master with rank $s_M\leq\max(1,s_{\mathrm{set},M})$ already satisfies this additional cutoff for any $\ell$. For every other master, Eq.~\eqref{eq:refined-cutoff} reduces to $s_M\leq t_M-\ell+1$. Rearranging gives $\ell\leq t_M+1-s_M$.
+
+Let $\mathcal H$ contain precisely the masters with $s_M>\max(1,s_{\mathrm{set},M})$. If $\ell_0=t_{\mathrm{top}}-s_T$ is the proposed truncation value, the largest value no greater than $\ell_0$ that admits all required masters is therefore
+\begin{equation}
+ \ell_* = \min\left(\ell_0,\min_{M\in\mathcal H}\{t_M+1-s_M\}\right).
+ \label{eq:refined-basis}
+\end{equation}
+An empty inner set imposes no bound, so $\ell_*=\ell_0$ in that case. Taking the minimum enforces each master's inequality, while any larger value would violate at least one of the active bounds or exceed the proposed value. Thus Eq.~\eqref{eq:refined-basis} is the least enlargement needed for this particular cutoff-admission condition. It does not determine a sufficient IBP system or a minimum reduction time.
+
+The two added candidates use $\ell_*$ with the ordinary or increased numerator-rank bound. Their outer positive-power, numerator-rank, and dot bounds still contain the supplied master basis. The explicitly seeded top sectors use the candidate's assigned rank bound; other sectors have $s_{\mathrm{set}}=0$ unless explicitly declared. The previous seven candidates remain available, so the trained policy can select a conservative setting when its complete cost is lower. Every candidate keeps the exact coefficient and master-basis checks, and failed attempts retain their recovery cost in training and testing.

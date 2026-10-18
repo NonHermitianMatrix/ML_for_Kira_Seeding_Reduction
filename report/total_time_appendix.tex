@@ -1,0 +1,87 @@
+\section{Derivation of the complete-time training rule}
+\label{app:total-time}
+For a target batch $i$ and an initial Kira setting $a$, let $T_{ia}$ be the measured time from application launch to exact comparison and process completion. This includes loading, selection, equation generation, algebra, and every recovery attempt. We define the training cost
+\begin{equation}
+ \begin{aligned}
+ \widetilde T_{ia}^{(q)}&=\begin{cases}T_{ia}^{(q)},&\text{verified},\\
+ \max(220\,\mathrm{s},T_{ia}^{(q)}),&\text{unverified},
+ \end{cases}\\
+ C_{ia}&=\operatorname{median}_{q}\widetilde T_{ia}^{(q)}.
+ \end{aligned}
+ \label{eq:total-cost}
+\end{equation}
+Here $q$ labels repetitions. The 220-second penalty is a training choice that makes an unfinished calculation costly; it does not estimate its unknown completion time. The results use measured seconds and completion counts, with no penalty substituted into reported speedups.
+
+We construct a tree from structural features of the target integrals and their required master basis. In a leaf containing training requests $S$, choosing one action $a$ incurs total cost $\sum_{i\in S}C_{ia}$. Minimizing this expression gives the leaf action and cost,
+\begin{equation}
+ a_S=\arg\min_a\sum_{i\in S}C_{ia},\qquad
+ J(S)=\min_a\sum_{i\in S}C_{ia}.
+ \label{eq:total-leaf}
+\end{equation}
+A candidate feature threshold divides $S$ into disjoint sets $S_-$ and $S_+$. The two leaves can choose their actions separately, so their minimum combined cost is $J(S_-)+J(S_+)$. We therefore choose the threshold that gives the largest positive decrease
+\begin{equation}
+ \Delta J=J(S)-J(S_-)-J(S_+).
+ \label{eq:total-split}
+\end{equation}
+This derivation trains the partition directly from elapsed reduction cost. Cost-sensitive algorithm selection also uses unequal penalties for expensive choices~\cite{Xu2011HydraMIP}. Our particular split rule follows from Eqs.~\eqref{eq:total-leaf}--\eqref{eq:total-split}; it does not certify a globally optimal tree or reduction path.
+
+Each leaf stores the mean cost for every candidate action. A single tree predicts these means, while a forest averages the means from its reached leaves. If $\widehat C_a$ is the predicted cost, $a_0$ is the validation-selected anchor, $\delta$ is a decision margin, and $\tau=0.002\,\mathrm{s}$ is the decision allowance, the candidate $a_*=\arg\min_a\widehat C_a$ replaces the anchor only when
+\begin{equation}
+ \widehat C_{a_*}+\tau<(1-\delta)\widehat C_{a_0}.
+ \label{eq:total-gate}
+\end{equation}
+The condition requires the predicted saving to exceed the allowance and margin. Validation must also show at least 1.5\% less cost than the best fixed candidate, with no increase in unverified requests, before the application enables learned decisions. Inputs outside the recorded structural ranges use native settings. These tests control deployment; they do not guarantee a saving on a new input.
+
+The master-basis check also informs the seed region. For an integral with indices $\boldsymbol a$, define $r(\boldsymbol a)=\sum_j\max(a_j,0)$, $s(\boldsymbol a)=\sum_j\max(-a_j,0)$, $u(\boldsymbol a)=\sum_j\max(a_j-1,0)$, and $t(\boldsymbol a)=\sum_j\mathbf1_{a_j>0}$. These are the positive-power sum, numerator rank, number of dots, and number of positive indices. For the six basis-compatible candidates, we enlarge the corresponding bounds to contain the supplied basis. The unadjusted native candidate retains its original bounds. Kira's additional subsector restriction is $s\leq\max(1,t-\ell+1,s_{\mathrm{set}})$, where $s_{\mathrm{set}}$ is the explicitly assigned sector limit~\cite{Kira3}. Our first selector uses the stronger sufficient condition
+\begin{equation}
+ \ell\leq\min_{M}\{t(M)-s(M)\}.
+ \label{eq:total-basis}
+\end{equation}
+We lower a proposed cutoff when needed to satisfy Eq.~\eqref{eq:total-basis}. It gives $t(M)-\ell+1\geq s(M)+1$, so each master passes the extra cutoff once the outer bounds contain it. This conservative choice can admit more seeds than necessary. It does not prove that the resulting identities suffice, so the application retains the exact master-basis check and less restrictive recovery settings.
+
+\subsection{Target batches and basis features}
+\label{app:total-targets}
+The denominator definitions and rational kinematic profiles follow Appendix~\ref{app:families-new}. We specify the new target powers here so that the training and test batches have an explicit mathematical definition. Let $n$ be the number of physical denominators, let $N$ include the auxiliary coordinates, and define $b_j=1$ for $j\leq n$ and $b_j=0$ otherwise. For profile integer $h$ and target number $q=0,\ldots,\min(n,3)-1$, set
+\begin{equation}
+ i_q=1+((h+q)\bmod n),\qquad
+ k_q=n+1+((h+q)\bmod(N-n)),\qquad
+ v_q=1+(i_q\bmod n).
+\end{equation}
+The index $k_q$ is used only when $N>n$. With $\boldsymbol e_j$ denoting unit vector $j$, the four target shapes are
+\begin{align}
+ \boldsymbol a_q^{\rm dots}&=\boldsymbol b+(1+\mathbf1_{q=1})\boldsymbol e_{i_q},\\
+ \boldsymbol a_q^{\rm mixed}&=\boldsymbol b+\boldsymbol e_{i_q}-\boldsymbol e_{k_q},\\
+ \boldsymbol a_q^{\rm rank2}&=\boldsymbol b-2\boldsymbol e_{k_q},\\
+ \boldsymbol a_q^{\rm pinched}&=\boldsymbol b-\boldsymbol e_{i_q}+\boldsymbol e_{v_q}.
+\end{align}
+Here $\mathbf1_{q=1}$ equals one for $q=1$ and zero otherwise. If there is no auxiliary coordinate, the mixed shape omits its numerator term and the rank-two shape becomes $\boldsymbol b+2\boldsymbol e_{i_q}$. The pinched shape removes one physical denominator and increases the next power by one. Training uses the first three shapes, validation uses the first two, and testing uses all four. We remove requests already handled by the exact formulas when defining the native training and validation collection. The pentagon structure is also excluded from both sets.
+
+Independent products use the dotted shape for each vacuum, massive two-point, or ladder block. Their nonplanar box blocks and one-loop box remainders instead use $\boldsymbol b+2\boldsymbol e_{i_q}$ for each target. Blocks share external invariants and have disjoint loop momenta; cross-block auxiliary indices remain zero. At even loop order, the separate analytic test uses $\boldsymbol b+\boldsymbol e_{i_q}-\boldsymbol e_{k_q}$ when an auxiliary coordinate exists, and omits the numerator otherwise. At odd loop order it uses $\boldsymbol b+2\boldsymbol e_{i_q}$. The notes give the disjoint profile integers and preserve every resulting index vector in the measurement records.
+
+For a nonempty master basis $\mathcal B$, define $r_B=\max_{M\in\mathcal B}r(M)$, $s_B=\max_{M\in\mathcal B}s(M)$, $u_B=\max_{M\in\mathcal B}u(M)$, and $\ell_B=\min_{M\in\mathcal B}[t(M)-s(M)]$. Let $s_T$ and $u_T$ be the corresponding target maxima, and write $x_+=\max(x,0)$. The seven added features are
+\begin{equation}
+ \boldsymbol z_B=(|\mathcal B|,r_B,s_B,u_B,\ell_B,
+ (s_B-s_T)_+,(u_B-u_T)_+).
+\end{equation}
+These quantities describe the required basis before reduction. They contain no coefficient values. The implementation uses zeros for the basis summaries when the list is empty and applies no basis-dependent enlargement in that case.
+
+\subsection{The seven candidate settings}
+Let $r_T,s_T,u_T$ be target maxima and let $t_{\rm top}$ be the largest positive-index count among the declared top sectors. The unadjusted native candidate uses $(\max(t_{\rm top},r_T),s_T,u_T)$ and no subsector truncation. For an adjusted candidate with offsets $(\Delta r,\Delta s,\Delta u)$, the bounds are
+\begin{equation}
+ (r,s,u)=\bigl(\max(t_{\rm top},r_T+\Delta r,r_B),
+ \max(s_T+\Delta s,s_B),\max(u_T+\Delta u,u_B)\bigr).
+\end{equation}
+Table~\ref{tab:total-actions} completes the action definition. A dash disables the extra subsector cutoff. The native region, raised rank, and expanded region provide recovery choices when a restricted region fails its exact basis check.
+\begin{table}[!htbp]\centering\small
+\caption{The six basis-compatible candidates, in addition to the unadjusted native candidate.}
+\label{tab:total-actions}
+\begin{tabularx}{\linewidth}{@{}Ycl@{}}\toprule
+Candidate & $(\Delta r,\Delta s,\Delta u)$ & Subsector cutoff $\ell$\\\midrule
+Compatible native & $(0,0,0)$ & --\\
+Increased rank & $(0,1,0)$ & --\\
+Enlarged region & $(1,1,1)$ & --\\
+Truncated & $(0,0,0)$ & $\min(t_{\rm top}-s_T,\ell_B)$\\
+Truncated with increased rank & $(0,1,0)$ & $\min(t_{\rm top}-s_T,\ell_B)$\\
+Relaxed truncation & $(0,0,0)$ & $\min(t_{\rm top}-s_T-1,\ell_B)$\\\bottomrule
+\end{tabularx}
+\end{table}

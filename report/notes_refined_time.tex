@@ -1,0 +1,24 @@
+\section{Details of complete-time selection}
+\label{app:refined-time-details}
+The training parameter profile is 2101 and the validation profile is 2107. Training targets use dots, a dot with one numerator power, and numerator rank two; exact formulas remove some requests before native collection. Validation uses the first two shapes. Reserved native requests use profile 2203, with rank-two and pinched targets added for three structures; products use $2213+4L$, the thirteen-loop analytic requests use 2221, and the three-loop ladder uses 2227. The product grid includes all four structures at odd loop orders and one rotating structure at each even order. No reserved measurement changes the trained selector. We time all nine training candidates together in rotated order on the same worker for each request. The reserved comparison also uses rotated method order.
+
+The candidates use nine seed settings, thirty tree or forest structures, two possible anchor settings where distinct, and margins $0$, $0.03$, $0.08$, or $0.15$. A forest draws sixteen bootstrap samples, each the size of the training collection, and samples fourteen features at each node. Leaves store mean complete costs. A single tree examines all features. Threshold searches use at most seventeen feature values. The split must save more than $0.002$ seconds per request in its training node. The feature-range guard checks loop and external-momentum counts, index counts, symbolic-invariant counts, maximum dots and rank, positive-index counts, massive and coupled denominators, loop incidence and degree, maximum positive-power sum, target-sector deficit, and the basis dot gap.
+
+Validation chooses d3\_n2\_t16\_a0\_m0.0. Model fitting takes 8.568 seconds; the timed collection of native training labels is a separate cost. The deployment flag is disabled. The table below preserves coverage at every loop order.
+\begin{center}\small
+\begin{tabular}{@{}rrrrr@{}}\toprule
+Loops & Requested & Learned verified & Native verified & Fixed verified\\\midrule
+1 & 12 & 12 & 12 & 12\\
+2 & 17 & 17 & 17 & 17\\
+3 & 9 & 8 & 8 & 8\\
+4 & 1 & 1 & 1 & 1\\
+5 & 4 & 4 & 4 & 4\\
+6 & 1 & 1 & 1 & 1\\
+7 & 4 & 4 & 4 & 4\\
+8 & 1 & 1 & 1 & 1\\
+9 & 4 & 4 & 4 & 4\\
+10 & 1 & 1 & 1 & 1\\
+11 & 4 & 4 & 4 & 4\\
+12 & 1 & 1 & 1 & 1\\
+13 & 6 & 6 & 6 & 6\\
+\bottomrule\end{tabular}\end{center}

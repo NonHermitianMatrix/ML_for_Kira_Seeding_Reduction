@@ -210,6 +210,30 @@ def main():
             assert abs(v['ratio']-totals['learned']/totals[b])<1e-12
     q=HERE.parent/'ML_model_adaptive_reduction/factorized_policy/summary.json'
     if q.exists():assert json.loads(q.read_text())==factorized
+    total_time=json.loads((HERE/'total_time_data.json').read_text())
+    assert total_time['complete'] and total_time['requested']==len(total_time['rows'])
+    assert 'sec:total-time' in labels and 'app:total-time' in labels
+    for group in total_time['comparisons'].values():
+        for v in group.values():
+            if v['cases']:assert abs(v['ratio']-v['learned_seconds']/v['control_seconds'])<1e-12
+    q=HERE.parent/'ML_model_adaptive_reduction/total_time_policy/summary.json'
+    if q.exists():assert json.loads(q.read_text())==total_time
+    refined_time=json.loads((HERE/'refined_time_data.json').read_text())
+    assert refined_time['complete'] and refined_time['requested']==len(refined_time['rows'])
+    assert 'sec:refined-time' in labels and 'app:refined-time' in labels
+    for group in refined_time['comparisons'].values():
+        for v in group.values():
+            if v['cases']:assert abs(v['ratio']-v['learned_seconds']/v['control_seconds'])<1e-12
+    q=HERE.parent/'ML_model_adaptive_reduction/refined_time_policy/summary.json'
+    if q.exists():assert json.loads(q.read_text())==refined_time
+    hybrid_expert=json.loads((HERE/'hybrid_expert_data.json').read_text())
+    assert hybrid_expert['complete'] and hybrid_expert['requested']==len(hybrid_expert['rows'])==34
+    assert 'sec:hybrid-experts' in labels and 'app:hybrid-experts' in labels
+    for group in hybrid_expert['comparisons'].values():
+        for v in group.values():
+            if v['cases']:assert abs(v['ratio']-v['learned_seconds']/v['control_seconds'])<1e-12
+    p=HERE.parent/'ML_model_adaptive_reduction/hybrid_experts/summary.json'
+    if p.exists():assert json.loads(p.read_text())==hybrid_expert
     result=dict(general_model_test_complete=True,general_requests=general['requested'],general_checked_cases=general['overall']['cases'],external_citation_keys=len(cites),internal_references=len(refs),figures=len(figs),
         preparation_requests=preparation['requests'],preparation_exact_checks=preparation['coefficient_checks'],
         recovery_requests=recovery['requests'],recovery_exact_checks=recovery['coefficient_checks'],

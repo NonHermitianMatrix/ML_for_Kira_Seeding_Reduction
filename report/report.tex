@@ -13,7 +13,7 @@
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \title{Learning to reduce the cost of Feynman integral reduction with Kira}
 \author{Rushil Saraswat}
-\date{October 17, 2026}
+\date{October 18, 2026}
 \begin{document}
 \maketitle
 \input{paper_abstract}
@@ -25,7 +25,7 @@ Kira automates this reduction by generating identities and solving the resulting
 
 Previous studies have used machine-assisted search to improve seed regions, including sparse regions around target-dependent paths~\cite{Song2025,TubeSeeding2026}. Our comparisons use the time required to complete an exact reduction, including prediction and unsuccessful attempts. This criterion follows directly from the purpose of the model: a smaller equation set is useful only when its reduction and recovery cost give a smaller total time. Section~\ref{sec:design} defines the corresponding controls.
 
-We first identify the measured benefit of the three local decisions and retain the seed and equation models where their tests support their use. Second, we train a shared cost model from structural features and test its transfer to families and loop orders omitted from training. A further comparison trains on failed attempts and includes the preparation workflow. We then extend the application through thirteen loops for specified coupled, factorable, and analytic families. We first define the notation used in this paper, then explain the models and compare their results. The companion notes preserve historical variants, secondary experiments, and longer derivations.
+We first identify the measured benefit of the three local decisions and retain the seed and equation models where their tests support their use. Second, we train a shared cost model from structural features and test its transfer to families and loop orders omitted from training. A further comparison trains on failed attempts and includes the preparation workflow. We then extend the application through thirteen loops for specified factorable and analytic families, and retrain the final selector on complete timings with the current master-basis checks. We first define the notation used in this paper, then explain the models and compare their results. The companion notes preserve historical variants, secondary experiments, and longer derivations.
 
 \section{The reduction problem and the three decisions}
 \label{sec:physics}
@@ -132,10 +132,15 @@ The reserved physical profile is new. Its 110 requests span the defined one-mass
 \input{preparation_results}
 
 \input{factorized_results}
+\input{hybrid_baseline_summary}
+\input{hybrid_expert_results}
+
 
 \section{Overall interpretation}
 \label{sec:overall-new}
-The direct local comparisons establish savings for seed and equation decisions within their measured domains (Table~\ref{tab:retained}). The shared-model comparison tests the additional question of transfer without a family-specific rule (Section~\ref{sec:general-results}). These are separate workloads and controls, so their ratios do not form a cumulative speedup. Learned row selection remains omitted because its measured gain is not resolved from timing variation. The shared-model application enables learned seed bounds; the block extension also applies the exact reductions in Section~\ref{sec:blocks13}. The equation filter retains its separate validated application, and no combined gain is inferred from these separate tests.
+The current hybrid comparison in Section~\ref{sec:hybrid-experts} tests seed settings after exact formula and independent-block reduction. Its fixed control isolates the added learned choice under the same exact checks and recovery rules.
+
+The direct local comparisons establish savings for seed and equation decisions within their measured domains (Table~\ref{tab:retained}). The shared-model comparison tests the additional question of transfer without a family-specific rule (Section~\ref{sec:general-results}). These are separate workloads and controls, so their ratios do not form a cumulative speedup. Learned row selection remains omitted because its measured gain is not resolved from timing variation. The current hybrid uses its validated sparse expert and the exact reductions in Section~\ref{sec:blocks13}. The shared model and equation filter retain their separately tested applications, and their gains are not added to the hybrid result.
 
 The preceding complete application combined validated learned choices with exact preparation changes. On 41 matched batches it took 56.461 seconds against 66.045 seconds for native choices, a ratio of 0.855. Its isolated new learned choice changed the seed action in only one batch. We retain that earlier experiment in the notes because its combined gain does not establish a general learned policy. Exact sector-storage changes, scaling reuse, and analytic scalar recurrences likewise remain distinct from learned gains. In particular, the scalar recurrence checks through twelve loops verify a restricted exact formula, not a high-loop ML reduction.
 
@@ -144,6 +149,9 @@ The preceding complete application combined validated learned choices with exact
 \input{paper_derivations}
 \input{preparation_appendix}
 \input{factorized_appendix}
+\input{total_time_appendix}
+\input{refined_time_appendix}
+\input{hybrid_expert_appendix}
 \clearpage
 \renewcommand{\refname}{References}
 \bibliographystyle{unsrt}

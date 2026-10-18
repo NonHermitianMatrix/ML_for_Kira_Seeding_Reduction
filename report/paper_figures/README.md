@@ -176,3 +176,11 @@ family_cost.pdf separates the learned-to-fixed timing ratio from the combined-to
 
 `factorized_results.pdf` separates learned timing changes from exact processing and shows completion by loop count.
 `factorized_coverage.pdf` preserves all initial requested cases and completed cases in the notes.
+
+`refined_time_selection.pdf` compares the current method with native, fixed, and previous choices.
+Its left panel shows matched total-time ratios and repetition variation.
+Its right panel includes one attempt for every request and gives completion counts.
+`total_time_selection.pdf` gives the same comparison for the earlier seven-candidate study in the notes.
+
+`hybrid_expert_selection.pdf` compares the integrated method with native, ML-free, and preceding choices.
+It separates all matched completions from the expert domain and shows first-pass time with verified coverage.

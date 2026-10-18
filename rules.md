@@ -249,3 +249,9 @@ Retain independent tests, exact checks, previous evidence, resource limits, and 
 - Combine learned choices with exact mathematical simplifications when useful. Measure the added ML effect against the same simplifications with ML disabled, and retain previous-method comparisons.
 - Report the physical assumptions, completed reductions, unsupported cases, and failures at each loop order. A finite benchmark does not establish all integral types or a globally fastest method.
 - Preserve the 10 GB combined project limit, exact checks, independent test inputs, and required report, notes, cluster, and GitHub updates.
+
+## Integrated minimum-time selection (October 18, 2026)
+
+- Train the integrated selector to minimize total elapsed reduction time, including model use, exact algebra, checks, failed attempts, and recovery.
+- Use exact methods and native Kira settings where they are faster. Enable learned choices where separate validation supports lower complete time. Include the protected master basis in the training setup and relevant model inputs.
+- Compare the integrated method with its previous version and equally optimized controls on fresh reserved inputs. Report measured savings, failures, and scope limits; do not claim global minimum time.

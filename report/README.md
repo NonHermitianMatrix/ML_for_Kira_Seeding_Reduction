@@ -1,3 +1,10 @@
+<!-- BEGIN COMPLETE TIME SELECTION -->
+The current combined application is ML_model_adaptive_reduction/hybrid_experts/s01_runtime.py.
+Read its README for exact routes, the sparse expert, complete-time controls, and measured limits.
+The preceding broad comparison remains in refined_time_policy/.
+The current paper and detailed notes retain all three new comparisons.
+<!-- END COMPLETE TIME SELECTION -->
+
 # Paper and notes
 
 `report.tex` and `report.pdf` contain the research paper.
@@ -50,7 +57,7 @@ It writes the shared-model time and coverage plots, and the compact retained-mod
 `paper_figures/README.md` explains each plot's message and controls.
 
 Older scripts can overwrite current prose with historical result text.
-Use `factorized_policy/s13_document.py` for the current extension.
+Use `../ML_model_adaptive_reduction/hybrid_experts/s08_validate.py` for the current paper and notes.
 Read its output before replacing edited prose.
 
 Read [ARCHIVED_CODE_GUIDE.md](ARCHIVED_CODE_GUIDE.md) for earlier report generators and their evidence files.
@@ -75,3 +82,23 @@ The earlier `s13_finish.py` writer runs them after the shared-model writer. Use 
 Run scripts s12 through s14 in `factorized_policy` to update this extension.
 The older report writers can replace current prose.
 Use the current writer and check both PDFs after changes.
+
+
+
+
+## Complete-time method selection
+
+refined_time_results.tex gives the current nine-candidate method and reserved results.
+refined_time_appendix.tex derives the tighter master-basis cutoff.
+total_time_appendix.tex gives the shared cost objective, features, and target definitions.
+refined_time_data.json contains the compact checked measurements.
+refined_time_validation.json records the checks and current PDF file checks.
+The notes preserve total_time_results.tex, its earlier comparison, and both detailed parameter records.
+
+## Integrated expert report
+
+hybrid_expert_results.tex gives the combined method and direct comparisons.
+hybrid_baseline_summary.tex summarizes the preceding broad baseline in the main paper.
+hybrid_expert_appendix.tex defines fresh targets, candidate boundaries, and deployment rules.
+The notes use matching copies with references to the historical derivations.
+hybrid_expert_data.json and hybrid_expert_validation.json contain the compact evidence and current PDF checks.

@@ -1,5 +1,12 @@
+<!-- BEGIN COMPLETE TIME SELECTION -->
+The current combined application is ML_model_adaptive_reduction/hybrid_experts/s01_runtime.py.
+Read its README for exact routes, the sparse expert, complete-time controls, and measured limits.
+The preceding broad comparison remains in refined_time_policy/.
+The current paper and detailed notes retain all three new comparisons.
+<!-- END COMPLETE TIME SELECTION -->
+
 <!-- BEGIN THIRTEEN LOOP BLOCKS -->
-Use `ML_model_adaptive_reduction/factorized_policy/s08_reduce.py` for the checked block extension.
+The earlier checked block extension uses `ML_model_adaptive_reduction/factorized_policy/s08_reduce.py`.
 Read its README for exact formulas, learned seed bounds, complete tests, and limits through thirteen loops.
 The report separates ML gains from exact changes and records incomplete coupled reductions.
 <!-- END THIRTEEN LOOP BLOCKS -->
@@ -321,3 +328,6 @@ Analytic savings and ML savings remain separate.
 <!-- END BANANA -->
 
 portfolio_policy/ adds family-aware seed-cost models, exact sector-storage checks, and full-coordinate scalar checks. Read its README for the tested scope.
+
+
+

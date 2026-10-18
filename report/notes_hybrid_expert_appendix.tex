@@ -1,0 +1,46 @@
+\section{Definition of the hybrid expert comparison}
+\label{app:hybrid-experts}
+The sparse expert uses the nonplanar denominators in Eq.~\eqref{eq:nonplanar-new}. Its targets have seven unit physical powers. For numerator rank $R=2,3,4$, we include
+\begin{equation}
+ \boldsymbol a^{(1)}_R=(1,1,1,1,1,1,1,-R,0),\qquad
+ \boldsymbol a^{(2)}_R=(1,1,1,1,1,1,1,0,-R).
+\end{equation}
+For $R=3,4$, we also include
+\begin{equation}
+ \boldsymbol a^{(12)}_R=(1,1,1,1,1,1,1,-\lceil R/2\rceil,-\lfloor R/2\rfloor).
+\end{equation}
+These definitions give eight training and validation targets per kinematic profile. The reserved collection additionally includes every vector $(1,1,1,1,1,1,1,-j,-(R-j))$ for $j=0,\ldots,R$ and $R=2,3,4$, giving twelve targets per profile. We use $s=-113-18h$ and $t=-127-10h$, with $h=2301,2303$ for training, $2309$ for validation, and $2311,2317$ for reserved tests. The additional two outer-model inputs are $\max(0,-a_8)$ and $\max(0,-a_9)$, appended to the 51 inputs in Appendix~\ref{app:total-time}. Their coordinate meanings remain fixed within this ordered family.
+
+The outer actions are the preceding basis-compatible setting, the expert's fixed sparse boundary, its learned boundary, and original native bounds. The best ML-free control minimizes validation cost over all but the learned boundary. The cost-sensitive tree objective follows Eqs.~\eqref{eq:total-cost}--\eqref{eq:total-gate}, with complete costs for these four actions. The outer prediction is retained only if it improves on the best constant action by at least 1.5\%. The resulting application must also improve on the best ML-free candidate by at least 1.5\%, with no increase in unverified requests. A constant choice of the learned expert still performs that expert's target-dependent boundary prediction.
+
+For the inner expert, the boundary coefficients $\theta_0,\ldots,\theta_6$ have the definitions in Appendix~\ref{app:seed-geometry}. The saved forest predicts log-time ratios for these candidates. It changes the fixed candidate only when the predicted decrease exceeds its frozen margin. Table~\ref{tab:hybrid-boundaries} records the candidate coefficients; the native row applies no sparse boundary. Target and master seeds that satisfy the outer native bounds remain explicitly included. The native master-basis and coefficient checks determine acceptance, and a failed sparse attempt returns to less restrictive native work.
+
+\begin{table}[!htbp]\centering\small
+\caption{Frozen sparse-boundary candidates used by the inner expert. Coefficients define the seed region of Eq.~\eqref{eq:geometry-boundaries}.}
+\label{tab:hybrid-boundaries}
+\begin{tabular}{@{}lrrrrrrr@{}}\toprule
+Candidate & $\theta_0$ & $\theta_1$ & $\theta_2$ & $\theta_3$ & $\theta_4$ & $\theta_5$ & $\theta_6$\\\midrule
+0: native & -- & -- & -- & -- & -- & -- & --\\
+1 & 1 & 0 & 0 & 1 & 0 & 1 & 0\\
+2 & 2 & 0 & 0 & 1 & 0 & 1 & 0\\
+3 & 1 & 0 & 0 & 0 & 0 & 1 & 0\\
+4 & 1 & 0 & 0 & 0 & 1 & 1 & 0\\
+5 & 1 & 0 & 0 & -1 & 0 & 1 & 0\\
+6 & 1 & 0 & 0 & 1 & 1.5 & 1 & 0\\
+7 & 1.5 & -0.25 & 0 & 1.25 & 0 & 1 & -0.25\\
+8 & 2 & 0 & -0.25 & 1 & 0 & 1 & 0\\
+9 & 2.5 & 0 & 0 & 1.25 & 0 & 1 & -0.25\\
+\bottomrule\end{tabular}\end{table}
+
+The fixed boundary index is 4 and the inner decision margin is 0. The ten compatibility requests use profile 2321 for the three original coupled native families, a pentagon, a rank-three massive two-point target, and the one-mass analytic family, and profiles $2327+4L$ for four independent products. Their denominators and target rules remain those in Appendices~\ref{app:families-new} and~\ref{app:total-targets}. They provide checks at loop orders one, two, three, four, eight, twelve, and thirteen.
+
+For the selected tree, let $u=\max(0,-a_8)$ be the first auxiliary numerator power and let $R=\max(0,-a_8)+\max(0,-a_9)$ be the total numerator rank. The first split tests $u\leq2.5$, and its lower branch tests $R\leq3.5$. Since both quantities are integers, the deployed choice within the expert domain is
+\begin{equation}
+ \pi(u,R)=\begin{cases}
+  \text{learned sparse boundary},&u\leq2,\ R\leq3,\\
+  \text{fixed sparse boundary},&u\leq2,\ R=4,\\
+  \text{preceding basis-compatible setting},&u\geq3.
+ \end{cases}
+ \label{eq:hybrid-tree}
+\end{equation}
+Here $\pi(u,R)$ is the selected reduction route. Each leaf selects the route with its lowest predicted complete cost, subject to the decision allowance of Eq.~\eqref{eq:total-gate}. For the first two leaves, the predicted saving relative to the anchor exceeds the 0.002-second allowance. The third leaf already selects the anchor, so the allowance leaves its choice unchanged. These comparisons give Eq.~\eqref{eq:hybrid-tree}. Thus the outer tree can select a fixed or native setting even within the sparse expert's supported family. The exact checks and recovery rules still apply to each selected route.
