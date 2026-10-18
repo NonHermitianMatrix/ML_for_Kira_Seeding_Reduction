@@ -41,7 +41,7 @@ It retains the earlier result checks and adds the shared-model coverage checks.
 The Makefile limits memory, output size, and build time.
 The saved figures permit a build without downloading the integral datasets.
 
-## Generate the current figures
+## Generate the retained shared-model figures
 
 Run `../ML_model_adaptive_reduction/general_policy/s05_analyze.py` on Hoffman after both model trials finish.
 Use the existing scientific Python environment described in that folder's README.
@@ -50,7 +50,7 @@ It writes the shared-model time and coverage plots, and the compact retained-mod
 `paper_figures/README.md` explains each plot's message and controls.
 
 Older scripts can overwrite current prose with historical result text.
-Use the current document script in `general_policy/` for this revision.
+Use `factorized_policy/s13_document.py` for the current extension.
 Read its output before replacing edited prose.
 
 Read [ARCHIVED_CODE_GUIDE.md](ARCHIVED_CODE_GUIDE.md) for earlier report generators and their evidence files.
@@ -63,4 +63,15 @@ Use the current writer for the concise paper. Older writers can replace its text
 `preparation_data.json` contains the compact comparison evidence.
 `notes_general_methods.tex` places the shared model and physical definitions in the notes.
 Scripts s17 through s19 in `general_policy/` produce these files and the preparation figure.
-The main `s13_finish.py` writer runs them after the shared-model writer.
+The earlier `s13_finish.py` writer runs them after the shared-model writer. Use the current extension writer for new changes.
+
+## Thirteen-loop extension
+
+`factorized_results.tex` gives the corrected method and measured results.
+`factorized_appendix.tex` derives block factorization and the vacuum and massless numerator formulas.
+`factorized_data.json` stores compact checked results.
+`factorized_initial_notes.tex` preserves the initial grid and the basis correction.
+`notes_factorized_appendix.tex` gives the same derivation with note references.
+Run scripts s12 through s14 in `factorized_policy` to update this extension.
+The older report writers can replace current prose.
+Use the current writer and check both PDFs after changes.

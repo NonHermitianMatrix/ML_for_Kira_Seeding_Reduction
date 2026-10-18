@@ -1,3 +1,9 @@
+<!-- BEGIN THIRTEEN LOOP BLOCKS -->
+Use `ML_model_adaptive_reduction/factorized_policy/s08_reduce.py` for the checked block extension.
+Read its README for exact formulas, learned seed bounds, complete tests, and limits through thirteen loops.
+The report separates ML gains from exact changes and records incomplete coupled reductions.
+<!-- END THIRTEEN LOOP BLOCKS -->
+
 <!-- BEGIN PREPARATION COST MODEL -->
 `ML_model_adaptive_reduction/general_policy/preparation/` contains the attempt-time and failure model.
 Its controls separate learned choices from basis reuse and smaller exact checks.
@@ -7,7 +13,7 @@ Read the folder guides for complete-time results, failures, and supported inputs
 <!-- END PREPARATION COST MODEL -->
 
 <!-- BEGIN SHARED STRUCTURAL MODEL -->
-The current shared cost model is in `ML_model_adaptive_reduction/general_policy/`.
+The preceding shared cost model is in `ML_model_adaptive_reduction/general_policy/`.
 It uses structural features and tests whole-family and higher-loop transfer.
 Read its guide and coverage records for the measured domain and failures.
 The concise paper is `report/report.pdf`; the detailed history is `report/notes.pdf`.

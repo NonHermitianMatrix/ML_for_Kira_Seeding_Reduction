@@ -242,3 +242,10 @@ Retain independent tests, exact checks, previous evidence, resource limits, and 
 - Separate failures in benchmark reference preparation from failures in model-selected reductions. Use this distinction to choose the part of the workflow to improve.
 
 - Training objectives and model architecture may change to reduce complete Kira time. Use successful and failed attempts when useful, and compare the learned effect with the same workflow with ML disabled.
+
+## Extension through thirteen loops
+
+- Extend the declared test range through thirteen loops and broaden the tested integral structures. Model type, training data, objective, and Kira integration may change to reduce full calculation time.
+- Combine learned choices with exact mathematical simplifications when useful. Measure the added ML effect against the same simplifications with ML disabled, and retain previous-method comparisons.
+- Report the physical assumptions, completed reductions, unsupported cases, and failures at each loop order. A finite benchmark does not establish all integral types or a globally fastest method.
+- Preserve the 10 GB combined project limit, exact checks, independent test inputs, and required report, notes, cluster, and GitHub updates.

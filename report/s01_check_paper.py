@@ -197,6 +197,19 @@ def main():
         assert abs(v['ratio']-v['summed_median_seconds'][a]/v['summed_median_seconds'][b])<1e-10
     gp=HERE.parent/'ML_model_adaptive_reduction/general_policy/recovery/summary.json'
     if gp.exists():assert json.loads(gp.read_text())==recovery
+    factorized=json.loads((HERE/'factorized_data.json').read_text())
+    assert factorized['complete'] and factorized['initial']['requested']==131
+    assert set(factorized['initial']['by_loop'])==set(map(str,range(1,14)))
+    assert 'app:blocks13' in labels and 'sec:blocks13' in labels
+    for phase in ['initial','final']:
+        d=factorized[phase]
+        assert d['requested']==len(d['rows'])
+        for v in d['comparisons'].values():
+            if not v['cases']:continue
+            totals=v['summed_median_seconds'];b=next(k for k in totals if k!='learned')
+            assert abs(v['ratio']-totals['learned']/totals[b])<1e-12
+    q=HERE.parent/'ML_model_adaptive_reduction/factorized_policy/summary.json'
+    if q.exists():assert json.loads(q.read_text())==factorized
     result=dict(general_model_test_complete=True,general_requests=general['requested'],general_checked_cases=general['overall']['cases'],external_citation_keys=len(cites),internal_references=len(refs),figures=len(figs),
         preparation_requests=preparation['requests'],preparation_exact_checks=preparation['coefficient_checks'],
         recovery_requests=recovery['requests'],recovery_exact_checks=recovery['coefficient_checks'],

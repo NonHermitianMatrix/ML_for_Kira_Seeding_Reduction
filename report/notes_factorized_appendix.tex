@@ -1,0 +1,121 @@
+\section{Independent loop blocks and exact convolution formulas}
+\label{app:blocks13}
+\subsection{When a product reduction is exact}
+Suppose the loop momenta partition into $q$ disjoint sets $B_1,\ldots,B_q$ and every factor with a nonzero exponent depends on loop momenta from one set. External momenta may be shared. Equation~\eqref{history:eq:family} then has the form
+\begin{equation}
+ I_{\boldsymbol a}=\int\prod_{b=1}^{q}d\mu_b\,f_b
+ =\prod_{b=1}^{q}\int d\mu_b\,f_b
+ =\prod_{b=1}^{q}I^{(b)}_{\boldsymbol a_b}.
+ \label{eq:block-factorization}
+\end{equation}
+Here $d\mu_b$ contains the normalized loop measures in block $b$, and $\boldsymbol a_b$ selects its active indices. The equality follows first in a convergence domain by iterated integration and then by dimensional analytic continuation, with the convention of Ref.~\cite{Weinzierl2022}. A numerator that contains momenta from two proposed blocks prevents this factorization and joins those blocks in our construction. An unused auxiliary coordinate does not join them.
+
+If block $b$ reduces as $I^{(b)}_{\boldsymbol a_b}=\sum_jr^{(b)}_jM^{(b)}_j$, where $r^{(b)}_j$ are its coefficients and $M^{(b)}_j$ are its masters, substitution into Eq.~\eqref{eq:block-factorization} gives
+\begin{equation}
+ I_{\boldsymbol a}=\prod_b\left(\sum_jr^{(b)}_jM^{(b)}_j\right).
+ \label{eq:factored-expansion}
+\end{equation}
+This expression retains the complete reduction without distributing the product. Distribution would contain up to $\prod_b n_b$ terms if block $b$ has $n_b$ terms, since each expanded term chooses one entry from each factor. The factored expression stores $\sum_b n_b$ entries. These counts follow from the product construction; they do not claim that an arbitrary coupled integral can be factorized. Identical blocks with identical indices and kinematics require one reduction per request.
+
+\subsection{A massive tadpole}
+Let $T_a=\int d^dk/(i\pi^{d/2})(k^2-m^2+i0)^{-a}$. The total derivative of $k^\mu(k^2-m^2)^{-a}$ gives
+\begin{equation}
+ 0=dT_a-2a(T_a+m^2T_{a+1}),\qquad
+ T_{a+1}=\frac{d-2a}{2am^2}T_a.
+ \label{eq:tadpole13}
+\end{equation}
+We used $k^2=(k^2-m^2)+m^2$ in the first equality. Repeated substitution reduces each positive integer power to $T_1$. For $m^2=0$, the integral has no scale and vanishes in dimensional regularization~\cite{Weinzierl2022}. This route makes no learned decision.
+
+\subsection{One massive line and massless vacuum lines}
+For $L\geq2$, define $Q=\sum_{i=1}^Lk_i$ and
+\begin{equation}
+ V_{\boldsymbol a,b}=\int\prod_{i=1}^L\frac{d^dk_i}{i\pi^{d/2}}
+ \frac{1}{\prod_i(k_i^2+i0)^{a_i}(Q^2-m^2+i0)^b}.
+ \label{eq:vacuum13-definition}
+\end{equation}
+The scalar formula below assumes positive integer $a_i,b$, nonzero $m^2$, and no external momenta. It applies to this denominator structure at any $L$; our checks stop at thirteen loops.
+
+To obtain its index dependence, work first in Euclidean signature. We use analytic continuation in $d$ and the indices before evaluating the integer cases. Define $\Gamma(z)=\int_0^\infty u^{z-1}e^{-u}du$ for $\Re z>0$, with analytic continuation elsewhere. The Schwinger identity and a Gaussian integral give
+\begin{align}
+ (k_E^2)^{-a}&=\frac{1}{\Gamma(a)}\int_0^\infty dt\,t^{a-1}e^{-tk_E^2},\nonumber\\
+ \int\frac{d^dk_E}{\pi^{d/2}}\frac{e^{2ik_E\cdot x}}{(k_E^2)^a}
+ &=\frac{1}{\Gamma(a)}\int_0^\infty dt\,t^{a-1-d/2}e^{-x^2/t}
+ =\frac{\Gamma(d/2-a)}{\Gamma(a)}(x^2)^{a-d/2}.
+ \label{eq:vacuum13-fourier}
+\end{align}
+The final equality uses $u=x^2/t$ and the defining gamma integral. These parameter and continuation conventions agree with Ref.~\cite{Weinzierl2022}. Put $A_0=\sum_i a_i$ and $\alpha=A_0-(L-1)d/2$. Multiplying the $L$ transforms and inverting them gives the massless convolution proportional to
+\begin{equation}
+ (Q_E^2)^{-\alpha}\frac{\Gamma(\alpha)}{\Gamma(d/2-\alpha)}
+ \prod_i\frac{\Gamma(d/2-a_i)}{\Gamma(a_i)}.
+ \label{eq:vacuum13-convolution}
+\end{equation}
+The transform normalization is independent of the indices and cancels in the ratios used below. The remaining radial integral is
+\begin{align}
+ \int\frac{d^dQ_E}{\pi^{d/2}}\frac{(Q_E^2)^{-\alpha}}{(Q_E^2+m^2)^b}
+ &=\frac{(m^2)^{d/2-\alpha-b}}{\Gamma(d/2)}
+ \int_0^\infty\frac{u^{d/2-\alpha-1}}{(1+u)^b}\,du\nonumber\\
+ &= (m^2)^{d/2-\alpha-b}
+ \frac{\Gamma(d/2-\alpha)\Gamma(\alpha+b-d/2)}{\Gamma(d/2)\Gamma(b)}.
+ \label{eq:vacuum13-radial}
+\end{align}
+The beta integral follows by $v=u/(1+u)$. Combining Eqs.~\eqref{eq:vacuum13-convolution} and \eqref{eq:vacuum13-radial} cancels $\Gamma(d/2-\alpha)$. Wick rotation supplies the relative sign $(-1)^{A_0+b-(L+1)}$ in our Minkowski denominator convention. Let $P=L+1$, $\Delta=A_0+b-P$, and $(z)_n=\Gamma(z+n)/\Gamma(z)$. Dividing by the all-one integral gives
+\begin{equation}
+ \frac{V_{\boldsymbol a,b}}{V_{\boldsymbol 1,1}}=
+ \frac{(-1)^\Delta(m^2)^{-\Delta}
+ (P-Ld/2)_\Delta\,[L-(L-1)d/2]_{A_0-L}}
+ {(b-1)!\prod_i\left[(a_i-1)!\,(d/2-a_i)_{a_i-1}\right]}.
+ \label{eq:vacuum13-scalar}
+\end{equation}
+Thus the production formula uses finite products, while the independent algebraic check uses the gamma ratios before expansion. If a shifted massless power is zero, its momentum can be integrated after shifting to $Q$, leaving a scaleless factor. If $b=0$, the remaining massless integrals are also scaleless. These terms vanish under the stated assumptions.
+
+\subsection{One quadratic numerator}
+The tested extension allows one numerator $v^2$, where $v=\sum_i c_i k_i$ with fixed coefficients $c_i$. We write $V[v^2]$ for Eq.~\eqref{eq:vacuum13-definition} with $v^2$ inserted in the numerator. Define $\beta_i=a_i-d/2$, $\lambda=\sum_i\beta_i$, and
+\begin{equation}
+ C_v=\left(\sum_i c_i\beta_i\right)^2-\sum_i c_i^2\beta_i^2
+ =2\sum_{i<j}c_ic_j\beta_i\beta_j.
+ \label{eq:vacuum13-cross}
+\end{equation}
+This equality is the expansion of the square. In the Fourier representation, a momentum insertion differentiates its corresponding factor in Eq.~\eqref{eq:vacuum13-fourier}. The cross terms give $-C_v(x^2)^{\lambda-1}$, while multiplication of the full convolution by $Q_E^2$ gives
+\begin{equation}
+ -\frac14\partial_x^2(x^2)^\lambda
+ =-\lambda(\lambda+d/2-1)(x^2)^{\lambda-1}.
+ \label{eq:vacuum13-laplacian}
+\end{equation}
+The derivative follows by applying the product rule twice. Dividing these two expressions, then returning to Minkowski signature, yields
+\begin{equation}
+ V[v^2]=\sum_i c_i^2V_{\boldsymbol a-\boldsymbol e_i,b}
+ +\frac{C_v}{\lambda(\lambda+d/2-1)}
+ \left(V_{\boldsymbol a,b-1}+m^2V_{\boldsymbol a,b}\right).
+ \label{eq:vacuum13-numerator}
+\end{equation}
+The diagonal term uses $k_i^2$ to cancel one denominator power; the last term uses $Q^2=(Q^2-m^2)+m^2$. Equations~\eqref{eq:vacuum13-scalar} and \eqref{eq:vacuum13-numerator} give rational coefficients in $d$ and $m^2$. Apparent singularities require analytic limits. Higher numerator powers and other vacuum graphs remain outside this formula.
+
+\subsection{Massless two-point integrals with a quadratic numerator}
+Let $P=L+1$, $q_i=k_i$ for $i\leq L$, and $q_P=p-\sum_{i=1}^Lk_i$. The massless two-point family is
+\begin{equation}
+ W_{\boldsymbol a}(p)=\int\prod_{i=1}^L\frac{d^dk_i}{i\pi^{d/2}}
+ \prod_{j=1}^{P}(q_j^2+i0)^{-a_j},\qquad p^2\ne0.
+ \label{eq:massless13-definition}
+\end{equation}
+Here all $a_j$ are positive integers. Applying Eq.~\eqref{eq:vacuum13-fourier} to the $P$ massless factors and inverting their product gives the convolution coefficient
+\begin{equation}
+ \mathcal C(\boldsymbol a)=
+ \frac{\Gamma(A-Ld/2)}{\Gamma(Pd/2-A)}
+ \prod_{j=1}^P\frac{\Gamma(d/2-a_j)}{\Gamma(a_j)},\qquad A=\sum_j a_j.
+ \label{eq:massless13-gamma}
+\end{equation}
+The momentum power is $Ld/2-A$, as follows either from the inverse transform or from mass dimension. Dividing by the all-one result and cancelling the relative Wick-rotation signs for integer $A-P$ gives
+\begin{equation}
+ \frac{W_{\boldsymbol a}}{W_{\boldsymbol 1}}=
+ (p^2)^{P-A}\frac{\mathcal C(\boldsymbol a)}{\mathcal C(\boldsymbol 1)}.
+ \label{eq:massless13-ratio}
+\end{equation}
+The gamma shift identity turns this ratio into the finite rising products used by the scalar implementation. The derivation uses the same dimensional continuation as the preceding vacuum calculation.
+
+Write $W[v^2]$ for Eq.~\eqref{eq:massless13-definition} with numerator $v^2$. For $v=\sum_{i=1}^Lc_i k_i+c_p p$, use $p=\sum_{j=1}^Pq_j$ to write $v=\sum_{j=1}^Pw_jq_j$, where $w_i=c_i+c_p$ for $i\leq L$ and $w_P=c_p$. Define $\beta_j=a_j-d/2$, $\lambda=\sum_j\beta_j$, and $C_w=(\sum_jw_j\beta_j)^2-\sum_jw_j^2\beta_j^2$. The derivative calculation in Eqs.~\eqref{eq:vacuum13-cross} and \eqref{eq:vacuum13-laplacian} now applies to all $P$ factors. Since their total momentum is $p$, it gives
+\begin{equation}
+ W[v^2]=\sum_{j=1}^Pw_j^2W_{\boldsymbol a-\boldsymbol e_j}
+ +\frac{C_w p^2}{\lambda(\lambda+d/2-1)}W_{\boldsymbol a}.
+ \label{eq:massless13-numerator}
+\end{equation}
+A term with a removed massless line has a scaleless integration and vanishes. Equations~\eqref{eq:massless13-ratio} and \eqref{eq:massless13-numerator} reduce the supported scalar and single-numerator targets to $W_{\boldsymbol 1}$. The formula allows an external momentum in the numerator and excludes multiple numerator factors, nonzero internal masses, and more general two-point graphs.

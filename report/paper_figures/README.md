@@ -173,3 +173,6 @@ The second includes the initial solve in every sequence.
 family_cost.pdf separates the learned-to-fixed timing ratio from the combined-to-previous ratio. family_combined.pdf shows final application ratios and the isolated model effect in its active subset. Each point includes a paired-repetition interval.
 
 `preparation_results.pdf` separates failed-call cost from the ML increment within compact preparation. Its producer is `general_policy/s17_analyze_preparation.py`. Read `preparation_data.json` for all completions and pairwise denominators.
+
+`factorized_results.pdf` separates learned timing changes from exact processing and shows completion by loop count.
+`factorized_coverage.pdf` preserves all initial requested cases and completed cases in the notes.
