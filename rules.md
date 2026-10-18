@@ -30,7 +30,7 @@
 - Preserve the original integral collection under integrals/ while completing the authorized expansion through twelve loops. Keep the same canonical master, target and relation folders and separate grouped training/testing views. The current expanded-data training and publication scope appears below. Synchronize the finished report across Hoffman, GitHub and the local report folder.
 
 
-- The seed-selection model must return a separate 0/1 reference-membership decision for every candidate, together with both class probabilities and the model-estimated probability of the returned label. Multiple candidates can receive label 1. The current request authorizes twenty expanded-data training passes followed by held-out evaluation with frozen weights and the existing 0.5 threshold. Preserve the training/test separation and do not tune thresholds from held-out results.
+- For the historical seed-membership model, return a separate 0/1 reference-membership decision for every candidate, together with both class probabilities and the model-estimated probability of the returned label. Multiple candidates can receive label 1. The current request authorizes twenty expanded-data training passes followed by held-out evaluation with frozen weights and the existing 0.5 threshold. Preserve the training/test separation and do not tune thresholds from held-out results.
 
 ## Code organization
 
@@ -227,3 +227,18 @@ Improve complete reduction time using unrestricted ML choices and exact mathemat
 Keep model, fixed-control, and exact-reuse gains separate, with first-use and retry costs included.
 Retain independent tests, exact checks, previous evidence, resource limits, and the required documentation and publication copies.
 <!-- END JOINT ML AND EXACT REDUCTION -->
+
+## General models and concise reporting (October 17, 2026)
+
+- Train models to choose useful reduction actions from the mathematical structure and measured cost of the problem. Do not restrict the design to a named family, loop order, architecture, or the earlier models. Use whole-family and higher-loop holdouts to measure transfer. Family identifiers may define evaluation splits but must not substitute for transferable model inputs.
+- Train before testing when the required model has not been trained. Freeze the weights and decision rules before the reserved comparisons. Report exact checks, failures, prediction cost, and matched ML-off controls. A finite comparison cannot establish a speedup for every integral accepted by Kira.
+- Keep the main paper focused on the physical problem, model, method, direct comparisons, and conclusions. Move secondary studies and historical detail into the notes. Cite external factual claims and derive or cite equations; support original results with the paper's methods, tables, and figures.
+- Complete the trained-model tests before updating the final scientific conclusions. Keep the notes, documentation, cluster, GitHub, and local report current under the existing resource limits.
+
+## Failed attempts and training changes (October 17, 2026)
+
+- Reduce failed attempts and recovery time across the full reduction workflow. Change model training, model design, and Kira integration when measurements support the change.
+- Optimize completed exact reductions, and include failed attempts, preparation, inference, and recovery in the relevant timer. Report completion rates beside time ratios. Shorter timeouts or skipped requests do not count as successful speedups.
+- Separate failures in benchmark reference preparation from failures in model-selected reductions. Use this distinction to choose the part of the workflow to improve.
+
+- Training objectives and model architecture may change to reduce complete Kira time. Use successful and failed attempts when useful, and compare the learned effect with the same workflow with ML disabled.

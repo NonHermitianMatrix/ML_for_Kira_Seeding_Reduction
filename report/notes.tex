@@ -17,6 +17,14 @@
 \author{}
 \date{October 12, 2026}
 
+% BEGIN CURRENT WORKFLOW UPDATE
+\usepackage{tabularx,array}
+\providecommand{\Q}{\mathbb Q}
+\providecommand{\T}{\mathcal T}
+\providecommand{\Sset}{\mathcal S}
+\providecommand{\Cset}{\mathcal C}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+% END CURRENT WORKFLOW UPDATE
 \begin{document}
 \maketitle
 \vspace{-1em}
@@ -25,7 +33,8 @@
 Feynman integral calculations are an important component of multiloop amplitude calculations in quantum field theory. In Quantum Chromodynamics (QCD), multiloop amplitudes and their associated Feynman integrals arise in higher-order perturbative calculations and can become increasingly complex at higher loop orders. Recent progress has automated these calculations to some extent using the framework Kira, which organizes target integrals into integral families and sectors, generate algebraic relations among the integrals by using integration by parts (IBP) identities, and reduce the resulting system to expressions in terms of a finite set of master integrals. We aim to explore the application of machine learning models to accelerate the IBP reduction process by investigating if learned models can improve seed selection. These models can predict the most useful integrals from which to generate IBP relations while minimizing redundant calculations. We will also explore machine learning models for learning efficient reduction and elimination sequences to minimize the number of algebraic operations required to express target integrals in terms of master integrals. Because the machine learning models will serve as decision-makers while the underlying IBP reduction and verification remain exact, these models can improve computational efficiency without compromising the correctness of the resulting reductions.
 \end{abstract}
 % BEGIN CURRENT WORKFLOW UPDATE
-\paragraph{Current measured method.} Section~\ref{sec:family-cost} combines family-specific seed-cost prediction with validation-selected exact sector storage. The final reserved comparison contains 41 matched nontrivial batches and gives a final-to-previous time ratio of 0.961. The new target-dependent model deploys on 1 matched batch, with learned-to-fixed time ratio 0.839 under the same exact implementation; the learned-to-native ratio for this batch is 1.006. All matched outputs pass exact coefficient checks. The tests use rational kinematics, symbolic dimension, and supplied master bases. The learned choice changes the seed action only in its validated target pattern. The twelve full-coordinate scalar checks use an exact identity. Earlier studies, including scale reuse and the retained sparse-seed application, remain below with their separate physical domains. Their speedup factors cannot be multiplied.
+\paragraph{Current shared-model comparison.} Section~\ref{sec:general-results} tests a model without family-name inputs. It gives 43 matched native reductions from 110 defined requests through twelve loops, with learned-to-native ratio 0.900 and learned-to-fixed ratio 0.951. The preceding family-specific studies and exact methods remain below. Their workloads and controls differ, so their speedups cannot be multiplied.
+\paragraph{Current preparation comparison.} Compact preparation without ML compared with expanded discovery gives ratio 0.305 on 13 matched requests, with repeat interval [0.290,0.329]. The neural model within compact preparation gives ratio 0.982 on 22 matched requests, with repeat interval [0.959,1.021]. The cost-and-risk model within compact preparation gives ratio 1.635 on 22 matched requests, with repeat interval [1.604,1.700]. The cost-and-risk model increases time in this broad comparison. The neural preparation result also remains consistent with equal time. We keep the failure model and its records for analysis, while the shared neural model remains the validated supplied-basis default.
 % END CURRENT WORKFLOW UPDATE
 
 \clearpage
@@ -1167,6 +1176,8 @@ The new seed-bound study in Section~\ref{sec:learned-bounds} isolates a learned 
 \renewcommand{\refname}{Citations}
 % BEGIN CURRENT WORKFLOW UPDATE
 \appendix
+\renewcommand{\thesection}{A\arabic{section}}
+\renewcommand{\theHsection}{appendix.\arabic{section}}
 \input{notes_native_families}
 \input{workflow_appendix}
 \input{type_specialist_appendix}
@@ -1187,7 +1198,19 @@ The new seed-bound study in Section~\ref{sec:learned-bounds} isolates a learned 
 \input{extended_coverage_appendix}
 \input{family_cost_appendix}
 % END CURRENT WORKFLOW UPDATE
+% BEGIN CURRENT WORKFLOW UPDATE
+\input{notes_supplement}
+\input{general_policy_results}
+\input{general_policy_initial_notes}
+\input{notes_general_methods}
+\input{preparation_results}
+\input{preparation_appendix}
+% END CURRENT WORKFLOW UPDATE
 \bibliographystyle{unsrt}
+% BEGIN CURRENT WORKFLOW UPDATE
+\let\OriginalNotesBibliography\bibliography
+\renewcommand{\bibliography}[1]{\OriginalNotesBibliography{#1,notes_additional_references}}
+% END CURRENT WORKFLOW UPDATE
 \bibliography{references,type_specialist_references}
 
 \end{document}

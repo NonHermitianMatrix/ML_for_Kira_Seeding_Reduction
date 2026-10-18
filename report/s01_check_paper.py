@@ -8,8 +8,14 @@ import statistics
 
 HERE=Path(__file__).resolve().parent
 def main():
-    names=['report.tex','paper_appendices.tex','scattering_results.tex','workflow_results.tex','workflow_appendix.tex','type_specialist_results.tex','type_specialist_appendix.tex','basis_completion_results.tex','basis_completion_appendix.tex','ordering_policy_results.tex','ordering_policy_appendix.tex','thread_policy_results.tex','thread_policy_appendix.tex','higher_scattering_results.tex','higher_scattering_appendix.tex','adaptive_results.tex','adaptive_appendix.tex','portfolio_results.tex','portfolio_appendix.tex','parametric_results.tex','parametric_appendix.tex','coverage_results.tex','coverage_appendix.tex','learned_bounds_results.tex','learned_bounds_appendix.tex','equation_refinement_results.tex','equation_refinement_appendix.tex','batch_policy_results.tex','batch_policy_appendix.tex','massless_banana_results.tex','massless_banana_appendix.tex','seed_geometry_results.tex','seed_geometry_appendix.tex','joint_policy_results.tex','joint_policy_appendix.tex','extended_coverage_results.tex','extended_coverage_appendix.tex','family_cost_results.tex','family_cost_appendix.tex']
-    source='\n'.join((HERE/n).read_text() for n in names)
+    def expanded(name,seen=None):
+        seen=set() if seen is None else seen
+        assert name not in seen,('Repeated or cyclic input',name)
+        seen.add(name)
+        text=(HERE/name).read_text()
+        return re.sub(r'\\input\{([^}]+)\}',lambda m:expanded(m.group(1)+'.tex',seen),text)
+    source=expanded('report.tex')
+    notes_source=expanded('notes.tex')
     bib=(HERE/'paper_references.bib').read_text()
     cites={x.strip() for group in re.findall(r'\\cite\{([^}]+)\}',source) for x in group.split(',')}
     keys=set(re.findall(r'@\w+\{([^,]+),',bib))
@@ -21,8 +27,16 @@ def main():
     assert not re.search(r'NonHermitianMatrix|ML_for_Kira_Seeding_Reduction',source+bib)
     assert not re.search(r'SHA[- ]?256|checksum|git commit|scratch directory|source hash',source,re.I)
     assert not re.search(r'System\s*1',source,re.I)
-    for label in ['app:families','app:basis','app:optimal','app:models','app:vacuum','app:workflow']:
+    for label in ['app:derivation','app:sparse','app:shared','app:families-new','app:statistics']:
         assert label in labels,label
+    notes_labels=re.findall(r'\\label\{([^}]+)\}',notes_source)
+    notes_refs=set(re.findall(r'\\(?:eqref|ref)\{([^}]+)\}',notes_source))
+    assert notes_refs<=set(notes_labels),notes_refs-set(notes_labels)
+    assert len(notes_labels)==len(set(notes_labels))
+    notes_bib=''.join((HERE/n).read_text() for n in ['references.bib','type_specialist_references.bib','notes_additional_references.bib'])
+    notes_keys=set(re.findall(r'@\w+\{([^,]+),',notes_bib))
+    notes_cites={x.strip() for group in re.findall(r'\\cite\{([^}]+)\}',notes_source) for x in group.split(',')}
+    assert notes_cites<=notes_keys,notes_cites-notes_keys
     figs=re.findall(r'\\includegraphics(?:\[[^\]]*\])?\{([^}]+)\}',source)
     for f in figs:assert (HERE/f).read_bytes().startswith(b'%PDF'),f
     for name in ['report','notes']:
@@ -140,7 +154,52 @@ def main():
     for name,data in [('model_test/summary.json',thread),('evidence_validation.json',thread_audit)]:
         path=HERE.parent/'ML_model_workflow_selection/thread_policy'/name
         if path.exists():assert json.loads(path.read_text())==data
-    result=dict(external_citation_keys=len(cites),internal_references=len(refs),figures=len(figs),
+    general=json.loads((HERE/'general_policy_data.json').read_text())
+    assert general['complete'] and general['gradient_check']['complete']
+    assert sum(general['counts'].values())==general['requested']==110
+    assert set(general['by_loop'])==set(map(str,range(1,13)))
+    for row in general['rows']:
+        for method,values in row['times'].items():
+            assert len(values)==3 and min(values)>0
+            assert abs(statistics.median(values)-row['medians'][method])<1e-10
+    for selection in ['overall','known','held_out']:
+        record=general[selection]
+        if not record['cases']:continue
+        for control,ratio in record['ratios'].items():
+            assert abs(ratio-record['summed_median_seconds']['learned']/record['summed_median_seconds'][control])<1e-10
+    gp=HERE.parent/'ML_model_adaptive_reduction/general_policy/summary.json'
+    if gp.exists():assert json.loads(gp.read_text())==general
+    preparation=json.loads((HERE/'preparation_data.json').read_text())
+    assert preparation['complete'] and preparation['all_same_basis_matched_outputs_exact']
+    assert preparation['requests']==len(preparation['rows'])==33
+    assert 'app:risk' in labels and 'tab:preparation-times' in labels
+    for method in preparation['methods']:
+        total=preparation['counts'][method]
+        assert total['first_completed']==sum(r['first_success'][method] for r in preparation['rows'])
+        assert total['three_completed']==sum(r['complete'][method] for r in preparation['rows'])
+        assert abs(total['first_failed_seconds']-sum(r['first_failed_seconds'][method] for r in preparation['rows']))<1e-8
+    for key,value in preparation['comparisons'].items():
+        if not value['cases']:continue
+        a,b=key.split('/')
+        matched=[r for r in preparation['rows'] if r['complete'][a] and r['complete'][b] and r['pairs'][key]['agree']]
+        assert value['cases']==len(matched)==len(value['case_ids'])
+        for method in [a,b]:
+            assert abs(value['summed_median_seconds'][method]-sum(statistics.median(r['times'][method]) for r in matched))<1e-8
+        assert abs(value['ratio']-value['summed_median_seconds'][a]/value['summed_median_seconds'][b])<1e-10
+    gp=HERE.parent/'ML_model_adaptive_reduction/general_policy/preparation/summary.json'
+    if gp.exists():assert json.loads(gp.read_text())==preparation
+    recovery=json.loads((HERE/'recovery_data.json').read_text())
+    assert recovery['complete'] and recovery['all_matched_exact'] and recovery['requests']==len(recovery['rows'])==6
+    for method,n in recovery['completed'].items():assert n==sum(r['complete'][method] for r in recovery['rows'])
+    for key,v in recovery['comparisons'].items():
+        if not v['cases']:continue
+        a,b=key.split('/')
+        assert abs(v['ratio']-v['summed_median_seconds'][a]/v['summed_median_seconds'][b])<1e-10
+    gp=HERE.parent/'ML_model_adaptive_reduction/general_policy/recovery/summary.json'
+    if gp.exists():assert json.loads(gp.read_text())==recovery
+    result=dict(general_model_test_complete=True,general_requests=general['requested'],general_checked_cases=general['overall']['cases'],external_citation_keys=len(cites),internal_references=len(refs),figures=len(figs),
+        preparation_requests=preparation['requests'],preparation_exact_checks=preparation['coefficient_checks'],
+        recovery_requests=recovery['requests'],recovery_exact_checks=recovery['coefficient_checks'],
         self_repository_citations=0,original_notes_reconstructable=True,terminology_updated_as_requested=True,
         original_supporting_files_preserved=len(archive['supporting_files']),
         complete_cost_workflows=workflow['workflows'],joint_request_workflows=batching['workflows'],

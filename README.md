@@ -1,3 +1,18 @@
+<!-- BEGIN PREPARATION COST MODEL -->
+`ML_model_adaptive_reduction/general_policy/preparation/` contains the attempt-time and failure model.
+Its controls separate learned choices from basis reuse and smaller exact checks.
+`general_policy/recovery/` records fresh tests of recovery from an incomplete stored basis.
+Use `general_policy/s20_prepare_resilient.py` for that revised preparation application.
+Read the folder guides for complete-time results, failures, and supported inputs.
+<!-- END PREPARATION COST MODEL -->
+
+<!-- BEGIN SHARED STRUCTURAL MODEL -->
+The current shared cost model is in `ML_model_adaptive_reduction/general_policy/`.
+It uses structural features and tests whole-family and higher-loop transfer.
+Read its guide and coverage records for the measured domain and failures.
+The concise paper is `report/report.pdf`; the detailed history is `report/notes.pdf`.
+<!-- END SHARED STRUCTURAL MODEL -->
+
 # Project guide
 
 <!-- BEGIN ADAPTIVE REDUCTION -->

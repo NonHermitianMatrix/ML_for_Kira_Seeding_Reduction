@@ -1,0 +1,29 @@
+\section{Learning attempt cost and failure risk}
+\label{app:risk}
+For recorded attempt $i$, let $t_i$ be its elapsed time in seconds and $f_i$ be one if it fails and zero otherwise. We define the two regression targets as $u_i=\log\max(0.001,t_i)$ and $v_i=3f_i$. A tree leaf predicts the mean of each target; averaging the trees gives predictions $\widehat u$ and $\widehat v$~\cite{Breiman2001Forest}. The factor three gives the failure output more weight in the two-output squared-error split objective. For $n$ attempts, that objective is proportional to
+\begin{equation}
+ \sum_{i=1}^n\bigl[(\widehat u_i-u_i)^2+(\widehat v_i-3f_i)^2\bigr].
+ \label{eq:risk-fit}
+\end{equation}
+To obtain the leaf means, differentiate each sum of squared residuals with respect to its constant leaf prediction. The derivatives are $2\sum_i(\widehat u-u_i)$ and $2\sum_i(\widehat v-3f_i)$; setting them to zero gives the two sample means. Equation~\eqref{eq:risk-fit} is the chosen fitting objective, without an assumption that every failure has the same physical cause.
+
+The runtime score for candidate action $a$ is defined as
+\begin{equation}
+ C_a=\exp[\operatorname{clip}(\widehat u_a,-5,8)]
+       +\lambda\operatorname{clip}(\widehat v_a/3,0,1).
+ \label{eq:risk-score}
+\end{equation}
+Here $\operatorname{clip}(z,l,h)=\min(h,\max(l,z))$ and $\lambda$ has units of seconds. The exponential reverses the log-time target, and division by three reverses the failure-label scaling. Their sum defines a time-based ranking with a failure penalty; it is not a calibrated expected-time estimate. Without a supplied basis, candidate actions exclude the three settings that reduce dot or numerator bounds below the native target limits. All ten settings are available when a basis is supplied.
+
+We compare 32-tree random and extremely randomized forests at depths four and six, with at least five training attempts per leaf~\cite{Breiman2001Forest,Geurts2006ExtraTrees}. Each candidate is evaluated with $\lambda\in\{0,20,60,120\}$ seconds. For each validation request, it chooses one recorded action. Model selection minimizes
+\begin{equation}
+ V=\frac{\sum_c T_{c,a(c)}+60\sum_c f_{c,a(c)}}{\sum_c T_{c,0}},
+ \label{eq:risk-selection}
+\end{equation}
+where $T$ is the earlier complete action cost including its recovery, $f$ records failure of that action's first attempt, and action zero uses native bounds. Unsuccessful complete validation records receive a 180-second penalty. The denominator is independent of the candidate, so minimizing $V$ minimizes the penalized numerator. The extra 60 seconds deliberately emphasizes avoiding a failed first action even when recovery already contributes to $T$. The model, penalty, and basis cache are fixed before the reserved comparison.
+
+The new grid contains one target shape per selected family and loop order: dotted targets at odd orders and mixed targets at even orders, as defined in Appendix~\ref{app:families-new}. The one-mass vacuum uses orders 1, 2, 4, 5, 6, 7; the distinct-mass vacuum uses 2, 4, 5, 6, 7; each two-point class uses 2 through 6; the ladder uses 1 through 5; and the box with bubbles uses 2 through 5. The nonplanar box, pentagon, and box with one virtual leg add three requests. The cache uses only the master indices from the earlier profile 1201. Stored coefficients never enter prediction or the new reduction. Its structure key distinguishes the ordered momenta and zero versus nonzero mass and invariant assignments. A matching key is only a proposed basis: the new exact calculations must establish target reduction at the new parameters.
+
+Every initially successful method receives three measurements. A paired time ratio includes only requests that complete all three repeats for both methods, use the same master-index set, and agree coefficient by coefficient. Repetition and cross-method checks use exact rational simplification. Different provisional bases, incomplete repetitions, and failed requests remain in the outcome records without a matched ratio. This makes the time comparison conditional on equal completed work.
+
+The focused recovery comparison uses profile $h=1249$ for the distinct-mass vacuums at four and five loops, the massless and massive three-loop two-point families, the three-loop box with bubbles, and the two-loop ladder. It uses dotted targets at odd orders and mixed targets at even orders. Three repetitions compare the same compact workflow with native bounds, the neural model, and the cost-and-risk model. Model weights and cache entries are unchanged. The revised recovery rule follows the basis rejection observed in the preceding experiment; this follow-up therefore tests that specific correction.

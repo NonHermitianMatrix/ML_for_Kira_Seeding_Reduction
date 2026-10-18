@@ -1,3 +1,13 @@
+## Current concise-paper figures
+
+`paper_local_results.pdf` shows the retained seed and equation savings and the unresolved row-policy result.
+Each row uses its own stated workload and control. The ratios cannot be multiplied.
+`general_policy_times.pdf` compares the corrected shared model with native and fixed choices.
+It separates training domains from physical holdouts and shows paired repetition intervals.
+`general_policy_coverage.pdf` shows every requested loop order and completion category.
+Unsupported inputs and failed references remain visible.
+The producer is `ML_model_adaptive_reduction/general_policy/s05_analyze.py`.
+
 # Paper figures
 
 <!-- BEGIN PARAMETRIC UPDATE -->
@@ -161,3 +171,5 @@ The second includes the initial solve in every sequence.
 `extended_coverage.pdf` shows native coverage by loop order and matched complete-time ratios by integral type. Failures and input limits remain visible.
 
 family_cost.pdf separates the learned-to-fixed timing ratio from the combined-to-previous ratio. family_combined.pdf shows final application ratios and the isolated model effect in its active subset. Each point includes a paired-repetition interval.
+
+`preparation_results.pdf` separates failed-call cost from the ML increment within compact preparation. Its producer is `general_policy/s17_analyze_preparation.py`. Read `preparation_data.json` for all completions and pairwise denominators.

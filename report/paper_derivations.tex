@@ -1,0 +1,191 @@
+\section{IBP identities, row operations, and exactness}
+\label{app:derivation}
+The starting total-derivative identity follows from integration by parts in a region where the integral converges, followed by dimensional analytic continuation~\cite{ChetyrkinTkachov,Weinzierl2022}. Write $P_{\boldsymbol\sigma}=\prod_iD_i^{-\sigma_i}$ and $\partial_k=\partial/\partial\ell_k$. The product rule gives
+\begin{align}
+ \partial_k\!\cdot(vP_{\boldsymbol\sigma})
+ &=(\partial_k\!\cdot v)P_{\boldsymbol\sigma}
+ -\sum_i\sigma_i(v\!\cdot\partial_kD_i)
+ D_i^{-\sigma_i-1}\prod_{j\ne i}D_j^{-\sigma_j}.
+ \label{eq:product-rule}
+\end{align}
+For $v=\ell_h$, the first factor is $d\delta_{kh}$; for an external momentum it is zero. Completeness of the inverse-propagator coordinates permits us to write $v\!\cdot\partial_kD_i=u_i+\sum_jv_{ij}D_j$, where $u_i$ and $v_{ij}$ are coefficients fixed by the propagators and kinematics, with the invariant and mass terms included in $u_i$. Integrating Eq.~\eqref{eq:product-rule} therefore gives
+\begin{equation}
+ 0=(\partial_k\!\cdot v)I_{\boldsymbol\sigma}
+ -\sum_i\sigma_i u_i I_{\boldsymbol\sigma+\boldsymbol e_i}
+ -\sum_{i,j}\sigma_i v_{ij}
+ I_{\boldsymbol\sigma+\boldsymbol e_i-\boldsymbol e_j}.
+ \label{eq:index-shifts-new}
+\end{equation}
+The unit vector $\boldsymbol e_i$ raises index $i$ by one. This derivation explains how a seed and an operator generate a row of the reduction system.
+
+Let $q$ be a source row and $k$ a pivot column with $A_{qk}\ne0$. Solving the identity $\sum_jA_{qj}I_j=0$ for $I_k$ gives $I_k=-\sum_{j\ne k}(A_{qj}/A_{qk})I_j$. Subtracting $A_{rk}/A_{qk}$ times that zero identity from row $r$ yields
+\begin{equation}
+ A'_{rj}=A_{rj}-\frac{A_{rk}}{A_{qk}}A_{qj},\qquad A'_{rk}=0.
+ \label{eq:row-new}
+\end{equation}
+Every step preserves the represented relation. Repetition until only prescribed master columns remain gives Eq.~\eqref{eq:reduction}. Removing seeds or equations preserves the validity of the retained identities, but can prevent this elimination from finishing. We therefore require reduction to the prescribed basis and exact agreement with the reference coefficients. Generic kinematics avoid singular pivot denominators; special kinematic limits require their own treatment.
+
+\section{Sparse seeds and the equation-classifier score}
+\label{app:sparse}
+Let $\mathcal T$ be the set of target index vectors. For seed $\boldsymbol\sigma$, define the extra positive power $D(\boldsymbol\sigma)=\sum_i\max(0,\sigma_i-1)$ and numerator rank $R(\boldsymbol\sigma)=\sum_i\max(0,-\sigma_i)$. These definitions count denominator powers beyond one and powers in the numerator. Let $P=\{i:\sigma_i>0\}$, let $h$ be the number of absent propagators relative to the largest top sector, and let $D_T,R_T$ be the largest target values. The sparse model uses
+\begin{equation}
+ q(\boldsymbol\sigma,\mathcal T)=
+ \min_{\boldsymbol a\in\mathcal T}\sum_{i\notin P}
+ \max\{0,\max(0,-\sigma_i)-\max(0,-a_i)\}.
+ \label{eq:distance-new}
+\end{equation}
+For a fixed target, project the nonnegative seed numerator power onto the interval from zero to the target power. The distance is the positive excess in that coordinate. Adding coordinate distances and minimizing over targets gives Eq.~\eqref{eq:distance-new}. To construct a variable-width region, we choose an affine width in the sector deficit, extra powers, and rank. The integer lattice requires its floor, and a maximum with zero prevents a negative width. Applying the same construction to rank and dot allowances gives the restrictions, with fitted parameters $\theta_0,\ldots,\theta_6$,
+\begin{align}
+ q&\leq\max\{0,\lfloor\theta_0+\theta_1h+\theta_2D+\theta_6R\rfloor\},\nonumber\\
+ R&\leq\max\{0,\lfloor R_T+\theta_3-\theta_4h\rfloor\},\qquad
+ D\leq\max\{0,\lfloor D_T+\theta_5\rfloor\}.
+ \label{eq:sparse-new}
+\end{align}
+These inequalities define the search family, and each selected region still requires a sufficiency check. Native outer bounds, retained corners, and admissible target and master seeds also apply. The tested targets have $D_T=0$, and $\theta_5=1$ remains fixed. The notes give the finite search ranges and fitted vectors.
+
+For $B$ training requests, the boundary search minimizes $J=B^{-1}\sum_b\log[T_b(\boldsymbol\theta)/T_b^{(0)}]$, where $T_b$ includes reduction, checking, and recovery. Exponentiating gives the geometric mean of the time ratios, which derives the equal-request objective. Failed bounded reductions receive a 300-second training penalty. The subsequent cost predictor compares learned and fixed boundaries before the reserved timing experiment; these training penalties never become successful test times.
+
+\subsection{Equation inputs and sampling}
+\label{app:equation-model}
+The equation classifier uses seventeen inputs. Four describe the family and request: $L,E,N,\log(1+|\mathcal T|)$. Three describe the seed: positive-index count, extra positive power, and numerator rank. Two subtract the batch's maximum extra power and rank from the corresponding seed quantities. Three describe the seed sector: whether it contains a target, and the differences from its target power and rank maxima. Two describe proximity: exact target membership and the minimum sum of absolute index differences. The latter is the defined distance $\min_{\boldsymbol a\in\mathcal T}\sum_i|\sigma_i-a_i|$. The operator index and the two overall target maxima complete the vector. These are definitions of the inputs, all available before coefficient construction.
+
+Let $N_{cy}$ be the native number of records of class $y\in\{0,1\}$ in batch $c$. The total number of records is $N_c=N_{c0}+N_{c1}$. We sample $n_{cy}=\min(2000,N_{cy})$ records from each class without replacement. Every sampled record receives weight $w_{cy}=N_{cy}/(n_{cy}N_c)$. The total weight of that class is $n_{cy}w_{cy}=N_{cy}/N_c$, so the two classes together give unit batch weight. For a leaf with weighted class totals $W_0,W_1$, the score is
+\begin{equation}
+ p=\frac{W_1}{W_0+W_1}.
+ \label{eq:leaf-new}
+\end{equation}
+This weighted class fraction is the classifier's score, without a claim of probability calibration. The tree chooses splits using weighted Gini impurity~\cite{CART1984}. Expanding $W[1-p^2-(1-p)^2]$, with $W=W_0+W_1$, gives $2W_0W_1/W$. A threshold retains an equation if $p\geq\tau$; the whole-seed variant retains every operator if the maximum score over that seed's operators reaches $\tau$. A maximum reaches a threshold exactly when at least one element reaches it, so this variant retains a superset of the source classifier's selected equations. It still requires the sufficiency check above.
+
+\section{Shared structural model, actions, and fitting}
+\label{app:shared}
+Let $n$ be the number of physical propagators and $E$ the number of independent external momenta. Let $B_{ih}$ be one when loop momentum $\ell_h$ appears in propagator momentum $q_i$, and zero otherwise. Table~\ref{tab:structural-inputs} groups the 27 base inputs. Means run over the target batch unless another set is specified. A weighted incidence multiplies the relevant numerator power or extra denominator power by the corresponding row sum of $B$ before summing over propagators.
+\begin{table}[!htbp]\centering\small
+\caption{The base structural inputs. Each quantity is computed from the family definition and target indices before Kira generates equations.}
+\label{tab:structural-inputs}
+\begin{tabularx}{\linewidth}{@{}lYr@{}}\toprule
+Group & Quantities & Number\\\midrule
+Family dimensions & $L,E,N,n$; number of symbolic invariants & 5\\
+Propagator structure & Massive-entry count; coupled-physical-entry count; maximum physical row and column sums of $B$; mean external-momentum incidence over all entries & 5\\
+Target batch & Log of one plus target count; number of target sectors & 2\\
+Power ranges & Minimum, mean, and maximum extra positive powers and numerator rank & 6\\
+Positive indices & Minimum, mean, and maximum number of positive indices & 3\\
+Further index limits & Largest absolute index; maximum positive-power sum; maximum number of absent physical denominators & 3\\
+Weighted powers & Mean dots on massive entries; mean numerator-weighted and dot-weighted loop incidence & 3\\\bottomrule
+\end{tabularx}
+\end{table}
+
+We add eight ratios: $N/n$, $n/L$, massive-entry fraction, coupled-physical-entry fraction, maximum dots divided by $n$, maximum rank divided by $N-n$, maximum physical loop incidence divided by $L$, and maximum physical loop degree divided by $n$. Each denominator is replaced by at least one. Six further features are the mean fractions of indices equal to $-2,-1,0,1,2,3$. The final three are $\log[1+L(L+E)]$, $\log(1+n)(1+D_T)$, and $\log[1+\max(1,N-n)](1+R_T)$. These definitions give 44 features. Permuting loop names or entries within the physical and auxiliary groups preserves the pooled counts when the indices are permuted consistently. A change of momentum routing need not preserve them, and identical features need not identify identical reduction problems.
+
+Let $(r_0,s_0,d_0)$ be the target maxima of positive-power sum, numerator rank, and extra positive power. Table~\ref{tab:shared-actions} defines ten candidate actions. Bounds are nonnegative and $r$ is at least the number $t_{\rm top}$ of positive entries in the largest top sector. Kira's subsector restriction uses~\cite{Kira3}
+\begin{equation}
+ s\leq\max\{1,t-l+1,s_{\max,\mathrm{sector}}\},
+ \label{eq:truncation-new}
+\end{equation}
+where $t$ is that sector's positive-index count, $l$ is the chosen parameter, and the last term is an explicitly assigned sector limit.
+\begin{table}[!htbp]\centering\small
+\caption{The shared model's candidate seed configurations. Changes are relative to the target maxima. A dash disables the additional subsector restriction.}
+\label{tab:shared-actions}
+\begin{tabular}{@{}lrrrr@{}}\toprule
+Action & $\Delta r$ & $\Delta s$ & $\Delta d_0$ & $l$\\\midrule
+Native &0&0&0&---\\
+Numerator expansion &0&1&0&---\\
+Tight & $-1$&$-1$&$-1$&---\\
+Reduced dots &$-1$&0&$-1$&---\\
+Reduced numerator rank &0&$-1$&0&---\\
+Expanded &1&1&1&---\\
+Truncated native &0&0&0&$t_{\rm top}-s_0$\\
+Truncated expansion &0&1&0&$t_{\rm top}-s_0$\\
+Truncated reduced dots &$-1$&0&$-1$&$t_{\rm top}-s_0$\\
+Relaxed truncation &0&0&0&$t_{\rm top}-s_0-1$\\\bottomrule
+\end{tabular}
+\end{table}
+
+For request $c$ and action $a$, define the cost label $y_{ca}=\log(T_{ca}/T_{c0})$, with native action $0$. Because the denominator is positive and independent of $a$, and the logarithm is increasing, minimizing the unmodified label selects the action with the least recorded time. Training clips this label to $[-4,5]$ after assigning failures at least 180 seconds or three times the measured attempt cost, whichever is larger. Clipping limits extreme labels and can merge their order; the validation comparison therefore uses the recorded costs directly.
+
+The neural regression model uses composed affine maps and componentwise activations~\cite{Pedregosa2011Bounds}. The selected network standardizes each feature by its training mean and standard deviation, with a minimum scale of $10^{-6}$. With standardized vector $z$, its outputs are defined by
+\begin{equation}
+ h_1=\operatorname{ReLU}(W_1^{\mathsf T}z+b_1),\quad
+ h_2=\operatorname{ReLU}(W_2^{\mathsf T}h_1+b_2),\quad
+ \widehat y=W_3^{\mathsf T}h_2+b_3,
+ \label{eq:network-new}
+\end{equation}
+where $\operatorname{ReLU}(u)=\max(0,u)$ acts on each component. Both hidden vectors have 48 components and the output has ten components, one per action. We fit squared prediction error with a squared-weight penalty of strength 0.1 using the regression implementation of Ref.~\cite{Pedregosa2011Bounds}. For $n_{\rm tr}$ training requests, the corresponding objective is
+\begin{equation}
+ \mathcal L=\frac{1}{2n_{\rm tr}}\sum_{c,a}
+ (\widehat y_{ca}-y_{ca})^2+
+ \frac{0.1}{2n_{\rm tr}}\sum_j\|W_j\|_F^2.
+ \label{eq:loss-new}
+\end{equation}
+To motivate the first term, assign a formal residual $e_{ca}=\widehat y_{ca}-y_{ca}$ the density $p(e)=(2\pi)^{-1/2}\exp(-e^2/2)$. Then
+\begin{equation*}
+ -\frac{1}{n_{\rm tr}}\log\prod_{c,a}p(e_{ca})
+ =\frac{1}{2n_{\rm tr}}\sum_{c,a}e_{ca}^2+\frac{10}{2}\log(2\pi).
+\end{equation*}
+Removing the constant and adding the stated quadratic penalty gives Eq.~\eqref{eq:loss-new}. This construction motivates a regression objective; the study does not infer a Gaussian distribution of timing errors.
+
+The candidate set also contains trees, random forests, and extremely randomized forests at depths 2, 4, and 7, with at least three samples per leaf; forests contain 48 trees~\cite{CART1984,Breiman2001Forest,Geurts2006ExtraTrees}. Two ridge fits use regularization strengths 1 and 10, and the neural candidates have two hidden layers of either 24 or 48 components. Neural fitting uses L-BFGS with at most 500 iterations~\cite{Pedregosa2011Bounds}. The initial implementation exposed an inconsistent scaling between the installed multi-output loss and its gradient. We corrected the loss to match the summed-output gradient, checked it by finite differences, and refitted using the same training and validation inputs. The initial comparison remains in the notes; the corrected model uses a new reserved profile. Candidate convergence warnings remain recorded, and no fit certifies a global optimum.
+
+For every candidate, five-fold cross-validation withholds whole ordered graph structures, with feature scaling fitted within each training fold. The separate validation set selects a single fixed action. We compare that action and native bounds as global anchors, with margins $0,0.05,0.12,0.25$. If $b$ is the anchor and $a_* =\arg\min_a\widehat y_a$, the policy changes to $a_*$ only when $\widehat y_{a_*}<\widehat y_b-\eta$. Exponentiation gives the predicted ratio condition $\exp(\widehat y_{a_*}-\widehat y_b)<\exp(-\eta)$. We select the candidate minimizing the worse of its grouped-fold and separate-validation ratios to native cost. This rule is fixed before the reserved test. A score below 0.97 permits default deployment; it is evidence from validation, not a guarantee for future inputs.
+
+The selected candidate is the 48-component network, with action 7 from Table~\ref{tab:shared-actions} (numbered from zero) as anchor and margin 0.05. Training uses only historical training records after the physical holdouts. Their historical timers differ in whether initial imports are included; all new reserved controls use the same complete fresh-process timer. The training record contains every source and model candidate. A failed new seed attempt retries native and expanded bounds with duplicate configurations removed. The shared model never uses target coefficients or measured test time as an input.
+
+\section{Physical inputs and the loop-order test}
+\label{app:families-new}
+The following equations define the physical inputs for our benchmark families. All denominators follow Eq.~\eqref{eq:integral}. Let $Q=\sum_{i=1}^{L}\ell_i$. For $L\geq2$, the vacuum families contain
+\begin{equation}
+ q_i=\ell_i\quad(1\leq i\leq L),\qquad q_{L+1}=Q.
+ \label{eq:vacuum-new}
+\end{equation}
+The one-mass case gives only the final entry a nonzero mass; the massive case assigns distinct nonzero masses to all physical entries. The one-loop vacuum is a single massive tadpole. The two-point families replace the final momentum by $p-Q$, with either all zero masses or distinct nonzero masses. Their single independent external invariant is $p^2$.
+
+For the four-point families, choose massless external momenta with $p_1+p_2+p_3+p_4=0$, and write $P=p_1+p_2$, $U=p_1+p_2+p_3$, $s=P^2$, $t=(p_2+p_3)^2$. Expanding these squares gives $2p_1\cdot p_2=s$, $2p_2\cdot p_3=t$, and $2p_1\cdot p_3=-s-t$. The physical momenta of the $L$-loop ladder are
+\begin{equation}
+ \{\ell_i,\ell_i-P:1\leq i\leq L\} \cup\
+ \{\ell_i-\ell_{i+1}:1\leq i<L\}\ \cup\
+ \{\ell_1-p_1,\ell_L-U\}.
+ \label{eq:ladder-new}
+\end{equation}
+We order the loop momenta first, the $P$-shifted momenta next, then adjacent differences, and finally the two end entries. The box with bubble subgraphs has
+\begin{equation}
+ (q_1,q_2,q_3,q_4)=(\ell_1,\ell_1-p_1,\ell_1-P,\ell_1-U),\qquad
+ (q_{2j+1},q_{2j+2})=(\ell_j,\ell_j-\ell_1),\quad 2\leq j\leq L.
+ \label{eq:bubbles-new}
+\end{equation}
+All these four-point propagators are massless. This box family has bubble subgraphs and is a restricted connected scattering class.
+
+The additional massless nonplanar box uses the routing of Ref.~\cite{KiraOriginal}:
+\begin{align}
+ (q_1,\ldots,q_9)=(&\ell_1,\ell_2,p_1-\ell_1,p_2-\ell_2,
+ p_1+p_2-p_3-\ell_1,\nonumber\\
+ &p_1-\ell_1+\ell_2,p_1-p_3-\ell_1+\ell_2,
+ \ell_1-p_3,\ell_2-p_1-p_2).
+ \label{eq:nonplanar-new}
+\end{align}
+Its first seven entries are physical. Here the outgoing-momentum convention gives $p_i^2=(p_1+p_2-p_3)^2=0$, $s=(p_1+p_2)^2$, and $t=(p_1-p_3)^2$. Expansion gives $2p_1\cdot p_3=-t$ and $2p_2\cdot p_3=s+t$. The pentagon uses five massless external momenta with zero sum and physical momenta $\ell$, $\ell-p_1$, $\ell-p_1-p_2$, $\ell-p_1-p_2-p_3$, and $\ell-p_1-p_2-p_3-p_4$. Adjacent invariants are $s_{ij}=(p_i+p_j)^2$. Squaring complementary momentum sums gives, for example, $2p_1\cdot p_3=s_{45}-s_{12}-s_{23}$. The box with one virtual external leg uses $(\ell,\ell-p_1,\ell-p_1-p_2,\ell-p_3)$, with $p_i^2=0$ for $i=1,2,3$ and $v=(p_1+p_2-p_3)^2$; its remaining product is $2p_2\cdot p_3=s+t-v$.
+
+There are $L$ loop squares, $L(L-1)/2$ products of distinct loop momenta, and $LE$ loop--external products. Adding these counts gives the complete coordinate number
+\begin{equation}
+ N=\frac{L(L+1)}2+LE.
+ \label{eq:count-new}
+\end{equation}
+This is the representation used by Kira~\cite{Kira3}. We append squared momentum differences when their scalar-product coefficient vectors increase the exact rank, until all $N$ coordinates are independent. The candidate order follows loop momenta and then external momenta. Auxiliary indices are nonpositive. The tested interface admits at most 31 coordinates; this is an implementation limit, not an upper bound on the mathematics of IBP. It permits the defined vacuum inputs through seven loops, two-point inputs through six, and four-point inputs through five. Completion remains a separate test.
+
+For the final fresh profile $h=1213$, choose $m_{\rm one}^2=2h+17$, $m_i^2=2h+19+6(i-1)$, $p^2=-2h-29$, $s=-1009-12h$, and $t=-1021-14h$, using only the variables required by each of the six recursive families. All values use a common squared-momentum unit. Additional scattering profiles follow the explicit assignments in Table~\ref{tab:extra-kinematics}. The independent reference increases the target's positive-power, numerator, and dot limits by one; the check increases the numerator allowance once more and changes integral ordering. Every checked reference and every failure is retained.
+\input{paper_extra_kinematics}
+
+Let $a_i^{(0)}=1$ on the $n$ physical entries and zero otherwise. For $j=0,\ldots,\min(n,3)-1$, set $i_j=1+[(h+j)\bmod n]$ and, when $N>n$, $k_j=n+1+[(h+j)\bmod(N-n)]$. The dotted batch uses $\boldsymbol a^{(0)}+2\boldsymbol e_{i_j}$; the mixed batch uses $\boldsymbol a^{(0)}+\boldsymbol e_{i_j}-\boldsymbol e_{k_j}$. Without an auxiliary entry, the latter has only the extra physical power. The three additional structures use the earlier generator, which puts a second physical dot on the next entry when no auxiliary entry exists. The notes give its full historical target definitions. These are indexed Feynman integrals whose reductions come from exact Kira calculations.
+
+For the retained two-loop sparse-seed test, the planar box has physical momenta $(\ell_1,\ell_1-p_1,\ell_1-p_1-p_2,\ell_2,\ell_2-p_1-p_2,\ell_2-p_1-p_2-p_3,\ell_1-\ell_2)$ and auxiliary momenta $(\ell_1-p_3,\ell_2-p_1)$. Its convention is $2p_1\cdot p_2=s$, $2p_1\cdot p_3=t$, and $2p_2\cdot p_3=-s-t$. The nonplanar family is Eq.~\eqref{eq:nonplanar-new}. Both use unit physical powers and numerator ranks two through four on one or two auxiliary entries. The equation-transfer comparison also includes the three-loop vacuum with momenta $(\ell_1,\ell_2,\ell_3,\ell_1-\ell_2,\ell_2-\ell_3,\ell_1-\ell_3)$ and the massive two-point ladder $(\ell_1,\ell_1-p,\ell_2,\ell_2-p,\ell_3,\ell_3-p,\ell_1-\ell_2,\ell_2-\ell_3,\ell_1-\ell_3)$, whose final entry is auxiliary. For the three-loop vacuum the squared masses are $(1,1,1,13,13,53+2h)$; for the two-point ladder they are $(1,0,0,0,0,0,0,0)$ on the physical entries, with $p^2=-1009-12h$. The earlier sparse-seed fit uses profiles $h=831,832$ for training, $841,842$ for validation, and $851,852$ for the 20-request test. Its planar invariants are $(-1009-12h,-1021-14h)$ and its nonplanar invariants are $(-113-18h,-127-10h)$. A single-direction numerator carries rank two, three, or four; a distributed numerator splits rank three or four into its ceiling and floor halves on the two auxiliary entries. The equation-filter training uses profiles $511,512$, validation uses $513$, and its new-index comparison uses $605,606$. The notes preserve the complete finite target enumeration and source records for those earlier experiments.
+
+\section{Timing ratios and uncertainty}
+\label{app:statistics}
+Let $T_{cmj}$ be the elapsed time for request $c$, method $m$, and repetition $j$. For the matched set $\mathcal C$, define
+\begin{equation}
+ S_m=\sum_{c\in\mathcal C}\operatorname{median}_j T_{cmj},\qquad
+ R_{m/b}=\frac{S_m}{S_b},\qquad
+ \text{time saving}=100(1-R_{m/b})\%.
+ \label{eq:timing-new}
+\end{equation}
+The sum describes that fixed workload. Subtracting $S_m$ from the baseline total $S_b$ and dividing by $S_b$ gives the saving formula; its speedup factor is $S_b/S_m=1/R_{m/b}$. A matched request must complete the compared methods and repetitions with exact agreement. We also report all excluded requests, so these ratios are conditional on completion.
+
+For the new test, we resample the three paired repetition indices within each request 2,000 times, recompute its medians and the ratio of totals, and take the 2.5 and 97.5 percentiles. This applies the bootstrap principle~\cite{Efron1979} to the measured repetition pairs. The interval describes variation on this fixed workload, with limited resolution from three repeats. It does not give a confidence guarantee for unseen integral families or arbitrary loop order. Training, reference discovery, and unsuccessful comparisons are reported separately from matched supplied-basis times.

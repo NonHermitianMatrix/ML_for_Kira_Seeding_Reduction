@@ -2,412 +2,147 @@
 \usepackage[margin=24mm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\usepackage{amsmath,amssymb,graphicx,placeins,flafter,booktabs,tabularx,array}
+\usepackage{amsmath,amssymb,graphicx,booktabs,tabularx,array,placeins}
 \usepackage[font=small,labelfont=bf]{caption}
-\usepackage{alphalph}
 \usepackage{hyperref}
-\hypersetup{hidelinks,pdftitle={Machine learning and exact preprocessing for Feynman integral reduction with Kira},pdfauthor={Rushil Saraswat}}
+\hypersetup{hidelinks,pdftitle={Learning to reduce the cost of Feynman integral reduction with Kira},pdfauthor={Rushil Saraswat}}
 \setlength{\parindent}{1em}
 \setlength{\parskip}{3pt}
 \setlength{\emergencystretch}{2em}
-\makeatletter
-\setlength{\@fptop}{0pt}
-\setlength{\@fpsep}{12pt}
-\setlength{\@fpbot}{0pt plus 1fil}
-\makeatother
 \newcommand{\Q}{\mathbb Q}
-\newcommand{\T}{\mathcal T}
-\newcommand{\Sset}{\mathcal S}
-\newcommand{\Cset}{\mathcal C}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
-\title{Machine learning and exact preprocessing for Feynman integral reduction with Kira}
+\title{Learning to reduce the cost of Feynman integral reduction with Kira}
 \author{Rushil Saraswat}
 \date{October 17, 2026}
-\newcommand{\StudySection}{\subsection}
-\newcommand{\StudySubsection}{\subsubsection}
 \begin{document}
 \maketitle
-
-
-\begin{abstract}
-Integration-by-parts reduction expresses Feynman integrals in a master basis. We train models to choose seeds and equations before Kira performs exact algebra, and compare complete reduction time with matched controls. Earlier equation-filter tests give 4.8\% less time on 68 matched batches at one through four loops; a retained sparse-seed workflow gives 18.0\% less time on 24 reserved two-loop requests. Learned row selection remains omitted because its tests show no reliable gain. We extend seed-cost training to vacuum, two-point, and scattering families. On 41 new matched batches with validation-selected exact routes, the combined-to-previous application ratio is 0.961, with repeat interval [0.934, 1.021]. The new target-dependent model deploys on 1 matched batch, with learned-to-fixed time ratio 0.839 under the same exact implementation; the learned-to-native ratio for this batch is 1.006. Inactive domains contribute timing variation to the all-batch learned comparison. We report each family separately and retain failures. The calculations keep the dimension symbolic and use rational kinematics and supplied master bases; timings include prediction, equation generation, algebra, exact checks, and retries. Separate exact changes reduce sector-storage requirements and admit full-coordinate scalar massless two-point inputs through twelve tested loops. These scalar checks do not use ML. The evidence establishes gains within stated domains and does not establish a learned speedup for every integral type or loop order.
-\end{abstract}
+\input{paper_abstract}
 
 \section{Introduction}
-Higher-order perturbative corrections to scattering amplitudes and particle decay amplitudes require integrals over loop momenta. As the loop order increases, a calculation produces many integrals with related numerator and denominator structures, and integration-by-parts (IBP) identities allow them to be expressed in terms of a smaller set of master integrals. This reduction is an essential step in many multiloop calculations in quantum field theory~\cite{Weinzierl2022,ChetyrkinTkachov}.
+Feynman integrals arise when we integrate over the internal loop momenta in higher-order perturbative corrections to scattering amplitudes and particle decay amplitudes. In quantum chromodynamics, these corrections contribute to predictions for cross sections and decay rates. Many integrals in the same calculation have related numerator and denominator structures, and integration-by-parts (IBP) identities allow us to express them in terms of a smaller set of master integrals~\cite{Weinzierl2022,ChetyrkinTkachov}.
 
-Kira automates the reduction by generating algebraic identities and solving the resulting linear system~\cite{Laporta,KiraOriginal}. Although the identities are exact, the amount of work depends on which equations are generated and how the system is solved. Modern Kira versions already use improved seed and equation selection to reduce unnecessary work~\cite{Kira3}. We call the requested integrals the targets and ask whether models trained on earlier reductions can reduce the time needed to express them in a master basis.
+Kira automates this reduction by generating identities and solving the resulting linear system~\cite{KiraOriginal,Laporta}. Its existing seed and equation-selection methods already avoid part of the unnecessary work~\cite{Kira3}. Our question is whether a model can make an earlier choice that reduces the remaining calculation time. We study seed selection, the choice of an elimination row, and the selection of individual equations. Throughout this paper, a target is an integral or linear combination requested by the user; a seed is an index vector at which Kira generates identities.
 
-We investigate three places where a learned choice can affect the calculation: selecting the seeds from which IBP identities are generated, selecting the row used in an elimination step, and selecting individual equations before their symbolic coefficients are constructed. Earlier work has used machine-assisted search to discover seed-selection rules~\cite{Song2025}. Here we assess each model through the time required to complete the reduction, including prediction, exact checks, and any repeated calculation after an unsuccessful choice. This criterion matters because an accurate prediction or a smaller equation set can still lead to a slower calculation.
+Previous studies have used machine-assisted search to improve seed regions, including sparse regions around target-dependent paths~\cite{Song2025,TubeSeeding2026}. Our comparisons use the time required to complete an exact reduction, including prediction and unsuccessful attempts. This criterion follows directly from the purpose of the model: a smaller equation set is useful only when its reduction and recovery cost give a smaller total time. Section~\ref{sec:design} defines the corresponding controls.
 
-The main comparisons separate two levels of decision. We first train models to choose the bounds of the seed region, using measured complete reduction times as labels. Tuned fixed bounds explain nearly all of that saving. We therefore hold those bounds fixed and train shared and graph-specific classification trees to select individual equations or whole seeds inside the region. This second comparison measures the additional effect of learned filtering. Earlier tests of row selection, exact preprocessing, and restricted high-loop recurrences provide the separate evidence needed to identify where each saving comes from.
+We first identify the measured benefit of the three local decisions and retain the seed and equation models where their tests support their use. Second, we train a shared cost model from structural features and test its transfer to families and loop orders omitted from training. A final comparison trains on failed attempts and includes the preparation workflow. We first define the notation used in this paper, then explain the models and compare their results. The companion notes preserve historical variants, secondary experiments, and longer derivations.
 
-The next comparison trains a model to choose which targets Kira reduces together. This choice changes the seed limits of each group and can trade repeated preparation for a smaller equation system. We compare its complete time with the preceding undivided workflow and with separately tuned fixed partitions.
-
-We then train a seed boundary directly from complete Kira times. This model changes which seeds generate identities, and a second model predicts which fitted boundary to use for a target. The comparison includes tuned native Kira, a fixed sparse boundary, and the preceding application. It therefore tests both the benefit of a learned region and the additional value of selecting a region for each request.
-% BEGIN JOINT POLICY INTRO
-A further study tests joint choices of seed boundaries and Kira settings using complete reduction time, including retries. Neither new predictor improves enough to replace the preceding ML application. We retain that application and add exact reuse when all invariants change by the same positive factor. Separate tests measure first-request time and sequence time with the initial reduction included.
-
-% END JOINT POLICY INTRO
-We then keep that application fixed and test broader vacuum, two-point, and scattering families through twelve loop orders. The new coverage study reports completed reductions, failed references, and input limits separately from exact scalar checks at every studied loop order.
-
-
-% BEGIN FAMILY COST INTRO
-Those coverage results motivate a final family-specific cost model and an exact change to sector storage. We train on a wider set of physical targets, validate each proposed choice against a fixed setting for that family, and test the combined application at a new parameter profile. This comparison measures the added value of the model separately from the exact storage change.
-% END FAMILY COST INTRO
-
-We first define the notation used in this paper and explain the reduction procedure. We then compare learned seed bounds with tuned fixed settings and use that result to motivate the new equation filters. The main results measure their added effect on complete calculation time. The final sections distinguish learned gains from exact implementation changes and state the physical scope. The appendices retain earlier model tests, wider coverage checks, integral definitions, model specifications, and derivations.
-
-\section{Feynman integrals and their reduction with Kira}
-\label{sec:reduction}
-\subsection{Families, indices, and sectors}
-An integral family specifies a set of propagators and the external scalar products. Integrals in the same family differ in the integer powers assigned to those propagators~\cite{Weinzierl2022,KiraOriginal}:
+\section{The reduction problem and the three decisions}
+\label{sec:physics}
+An integral family specifies inverse propagators and external kinematics. We use the convention~\cite{Weinzierl2022,KiraOriginal}
 \begin{equation}
- I_{\boldsymbol a}(\boldsymbol x,d)
- =\int\prod_{h=1}^{L}\frac{d^d\ell_h}{i\pi^{d/2}}
-       \prod_{i=1}^{N}D_i^{-a_i},
- \qquad D_i=q_i^2-m_i^2+i0.
- \label{eq:family}
+ I_{\boldsymbol a}(\boldsymbol x,d)=
+ \int\prod_{h=1}^{L}\frac{d^d\ell_h}{i\pi^{d/2}}
+ \prod_{j=1}^{N}D_j^{-a_j},\qquad D_j=q_j^2-m_j^2+i0.
+ \label{eq:integral}
 \end{equation}
-Here $L$ is the number of loops, $\ell_h$ is the momentum of loop $h$, and $N$ is the number of inverse propagators, including any auxiliary entries. The momentum $q_i$ is a linear combination of loop and external momenta, and $m_i$ is the corresponding mass. The term $i0$ specifies the Feynman prescription. We use dimensional regularization with $d=4-2\epsilon$, where $\epsilon$ is the regulator, and collect the independent momentum invariants and squared masses in $\boldsymbol x$.
+Here $L$ is the number of loops, $\ell_h$ is loop momentum $h$, $q_j$ is a fixed linear combination of loop and external momenta, and $m_j$ is the mass associated with propagator $j$. The vector $\boldsymbol x$ contains squared masses and external momentum invariants. Dimensional regularization uses $d=4-2\epsilon$, where $\epsilon$ is the regulator, and $i0$ specifies the Feynman pole prescription. The normalization of the measure is a convention. A positive integer $a_j$ places $D_j$ in the denominator, a negative integer places it in the numerator, and zero removes that factor. The list of $N$ entries includes auxiliary inverse propagators when the physical denominators alone do not span the loop scalar products~\cite{Weinzierl2022}.
 
-The index $a_i$ determines how $D_i$ enters the integrand. A positive index places it in the denominator, a zero index removes it, and a negative index places a power of it in the numerator. Auxiliary inverse propagators represent scalar products that cannot be expressed using the physical propagators alone. Integrals with the same set of positive indices belong to the same \emph{sector}~\cite{KiraOriginal}. A top sector specifies a maximal declared set of positive propagator indices, and its subsectors follow by removing propagators~\cite{KiraOriginal}. These definitions give Kira a common way to label the integrals and organize the equations between them.
-
-\subsection{From an IBP identity to a master-integral reduction}
-An IBP identity starts from an index vector $\boldsymbol\sigma$, called a \emph{seed}. We multiply its integrand by a loop or external momentum $v$, differentiate with respect to a loop momentum $\ell_k$, and integrate the total derivative. Dimensional regularization gives~\cite{ChetyrkinTkachov}
+Integrals with the same positive-index positions belong to the same sector. A subsector removes some of those positions~\cite{KiraOriginal}. At seed $\boldsymbol\sigma$, differentiating the integrand with respect to loop momentum $\ell_k$ gives the identity~\cite{ChetyrkinTkachov}
 \begin{equation}
  0=\int\prod_h\frac{d^d\ell_h}{i\pi^{d/2}}
  \frac{\partial}{\partial\ell_k^\mu}
- \left(v^\mu\prod_iD_i^{-\sigma_i}\right)
- =\sum_j A_{\boldsymbol\sigma,o;j}(\boldsymbol x,d)
-     I_{\boldsymbol a^{(j)}}.
- \label{eq:ibp}
+ \left(v^\mu\prod_jD_j^{-\sigma_j}\right)
+ =\sum_u A_{\boldsymbol\sigma,o;u}(\boldsymbol x,d)
+ I_{\boldsymbol a^{(u)}}.
+ \label{eq:identity}
 \end{equation}
-The label $o$ specifies the derivative through the choices of $k$ and $v$, while $j$ labels the integrals produced when the derivative is expanded. The coefficient $A_{\boldsymbol\sigma,o;j}$ multiplies integral $I_{\boldsymbol a^{(j)}}$ in that identity. Since several operators can act on the same seed, one seed generally generates several equations. Appendix~\ref{app:ibp} derives the shifts in the integral indices and the row operation used to eliminate an integral.
+The vector $v$ is a loop or external momentum, and $o$ labels the pair $(k,v)$. The coefficient $A_{\boldsymbol\sigma,o;u}$ multiplies the integral with index vector $\boldsymbol a^{(u)}$. Appendix~\ref{app:derivation} expands the derivative and derives the resulting index shifts. Several operators act on the same seed, so seed selection retains or removes a group of candidate equations.
 
-Kira generates these equations within prescribed index limits, applies symmetry relations, removes redundant equations, and solves the remaining system~\cite{KiraOriginal,Kira3}. Each equation forms a row of the coefficient matrix, and each integral corresponds to a column. Elimination combines rows to remove integrals in the chosen order; back-substitution then expresses the requested targets in terms of the remaining masters. Kira can manipulate symbolic rational functions directly or use exact arithmetic modulo a prime, with reconstruction when a symbolic result is required~\cite{KiraOriginal,Kira2}. Arithmetic modulo a prime takes place in a finite field, so its numerical appearance does not introduce floating-point error.
-
-A requested target may be a single indexed integral or a linear combination $T=\sum_u c_u I_{\boldsymbol a^{(u)}}$. The desired result is
+Kira combines IBP identities with symmetry and Lorentz-invariance relations, removes redundant equations, and eliminates integrals in a chosen order. Back-substitution then expresses the requested targets in the remaining master basis~\cite{KiraOriginal,Kira3}. For target $T$, the result has the form
 \begin{equation}
  T=\sum_{m=1}^{n_M}r_{Tm}(\boldsymbol x,d)M_m,
  \qquad r_{Tm}\in\Q(\boldsymbol x,d).
- \label{eq:master}
+ \label{eq:reduction}
 \end{equation}
-Here $c_u$ is the coefficient of a target term, $M_m$ is master integral $m$, and $n_M$ is the number of masters. The field $\Q(\boldsymbol x,d)$ consists of rational functions of the invariants, squared masses, and dimension with rational-number coefficients. Reduction determines the coefficients $r_{Tm}$; evaluating the master integrals is a separate part of the amplitude calculation.
+Here $M_m$ is master integral $m$, $n_M$ is the number of masters, and $\Q(\boldsymbol x,d)$ is the field of rational functions with rational coefficients. Equation~\eqref{eq:reduction} follows by the exact row operations derived in Appendix~\ref{app:derivation}. It determines reduction coefficients; evaluating the masters is a further part of an amplitude calculation~\cite{Weinzierl2022}. Kira can use symbolic rational arithmetic or repeated finite-field solutions followed by rational reconstruction~\cite{Kira2}. We leave reconstruction unchanged in this study.
 
-\subsection{Where learned choices can reduce the work}
-Table~\ref{tab:decisions} identifies the three decisions studied here. Seed selection changes which groups of identities are available, row selection changes the elimination steps, and equation selection can suppress an individual seed--operator pair before Kira constructs its coefficients. We use \emph{native choices} to mean Kira's own decision rules. A learned model changes a decision, while Kira continues to carry out the exact algebra.
-
-Every completed target must reach the prescribed master basis. In the comparisons, we also check its coefficients against an independently obtained exact reduction. If a chosen seed set or equation set is insufficient, the calculation repeats with native choices or a larger seed region. We call this repeated attempt a \emph{fallback} and include its cost in the reported time. Thus the relevant question for each model is whether the work it avoids exceeds the cost of prediction and any fallback.
-
-\begin{table}[!htbp]
-\centering\small
-\caption{The three decisions and the work each model can avoid.}
-\label{tab:decisions}
+Table~\ref{tab:places} locates the three learned decisions. Our implementation always obtains the coefficients through exact algebra. If a restricted system does not reach the supplied basis, it repeats the reduction with less restrictive settings, and the timer includes this recovery. Exactness follows from the retained identities and row operations; sufficiency must still be checked for each target, as explained in Appendix~\ref{app:derivation}.
+\begin{table}[!htbp]\centering\small
+\caption{The three places where a learned decision can change the work. These are the interventions tested in this study.}
+\label{tab:places}
 \begin{tabularx}{\linewidth}{@{}lYY@{}}\toprule
-Model & Decision & Possible saving\\\midrule
-Seed and batch selection & Which seed regions and target groups should Kira use? & Limit equation generation and repeated work.\\
-Row selection & Which allowed row eliminates the next integral? & Reduce intermediate expressions and operations.\\
-Equation selection & Which seed--operator pairs are useful? & Avoid constructing unnecessary coefficients.\\\bottomrule
+Decision & Model output & Work affected\\\midrule
+Seed selection & Seed region or seed-retention score & Number and structure of identities generated\\
+Row selection & Score for each allowed source row & Intermediate expressions during elimination\\
+Equation selection & Retention score for a seed--operator pair & Symbolic coefficient construction\\\bottomrule
 \end{tabularx}
 \end{table}
 
-The following comparisons retain native row elimination. The original row network took 1.305 times the stock reduction time in 84 exact trials, while a later compiled row policy gave a ratio of $0.982$ with interval $[0.959,1.003]$. We therefore omit learned row choice and focus on seed regions and equations. Appendix~\ref{sec:rows} gives the models and checks behind that decision.
+\section{Training and comparison design}
+\label{sec:design}
+We use two kinds of labels. Early models learn membership in a recorded sufficient seed set or the next action in a recorded reduction. Such labels describe one valid history and do not establish a minimum number of seeds or operations. Later cost models learn from complete Kira timings for alternative choices. Section~\ref{sec:shared} uses this second objective to test whether one model can transfer across structures. The notes retain the reverse-construction dataset and its separate label-accuracy tests.
 
-\input{learned_bounds_results}
-\input{equation_refinement_results}
-\input{batch_policy_results}
-\input{seed_geometry_results}
-\input{joint_policy_results}
-\input{extended_coverage_results}
-\input{family_cost_results}
-\input{massless_banana_results}
+Every reported paired timing ratio uses identical targets, kinematics, and master bases for its competing methods. The native control disables learned choices in the same exact implementation. A fixed control uses a setting selected before testing and makes no request-dependent prediction. This second control measures what the prediction adds after fixed tuning. The earlier deployed application supplies a further practical comparison. When a study uses a modified executable, ``native'' means its native decision rules; it does not mean an unmodified Kira installation.
 
-\section{Overall performance and physical scope}
-% BEGIN FAMILY COST OVERALL
-The final combined comparison in Section~\ref{sec:family-cost} gives time ratio 0.855 against the preceding native control, 0.961 against the previous application, and isolated learned-to-fixed ratio 0.991 with validation-selected exact routes in both controls. These ratios use 41 matched batches, five repetitions, and complete process times. The following paragraphs retain the earlier comparisons and their separate physical domains.
-% END FAMILY COST OVERALL
+The main native comparisons keep $d$ symbolic and assign rational values to the other kinematic variables. Thus the exported coefficients are exact rational functions of $d$. Master discovery and an enlarged-region reference calculation precede the supplied-basis timer. The application receives the master indices, while reference coefficients enter only the final check. We report this preparation cost separately where measured. Adding it to a supplied-basis time describes a two-stage workflow, since the reference calculation already performs a reduction; it does not measure a faster first reduction from scratch.
 
-\label{sec:overall}
-% BEGIN BANANA OVERALL
-The separate analytic specialization reduces scalar massless banana targets through one corner master, with a derived coefficient valid at every positive loop count. Its 9 completed native comparisons give a speedup of 21.3--357.8 times for the stated targets. These gains come from exact mathematics and are separate from the ML gains (Section~\ref{sec:banana}).
-% END BANANA OVERALL
-\subsection{What the model comparisons establish}
-% BEGIN JOINT POLICY OVERALL
-Section~\ref{sec:joint-policy} retains the preceding ML application because neither new joint predictor clears the 2\% validation threshold. On 24 first requests, the retained application with the new interface gives 1.2\% less time, with time-ratio interval $[0.975,1.024]$ relative to its preceding interface. This difference supplies no evidence of a gain from the new predictors. The separate scale sequences give 64.4\% less time than the preceding application without reuse, including the initial Kira solve. This additional saving comes from the derived scale identity, while the first reduction still uses the preceding ML decisions.
-% END JOINT POLICY OVERALL
+The new comparison starts a fresh process for each measurement and includes imports, model loading, prediction, IBP generation, elimination, exact coefficient comparison, retries, output, and process exit. Three repetitions rotate method order on the same worker for each request. Earlier retained comparisons use their stated timers and repetitions in Table~\ref{tab:retained}. For the seed, equation, and shared-model workloads, we sum the median time of each request and divide by the corresponding control total. The historical row comparison uses a geometric mean, as stated in Section~\ref{sec:seed-row}. Appendix~\ref{app:statistics} defines this ratio and its resampling interval. A nontrivial batch contains at least one target that reduces to a nonzero expression beyond an unchanged basis element. Failures remain in the coverage counts and receive no completed-time ratio.
 
-% BEGIN SEED GEOMETRY OVERALL
-The first evolved seed boundary gives 22.3\% less time, with a paired-repetition ratio interval of $[0.751, 0.813]$ relative to tuned native Kira on eight planar two-loop requests. Its added saving relative to the fixed surrounding-width control is 6.5\% less time, with a paired-repetition ratio interval of $[0.899, 0.980]$. The broader sparse-seed workflow in Section~\ref{sec:seed-geometry} gives 22.2\% less time, with a paired-repetition ratio interval of $[0.764, 0.792]$ relative to tuned native Kira on 20 matched two-loop requests. Its comparison with the fixed sparse control gives 3.6\% less time, with a paired-repetition ratio interval of $[0.946, 0.981]$. These results use separate workloads from the earlier equation-filter and batch tests.
-% END SEED GEOMETRY OVERALL
+\section{Seed selection and elimination-row selection}
+\label{sec:seed-row}
+\subsection{Learning a sparse seed region}
+The sparse-seed model limits the distance between a seed's numerator powers and the numerator-power regions of the targets. Its boundary also depends on the seed rank and sector. We fit the boundary by running complete reductions, then train cost predictors to choose among candidate boundaries. Appendix~\ref{app:sparse} defines the geometry and objective. Trees and forests provide the candidate cost models~\cite{CART1984,Breiman2001Forest,Geurts2006ExtraTrees}; validation determines whether request-dependent prediction improves on a fixed sparse setting.
 
-% BEGIN BATCH POLICY OVERALL
-The target-batch comparison in Section~\ref{sec:batch-policy} gives 1.5\% more time than the previous undivided workflow across 96 matched batches with up to 11 targets. Its additional change relative to fixed partitions with the same filters is 0.8\% more time, with ratio interval $[0.988, 1.035]$. Validation disables the new predictor, so this comparison establishes no additional ML gain from batch selection. Every successful reduction passes exact coefficient checks. This is a separate workload from the smaller-batch filter study.
-% END BATCH POLICY OVERALL
-% BEGIN EQUATION REFINEMENT OVERALL
-After fixed seed tuning, newly trained equation filters give 8.0\% less complete time on 32 matched batches where validation enables them, with 4.8\% time saving across all 68 matched batches. These controls disable all ML and retain the same seed settings and exact implementation. Section~\ref{sec:equation-refinement} gives the failures, timing intervals, and physical limits.
-% END EQUATION REFINEMENT OVERALL
+This retained comparison uses planar and nonplanar two-loop boxes with numerator ranks two through four, unit positive physical indices, rational kinematics, and symbolic $d$. Twelve training requests and ten validation requests per graph precede the reserved test. Validation retains a fixed boundary for the planar graph and enables a depth-two, 32-tree extremely randomized forest for the nonplanar graph. The 20 reserved requests have seven repetitions per method. All 560 timed reductions pass exact checks, with 5,600 coefficient comparisons. Table~\ref{tab:retained} shows 22.2\% less time than tuned native choices and 3.6\% less time than the fixed sparse control. These measurements test new parameter profiles within known graphs; they motivate, but do not establish, cross-family transfer.
 
-% BEGIN LEARNED BOUNDS SUMMARY
-The new seed-bound study in Section~\ref{sec:learned-bounds} isolates a learned choice with all earlier models disabled. On 68 matched nontrivial batches, complete application time changes from 164.926 seconds under native bounds and 119.717 seconds under tuned fixed settings to 119.081 seconds with the new model. This gives 27.8\% less time than native bounds and 0.5\% less time than the tuned fixed control. The comparison includes model loading, native IBP generation, exact reduction, coefficient checks, and recovery, with a supplied basis. It uses known structures at one through four loops and separate rational profiles; the additional saving over tuned fixed settings remains within timing variation.
-% END LEARNED BOUNDS SUMMARY
-The broader coverage study in Section~\ref{sec:coverage} defines 90 native-family requests through twelve loops. The current interface accepts 54 of them, and 39 complete three checked nontrivial full reductions with revised preparation. On 37 matched completed requests, the revised full calculation takes 88.2\% less time than the saved original Kira executable. The supplied-basis selected application takes 0.1\% less time than the revised native control on its separate matched set. The approximately 0.1\% difference from the revised native control establishes no reliable additional learned gain on this wider set. Unsupported, failed, and identity-only requests remain outside these timing ratios.
+\subsection{Why the final method retains native row choices}
+The row model scores the allowed source rows of the current coefficient matrix. Its original network maps 132 inputs to 32 features, pools the available actions, and uses a 64-component hidden layer to produce a probability for each action. The inputs describe the pivot, nonzero entries, matrix size, and sampled cancellations. Exact arithmetic performs the selected row operation, as derived in Appendix~\ref{app:derivation}. The network learns the recorded next action through categorical cross-entropy; the notes give its full specification and the derivation of that loss.
 
-The preparation comparison keeps every trained model fixed and reduces exact preparation around its decisions. On 26 new batches, complete time changes from 79.784 to 64.183 seconds, or 19.6\% less time. Section~\ref{sec:parametric} gives the matched controls and graph results. With the revised preparation held fixed, the selected portfolio uses 4.7\% less time than the fixed portfolio by summed medians and 5.0\% less time across all repetitions. The previous portfolio study in Section~\ref{sec:portfolio} remains a separate comparison on different targets.
+In our live Kira comparison, the original row network takes 1.305 times the stock reduction time across 84 exactly checked trials. A later compiled policy trained on algebraic cost gives a geometric mean time ratio of 0.982 with repeat interval $[0.959,1.003]$. Since this interval includes equal time, that experiment supplies no reliable complete-time gain. We therefore omit learned row selection from the retained method and leave Kira's row choices active. The historical row measurements and their different controls remain in the notes.
 
-The earlier model tests and the exact preprocessing study answer separate questions. Seed and equation selection help in their measured domains, while learned row selection remains omitted. Exact preprocessing reduces costs shared by every portfolio candidate. Restricted vacuum recurrence and repeated-request reuse supply further savings under their own assumptions. These experiments use different inputs and controls, so their speedup factors cannot be multiplied.
+\section{Selecting equations before coefficient construction}
+\label{sec:equation}
+Equation selection makes a finer choice within the seed region. A classification tree scores each seed--operator pair before Kira builds its symbolic coefficients. Its seventeen features describe loop and external-momentum counts, index counts, target number, seed powers, sector membership, distance to a target, and operator index. The score is the weighted positive fraction in the reached leaf, using the tree construction of Ref.~\cite{CART1984}. Appendix~\ref{app:equation-model} defines the features, weights, and threshold rule.
 
-\begin{table}[!htbp]
-\centering\small
-\caption{Summary of separate comparisons. Each row uses its stated inputs and baseline. The studies provide no measured product of these speedups.}
-\label{tab:overall}
-\begin{tabularx}{\linewidth}{@{}lYY@{}}\toprule
-Method & Tested calculation & Result for complete time\\\midrule
-% BEGIN SEED GEOMETRY TABLE
-Evolved seed boundary & Eight planar two-loop targets & 22.3\% less time than tuned native; 6.5\% less time than fixed width\\
-Sparse-seed deployment & 20 planar and nonplanar targets & 22.2\% less time than tuned native; 22.6\% less time than previous\\
-% END SEED GEOMETRY TABLE
-% BEGIN JOINT POLICY TABLE
-Retained ML, new interface & 24 first requests; two-loop boxes & 1.2\% less time than previous; 5.7\% less time than fixed\\
-Scale reuse with ML & Four three-scale sequences & 64.4\% less time than previous, including first solve\\
-% END JOINT POLICY TABLE
+A positive training label means that the equation's set of participating integrals appears in Kira's selected system. This proxy does not identify a unique necessary equation. We collect 137,015 sampled records, including 39,285 positive labels, from 66 training batches. Shared and graph-specific trees use depths 6, 10, 14, or 18 and minimum leaf populations 4 or 16. Separate validation first retains high-recall candidates, then measures complete reduction cost. A graph uses a filter only when validation gives at least 5\% less time than the same tuned calculation with all ML disabled. The selected filter can retain an individual equation or all operators from a retained seed.
 
-% BEGIN BATCH POLICY TABLE
-Target batch choice & 96 matched batches; up to 11 targets & 1.5\% more time than previous; 0.8\% more time than fixed partitions\\
-% END BATCH POLICY TABLE
-% BEGIN EQUATION REFINEMENT TABLE
-Trained equation filters & 68 matched batches; loops 1--4 & 4.8\% less time than tuned ML-off control; 8.0\% on 32 active batches\\
-% END EQUATION REFINEMENT TABLE
-% BEGIN LEARNED BOUNDS TABLE
-Learned seed bounds & 68 matched batches; loops 1--4 & 27.8\% less time than native bounds; 0.5\% less than tuned fixed settings\\
-% END LEARNED BOUNDS TABLE
-% BEGIN FINAL PORTFOLIO SUMMARY
-Revised exact preparation & Fresh known-graph batches, loops 1--4 & 19.6\% less time than the previous implementation\\
-Added outer prediction & Same revised preparation & 4.7\% less time by medians; 5.0\% less across repetitions\\
-% END FINAL PORTFOLIO SUMMARY
-% BEGIN CURRENT COST SUMMARY
-Earlier cost model & Known graph structures, loops 1--4 & 0.5\% less time than native choices in the improved executable\\
-Earlier gated policy & Same targets; fixed settings selected per graph & 1.8\% less time than the graph-specific fixed control\\
-% END CURRENT COST SUMMARY
-Seed network & One target from an existing equation pool & 8.6\% less time\\
-Equation tree & Native reduction in four trained graph structures & 5.7\% less time\\
-Row policy & Native symbolic elimination & No reliable saving\\
-Original equation tree & Three new scattering structures & 25.2\% more time\\
-Complete-cost model & Seven known graph structures, loops 1--3 & No reliable gain over native controls\\
-Policies per graph & Higher powers and lower sectors, loops 1--3 & 6.3\% less time\\
-Selective seed expansion & Known graphs, new profiles, loops 1--3 & 14.8\% less time than native\\
-Selecting Kira workers & Known graphs, new profiles, loops 1--3 & 4.2\% less time than previous, sum of medians\\
-Choosing Kira settings & Known graphs, new profiles, loops 1--3 & No added gain over preceding method\\
-Joint integrated reduction & Two compatible requests in seven graph structures & 48.3\% less time\\
-Exact recurrences and reuse & Restricted vacuum family, loops 1--12 & $543.8\times$ faster\\\bottomrule
+The reserved comparison contains 68 matched nontrivial batches from a 74-request grid at one through four loops. Four reference checks fail and two batches are identity-only. Filtering reduces summed median time from 153.937 to 146.586 seconds, or 4.8\%, with ratio interval $[0.946,0.959]$. On the 32 batches where validation enables filtering, time falls from 91.707 to 84.384 seconds, or 8.0\%. All 700 timed completions, including the identity-only batches, pass exact checks. Prediction and five recovery attempts remain inside the timer. These results use known graph structures and partly repeated target patterns.
+
+A separate test changes the index batches within the enabled structures while keeping the model fixed. It retains only batches absent from training and validation, with at least one previously unseen index vector. All 24 requests complete, with 144 exact timed reductions and 5,106 coefficient comparisons. Their summed median time changes from 72.295 to 67.478 seconds, or 6.7\%, with ratio interval $[0.928,0.940]$. This index-transfer result supplies the equation-model entry in Table~\ref{tab:retained}; it remains separate from transfer to new graphs.
+
+\begin{table}[!htbp]\centering\small
+\caption{Direct results for the retained local decisions. Times are sums of request medians in seconds. Sparse seeding includes seven repetitions; equation filtering on new index batches includes three. Their workloads differ, so the ratios cannot be multiplied. These are measurements of this study.}
+\label{tab:retained}
+\begin{tabularx}{\linewidth}{@{}Yrrr@{}}\toprule
+Comparison & Control & Learned & Ratio\\\midrule
+Sparse seeds / tuned native, 20 two-loop requests & 75.843 & 58.972 & 0.778\\
+Sparse seeds / fixed sparse, same requests & 61.203 & 58.972 & 0.964\\
+Equation filter / ML off, 24 new index batches & 72.295 & 67.478 & 0.933\\\bottomrule
 \end{tabularx}
 \end{table}
-
-\subsection{Exact reuse in the restricted vacuum family}
-The high-loop vacuum study explores a different source of acceleration. For the family in Appendix~\ref{app:vacuum}, exact recurrences express the reduction coefficients through $z=L(d-2)$. A coefficient calculation can then serve several loop orders and several targets. The method reuses intermediate coefficients and checks each result with an independent Taylor expansion; Kira remains available if this direct check fails. The deployed recurrence uses a fixed rule. Its large saving comes from exact mathematical reuse and implementation changes. A separately trained selector for recurrence strategies takes 1.7\% more time than the fixed rule and supplies no established additional saving.
-
-The comparison uses eight fresh groups, each containing three mass profiles with two, three, or four massive denominators, and requests loop orders one through twelve. Five repetitions compare the saved original Kira 3.1 executable, a later full-pool control, and the recurrence method on identical requests. All 120 calculations pass exact checks. The final-to-original time ratio is $0.001839$, corresponding to speedup $543.815$ with interval $[488.134,605.064]$. A separate check verifies 27,960 nonzero target--master coefficient polynomials. The successful recurrence calculations need no Kira calls, whereas each baseline makes 1,440 calls across its trials.
-
-\begin{figure}[tbp]
-\centering\includegraphics[width=\linewidth]{paper_figures/cumulative_results.pdf}
-\caption{Exact recurrence reuse gives the large saving in the restricted vacuum family. Left: complete times on a logarithmic axis. Right: original time divided by final time. Each batch contains three mass profiles at loops 1--12. The result combines mathematical reuse and program improvements.}
-\label{fig:cumulative}
+\begin{figure}[!htbp]\centering
+\includegraphics[width=\linewidth]{paper_figures/paper_local_results.pdf}
+\caption{The retained local models reduce time on their stated workloads. Seed selection is compared with both native and fixed sparse choices. Equation selection changes target indices within known structures. Horizontal intervals describe paired repetition variation; the line at one marks equal time. Row selection remains omitted because its later interval includes one.}
+\label{fig:local}
 \end{figure}
+\FloatBarrier
 
-This result depends on the structure of the family. The benchmark constructs Euler and mass partial-fraction identities rather than a general high-loop IBP system. Earlier checks at loop orders 13, 16, 24, and 32 use the same family, and the recurrence proof applies to every positive integer loop order under its stated assumptions. The demonstrated high-loop result therefore concerns this restricted vacuum problem; the connected scattering comparisons in Sections~\ref{sec:components} and~\ref{sec:adaptive} have separate definitions and timings.
+\section{A shared model for transfer across integral families}
+\label{sec:shared}
+The preceding gains depend on validated graph domains. We therefore train a shared model from structural quantities, with graph names, stored family signatures, and coordinate-position identifiers excluded from its inputs. Its 44 inputs summarize the family and targets through loop and external-momentum counts, propagator incidence, masses, positive and negative powers, sector occupancy, and normalized versions of these counts. These features have fixed length when the number of loops or propagators changes. Appendix~\ref{app:shared} specifies the representation and prediction equations.
 
-\section{Conclusion}
-% BEGIN FAMILY COST CONCLUSION
-The final cost-trained comparison with validation-selected exact routes has learned-to-fixed time ratio 0.991 and combined-to-previous ratio 0.961 on 41 matched batches. The new target-dependent model deploys on 1 matched batch, with learned-to-fixed time ratio 0.839 under the same exact implementation; the learned-to-native ratio for this batch is 1.006. The repeat interval for the combined-to-previous comparison includes one, so this additional aggregate improvement remains uncertain. Section~\ref{sec:family-cost} reports each family and separates learned, fixed-choice, and exact contributions. A separate storage change addresses high-loop sector allocation. The full-coordinate scalar checks pass through twelve loops, within the stated analytic domain.
-% END FAMILY COST CONCLUSION
+For each training request, the model predicts the complete cost of ten seed configurations, including changed positive-power bounds, numerator-rank bounds, and Kira's subsector truncation. We fit logarithms of time ratios to native bounds and penalize incomplete attempts. These labels include recovery to less restrictive configurations. A decision margin requires a predicted improvement before changing a common anchor action. The anchor and margin are global; no graph-specific deployment rule enters this new model.
 
-The expanded test defines 84 native family requests at one through twelve loops. 29 requests complete all methods and exact checks, while 36 exceed the current 31-index interface limit. The remaining requests retain their recorded failures. The separate analytic test verifies 24 scalar massless two-point batches, covering every loop order from one through twelve at both rational and symbolic momentum. The native matched time ratio is 1.003. These broader outcomes do not extend the isolated learned gains to every family. Section~\ref{sec:extended-coverage} retains the complete coverage record.
+We reuse only recorded training costs and reserve the earlier validation costs for model selection. The distinct-mass vacuum family of Appendix~\ref{app:families-new}, nonplanar boxes, pentagons, and loop orders four and above are excluded from both sets. The remaining data contain 74 training and 51 validation requests. Candidate models include nine tree or forest configurations, two regularized linear regressions, and two neural networks. Five-fold validation keeps each ordered graph structure within one fold, and the model selection also considers the separate validation set. Training selects a neural network with two 48-component hidden layers and a margin of 0.05. The network has 5,002 fitted weights and biases. The runtime evaluates the saved weights directly, and its predictions agree with those of the training library within the numerical check tolerance. Appendix~\ref{app:shared} gives the loss, candidate settings, and selection rule.
 
-% BEGIN JOINT POLICY CONCLUSION
-Section~\ref{sec:joint-policy} retains the preceding ML application because neither new joint predictor clears the 2\% validation threshold. On 24 first requests, the retained application with the new interface gives 1.2\% less time, with time-ratio interval $[0.975,1.024]$ relative to its preceding interface. This difference supplies no evidence of a gain from the new predictors. The separate scale sequences give 64.4\% less time than the preceding application without reuse, including the initial Kira solve. This additional saving comes from the derived scale identity, while the first reduction still uses the preceding ML decisions.
-% END JOINT POLICY CONCLUSION
+The reserved physical profile is new. Its 110 requests span the defined one-mass and massive vacuum families, massless and massive two-point families, four-point ladders, boxes with bubble subgraphs, and three additional scattering structures. The declared loop range is one through twelve. This tests both new parameter values in training domains and transfer to the excluded families or higher orders. Appendix~\ref{app:families-new} gives the denominators, kinematics, and target construction. Each request has an explicit outcome; a model prediction for an unsupported native input is recorded without calling it a successful reduction.
+\input{general_policy_results}
 
-% BEGIN SEED GEOMETRY CONCLUSION
-The first evolved seed boundary gives 22.3\% less time, with a paired-repetition ratio interval of $[0.751, 0.813]$ relative to tuned native Kira on eight planar two-loop requests. Its added saving relative to the fixed surrounding-width control is 6.5\% less time, with a paired-repetition ratio interval of $[0.899, 0.980]$. The broader sparse-seed workflow in Section~\ref{sec:seed-geometry} gives 22.2\% less time, with a paired-repetition ratio interval of $[0.764, 0.792]$ relative to tuned native Kira on 20 matched two-loop requests. Its comparison with the fixed sparse control gives 3.6\% less time, with a paired-repetition ratio interval of $[0.946, 0.981]$. These results use separate workloads from the earlier equation-filter and batch tests.
-% END SEED GEOMETRY CONCLUSION
+\input{preparation_results}
 
-% BEGIN BATCH POLICY CONCLUSION
-The target-batch comparison in Section~\ref{sec:batch-policy} gives 1.5\% more time than the previous undivided workflow across 96 matched batches with up to 11 targets. Its additional change relative to fixed partitions with the same filters is 0.8\% more time, with ratio interval $[0.988, 1.035]$. Validation disables the new predictor, so this comparison establishes no additional ML gain from batch selection. Every successful reduction passes exact coefficient checks. This is a separate workload from the smaller-batch filter study.
-% END BATCH POLICY CONCLUSION
+\section{Overall interpretation}
+\label{sec:overall-new}
+The direct local comparisons establish savings for seed and equation decisions within their measured domains (Table~\ref{tab:retained}). The shared-model comparison tests the additional question of transfer without a family-specific rule (Section~\ref{sec:general-results}). These are separate workloads and controls, so their ratios do not form a cumulative speedup. Learned row selection remains omitted because its measured gain is not resolved from timing variation. The current shared-model application enables learned seed bounds. The equation filter retains its separate validated application, and no combined gain is inferred from these separate tests.
 
-We train models for decisions that affect exact Feynman integral reduction and evaluate their effect on complete calculation time. The new equation filters act before symbolic coefficient construction, using target and seed indices to select individual identities or whole groups from a seed. Kira performs exact elimination and retries without the filter when the first equation set is insufficient.
+The preceding complete application combined validated learned choices with exact preparation changes. On 41 matched batches it took 56.461 seconds against 66.045 seconds for native choices, a ratio of 0.855. Its isolated new learned choice changed the seed action in only one batch. We retain that earlier experiment in the notes because its combined gain does not establish a general learned policy. Exact sector-storage changes, scaling reuse, and analytic scalar recurrences likewise remain distinct from learned gains. In particular, the scalar recurrence checks through twelve loops verify a restricted exact formula, not a high-loop ML reduction.
 
-With tuned seed bounds and exact implementation changes held fixed, the reserved comparison changes summed median time from 153.937 to 146.586 seconds across 68 matched nontrivial batches. Filtering is enabled on 32 batches, whose corresponding times are 91.707 and 84.384 seconds. The 95\% paired-repetition interval for this subset's time ratio is $[0.916, 0.927]$. The comparison includes prediction and recovery, and every successful output passes exact coefficient checks. The separate index-transfer check takes 6.7\% less time across 24 matched batches, with ratio interval $[0.928, 0.940]$. Section~\ref{sec:equation-refinement} reports individual graphs, incomplete references, and the fresh-application check.
-
-The seed-bound study explains why a matched fixed control is necessary. Its learned choice saves 27.8\% against unshifted bounds, but the additional 0.5\% over tuned fixed settings lies within timing variation. Learned row elimination also supplies no reliable gain in its recorded comparisons, so the retained application uses native row choices. These results guide deployment: use the validated filters with tuned seed settings and retain exact fallback.
-
-The earlier full-calculation comparison gives 88.2\% less time than the saved original executable on 37 matched requests, including master discovery. That saving comes from exact implementation changes and has a different workload. The restricted vacuum recurrence verifies all twelve studied loop orders under its identity assumptions. Neither result can be multiplied by the new filter gain. The new ML test supplies a master basis and covers known structures at one through four loops with rational kinematics and symbolic dimension. The target-partition study extends the tested batch sizes as described in Section~\ref{sec:batch-policy}. General high-loop scattering, unrestricted symbolic kinematics, and globally minimal reduction paths remain outside the demonstrated scope.
-
-% BEGIN BANANA CONCLUSION
-The separate analytic specialization reduces scalar massless banana targets through one corner master, with a derived coefficient valid at every positive loop count. Its 9 completed native comparisons give a speedup of 21.3--357.8 times for the stated targets. These gains come from exact mathematics and are separate from the ML gains (Section~\ref{sec:banana}).
-% END BANANA CONCLUSION
+\input{paper_conclusion}
 \appendix
-\renewcommand{\thesection}{\AlphAlph{\value{section}}}
-\renewcommand{\theHsection}{appendix.\arabic{section}}
-% EQUATION REFINEMENT MAIN ORDER
-\section{Training data and experimental design}
-\label{sec:data}
-\subsection{Constructing targets with known reductions}
-To train the original models, we need targets together with master coefficients and a recorded sequence of valid reduction steps. We obtain these data by working backwards from checked master relations. If $E_q=\sum_i A_{qi}I_i=0$ is a source identity, we construct
-\begin{equation}
- T=\sum_m r_mM_m+\sum_q\lambda_qE_q,
- \qquad \lambda_q,r_m\in\Q(\boldsymbol x,d).
- \label{eq:reverse}
-\end{equation}
-Expanding the right-hand side produces an expression in indexed integrals while the added zero identities leave its master coefficients unchanged. We record the identities, their seeds and operators, and the operations used in the construction. Appendix~\ref{app:construction} proves the relation and explains how to recover a reduction path from this record.
-
-This procedure usually produces a sum of integrals. It produces a single indexed integral only when the expanded expression has that form. It also supplies one sufficient seed set and one valid reduction path; it does not establish that either has minimum cost. The labels therefore teach the original models to reproduce a checked construction, and later timing experiments determine whether their choices help Kira.
-
-\subsection{Coverage and separation of training and test data}
-Table~\ref{tab:data} summarizes the original collection. The 17,100 family instances contain 57,979 master entries, counted separately in each family, and 2,301,272 targets. Many instances are parameter variations of the same graph. We call a specified assignment of masses and momentum invariants a \emph{parameter profile}. In particular, the higher-loop additions use the restricted vacuum family derived in Appendix~\ref{app:vacuum}; they do not represent general scattering graphs through twelve loops. The test set contains 148,494 single integrals and 541,888 integral expressions. Appendices~\ref{app:families} and \ref{app:basis} specify the families and the checks used to establish their master bases.
-
-\begin{table}[!htbp]
-\centering\small
-\caption{Original constructed data. Family instances include parameter variations of the same graph.}
-\label{tab:data}
-\begin{tabular}{@{}lrr@{}}\toprule
-Part & Family instances & Targets\\\midrule
-Training & 11,963 & 1,610,890\\
-Testing & 5,137 & 690,382\\
-Total & 17,100 & 2,301,272\\\bottomrule
-\end{tabular}
-\end{table}
-
-Related mass assignments remain in the same training or test group at every loop order. The seed and row networks each receive twenty additional passes through the expanded training set, starting from their earlier parameters and optimizer state. Some test profiles had already appeared in earlier evaluations, so these results concern reserved parameter groups rather than entirely new graph structures. The later native-Kira studies use separate training, validation, and test samples: training fits the models, validation selects their settings, and the reserved test measures those fixed choices.
-
-\subsection{What the timing comparisons measure}
-Within each comparison, every method receives the same targets and prescribed master basis and uses the same allocated resources. We use \emph{complete reduction time} for the measured time that includes input preparation, model prediction, algebra, checks, and all fallback attempts. Offline training and the construction of reference answers are excluded. The original local-model comparisons repeat each calculation five times. The final complete-cost comparisons use three repetitions, with the method order rotated. Each comparison reports batch medians and states its repetition count.
-
-The baseline also needs to be specified. Most native comparisons use the same modified Kira 3.1 executable for learned and native choices, so improvements shared by that executable do not count as a benefit of the model. The cumulative vacuum comparison instead uses the saved original executable as its baseline. Later sections also distinguish the sum of batch median times from a geometric mean that gives each graph equal weight. The latter averages logarithms of time ratios and then exponentiates the result. Appendix~\ref{app:timing} defines these measures and their descriptive uncertainty intervals. Keeping these conditions explicit allows each speedup to be interpreted against the calculation it actually measures.
-
-\section{Learning the three reduction decisions}
-\label{sec:local-models}
-We first test the three decisions separately. For each model, we describe the information it receives, the reference labels used in training, and its effect on exact reduction time. This separates the ability to reproduce a recorded choice from the ability to accelerate Kira.
-
-\subsection{Model 1: selecting seeds}
-\label{sec:seeds}
-The seed network receives the terms of the target, its family, the master indices, and a finite list of candidate seeds. It maps each target term to 32 learned numerical features and combines these with ordered pairs of terms and information about the family and masters. A seed-dependent attention operation then identifies which target terms are most relevant to that candidate. The shared representations and attention follow Refs.~\cite{DeepSets,AttentionIsAllYouNeed}; Appendix~\ref{app:models} gives the full architecture.
-
-The network has 28,097 fitted parameters and assigns a separate score to every candidate:
-\begin{equation}
- p_b=\frac{1}{1+e^{-g_\theta(T,F,\mathcal M,\boldsymbol\sigma_b)}},
- \qquad
- \widehat\Sset(T)=\{\boldsymbol\sigma_b\in\Cset:p_b\geq\tfrac12\}.
- \label{eq:seed}
-\end{equation}
-Here $F$ denotes the family, $\mathcal M$ the master list, $\Cset$ the candidate list, and $g_\theta$ the output of the network with fitted parameters $\theta$. The score estimates whether a seed belongs to the recorded sufficient set. Because a target can require several seeds, several scores can exceed the selection threshold and their sum need not be one. Training uses binary cross-entropy and AdamW~\cite{AdamW}. The network receives neither the target's final master coefficients nor its later reduction steps.
-
-On the 690,382 reserved targets, the model has precision 95.750\%, recall 96.892\%, and $F_1$ score 96.318\%. Its complete predicted set matches the recorded set for 84.332\% of targets. Kira reduces 652,517 targets with the predicted sets, corresponding to 94.515\% sufficiency, and reduces all targets when the full equation pool is available. These percentages differ because matching the recorded set and supplying enough equations are different tests: another seed set can also be sufficient. Appendix~\ref{app:timing} defines the metrics. We report precision and recall because the large number of negative labels can make overall classification accuracy misleading~\cite{SaitoRehmsmeier2015}.
-
-To determine whether this prediction saves time, we use a separate comparison on existing identity pools from twelve reserved one-loop box instances. The weights remain fixed, and the timing test uses threshold $0.01$, chosen before that comparison; the earlier label and sufficiency tests use $1/2$. Both the learned selector and a distance-based rule receive the same basis check and full-pool fallback. For single targets, the learned-to-full-pool time ratio is $0.914$, with descriptive 95\% interval $[0.871,0.958]$, giving 8.6\% less time. Relative to the distance rule, the ratio is $0.913$ with interval $[0.855,0.972]$, giving 8.7\% less time. Every method completes all five repetitions of these twelve cases.
-
-The gain is less clear for larger requests. For sixteen-target batches, the ratio is $0.952$ with interval $[0.772,1.148]$, which includes equal time. Across the full planned seed comparison, 345 trials finish exactly, three remain incomplete, and twelve repetitions are skipped; the timing summary uses only complete paired cases. The identity pools already exist when these timers start. A separate native test that includes IBP generation gives ratio $1.096$ with interval $[0.963,1.275]$. Thus the original network demonstrates a saving for the stated supplied-equation single-target test, while native generation requires a different assessment. Section~\ref{sec:adaptation} reports new seed trees trained directly on scattering reductions.
-
-\begin{figure}[tbp]
-\centering\includegraphics[width=\linewidth]{paper_figures/seed_results.pdf}
-\caption{Seed prediction accuracy and reduction speed measure different outcomes. Left: results on the original reserved targets. Right: learned time divided by full-pool time. Values below one are faster. The single-target interval lies below one; the sixteen-target interval crosses it.}
-\label{fig:seed}
-\end{figure}
-
-\FloatBarrier
-
-\subsection{Model 2: selecting elimination rows}
-\label{sec:rows}
-After the equations have been generated, several allowed source rows may eliminate the next integral. The row network scores these alternatives using 132 inputs that describe the pivot integral, nonzero entries, family, matrix size, and sampled cancellations. It maps each action to 32 learned features, combines information across the available actions, and passes the result through a hidden layer with 64 components. A softmax converts the final scores into probabilities that sum to one, and the network selects the action with the largest probability. The 10,529 fitted parameters determine the choice; exact arithmetic performs the row operation. Appendices~\ref{app:ibp} and \ref{app:models} give the operation and architecture.
-
-The original training examples follow one changing target row while the source identities stay fixed. On 2,558,472 reserved states with a choice, the network selects the recorded action in 95.845\% of cases, compared with 99.473\% for a local deterministic rule. Complete predicted paths agree with the saved master row at three finite-field points for 690,302 of 690,382 targets. These sampled checks support agreement at those points but do not prove symbolic equality. Including prediction, the network takes 17.657 times as long as the local rule.
-
-The more relevant application places the fixed network inside Kira's changing symbolic matrix and preserves Kira's allowed integral order. Across 84 exactly checked trials, this implementation takes 1.305 times the time of stock Kira. We therefore also test smaller policies trained on measured algebraic cost, with compiled prediction and shared features. The latest row-only comparison gives ratio $0.982$ with interval $[0.959,1.003]$, while combining it with the seed policy gives $1.100$ with interval $[0.966,1.279]$ against native choices.
-
-Figure~\ref{fig:row} shows that the later intervals still include equal time. We therefore retain Kira's row choices in the final method. This result explains why the remaining studies focus on decisions that can avoid equation generation or repeated work: reproducing a plausible elimination path did not, by itself, provide a reliable reduction in complete time.
-
-\begin{figure}[tbp]
-\centering\includegraphics[width=0.96\linewidth]{paper_figures/row_results.pdf}
-\caption{The row model gives no reliable complete-time saving. The first model is slower, and the later row-only interval includes equal time. The original summary provides no interval for the first result. These comparisons use different model versions.}
-\label{fig:row}
-\end{figure}
-
-\FloatBarrier
-
-\subsection{Model 3: selecting individual equations}
-\label{sec:equations}
-Equation selection offers an earlier opportunity to avoid work. The model scores each seed--operator pair before Kira constructs its symbolic coefficients. Its seventeen inputs describe the family, target list, seed indices, and operator; they include the number of loops and targets, extra propagator powers, numerator rank, and distance between seed and target indices. A classification tree~\cite{CART1984} applies feature-threshold decisions and returns a score from its final leaf. The score estimates whether the equation belongs to the useful part of a recorded native reduction. No equation coefficients are needed for prediction, and Kira retains its native treatment of symmetries and masters.
-
-The original fit uses 153,124 candidate equations, including 12,270 positive labels, from fourteen batches in eight parameter profiles. The four graph structures are the two-loop sunrise, planar double box, three-loop vacuum, and three-loop ladder. Validation compares trees of depth eight and twelve, containing 295 and 1,335 nodes, at threshold $0.01$. It selects the deeper tree for the double box and the shallower tree for the vacuum and ladder; the 21-target sunrise case retains the preceding equation policy. A filter is enabled only when validation shows lower complete and preparation times without fallback. Adding learned seed or row choices fails this condition, so native seed and row choices remain active in this comparison.
-
-Testing uses eight new parameter profiles and fourteen target batches. The masses and momentum invariants take rational values, while $d$ remains symbolic, so the coefficient field is $\Q(d)$. Five repetitions of four methods give 280 complete calculations. Native choices, the early equation model, and the distance-based control share the same executable improvements; a fourth method uses the preceding release. This design distinguishes the effect of equation selection from improvements in the surrounding implementation.
-
-Relative to native choices in that executable, the model reduces complete time by 5.7\% and equation-preparation time by 36.2\%. The corresponding ratios are $0.943$ with interval $[0.915,0.970]$ and $0.638$ with interval $[0.546,0.734]$. Preparation includes modular generation, selection, modular solving, and symbolic equation regeneration. The smaller change in complete time reflects the work that remains after preparation. All 280 calculations succeed on their first attempt, and independent exact checks cover 94,970 coefficient comparisons and eight applications supplied only with the prescribed basis.
-
-\begin{figure}[tbp]
-\centering\includegraphics[width=\linewidth]{paper_figures/equation_results.pdf}
-\caption{Equation selection saves more preparation time than complete reduction time. Each ratio compares the model with native choices in the same executable. The panels use different labelled ranges. The aggregate intervals describe variation across the eight profiles.}
-\label{fig:equations}
-\end{figure}
-
-To test how far the original tree transfers, we also apply the fixed depth-twelve model to three structures absent from its training data: a massless nonplanar two-loop box, a massless pentagon, and a box with one external virtuality. Appendix~\ref{app:families} defines their propagators and invariants, using the massless limit of the nonplanar family in Ref.~\cite{KiraOriginal}. Four batches use rational kinematics and symbolic $d$. Three more keep the independent invariants symbolic, with coefficient fields $\Q(d,s,t)$, $\Q(d,s_{12},s_{23},s_{34},s_{45},s_{51})$, and $\Q(d,s,t,v)$. Here $s,t$ are four-point invariants, $s_{i,i+1}$ are adjacent five-point invariants, and $v$ is an external squared momentum.
-
-The seven batches contain 88 targets and produce seventy comparison calculations. All final results pass exact checks, but every one of the 35 filtered calculations needs native fallback. The average time ratio is $1.252$, or 25.2\% more time. Checks cover 5,600 coefficient pairs, agreement with enlarged seed regions in all seven cases, and agreement after new rational substitutions in the three symbolic cases. The fallback therefore restores a correct answer at an additional cost. Figure~\ref{fig:transfer} records this transfer test before the new training described next.
-
-\begin{figure}[tbp]
-\centering\includegraphics[width=\linewidth]{paper_figures/transfer_results.pdf}
-\caption{The original equation model is slower on the new scattering structures. Each point compares five-run median times, including fallback. All 35 filtered calculations require a retry. This historical test uses the original weights, before additional training.}
-\label{fig:transfer}
-\end{figure}
-
-\FloatBarrier
-\input{scattering_results}
-
-\section{Selecting a complete calculation before equation generation}
-\label{sec:strategies}
-The local-model tests show that selecting useful equations does not by itself ensure a faster complete reduction. We therefore train models on measured calculation time and move their decision to the start of a target batch. The earlier experiments examine graph-specific strategies, selective seed expansion, integral ordering, and worker count. Appendix~\ref{app:earlier-strategies} preserves their model definitions and results. Their gains use different target batches and cannot be multiplied into one speedup.
-
-These experiments also raise an attribution question: how much of the saving comes from the learned choice, and how much comes from the fixed settings around it? The next section holds the other settings fixed to answer that question. Its results motivate choosing among complete reduction strategies in the following section.
-
-\input{higher_scattering_results}
-\input{portfolio_results}
-\input{parametric_results}
-\input{coverage_results}
-
-
-\section{Earlier models for complete calculations}
-\label{app:earlier-strategies}
-The local-model tests show that useful equations, accurate labels, and faster individual stages do not always lead to a faster complete reduction. We therefore change the training objective to measured calculation time and move the decision to the start of a target batch. The following studies examine the available strategies, the benefit of separate models for each graph, the treatment of seed expansion, and the number of workers used by Kira.
-\input{workflow_results}
-\input{type_specialist_results}
-\input{basis_completion_results}
-\input{ordering_policy_results}
-\input{thread_policy_results}
-
-\input{paper_appendices}
-\input{workflow_appendix}
-\input{type_specialist_appendix}
-\input{basis_completion_appendix}
-\input{ordering_policy_appendix}
-\input{thread_policy_appendix}
-\input{higher_scattering_appendix}
-\input{adaptive_results}
-\input{adaptive_appendix}
-\input{portfolio_appendix}
-\input{parametric_appendix}
-\input{coverage_appendix}
-\input{learned_bounds_appendix}
-\input{equation_refinement_appendix}
-\input{batch_policy_appendix}
-\input{massless_banana_appendix}
-\input{seed_geometry_appendix}
-\input{joint_policy_appendix}
-\input{extended_coverage_appendix}
-\input{family_cost_appendix}
-\begingroup
-\small
-\setlength{\parskip}{0pt}
+\input{paper_derivations}
+\input{preparation_appendix}
+\clearpage
+\renewcommand{\refname}{References}
 \bibliographystyle{unsrt}
 \bibliography{paper_references}
-\endgroup
 \end{document}
