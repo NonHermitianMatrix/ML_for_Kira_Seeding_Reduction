@@ -30,7 +30,7 @@
 
 
 \begin{abstract}
-Integration-by-parts reduction expresses Feynman integrals in a master basis. We train models to select seeds and equations before Kira performs the exact algebra, using complete reduction time as the cost. We also test new models that jointly select seed boundaries and Kira settings. Validation retains the preceding ML application for both tested graphs because the replacements do not reach the required 2\% improvement. On 24 reserved planar and nonplanar two-loop requests, the retained workflow gives 18.0\% less time than tuned native Kira. A derived scale identity reuses completed reductions when all invariants change by a common positive factor. Four three-scale sequences give 64.4\% less time than the preceding application without reuse, with the first reduction included. All completed outputs in these earlier comparisons pass exact coefficient checks. These tests use rational kinematics, symbolic dimension, and supplied master bases; timings include decisions, algebra, checks, and retries. Earlier equation-filter tests give 4.8\% less time on 68 matched batches at one through four loops. Learned row selection remains omitted because its tests show no reliable gain. We report learned and exact-method gains separately within their tested physical domains. A broader frozen-application test completes all comparisons on 29 of 84 native requests defined through twelve loops. The matched nontrivial subset has selected-to-native time ratio 1.003; input and resource limits remain explicit. Separate exact scalar checks pass at every loop order from one through twelve.
+Integration-by-parts reduction expresses Feynman integrals in a master basis. We train models to choose seeds and equations before Kira performs exact algebra, and compare complete reduction time with matched controls. Earlier equation-filter tests give 4.8\% less time on 68 matched batches at one through four loops; a retained sparse-seed workflow gives 18.0\% less time on 24 reserved two-loop requests. Learned row selection remains omitted because its tests show no reliable gain. We extend seed-cost training to vacuum, two-point, and scattering families. On 41 new matched batches with validation-selected exact routes, the combined-to-previous application ratio is 0.961, with repeat interval [0.934, 1.021]. The new target-dependent model deploys on 1 matched batch, with learned-to-fixed time ratio 0.839 under the same exact implementation; the learned-to-native ratio for this batch is 1.006. Inactive domains contribute timing variation to the all-batch learned comparison. We report each family separately and retain failures. The calculations keep the dimension symbolic and use rational kinematics and supplied master bases; timings include prediction, equation generation, algebra, exact checks, and retries. Separate exact changes reduce sector-storage requirements and admit full-coordinate scalar massless two-point inputs through twelve tested loops. These scalar checks do not use ML. The evidence establishes gains within stated domains and does not establish a learned speedup for every integral type or loop order.
 \end{abstract}
 
 \section{Introduction}
@@ -51,6 +51,10 @@ A further study tests joint choices of seed boundaries and Kira settings using c
 % END JOINT POLICY INTRO
 We then keep that application fixed and test broader vacuum, two-point, and scattering families through twelve loop orders. The new coverage study reports completed reductions, failed references, and input limits separately from exact scalar checks at every studied loop order.
 
+
+% BEGIN FAMILY COST INTRO
+Those coverage results motivate a final family-specific cost model and an exact change to sector storage. We train on a wider set of physical targets, validate each proposed choice against a fixed setting for that family, and test the combined application at a new parameter profile. This comparison measures the added value of the model separately from the exact storage change.
+% END FAMILY COST INTRO
 
 We first define the notation used in this paper and explain the reduction procedure. We then compare learned seed bounds with tuned fixed settings and use that result to motivate the new equation filters. The main results measure their added effect on complete calculation time. The final sections distinguish learned gains from exact implementation changes and state the physical scope. The appendices retain earlier model tests, wider coverage checks, integral definitions, model specifications, and derivations.
 
@@ -116,9 +120,14 @@ The following comparisons retain native row elimination. The original row networ
 \input{seed_geometry_results}
 \input{joint_policy_results}
 \input{extended_coverage_results}
+\input{family_cost_results}
 \input{massless_banana_results}
 
 \section{Overall performance and physical scope}
+% BEGIN FAMILY COST OVERALL
+The final combined comparison in Section~\ref{sec:family-cost} gives time ratio 0.855 against the preceding native control, 0.961 against the previous application, and isolated learned-to-fixed ratio 0.991 with validation-selected exact routes in both controls. These ratios use 41 matched batches, five repetitions, and complete process times. The following paragraphs retain the earlier comparisons and their separate physical domains.
+% END FAMILY COST OVERALL
+
 \label{sec:overall}
 % BEGIN BANANA OVERALL
 The separate analytic specialization reduces scalar massless banana targets through one corner master, with a derived coefficient valid at every positive loop count. Its 9 completed native comparisons give a speedup of 21.3--357.8 times for the stated targets. These gains come from exact mathematics and are separate from the ML gains (Section~\ref{sec:banana}).
@@ -208,6 +217,10 @@ The comparison uses eight fresh groups, each containing three mass profiles with
 This result depends on the structure of the family. The benchmark constructs Euler and mass partial-fraction identities rather than a general high-loop IBP system. Earlier checks at loop orders 13, 16, 24, and 32 use the same family, and the recurrence proof applies to every positive integer loop order under its stated assumptions. The demonstrated high-loop result therefore concerns this restricted vacuum problem; the connected scattering comparisons in Sections~\ref{sec:components} and~\ref{sec:adaptive} have separate definitions and timings.
 
 \section{Conclusion}
+% BEGIN FAMILY COST CONCLUSION
+The final cost-trained comparison with validation-selected exact routes has learned-to-fixed time ratio 0.991 and combined-to-previous ratio 0.961 on 41 matched batches. The new target-dependent model deploys on 1 matched batch, with learned-to-fixed time ratio 0.839 under the same exact implementation; the learned-to-native ratio for this batch is 1.006. The repeat interval for the combined-to-previous comparison includes one, so this additional aggregate improvement remains uncertain. Section~\ref{sec:family-cost} reports each family and separates learned, fixed-choice, and exact contributions. A separate storage change addresses high-loop sector allocation. The full-coordinate scalar checks pass through twelve loops, within the stated analytic domain.
+% END FAMILY COST CONCLUSION
+
 The expanded test defines 84 native family requests at one through twelve loops. 29 requests complete all methods and exact checks, while 36 exceed the current 31-index interface limit. The remaining requests retain their recorded failures. The separate analytic test verifies 24 scalar massless two-point batches, covering every loop order from one through twelve at both rational and symbolic momentum. The native matched time ratio is 1.003. These broader outcomes do not extend the isolated learned gains to every family. Section~\ref{sec:extended-coverage} retains the complete coverage record.
 
 % BEGIN JOINT POLICY CONCLUSION
@@ -390,6 +403,7 @@ The local-model tests show that useful equations, accurate labels, and faster in
 \input{seed_geometry_appendix}
 \input{joint_policy_appendix}
 \input{extended_coverage_appendix}
+\input{family_cost_appendix}
 \begingroup
 \small
 \setlength{\parskip}{0pt}

@@ -1,0 +1,44 @@
+--- native/integrals.cpp
++++ bounded/integrals.cpp
+@@ -2226,7 +2226,12 @@
+       "default constructed propagator permutation argument is not allowed.");
+   }
+   std::vector<std::array<uint32_t, 3>> sect_w;
+-  for (uint32_t s = 0; s != (1u << np); ++s) {
++  const bool bounded_sectors = std::getenv("KIRA_BOUNDED_SECTOR_ARRAYS")
++      && std::getenv("KIRA_RESTRICT_SECTOR_INIT") && np<=31 && topsectors.size()==1
++      && (topsectors[0] & (topsectors[0]+1))==0;
++  const uint32_t sector_limit = bounded_sectors ? topsectors[0]+1 : (1u<<np);
++  for (uint32_t original_sector = 0; original_sector != sector_limit; ++original_sector) {
++    const uint32_t s = bounded_sectors ? permutation.permute_sector(original_sector) : original_sector;
+     // Note that s is the sector refering to the permuted propagators,
+     // if a permutation is set for the topology.
+     uint32_t scpy{s};
+@@ -2298,6 +2303,19 @@
+   m_sector_weight = sector_weight_table(
+     Integral::s_sector_ordering, m_topsectors, m_permutation);
+   m_minlines = m_np;
++  if (m_np<=31 && std::getenv("KIRA_BOUNDED_SECTOR_ARRAYS")) {
++    // There are binomial(np,k) sectors with k lines. A nontrivial one
++    // exists exactly when fewer than this many are in the trivial set.
++    std::array<uint64_t,33> trivial_by_lines{};
++    for (const auto s: m_trivialsectors) {
++      if (uint64_t(s) < (uint64_t(1)<<m_np)) ++trivial_by_lines[count_set_bits(s)];
++    }
++    uint64_t combinations=1;
++    for (uint32_t k=0;k<=m_np;++k) {
++      if (trivial_by_lines[k]<combinations) { m_minlines=k; break; }
++      if (k<m_np) combinations=combinations*(m_np-k)/(k+1);
++    }
++  } else {
+   for (uint32_t s = 0; s != (1u << m_np); ++s) {
+     // m_minlines: minimal number of lines in any non-trivial sector.
+     auto lines = count_set_bits(s);
+@@ -2305,6 +2323,7 @@
+         m_trivialsectors.find(s) == m_trivialsectors.end()) {
+       m_minlines = lines;
+     }
++  }
+   }
+   Integral::s_minlines = std::min(Integral::s_minlines, m_minlines);
+ }

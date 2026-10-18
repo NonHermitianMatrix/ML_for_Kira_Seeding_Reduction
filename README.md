@@ -3,14 +3,14 @@
 <!-- BEGIN ADAPTIVE REDUCTION -->
 ## Current reduction interface
 
-Use [the joint-configuration application](ML_model_seed_selection/joint_policy/README.md).
-It retains the preceding ML decisions for the fitted two-loop inputs.
-New joint predictors remain disabled because validation found less than 2% improvement.
-A request sequence can reuse exact results under a common positive momentum-scale change.
-Other inputs retain the preceding analytic and native paths.
+Use [the family-aware application](ML_model_adaptive_reduction/portfolio_policy/README.md) for individual target batches.
+It retains exact scalar formulae and uses validation-selected learned or fixed seed choices.
+Other inputs retain the preceding sparse-seed, equation-filter, and native paths.
+Use [the joint-configuration application](ML_model_seed_selection/joint_policy/README.md) for its supported scale-reuse sequences.
+The new folder also contains a separate exact sector-storage executable and its checks.
 Kira keeps native row choices and exact algebra.
-Read the guide for controls, measured limits, and input requirements.
-Earlier studies remain available; their speedup factors cannot be multiplied.
+Read each guide for the measured physical domain and timing controls.
+Earlier studies remain available. Their speedup factors cannot be multiplied.
 <!-- END ADAPTIVE REDUCTION -->
 
 This project studies machine learning for exact Feynman integral reduction with Kira.
@@ -234,3 +234,5 @@ These results use known massless two-loop boxes, rational kinematics, symbolic d
 <!-- END JOINT CONFIGURATION RESULTS -->
 
 The current frozen application has a broader test in `Kira_comparison/extended_coverage/`. It records native completion, failures, input limits, and separate exact analytic checks through twelve loops. Read that folder and the new report section for the measured scope.
+
+ML_model_adaptive_reduction/portfolio_policy contains the new family-aware seed-cost models and complete-time comparisons. It also records the higher-loop sector-storage change and scalar full-coordinate checks.

@@ -159,3 +159,5 @@ The second includes the initial solve in every sequence.
 <!-- END JOINT CONFIGURATION -->
 
 `extended_coverage.pdf` shows native coverage by loop order and matched complete-time ratios by integral type. Failures and input limits remain visible.
+
+family_cost.pdf separates the learned-to-fixed timing ratio from the combined-to-previous ratio. family_combined.pdf shows final application ratios and the isolated model effect in its active subset. Each point includes a paired-repetition interval.

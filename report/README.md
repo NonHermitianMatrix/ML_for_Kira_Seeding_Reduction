@@ -234,3 +234,5 @@ Read `../ML_model_seed_selection/joint_policy/README.md` for the full data and c
 <!-- END JOINT CONFIGURATION -->
 
 The extended coverage section tests the frozen application on 84 native requests through twelve loops. Its separate analytic tests cover every loop order. Read the coverage table before using the matched time ratios. `extended_coverage_data.json` stores the measured results. The source scripts are in `Kira_comparison/extended_coverage/`.
+
+The family-cost section reports the new seed-cost models, matched fixed controls, higher-loop storage checks, and full-coordinate scalar tests. Read family_cost_data.json for the evidence.

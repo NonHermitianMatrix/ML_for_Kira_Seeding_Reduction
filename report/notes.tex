@@ -25,7 +25,7 @@
 Feynman integral calculations are an important component of multiloop amplitude calculations in quantum field theory. In Quantum Chromodynamics (QCD), multiloop amplitudes and their associated Feynman integrals arise in higher-order perturbative calculations and can become increasingly complex at higher loop orders. Recent progress has automated these calculations to some extent using the framework Kira, which organizes target integrals into integral families and sectors, generate algebraic relations among the integrals by using integration by parts (IBP) identities, and reduce the resulting system to expressions in terms of a finite set of master integrals. We aim to explore the application of machine learning models to accelerate the IBP reduction process by investigating if learned models can improve seed selection. These models can predict the most useful integrals from which to generate IBP relations while minimizing redundant calculations. We will also explore machine learning models for learning efficient reduction and elimination sequences to minimize the number of algebraic operations required to express target integrals in terms of master integrals. Because the machine learning models will serve as decision-makers while the underlying IBP reduction and verification remain exact, these models can improve computational efficiency without compromising the correctness of the resulting reductions.
 \end{abstract}
 % BEGIN CURRENT WORKFLOW UPDATE
-\paragraph{Current measured method.} Section~\ref{sec:joint-policy} retains the preceding ML application because neither new joint predictor clears the 2\% validation threshold. On 24 first requests, the retained application with the new interface gives 1.2\% less time, with time-ratio interval $[0.975,1.024]$ relative to its preceding interface. This difference supplies no evidence of a gain from the new predictors. The separate scale sequences give 64.4\% less time than the preceding application without reuse, including the initial Kira solve. This additional saving comes from the derived scale identity, while the first reduction still uses the preceding ML decisions. All 480 first-request reductions and 144 requests in the scale sequences pass exact coefficient checks. The tests use the two known massless two-loop box graphs at rational kinematics, with symbolic dimension and supplied masters.
+\paragraph{Current measured method.} Section~\ref{sec:family-cost} combines family-specific seed-cost prediction with validation-selected exact sector storage. The final reserved comparison contains 41 matched nontrivial batches and gives a final-to-previous time ratio of 0.961. The new target-dependent model deploys on 1 matched batch, with learned-to-fixed time ratio 0.839 under the same exact implementation; the learned-to-native ratio for this batch is 1.006. All matched outputs pass exact coefficient checks. The tests use rational kinematics, symbolic dimension, and supplied master bases. The learned choice changes the seed action only in its validated target pattern. The twelve full-coordinate scalar checks use an exact identity. Earlier studies, including scale reuse and the retained sparse-seed application, remain below with their separate physical domains. Their speedup factors cannot be multiplied.
 % END CURRENT WORKFLOW UPDATE
 
 \clearpage
@@ -1159,6 +1159,7 @@ The broader coverage study in Section~\ref{sec:coverage} defines 90 native-famil
 \input{seed_geometry_results}
 \input{joint_policy_results}
 \input{extended_coverage_results}
+\input{family_cost_results}
 \input{massless_banana_results}
 The new seed-bound study in Section~\ref{sec:learned-bounds} isolates a learned choice with all earlier models disabled. On 68 matched nontrivial batches, complete application time changes from 164.926 seconds under native bounds and 119.717 seconds under tuned fixed settings to 119.081 seconds with the new model. This gives 27.8\% less time than native bounds and 0.5\% less time than the tuned fixed control. The comparison includes model loading, native IBP generation, exact reduction, coefficient checks, and recovery, with a supplied basis. It uses known structures at one through four loops and separate rational profiles; the additional saving over tuned fixed settings remains within timing variation.
 % END CURRENT WORKFLOW UPDATE
@@ -1184,6 +1185,7 @@ The new seed-bound study in Section~\ref{sec:learned-bounds} isolates a learned 
 \input{seed_geometry_appendix}
 \input{joint_policy_appendix}
 \input{extended_coverage_appendix}
+\input{family_cost_appendix}
 % END CURRENT WORKFLOW UPDATE
 \bibliographystyle{unsrt}
 \bibliography{references,type_specialist_references}

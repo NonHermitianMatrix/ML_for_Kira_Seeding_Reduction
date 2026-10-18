@@ -298,3 +298,5 @@ A physical-domain check selects a proved formula for one scalar two-point family
 Other supported requests use the frozen native batch workflow.
 Analytic savings and ML savings remain separate.
 <!-- END BANANA -->
+
+portfolio_policy/ adds family-aware seed-cost models, exact sector-storage checks, and full-coordinate scalar checks. Read its README for the tested scope.

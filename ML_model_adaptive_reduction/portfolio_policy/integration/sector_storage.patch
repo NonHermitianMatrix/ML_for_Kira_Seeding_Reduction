@@ -1,0 +1,100 @@
+--- native/ReadYamlFiles.cpp
++++ bounded/ReadYamlFiles.cpp
+@@ -190,6 +190,19 @@
+   return 0;
+ }
+ 
++
++// The restricted initializer only creates relations in declared subsectors.
++// Every such sector is at most the largest declared sector. Keep the native
++// allocation unless the same restriction is explicitly active.
++static std::size_t project_sector_capacity(const Integral_F& f) {
++  if (std::getenv("KIRA_BOUNDED_SECTOR_ARRAYS") &&
++      std::getenv("KIRA_RESTRICT_SECTOR_INIT") &&
++      !f.topLevelSectors.empty() && f.cutProps.empty() && f.symbolicIBP.empty()) {
++    return static_cast<std::size_t>(*std::max_element(
++        f.topLevelSectors.begin(), f.topLevelSectors.end())) + 1;
++  }
++  return (std::size_t(1) << f.jule) + 1;
++}
+ void Kira::read_kinematics(int flag_user_defined_system) {
+   if (flag_user_defined_system == 0) {
+     check_config_file("config/kinematics.yaml");
+@@ -1276,9 +1289,9 @@
+     (*iT).second.mask = new std::vector<uint32_t>[(*iT).second.jule + 1];
+     (*iT).second.allowSector = new std::vector<uint32_t>[(*iT).second.jule + 1];
+     (*iT).second.skipSector = new std::set<int>[(*iT).second.jule + 1];
+-    (*iT).second.symVecReverse = new SYM[(1 << (*iT).second.jule) + 1];
+-    (*iT).second.symVec = new SYM[(1 << (*iT).second.jule) + 1];
+-    (*iT).second.relVec = new SYM[(1 << (*iT).second.jule) + 1];
++    (*iT).second.symVecReverse = new SYM[project_sector_capacity((*iT).second)];
++    (*iT).second.symVec = new SYM[project_sector_capacity((*iT).second)];
++    (*iT).second.relVec = new SYM[project_sector_capacity((*iT).second)];
+   }
+ }
+ 
+@@ -1841,7 +1854,7 @@
+                      name + ".frm.back")
+                         .c_str());
+ 
+-    for (uint32_t sec = 0; sec < (1u << integralfamily.jule); sec++) {
++    for (uint32_t sec = 0; sec < project_sector_capacity(integralfamily); sec++) {
+       int symmetrieCounter = 0;
+       for (vector<symmetries>::iterator symHandler = sym[sec].begin();
+            symHandler != sym[sec].end(); symHandler++) {
+--- parametric/trivial_sym.cpp
++++ bounded/trivial_sym.cpp
+@@ -183,6 +183,19 @@
+   }
+ }
+ 
++
++// The restricted initializer only creates relations in declared subsectors.
++// Every such sector is at most the largest declared sector. Keep the native
++// allocation unless the same restriction is explicitly active.
++static std::size_t project_sector_capacity(const Integral_F& f) {
++  if (std::getenv("KIRA_BOUNDED_SECTOR_ARRAYS") &&
++      std::getenv("KIRA_RESTRICT_SECTOR_INIT") &&
++      !f.topLevelSectors.empty() && f.cutProps.empty() && f.symbolicIBP.empty()) {
++    return static_cast<std::size_t>(*std::max_element(
++        f.topLevelSectors.begin(), f.topLevelSectors.end())) + 1;
++  }
++  return (std::size_t(1) << f.jule) + 1;
++}
+ int Kira::find_zero_sectors() {
+   logger << "\n*****Search trivial sectors********************************\n";
+   Clock clock;
+@@ -1807,14 +1820,14 @@
+   }
+ 
+   int countR = 0;
+-  for (uint32_t it = 0; it < (1u << integralfamily.jule) + 1; it++) {
++  for (uint32_t it = 0; it < project_sector_capacity(integralfamily); it++) {
+     sort(integralfamily.symVec[it].begin(), integralfamily.symVec[it].end(),
+          myfunction);
+     countR += integralfamily.symVec[it].size();
+   }
+ 
+   int countS = 0;
+-  for (uint32_t it = 0; it < (1u << integralfamily.jule) + 1; it++) {
++  for (uint32_t it = 0; it < project_sector_capacity(integralfamily); it++) {
+     sort(integralfamily.relVec[it].begin(), integralfamily.relVec[it].end(),
+          myfunction);
+     countS += integralfamily.relVec[it].size();
+@@ -1841,7 +1854,7 @@
+ 
+   fileSymVec.open(otputNametmp.c_str());
+ 
+-  for (uint32_t i = 0; i < (1u << integralfamily.jule) + 1; i++) {
++  for (uint32_t i = 0; i < project_sector_capacity(integralfamily); i++) {
+     for (unsigned it = 0; it < symVec[i].size(); it++) {
+       symmetries halloB = symVec[i][it];
+       fileSymVec << i << " ";
+@@ -1906,6 +1919,7 @@
+       if (!(input >> halloB.symDOTS)) break;
+       if (!(input >> halloB.topology)) break;
+ 
++      if (sector < 0 || static_cast<std::size_t>(sector) >= project_sector_capacity(integralfamily)) throw ExceptionInternal("Sector exceeds allocated symmetry domain");
+       symVec[sector].push_back(halloB);
+ 
+       if (sector != halloB.sector) {

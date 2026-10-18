@@ -1,0 +1,36 @@
+--- early/relations.cpp
++++ bounded/relations.cpp
+@@ -18,6 +18,7 @@
+ */
+ 
+ #include <algorithm>
++#include <ginac/ginac.h>
+ #include <cassert>
+ #include <fstream>
+ #include <limits>
+@@ -425,8 +426,24 @@
+     eqdata crop;
+     crop.reserve(ibp_tmpl.size());
+     for (const auto& ic : ibp_tmpl) {
+-      auto weight = ic.first.zip(seed).to_weight();
++      const auto integral = ic.first.zip(seed);
+       auto coeff = sow_coeff(ic.second, s_seed);
++      if (std::getenv("KIRA_BOUNDED_SECTOR_ARRAYS")) {
++        uint32_t sector=0;
++        for (std::size_t k=0;k<integral.m_powers.size();++k)
++          if (integral.m_powers[k]>0) sector |= uint32_t(1)<<k;
++        if (sector >= Integral::s_sector_weight.at(integral.m_topoid).size()) {
++          static thread_local std::unordered_set<std::string> proven_zero;
++          if (proven_zero.find(coeff)!=proven_zero.end()) continue;
++          GiNaC::parser exact_parser;
++          if (exact_parser(coeff).normal().is_zero()) {
++            if (proven_zero.size()<4096 && coeff.size()<=1024) proven_zero.insert(coeff);
++            continue;
++          }
++          throw input_error("Nonzero IBP term outside bounded sector domain: "+coeff);
++        }
++      }
++      auto weight = integral.to_weight();
+       if (weight != Weight::none() && coeff != "0") {
+         crop.emplace_back(weight, coeff);
+       }
