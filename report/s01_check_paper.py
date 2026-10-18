@@ -234,6 +234,22 @@ def main():
             if v['cases']:assert abs(v['ratio']-v['learned_seconds']/v['control_seconds'])<1e-12
     p=HERE.parent/'ML_model_adaptive_reduction/hybrid_experts/summary.json'
     if p.exists():assert json.loads(p.read_text())==hybrid_expert
+    analytic=json.loads((HERE/'analytic_decomposition_data.json').read_text())
+    assert analytic['complete'] and analytic['requests']==len(analytic['rows'])==41
+    assert 'sec:analytic-results' in labels and 'app:analytic-decomposition' in labels
+    for group in analytic['comparisons'].values():
+        for value in group.values():
+            if value['cases']:assert abs(value['ratio']-value['learned_seconds']/value['control_seconds'])<1e-12
+    p=HERE.parent/'ML_model_adaptive_reduction/analytic_decomposition/summary.json'
+    if p.exists():assert json.loads(p.read_text())==analytic
+    guard=json.loads((HERE/'parser_guard_data.json').read_text())
+    assert guard['complete'] and guard['requests']==len(guard['rows'])==9
+    assert 'sec:parser-guard' in labels and 'app:parser-guard' in labels
+    for group in guard['comparisons'].values():
+        for value in group.values():
+            assert abs(value['ratio']-value['learned_seconds']/value['control_seconds'])<1e-12
+    p=HERE.parent/'ML_model_adaptive_reduction/analytic_decomposition/deployment/summary.json'
+    if p.exists():assert json.loads(p.read_text())==guard
     result=dict(general_model_test_complete=True,general_requests=general['requested'],general_checked_cases=general['overall']['cases'],external_citation_keys=len(cites),internal_references=len(refs),figures=len(figs),
         preparation_requests=preparation['requests'],preparation_exact_checks=preparation['coefficient_checks'],
         recovery_requests=recovery['requests'],recovery_exact_checks=recovery['coefficient_checks'],

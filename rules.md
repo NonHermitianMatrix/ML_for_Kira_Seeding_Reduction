@@ -255,3 +255,9 @@ Retain independent tests, exact checks, previous evidence, resource limits, and 
 - Train the integrated selector to minimize total elapsed reduction time, including model use, exact algebra, checks, failed attempts, and recovery.
 - Use exact methods and native Kira settings where they are faster. Enable learned choices where separate validation supports lower complete time. Include the protected master basis in the training setup and relevant model inputs.
 - Compare the integrated method with its previous version and equally optimized controls on fresh reserved inputs. Report measured savings, failures, and scope limits; do not claim global minimum time.
+
+## Exact and learned loop-integral decomposition (October 18, 2026)
+
+- Improve the complete decomposition workflow with exact analytic recurrences and learned choices wherever measured results support them. Existing implementations can change.
+- Reframe the paper as a study of speeding up loop-integral decomposition into master integrals. Explain the separate exact and learned contributions, derive new recurrences, and state their domain and fallback rules.
+- Preserve previous evidence, independent exact checks, complete timing costs, resource limits, and the required cluster, GitHub, notes, and local report copies.

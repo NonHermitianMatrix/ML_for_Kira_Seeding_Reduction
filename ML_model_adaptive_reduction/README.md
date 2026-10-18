@@ -1,3 +1,10 @@
+## Current exact and learned decomposition
+
+The current application adds an exact scalar one-loop recurrence to the frozen learned Kira workflow.
+The final application uses the recurrence for direct rational kinematics and keeps native Kira or earlier exact formulas for symbolic inputs.
+Read [the method guide](analytic_decomposition/README.md) for the code, tests, and supported inputs.
+The paper studies loop-integral decomposition into master integrals. The notes retain earlier methods and results.
+
 <!-- BEGIN COMPLETE TIME SELECTION -->
 The current combined application is ML_model_adaptive_reduction/hybrid_experts/s01_runtime.py.
 Read its README for exact routes, the sparse expert, complete-time controls, and measured limits.

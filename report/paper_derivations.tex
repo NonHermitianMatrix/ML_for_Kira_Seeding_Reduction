@@ -47,7 +47,9 @@ For $B$ training requests, the boundary search minimizes $J=B^{-1}\sum_b\log[T_b
 
 \subsection{Equation inputs and sampling}
 \label{app:equation-model}
-The equation classifier uses seventeen inputs. Four describe the family and request: $L,E,N,\log(1+|\mathcal T|)$. Three describe the seed: positive-index count, extra positive power, and numerator rank. Two subtract the batch's maximum extra power and rank from the corresponding seed quantities. Three describe the seed sector: whether it contains a target, and the differences from its target power and rank maxima. Two describe proximity: exact target membership and the minimum sum of absolute index differences. The latter is the defined distance $\min_{\boldsymbol a\in\mathcal T}\sum_i|\sigma_i-a_i|$. The operator index and the two overall target maxima complete the vector. These are definitions of the inputs, all available before coefficient construction.
+The equation classifier uses seventeen inputs. Four describe the family and request: $L,E,N,\log(1+|\mathcal T|)$. Three describe the seed: positive-index count, extra positive power, and numerator rank. Two subtract the batch's maximum extra power and rank from the corresponding seed quantities. Three describe the seed sector: whether it contains a target, and the differences from its target power and rank maxima. Two describe proximity: exact target membership and the minimum sum of absolute index differences. The latter is the defined distance
+\[\min_{\boldsymbol a\in\mathcal T}\sum_i|\sigma_i-a_i|.\]
+ The operator index and the two overall target maxima complete the vector. These are definitions of the inputs, all available before coefficient construction.
 
 Let $N_{cy}$ be the native number of records of class $y\in\{0,1\}$ in batch $c$. The total number of records is $N_c=N_{c0}+N_{c1}$. We sample $n_{cy}=\min(2000,N_{cy})$ records from each class without replacement. Every sampled record receives weight $w_{cy}=N_{cy}/(n_{cy}N_c)$. The total weight of that class is $n_{cy}w_{cy}=N_{cy}/N_c$, so the two classes together give unit batch weight. For a leaf with weighted class totals $W_0,W_1$, the score is
 \begin{equation}

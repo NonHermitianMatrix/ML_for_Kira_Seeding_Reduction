@@ -184,3 +184,7 @@ Its right panel includes one attempt for every request and gives completion coun
 
 `hybrid_expert_selection.pdf` compares the integrated method with native, ML-free, and preceding choices.
 It separates all matched completions from the expert domain and shows first-pass time with verified coverage.
+
+analytic_decomposition.pdf compares the combined method with matched native work and shows all first-attempt costs. Its message is the separate analytic benefit and the completion scope.
+
+parser_guard.pdf shows the separate cost reduction from avoiding symbolic setup. It uses the nine-request deployment test.

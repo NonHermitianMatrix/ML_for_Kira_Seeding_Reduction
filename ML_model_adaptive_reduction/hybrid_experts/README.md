@@ -1,3 +1,11 @@
+## Historical document receipt
+
+The current application and paper are in the analytic_decomposition study.
+This folder preserves the earlier hybrid experiment and its model weights.
+Its PDF hashes identify that earlier document version.
+Use ../analytic_decomposition/validation.json for the current paper and notes.
+Keep earlier document writers separate from the current report build.
+
 # Integrated sparse-seed expert
 
 This application combines exact block formulas, native seed settings, and a trained sparse-seed expert.

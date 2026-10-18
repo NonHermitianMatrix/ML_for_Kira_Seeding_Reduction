@@ -1,0 +1,55 @@
+\section{An exact recurrence for scalar one-loop integrals}
+\label{app:analytic-decomposition}
+This appendix derives the recurrence used by the analytic stage. It follows from the same IBP identity as Eq.~\eqref{eq:identity}; analytic one-loop reduction and its matrix formulation also appear in Ref.~\cite{Hu2025}. Our purpose is to apply the identity before constructing a larger equation system.
+
+Write the denominators of a one-loop family as
+\begin{equation}
+ D_i=(\ell+Q_i)^2-m_i^2+i0,\qquad
+ Y_{ij}=m_i^2+m_j^2-(Q_i-Q_j)^2.
+ \label{eq:analytic-y}
+\end{equation}
+The vectors $Q_i$ contain external momenta only. The symmetric matrix $Y$ depends on the masses and external invariants, and it equals the negative of the modified Cayley matrix convention used in Ref.~\cite{Hu2025}. A sector $S$ contains the indices whose powers are positive. We apply the following derivation to scalar targets, so the remaining powers vanish.
+
+For a positive seed vector $\boldsymbol b$ on $S$, choose $v=\ell+Q_i$ in the IBP identity. The elementary relation
+\begin{equation}
+ 2(\ell+Q_i)\cdot(\ell+Q_j)=D_i+D_j+Y_{ij}
+ \label{eq:analytic-dot}
+\end{equation}
+expresses every numerator produced by the derivative through the denominators. The infinitesimal pole prescription does not change these algebraic identities. Differentiation gives
+\begin{align}
+0&=d I_{\boldsymbol b}
+ -\sum_{j\in S}b_j\int\frac{d^d\ell}{i\pi^{d/2}}
+ \frac{D_i+D_j+Y_{ij}}{D_j}\prod_{k\in S}D_k^{-b_k},\\
+\sum_{j\in S}Y_{ij}b_j I_{\boldsymbol b+\boldsymbol e_j}
+ &= (d-B)I_{\boldsymbol b}
+ -\sum_{k\in S}b_k I_{\boldsymbol b+\boldsymbol e_k-\boldsymbol e_i},
+ \qquad B=\sum_{k\in S}b_k.
+ \label{eq:analytic-system}
+\end{align}
+Here $\boldsymbol e_j$ has entry one at position $j$ and zeros elsewhere. The matrix of this system has one row and one column for each active denominator. If its sector submatrix $Y_S$ is invertible, the raised integral is therefore
+\begin{equation}
+ I_{\boldsymbol b+\boldsymbol e_j}
+ =\frac{1}{b_j}\sum_{i\in S}(Y_S^{-1})_{ji}
+ \left[(d-B)I_{\boldsymbol b}
+ -\sum_{k\in S}b_k I_{\boldsymbol b+\boldsymbol e_k-\boldsymbol e_i}\right].
+ \label{eq:analytic-recurrence}
+\end{equation}
+To reduce a target $\boldsymbol a$ with $a_j>1$, set $\boldsymbol b=\boldsymbol a-\boldsymbol e_j$. Every integral on the right has total positive power $\sum_i a_i-1$, and none has a negative power. Repetition therefore terminates at unit-power sectors or scaleless integrals, which vanish in dimensional regularization~\cite{Weinzierl2022}. The implementation shares repeated intermediate integrals within the request and inverts each required sector matrix once.
+
+This derivation also determines the coefficient arithmetic. For rational masses and invariants, $Y_S^{-1}$ has rational entries, while the factor $d-B$ is linear in $d$. Induction on the total positive power shows that each coefficient in the unit-power decomposition is a polynomial in $d$ with rational coefficients. For symbolic kinematics $\boldsymbol x$, the same argument gives polynomials in $d$ over $\Q(\boldsymbol x)$. Thus exact polynomial arithmetic suffices for this recurrence; no numerical approximation of a coefficient is required.
+
+Unit-power sectors can obey further identities at special kinematics. The application accepts the analytic result only when every remaining integral belongs to its independently prepared Kira basis, allowing the exact equality of translated tadpoles with the same mass. For such a tadpole, the substitution $\ell'=\ell+Q_i$ has unit Jacobian and removes the external shift from its single denominator. A missing basis element, a required singular matrix, an unsupported numerator, or an exceeded analytic work limit sends the request to the existing Kira application. The existing application interface rejects cut propagators and symbolic indices before this stage. This check preserves a common output basis for the timing comparisons. It also states the scope of the analytic method: Eq.~\eqref{eq:analytic-recurrence} reduces supported scalar one-loop sectors and independent products containing them, while connected multiloop blocks continue through the other exact or learned methods.
+
+\section{Inputs and comparison protocol for the analytic stage}
+\label{app:analytic-inputs}
+For a polygon with $n$ denominators, use one loop momentum and $n-1$ independent external vectors, with $Q_1=0$ and $Q_j=-\sum_{i=1}^{j-1}p_i$. At integer profile $h$, assign
+\begin{align}
+ m_j^2&=2+3(j-1)+(h\bmod17),\\
+ p_i^2&=-[11+(h\bmod23)+7(i-1)],\\
+ p_i\cdot p_j&=-[1+((h+i+j-2)\bmod3)],\quad i<j.
+\end{align}
+These equations define the test inputs rather than physical identities. Use $h=2411,2417$, $n=2,3,4,5$, and extra power $\delta=1,3$. Each request raises one of the first $\min(3,n)$ denominators by $\delta$ and also includes a target with one extra power on each endpoint denominator. Duplicate targets are removed. The two symbolic requests use $n=2$ and keep $\mu_1=m_1^2$, $\mu_2=m_2^2$, and $s=p_1^2$ as independent variables, with extra powers one and two.
+
+For each loop count $L=2,\ldots,13$, form a product of $L$ independent copies of the two-point family at profile $2441+L$, with extra power $1+(L\bmod3)$. The copies share external kinematics, and the application keeps their master expansion factored. The eight coupled nonplanar targets use the definitions in Appendix~\ref{app:hybrid-experts}, profile $2473$, and the original eight numerator patterns. The remaining profile-$2477$ requests are the massive two-loop propagator, all-mass three-loop vacuum, and one-mass thirteen-loop vacuum families defined in Appendix~\ref{app:families-new}.
+
+Before timing, native Kira reduces each new target collection together with all nonempty unit-power sectors. A second native calculation changes integral ordering and seed bounds, and exact coefficient agreement defines the reference. Only the resulting master indices enter the application. All measured methods use the same reference for the final coefficient check. The analytic stage accepts at most six extra powers and five denominators for rational kinematics, or three extra powers and three denominators for symbolic kinematics. Its bounded attempt returns unsupported cases to the existing application, with all elapsed work retained in the timer.

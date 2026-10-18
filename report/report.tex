@@ -5,13 +5,13 @@
 \usepackage{amsmath,amssymb,graphicx,booktabs,tabularx,array,placeins}
 \usepackage[font=small,labelfont=bf]{caption}
 \usepackage{hyperref}
-\hypersetup{hidelinks,pdftitle={Learning to reduce the cost of Feynman integral reduction with Kira},pdfauthor={Rushil Saraswat}}
+\hypersetup{hidelinks,pdftitle={Accelerating loop-integral decomposition with exact recurrences and learned Kira strategies},pdfauthor={Rushil Saraswat}}
 \setlength{\parindent}{1em}
 \setlength{\parskip}{3pt}
 \setlength{\emergencystretch}{2em}
 \newcommand{\Q}{\mathbb Q}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
-\title{Learning to reduce the cost of Feynman integral reduction with Kira}
+\title{Accelerating loop-integral decomposition with exact recurrences and learned Kira strategies}
 \author{Rushil Saraswat}
 \date{October 18, 2026}
 \begin{document}
@@ -21,11 +21,11 @@
 \section{Introduction}
 Feynman integrals arise when we integrate over the internal loop momenta in higher-order perturbative corrections to scattering amplitudes and particle decay amplitudes. In quantum chromodynamics, these corrections contribute to predictions for cross sections and decay rates. Many integrals in the same calculation have related numerator and denominator structures, and integration-by-parts (IBP) identities allow us to express them in terms of a smaller set of master integrals~\cite{Weinzierl2022,ChetyrkinTkachov}.
 
-Kira automates this reduction by generating identities and solving the resulting linear system~\cite{KiraOriginal,Laporta}. Its existing seed and equation-selection methods already avoid part of the unnecessary work~\cite{Kira3}. Our question is whether a model can make an earlier choice that reduces the remaining calculation time. We study seed selection, the choice of an elimination row, and the selection of individual equations. Throughout this paper, a target is an integral or linear combination requested by the user; a seed is an index vector at which Kira generates identities.
+We study how to reduce the time needed for this decomposition into master integrals. Kira generates identities and solves the resulting linear system, with existing seed and equation-selection methods that remove some unnecessary work~\cite{KiraOriginal,Laporta,Kira3}. Exact recurrences can avoid a general linear system for suitable integral structures, while learned choices can reduce the work left for Kira. Throughout this paper, a target is an integral or linear combination requested by the user, and a seed is an index vector at which Kira generates identities. Decomposition determines the coefficients of the master integrals; their numerical or analytic evaluation is a further calculation~\cite{Weinzierl2022}.
 
-Previous studies have used machine-assisted search to improve seed regions, including sparse regions around target-dependent paths~\cite{Song2025,TubeSeeding2026}. Our comparisons use the time required to complete an exact reduction, including prediction and unsuccessful attempts. This criterion follows directly from the purpose of the model: a smaller equation set is useful only when its reduction and recovery cost give a smaller total time. Section~\ref{sec:design} defines the corresponding controls.
+Our method combines independent-loop factorization, exact analytic recurrences, and learned seed choices. We also study elimination-row and equation selection to determine where prediction helps. Earlier machine-assisted searches motivate the seed intervention~\cite{Song2025,TubeSeeding2026}, while known analytic one-loop reduction motivates the recurrence stage~\cite{Hu2025}. We measure the complete application time, including model use, exact algebra, checks, and unsuccessful attempts. Separate controls distinguish the benefit of a learned decision from the benefit of exact formulas and fixed tuning.
 
-We first identify the measured benefit of the three local decisions and retain the seed and equation models where their tests support their use. Second, we train a shared cost model from structural features and test its transfer to families and loop orders omitted from training. A further comparison trains on failed attempts and includes the preparation workflow. We then extend the application through thirteen loops for specified factorable and analytic families, and retrain the final selector on complete timings with the current master-basis checks. We first define the notation used in this paper, then explain the models and compare their results. The companion notes preserve historical variants, secondary experiments, and longer derivations.
+We first define the notation used in this paper and derive the decomposition problem. We then explain the exact stage and the three learned interventions, compare their measured benefits and limits, and test their integration. The latest comparison adds massive scalar one-loop recurrences and independent products through thirteen loops while retaining the existing learned models. It also includes fully symbolic two-point kinematics. The companion notes preserve historical methods, secondary experiments, and their full results.
 
 \section{The reduction problem and the three decisions}
 \label{sec:physics}
@@ -55,7 +55,7 @@ Kira combines IBP identities with symmetry and Lorentz-invariance relations, rem
  \qquad r_{Tm}\in\Q(\boldsymbol x,d).
  \label{eq:reduction}
 \end{equation}
-Here $M_m$ is master integral $m$, $n_M$ is the number of masters, and $\Q(\boldsymbol x,d)$ is the field of rational functions with rational coefficients. Equation~\eqref{eq:reduction} follows by the exact row operations derived in Appendix~\ref{app:derivation}. It determines reduction coefficients; evaluating the masters is a further part of an amplitude calculation~\cite{Weinzierl2022}. Kira can use symbolic rational arithmetic or repeated finite-field solutions followed by rational reconstruction~\cite{Kira2}. We leave reconstruction unchanged in this study.
+Here $M_m$ is master integral $m$, $n_M$ is the number of masters, and $\Q(\boldsymbol x,d)$ is the field of rational functions with rational coefficients. Equation~\eqref{eq:reduction} follows by the exact row operations derived in Appendix~\ref{app:derivation}. It determines reduction coefficients; evaluating the masters is a further part of an amplitude calculation~\cite{Weinzierl2022}. Kira can use symbolic rational arithmetic or repeated finite-field solutions followed by rational reconstruction~\cite{Kira2}. We leave finite-field reconstruction unchanged in the native solver. The added recurrence obtains its rational coefficients directly.
 
 Table~\ref{tab:places} locates the three learned decisions. Our implementation always obtains the coefficients through exact algebra. If a restricted system does not reach the supplied basis, it repeats the reduction with less restrictive settings, and the timer includes this recovery. Exactness follows from the retained identities and row operations; sufficiency must still be checked for each target, as explained in Appendix~\ref{app:derivation}.
 \begin{table}[!htbp]\centering\small
@@ -69,13 +69,15 @@ Equation selection & Retention score for a seed--operator pair & Symbolic coeffi
 \end{tabularx}
 \end{table}
 
+\input{analytic_decomposition_method}
+
 \section{Training and comparison design}
 \label{sec:design}
 We use two kinds of labels. Early models learn membership in a recorded sufficient seed set or the next action in a recorded reduction. Such labels describe one valid history and do not establish a minimum number of seeds or operations. Later cost models learn from complete Kira timings for alternative choices. Section~\ref{sec:shared} uses this second objective to test whether one model can transfer across structures. The notes retain the reverse-construction dataset and its separate label-accuracy tests.
 
-Every reported paired timing ratio uses identical targets, kinematics, and master bases for its competing methods. The native control disables learned choices in the same exact implementation. A fixed control uses a setting selected before testing and makes no request-dependent prediction. This second control measures what the prediction adds after fixed tuning. The earlier deployed application supplies a further practical comparison. When a study uses a modified executable, ``native'' means its native decision rules; it does not mean an unmodified Kira installation.
+Every reported paired timing ratio uses identical targets, kinematics, and final master bases for its competing methods. The native control disables learned choices in the same exact implementation. A fixed control uses a setting selected before testing and makes no request-dependent prediction. This second control measures what the prediction adds after fixed tuning. The earlier deployed application supplies a further practical comparison. When a study uses a modified executable, ``native'' means its native decision rules; it does not mean an unmodified Kira installation.
 
-The main native comparisons keep $d$ symbolic and assign rational values to the other kinematic variables. Thus the exported coefficients are exact rational functions of $d$. Master discovery and an enlarged-region reference calculation precede the supplied-basis timer. The application receives the master indices, while reference coefficients enter only the final check. We report this preparation cost separately where measured. Adding it to a supplied-basis time describes a two-stage workflow, since the reference calculation already performs a reduction; it does not measure a faster first reduction from scratch.
+The earlier native comparisons keep $d$ symbolic and assign rational values to the other kinematic variables. The new analytic comparison also includes two requests with symbolic masses and momentum invariants. Thus the exported coefficients are exact rational functions of $d$. Master discovery and an enlarged-region reference calculation precede the supplied-basis timer. The application receives the master indices, while reference coefficients enter only the final check. We report this preparation cost separately where measured. Adding it to a supplied-basis time describes a two-stage workflow, since the reference calculation already performs a reduction; it does not measure a faster first reduction from scratch.
 
 The new comparison starts a fresh process for each measurement and includes imports, model loading, prediction, IBP generation, elimination, exact coefficient comparison, retries, output, and process exit. Three repetitions rotate method order on the same worker for each request. Earlier retained comparisons use their stated timers and repetitions in Table~\ref{tab:retained}. For the seed, equation, and shared-model workloads, we sum the median time of each request and divide by the corresponding control total. The historical row comparison uses a geometric mean, as stated in Section~\ref{sec:seed-row}. Appendix~\ref{app:statistics} defines this ratio and its resampling interval. A nontrivial batch contains at least one target that reduces to a nonzero expression beyond an unchanged basis element. Failures remain in the coverage counts and receive no completed-time ratio.
 
@@ -136,11 +138,14 @@ The reserved physical profile is new. Its 110 requests span the defined one-mass
 \input{hybrid_expert_results}
 
 
+\input{analytic_decomposition_results}
+\input{parser_guard_results}
+
 \section{Overall interpretation}
 \label{sec:overall-new}
-The current hybrid comparison in Section~\ref{sec:hybrid-experts} tests seed settings after exact formula and independent-block reduction. Its fixed control isolates the added learned choice under the same exact checks and recovery rules.
+The initial analytic-enabled comparison in Section~\ref{sec:analytic-results} tests the added recurrence together with the retained learned application. The preceding hybrid comparison in Section~\ref{sec:hybrid-experts} isolates its seed choices after the earlier exact formulas and block decomposition. Its fixed control isolates the added learned choice under the same exact checks and recovery rules.
 
-The direct local comparisons establish savings for seed and equation decisions within their measured domains (Table~\ref{tab:retained}). The shared-model comparison tests the additional question of transfer without a family-specific rule (Section~\ref{sec:general-results}). These are separate workloads and controls, so their ratios do not form a cumulative speedup. Learned row selection remains omitted because its measured gain is not resolved from timing variation. The current hybrid uses its validated sparse expert and the exact reductions in Section~\ref{sec:blocks13}. The shared model and equation filter retain their separately tested applications, and their gains are not added to the hybrid result.
+The direct local comparisons establish savings for seed and equation decisions within their measured domains (Table~\ref{tab:retained}). The shared-model comparison tests the additional question of transfer without a family-specific rule (Section~\ref{sec:general-results}). These are separate workloads and controls, so their ratios do not form a cumulative speedup. Learned row selection remains omitted because its measured gain is not resolved from timing variation. The combined application uses the validated sparse expert together with the exact methods in Sections~\ref{sec:blocks13} and~\ref{sec:analytic-method}. The shared model and equation filter retain their separately tested applications, and their gains are not added to the hybrid result.
 
 The preceding complete application combined validated learned choices with exact preparation changes. On 41 matched batches it took 56.461 seconds against 66.045 seconds for native choices, a ratio of 0.855. Its isolated new learned choice changed the seed action in only one batch. We retain that earlier experiment in the notes because its combined gain does not establish a general learned policy. Exact sector-storage changes, scaling reuse, and analytic scalar recurrences likewise remain distinct from learned gains. In particular, the scalar recurrence checks through twelve loops verify a restricted exact formula, not a high-loop ML reduction.
 
@@ -152,6 +157,8 @@ The preceding complete application combined validated learned choices with exact
 \input{total_time_appendix}
 \input{refined_time_appendix}
 \input{hybrid_expert_appendix}
+\input{analytic_decomposition_appendix}
+\input{parser_guard_appendix}
 \clearpage
 \renewcommand{\refname}{References}
 \bibliographystyle{unsrt}
