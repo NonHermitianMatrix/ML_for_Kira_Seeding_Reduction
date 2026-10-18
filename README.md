@@ -264,6 +264,3 @@ These results use known massless two-loop boxes, rational kinematics, symbolic d
 The current frozen application has a broader test in `Kira_comparison/extended_coverage/`. It records native completion, failures, input limits, and separate exact analytic checks through twelve loops. Read that folder and the new report section for the measured scope.
 
 ML_model_adaptive_reduction/portfolio_policy contains the new family-aware seed-cost models and complete-time comparisons. It also records the higher-loop sector-storage change and scalar full-coordinate checks.
-
-
-

@@ -328,6 +328,3 @@ Analytic savings and ML savings remain separate.
 <!-- END BANANA -->
 
 portfolio_policy/ adds family-aware seed-cost models, exact sector-storage checks, and full-coordinate scalar checks. Read its README for the tested scope.
-
-
-
