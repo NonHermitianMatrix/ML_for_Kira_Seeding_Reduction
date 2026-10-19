@@ -261,3 +261,8 @@ Retain independent tests, exact checks, previous evidence, resource limits, and 
 - Improve the complete decomposition workflow with exact analytic recurrences and learned choices wherever measured results support them. Existing implementations can change.
 - Reframe the paper as a study of speeding up loop-integral decomposition into master integrals. Explain the separate exact and learned contributions, derive new recurrences, and state their domain and fallback rules.
 - Preserve previous evidence, independent exact checks, complete timing costs, resource limits, and the required cluster, GitHub, notes, and local report copies.
+
+## Further acceleration and coverage through thirteen loops
+
+- Improve total decomposition time using exact formulas, new training data, and unrestricted learned methods where measured validation supports them. Extend a declared test grid across loop orders one through thirteen and across scalar, numerator, massive, massless, vacuum, propagator, and scattering structures. Preserve failed and unsupported cases, distinguish connected graphs from products, and state the finite coverage limits.
+- Compare the new application with the last published application and equally prepared fixed and native controls. Freeze new decisions before reserved tests, preserve exact verification, and update both documents, guides, Hoffman, GitHub, and the local report under the existing resource limits.

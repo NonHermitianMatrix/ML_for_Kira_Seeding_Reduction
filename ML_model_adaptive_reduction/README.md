@@ -1,3 +1,10 @@
+## Current fast exact and learned decomposition
+
+Use [the current method guide](fast_decomposition/README.md) for the new recurrence model, exact formulas, tests, and limits.
+The final entry point is s12_deploy.py in fast_decomposition.
+The paper and notes include the 65-request timing test and the 110-request coverage audit.
+Earlier studies retain their original evidence.
+
 ## Current exact and learned decomposition
 
 The current application adds an exact scalar one-loop recurrence to the frozen learned Kira workflow.

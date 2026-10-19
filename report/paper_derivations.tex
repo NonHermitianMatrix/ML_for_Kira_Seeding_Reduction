@@ -47,7 +47,9 @@ For $B$ training requests, the boundary search minimizes $J=B^{-1}\sum_b\log[T_b
 
 \subsection{Equation inputs and sampling}
 \label{app:equation-model}
-The equation classifier uses seventeen inputs. Four describe the family and request: $L,E,N,\log(1+|\mathcal T|)$. Three describe the seed: positive-index count, extra positive power, and numerator rank. Two subtract the batch's maximum extra power and rank from the corresponding seed quantities. Three describe the seed sector: whether it contains a target, and the differences from its target power and rank maxima. Two describe proximity: exact target membership and the minimum sum of absolute index differences. The latter is the defined distance
+The equation classifier uses seventeen inputs. Four describe the family and request:
+\[L,\quad E,\quad N,\quad \log(1+|\mathcal T|).\]
+ Three describe the seed: positive-index count, extra positive power, and numerator rank. Two subtract the batch's maximum extra power and rank from the corresponding seed quantities. Three describe the seed sector: whether it contains a target, and the differences from its target power and rank maxima. Two describe proximity: exact target membership and the minimum sum of absolute index differences. The latter is the defined distance
 \[\min_{\boldsymbol a\in\mathcal T}\sum_i|\sigma_i-a_i|.\]
  The operator index and the two overall target maxima complete the vector. These are definitions of the inputs, all available before coefficient construction.
 

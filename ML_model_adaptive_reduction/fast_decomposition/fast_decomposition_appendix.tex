@@ -1,0 +1,81 @@
+\section{Combined recurrence and learned strategy}
+\label{app:fast-method}
+For the target $\boldsymbol a=\boldsymbol b+\boldsymbol e_j$, define
+\begin{equation}
+ w_i=\frac{(Y_S^{-1})_{ji}}{b_j},\qquad
+ W=\sum_{i\in S}w_i.
+\end{equation}
+Here $S$, $Y_S$, and $\boldsymbol b$ have the definitions in Appendix~\ref{app:analytic-decomposition}. In the double sum of Eq.~\eqref{eq:analytic-recurrence}, the term with $k=i$ has index vector $\boldsymbol b+\boldsymbol e_i-\boldsymbol e_i=\boldsymbol b$. Separating these terms gives
+\begin{align}
+ I_{\boldsymbol a}
+ &= (d-B)W I_{\boldsymbol b}
+    -\sum_{i\in S}w_i b_i I_{\boldsymbol b}
+    -\sum_{\substack{i,k\in S\\k\ne i}}w_i b_k
+       I_{\boldsymbol b+\boldsymbol e_k-\boldsymbol e_i}\\
+ &=\left[(d-B)W-\sum_{i\in S}w_i b_i\right]I_{\boldsymbol b}
+    -\sum_{\substack{i,k\in S\\k\ne i}}w_i b_k
+       I_{\boldsymbol b+\boldsymbol e_k-\boldsymbol e_i}.
+ \label{eq:fast-recurrence}
+\end{align}
+This groups the coefficient of the same integral before further substitution. Its algebra, termination, and allowed master check are unchanged from the earlier recurrence. For rational kinematics, each $w_i$ is rational, so exact integer numerator and denominator arithmetic suffices. The dimension remains symbolic in the polynomial coefficient.
+
+The direct scalar formulas use rising factorials. For $\Re z>0$, integration by parts in the defining gamma integral gives
+\begin{equation}
+ \Gamma(z+1)=[-t^ze^{-t}]_0^\infty
+ +z\int_0^\infty t^{z-1}e^{-t}\,dt=z\Gamma(z).
+\end{equation}
+Here $t$ is the positive integration variable and $z$ is the complex argument. Applying this identity repeatedly gives
+\begin{equation}
+ (z)_n=\frac{\Gamma(z+n)}{\Gamma(z)}
+      =\prod_{r=0}^{n-1}(z+r),\qquad (z)_0=1,
+ \label{eq:fast-product}
+\end{equation}
+for a nonnegative integer $n$. The equality extends by analytic continuation away from unresolved poles. Thus the ratios derived in Appendix~\ref{app:blocks13} can be evaluated through finite products without constructing gamma functions. The references use the earlier symbolic implementation, including gamma-function ratios for the multiloop vacuum and numerator requests. Scalar massless requests use its rising-factorial expression. The polygon recurrence uses independent native Kira reductions. This change concerns evaluation cost; it does not extend the mathematical domain of those formulas.
+
+The scaleless-vacuum shortcut follows directly from IBP in dimensional regularization~\cite{ChetyrkinTkachov,Weinzierl2022}. With no masses or external momenta, every inverse propagator is homogeneous of degree two in the loop momenta. If $A=\sum_j a_j$, the product of propagator powers has degree $-2A$. Summing the IBP operators with $v=\ell_h$ therefore gives
+\begin{equation}
+ 0=\int\prod_h\frac{d^d\ell_h}{i\pi^{d/2}}
+ \sum_{h=1}^{L}\frac{\partial}{\partial\ell_h^\mu}
+ \left(\ell_h^\mu\prod_j D_j^{-a_j}\right)
+ =(Ld-2A)I_{\boldsymbol a}.
+ \label{eq:fast-scaleless}
+\end{equation}
+The factor $Ld-2A$ is nonzero at generic symbolic $d$, so the dimensionally regularized integral vanishes. Analytic continuation supplies the same scaleless result. This argument also permits negative integer powers because they preserve homogeneity. The six additional audit completions at eight through thirteen loops use this zero identity; they do not require a native system above its index limit.
+
+For a target collection $\mathcal T$ with $q$ targets and $n$ denominator positions, define the extra positive power of target $\boldsymbol a$ by $\delta(\boldsymbol a)=\sum_{j=1}^{n}\max(a_j-1,0)$. The model inputs are
+\begin{equation}
+ \boldsymbol f=\left(n,q,\max_{\mathcal T}\delta,
+ q^{-1}\sum_{\mathcal T}\delta,
+ \max_{\boldsymbol a\in\mathcal T,j}a_j,
+ \min_{\boldsymbol a\in\mathcal T}\sum_j\mathbf1_{a_j>0},
+ \max_{\mathcal T}a_1,\ldots,\max_{\mathcal T}a_5\right).
+ \label{eq:fast-features}
+\end{equation}
+Absent positions have value zero. These are definitions of the representation, and $\mathbf1$ is the indicator function. Coordinate positions enter this small one-loop model; we do not claim invariance under arbitrary relabeling.
+
+Let $t_{rc}$ be the median measured recurrence time for training request $r$ and strategy $c$. A leaf containing requests $R$ stores the four mean costs $|R|^{-1}\sum_{r\in R}t_{rc}$. We grow an axis-aligned regression tree using the tree framework of Ref.~\cite{CART1984}, with a cost-sensitive split criterion. For a proposed partition into $R_1$ and $R_2$, the minimized empirical action cost is
+\begin{equation}
+ J(R_1,R_2)=\sum_{u=1}^{2}\min_c\sum_{r\in R_u}t_{rc}.
+ \label{eq:fast-tree-loss}
+\end{equation}
+The equation follows by assigning one strategy to each leaf and summing its recorded costs. We accept a split only when it lowers this sum by more than $10^{-4}|R|$ seconds and satisfies the depth and population limits, where $|R|$ is the number of requests in the unsplit node. Candidate depths are one through five, and minimum leaf populations are three, six, or ten. Validation compares prediction margins $0$, $0.03$, and $0.10$ against the best single strategy. The selected model requires a two-percent aggregate validation saving and at least one changed decision before deployment.
+
+For predicted costs $\widehat t_c$ and fixed strategy $c_0$, choose $c_*\in\arg\min_c\widehat t_c$. The application uses that change only when
+\begin{equation}
+ \widehat t_{c_*}+\tau < (1-\eta)\widehat t_{c_0},
+ \qquad \tau=10^{-4}\ \mathrm{s},
+ \label{eq:fast-margin}
+\end{equation}
+where $\eta$ is the selected margin and $\tau$ allows for prediction work. Inputs outside the observed feature ranges use the fixed strategy. This rule is a design choice rather than a proof of a runtime improvement. Complete reserved timings measure its actual effect.
+
+\section{Inputs for the extended comparison}
+\label{app:fast-inputs}
+Training uses polygon kinematics at profiles $2611$ and $2617$, and validation uses profile $2621$. For each number of denominators $n=2,3,4,5$, each profile supplies fourteen target collections. Starting from unit powers, the generator distributes one through six extra powers among the denominator positions. Every third collection contains two targets, and the others contain one. The reserved profiles and target collections below are separate.
+
+The timing set contains 65 requests. At each loop count $L=1,\ldots,13$, it includes a one-mass vacuum banana and a massless propagator banana from Appendix~\ref{app:families-new}, with profile $2701+2L$. It also includes a product of $L$ independent massive triangles. Each triangle uses the polygon kinematics of Appendix~\ref{app:analytic-inputs} at profile $2741$, adds $7b+L$ to each squared mass for block $b=0,\ldots,L-1$, and has target powers $(2,1,1)$. These distinct masses require separate block reductions within a request.
+
+Four further one-mass vacuum requests keep their scale symbolic at $L=1,2,6,13$. Nine scalar recurrence requests use polygons with $n=3,4,5$ at profile $2777$ and powers $(3,2,1,\ldots,1)$, $(1,\ldots,1,2,3)$, or $(2,\ldots,2)$. Two fully symbolic bubbles use profile $2783$ with the two power collections defined in Appendix~\ref{app:analytic-inputs}. Eight nonplanar-box requests at profile $2791$ use unit physical powers and the auxiliary pairs $(-2,0)$, $(0,-2)$, $(-3,0)$, $(0,-3)$, $(-2,-1)$, $(-4,0)$, $(0,-4)$, and $(-2,-2)$. Three compatibility requests use a massive two-loop propagator, an all-mass three-loop vacuum, and a two-loop ladder at profile $2797$, with the first physical power raised by one.
+
+A separate 110-request audit tests the six vacuum, propagator, and scattering sequences of Appendix~\ref{app:families-new} at each loop count through thirteen, excluding two duplicate one-loop definitions. It adds thirteen scaleless vacuum requests, six scattering requests with mixed or pinched powers, and fifteen symbolic-scale requests. Both the preceding and new application receive a twenty-second limit for each audit request. The audit records exact agreement when both complete, as well as time limits, missing basis support, and native input limits. These bounded outcomes do not prove that a failed integral has no reduction.
+
+The native solver used here has a documented maximum of 31 integral indices~\cite{Kira3}. A complete independent scalar-product coordinate system has $L(L+1)/2+LE$ entries for $E$ external momenta, from the $L(L+1)/2$ symmetric loop--loop products and $LE$ loop--external products. Analytic formulas and independent blocks can handle some requests above this native bound. A coupled request outside both the exact domain and the native limit remains unsupported. The finite audit also leaves arbitrary numerators, singular kinematics, cut propagators, and symbolic propagator powers outside a universal coverage claim.

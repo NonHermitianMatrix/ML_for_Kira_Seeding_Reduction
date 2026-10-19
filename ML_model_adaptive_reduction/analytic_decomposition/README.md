@@ -1,3 +1,9 @@
+## Superseding fast decomposition study
+
+Use ../fast_decomposition/README.md for the current application.
+This folder preserves the preceding exact recurrence and its measurements.
+Its document receipts identify the earlier paper and notes.
+
 # Exact analytic decomposition and learned Kira selection
 
 This folder adds a scalar one-loop recurrence to the current learned application.

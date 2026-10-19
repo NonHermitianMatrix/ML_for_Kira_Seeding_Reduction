@@ -188,3 +188,6 @@ It separates all matched completions from the expert domain and shows first-pass
 analytic_decomposition.pdf compares the combined method with matched native work and shows all first-attempt costs. Its message is the separate analytic benefit and the completion scope.
 
 parser_guard.pdf shows the separate cost reduction from avoiding symbolic setup. It uses the nine-request deployment test.
+
+fast_decomposition.pdf separates the total improvement from the added learned decisions.
+fast_coverage.pdf shows completion by integral structure and loop count under the bounded audit.

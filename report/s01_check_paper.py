@@ -250,6 +250,24 @@ def main():
             assert abs(value['ratio']-value['learned_seconds']/value['control_seconds'])<1e-12
     p=HERE.parent/'ML_model_adaptive_reduction/analytic_decomposition/deployment/summary.json'
     if p.exists():assert json.loads(p.read_text())==guard
+    fast=json.loads((HERE/'fast_decomposition_data.json').read_text())
+    assert fast['complete'] and fast['requests']==len(fast['rows'])==65
+    assert fast['coverage']['total']['requests']==len(fast['coverage']['rows'])==110
+    assert set(fast['coverage']['by_loop'])==set(map(str,range(1,14)))
+    assert 'sec:fast-results' in labels and 'app:fast-method' in labels
+    for group in fast['comparisons'].values():
+        for value in group.values():
+            if value['cases']:assert abs(value['ratio']-value['learned_seconds']/value['control_seconds'])<1e-12
+    p=HERE.parent/'ML_model_adaptive_reduction/fast_decomposition/summary.json'
+    if p.exists():assert json.loads(p.read_text())==fast
+    deployment=json.loads((HERE/'fast_deployment_data.json').read_text())
+    assert deployment['complete'] and deployment['requests']==12
+    assert 'sec:fast-deployment' in labels and 'app:fast-deployment' in labels
+    for group in deployment['comparisons'].values():
+        for value in group.values():
+            if value['cases']:assert abs(value['ratio']-value['final_seconds']/value['control_seconds'])<1e-12
+    p=HERE.parent/'ML_model_adaptive_reduction/fast_decomposition/deployment/summary.json'
+    if p.exists():assert json.loads(p.read_text())==deployment
     result=dict(general_model_test_complete=True,general_requests=general['requested'],general_checked_cases=general['overall']['cases'],external_citation_keys=len(cites),internal_references=len(refs),figures=len(figs),
         preparation_requests=preparation['requests'],preparation_exact_checks=preparation['coefficient_checks'],
         recovery_requests=recovery['requests'],recovery_exact_checks=recovery['coefficient_checks'],
