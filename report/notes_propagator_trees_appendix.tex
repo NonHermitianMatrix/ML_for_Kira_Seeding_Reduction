@@ -1,0 +1,57 @@
+\section{Exact reduction of connected two-point trees}
+\label{app:notes-prop-tree}
+\subsection{Family and analytic reduction}
+The bubble integral in Eq.~\eqref{eq:notes-loop-tree-G} also closes a two-point graph when every nonroot vertex is a massless bubble. Such subintegral integration is used in parametric propagator calculations~\cite{Ruijl2017Forcer}. We derive the precise family needed here. Let $\mathcal T$ be a rooted tree with $L$ vertices, root $0$, and parent $\pi(j)$ for each $j\ne0$. Each vertex has loop momentum $\ell_j$. The external momentum $p$ obeys $p^2=s\ne0$. Define
+\begin{equation}
+ J_{\mathcal T}(\boldsymbol a,\boldsymbol v,c)=
+ \int\prod_{j=0}^{L-1}\frac{d^d\ell_j}{i\pi^{d/2}}
+ \frac{1}{(\ell_0^2)^{a_0}[(\ell_0-p)^2]^c}
+ \prod_{j=1}^{L-1}
+ \frac{1}{(\ell_j^2)^{a_j}[(\ell_j-\ell_{\pi(j)})^2]^{v_j}}.
+ \label{eq:notes-prop-tree-family}
+\end{equation}
+The Feynman prescription is implicit, as in Appendix~\ref{app:notes-loop-tree}. All internal masses vanish. The vectors $\boldsymbol a$ and $\boldsymbol v$ contain the integer powers on the squared loop momenta and connecting lines. The power $c$ belongs to the external root line. The connecting powers $v_j$, the external root power $c$, and each leaf power $a_j$ must be positive integers. At a vertex with children, $a_j$ may also be zero or negative: the already integrated children supply a dimension-dependent effective power. The implementation accepts zero auxiliary powers, at most thirteen loops, and absolute powers at most sixteen. Define $M_{\mathcal T}$ by setting every physical power to one. The following argument establishes a one-element basis within this domain and does not classify all subsectors or irreducible numerators.
+
+For each nonroot vertex, define its effective power and the power transferred to its parent by
+\begin{equation}
+ u_j=a_j+\sum_{h\in\mathcal C(j)}\sigma_h,
+ \qquad \sigma_j=u_j+v_j-\frac d2,
+ \qquad \alpha=a_0+\sum_{h\in\mathcal C(0)}\sigma_h,
+ \label{eq:notes-prop-tree-transfer}
+\end{equation}
+where $\mathcal C(j)$ is the set of children of vertex $j$. A leaf has $u_j=a_j$. Its integration gives $G(u_j,v_j)$ and a factor $(\ell_{\pi(j)}^2)^{-\sigma_j}$ in the temporary negative-propagator convention used in Appendix~\ref{app:notes-loop-tree}. Repeating this operation removes every nonroot vertex. The remaining root integral is the same bubble formula with powers $(\alpha,c)$. Thus its dimensionless coefficient is
+\begin{equation}
+ C_{\mathcal T}(\boldsymbol a,\boldsymbol v,c;d)
+ =G(\alpha,c)\prod_{j=1}^{L-1}G(u_j,v_j).
+ \label{eq:notes-prop-tree-Gproduct}
+\end{equation}
+The one-loop derivation of $G$ appears in Eqs.~\eqref{eq:notes-loop-tree-param}--\eqref{eq:notes-loop-tree-G}, so induction on the number of vertices proves Eq.~\eqref{eq:notes-prop-tree-Gproduct}. It first holds in a convergence domain and then extends meromorphically in $d$ and the powers~\cite{Weinzierl2022}.
+
+Let $A=\sum_{j=0}^{L-1}a_j+\sum_{j=1}^{L-1}v_j+c$ be the sum of physical powers. Summing the transferred powers in Eq.~\eqref{eq:notes-prop-tree-transfer} gives $\alpha+c=A-(L-1)d/2$. The last bubble therefore contributes the scale power $(-s-i0)^{Ld/2-A}$. The unit-power master has $A_0=2L$, because the root and each nonroot vertex supply two physical lines. Dividing the target expression by the master expression cancels the common noninteger scale power. Restoring the positive-propagator convention gives
+\begin{equation}
+ J_{\mathcal T}(\boldsymbol a,\boldsymbol v,c)
+ =s^{-\Delta}\,
+ \frac{C_{\mathcal T}(\boldsymbol a,\boldsymbol v,c;d)}
+ {C_{\mathcal T}(\boldsymbol 1,\boldsymbol 1,1;d)}
+ M_{\mathcal T},
+ \qquad \Delta=A-2L.
+ \label{eq:notes-prop-tree-reduction}
+\end{equation}
+Indeed, the target-to-master change of propagator convention contributes $(-1)^\Delta$, which cancels the sign in $(-s)^{-\Delta}$ for integer $\Delta$. The relation therefore uses the same convention as the native reductions.
+
+Every effective power has an integer part and a fixed integer coefficient of $d/2$. For a subtree with $n_j$ vertices, $u_j=U_j-(n_j-1)d/2$, with $U_j=a_j+\sum_{h\in\mathcal C(j)}(U_h+v_h)$, as proved in Appendix~\ref{app:notes-gamma-cancel}. At the root, $\alpha=U_0-(L-1)d/2$. The target and master therefore have matching Gamma-argument slopes and integer argument differences. Equation~\eqref{eq:notes-gamma-cancel-product} converts their ratio to finite products of linear factors in $d$. This proves that the coefficient in Eq.~\eqref{eq:notes-prop-tree-reduction} lies in $\mathbb Q(d,s)$. The calculation cancels equal Gamma factors before expanding those products and shares the subtree sizes and master arguments across the target batch.
+
+\subsection{Loop count and the native input restriction}
+For $L$ independent loop momenta, the loop--loop scalar products consist of $L$ squares and $L(L-1)/2$ distinct mixed products. Each of the $E$ independent external momenta adds $L$ loop--external products. Their sum is
+\begin{equation}
+ N=L+\frac{L(L-1)}2+LE=\frac{L(L+1)}2+LE,
+ \label{eq:notes-prop-tree-index-count}
+\end{equation}
+which is the complete-coordinate count used by Kira~\cite{Kira3}. The native build used in this study rejects $N>31$. This measured implementation restriction gives different loop limits for different values of $E$. It permits complete coordinates through seven loops for $E=0$, six for $E=1$, and five for $E=2$ or $E=3$. It does not define a general seven-loop boundary for IBP identities. Equation~\eqref{eq:notes-prop-tree-reduction} avoids that native input for its stated domain, while unrecognized families retain the native restriction.
+
+\subsection{Checks and time comparison}
+We use stars, chains, and trees with parent $\pi(j)=\lfloor(j-1)/2\rfloor$. We retain one representative at one and two loops, two at three loops, and three at each higher order, giving 34 two-point structures through thirteen loops. Each request has seven distinct target assignments, including the unit master, single raised powers, and further positive powers between one and three. All auxiliary powers vanish and $s$ remains symbolic. Development targets and the reserved timing targets use separate fixed assignments.
+
+Section~\ref{sec:notes-prop-tree} defines the complete application timer, three repetitions, unchanged-path checks, and native ML control. Failed controls remain in the completion counts. Speed ratios use matched completed requests, with request-resampling intervals defined in Eq.~\eqref{eq:notes-loop-tree-resampling}.
+
+For each two-point target, independent full Gamma products test the coefficient at 80-digit precision and $d=137/101$, $151/103$, and $163/107$, with scaled error below $10^{-60}$. We use $e=|c_{\mathrm{num}}-c_\Gamma|/\max(1,|c_\Gamma|)$, where $c_{\mathrm{num}}$ evaluates the returned coefficient and $c_\Gamma$ evaluates the full Gamma product. These checks test the derived identity within its stated domain.

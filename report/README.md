@@ -1,4 +1,11 @@
-## Current exact-cancellation application
+## Current two-point and learned application
+
+Read [the current method guide](../ML_model_adaptive_reduction/propagator_trees/README.md).
+Use propagator_trees/s02_runtime.py with --method integrated.
+The method reduces supported connected two-point trees exactly, then retains the preceding exact formulas and trained Kira choices for other inputs.
+The paper and notes state the domain, native index limit, complete times, and separate ML comparison.
+
+## Preceding exact-cancellation application
 
 Read [the current method guide](../ML_model_adaptive_reduction/gamma_cancellation/README.md).
 Use gamma_cancellation/s02_runtime.py with --method integrated.

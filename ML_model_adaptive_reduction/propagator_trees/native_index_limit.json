@@ -1,0 +1,49 @@
+{
+  "source": ".tools/kira-sector-wide/integrals.cpp",
+  "source_sha256": "49cb1983588c4565412618706663e587f259f53976a670f10ad952dc8ac5e004",
+  "guard_excerpts": [
+    {
+      "first_line": 1038,
+      "lines": [
+        "uint32_t Integral::parse_sector(std::string sstr, uint32_t np) {",
+        "  // Convert a string to a sector number.",
+        "  // Allowed formats:",
+        "  // * The sector number as a string,",
+        "  // * The sector number in big-endian binary notation, e.g. \"b11100\" = 7.",
+        "  if (!np) {",
+        "    throw init_error(\"parse_sector(): require number of lines.\");",
+        "  }",
+        "  if (np >= 32) {",
+        "    throw init_error(",
+        "      \"parse_sector(): More than 31 propagators are not supported.\");",
+        "  }"
+      ]
+    },
+    {
+      "first_line": 1720,
+      "lines": [
+        "void Integral::np(uint32_t newnp) {",
+        "  if (s_np != newnp) {",
+        "    if (s_np) {",
+        "      throw init_error(",
+        "          \"All topologies must have the same number of propagators.\");",
+        "    }",
+        "    else {",
+        "      if (newnp >= 32u) {",
+        "        throw init_error(",
+        "          \"np(): More than 31 propagators are not supported.\");",
+        "      }",
+        "      s_np = newnp;"
+      ]
+    }
+  ],
+  "maximum_indices": 31,
+  "complete_coordinate_count": "L*(L+1)/2+L*E",
+  "maximum_complete_native_loops": {
+    "0": 7,
+    "1": 6,
+    "2": 5,
+    "3": 5
+  },
+  "interpretation": "An input-representation restriction in the installed build; exact subintegral contraction can bypass this input only within its proved domain."
+}
