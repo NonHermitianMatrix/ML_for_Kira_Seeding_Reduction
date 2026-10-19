@@ -1,0 +1,8 @@
+{
+  "before_reserved_tests": true,
+  "issue": "The development check imported a legacy module with the same generic name s03_runtime after reference preparation. It tested the wrong application and compared different master bases.",
+  "fix": "Load the checked application by its explicit file path and unique module name. The current entry also applies exact rules recursively to independent blocks.",
+  "previous_interpretation": "The initial log was first interpreted as a dispatcher gate. Source inspection identified the module-name collision.",
+  "training_native_choices_unchanged": true,
+  "reserved_results_present": false
+}

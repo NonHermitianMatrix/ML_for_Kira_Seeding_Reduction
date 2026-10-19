@@ -1,4 +1,11 @@
-## Current two-point and learned application
+## Current exact vacuum and learned application
+
+Read [the current method guide](vacuum_learning/README.md).
+Use vacuum_learning/s18_fast_runtime.py with --method integrated.
+This version adds exact single-mass vacuum trees and a newly trained native seed-choice model.
+The paper and notes give separate exact and ML measurements, failures, and domain limits.
+
+## Preceding two-point and learned application
 
 Read [the current method guide](propagator_trees/README.md).
 Use propagator_trees/s02_runtime.py with --method integrated.

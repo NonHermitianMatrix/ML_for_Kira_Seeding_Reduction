@@ -1,0 +1,50 @@
+\section{A massive vacuum root and learned seed costs}
+\label{app:notes-vac-ml}
+We consider a rooted tree $T$ with $L$ loop momenta $\ell_0,\ldots,\ell_{L-1}$ and parent $\pi(j)$ for each nonroot vertex $j$. The root has one massive denominator, and every other vertex has a massless self denominator and an edge denominator:
+\begin{equation}
+ V_T(\mathbf a,\mathbf v,c)=
+ \int\prod_{j=0}^{L-1}\frac{d^d\ell_j}{i\pi^{d/2}}
+ \frac{1}{(\ell_0^2-m^2)^c}
+ \prod_{j=1}^{L-1}\frac{1}{(\ell_j^2)^{a_j}
+ ((\ell_j-\ell_{\pi(j)})^2)^{v_j}} .
+ \label{eq:notes-vac-ml-family}
+\end{equation}
+Here $d$ is the dimension, $m^2>0$ is the sole mass scale, and the usual causal prescription is understood. The integer powers $c$ and $v_j$ are positive. The self powers $a_j$ are positive at leaves and can be nonpositive at internal vertices. Auxiliary numerator powers vanish. The implementation accepts one through thirteen loops and absolute powers at most sixteen. These are implementation bounds; the derivation applies to any finite tree for which the meromorphic integrals are defined.
+
+To evaluate the integral, temporarily use denominators $-\ell^2$ for massless lines and $m^2-\ell_0^2$ for the root. Define $u_j=a_j+\sum_{h:\pi(h)=j}\sigma_h$ and $\sigma_j=u_j+v_j-d/2$. A nonroot integration then contributes the bubble factor $G(u_j,v_j)$ derived in Appendix~\ref{app:notes-prop-tree}, and transfers $\sigma_j$ to its parent. At the root, $\sigma_0=\sum_{h:\pi(h)=0}\sigma_h$. A Wick rotation gives the normalized radial integral
+\begin{align}
+ \frac{1}{\Gamma(d/2)}\int_0^\infty
+ \frac{x^{d/2-\sigma_0-1}}{(x+m^2)^c}\,dx
+ &=\frac{(m^2)^{d/2-\sigma_0-c}}{\Gamma(d/2)}
+ \int_0^\infty\frac{t^{d/2-\sigma_0-1}}{(1+t)^c}\,dt \nonumber\\
+ &=(m^2)^{d/2-\sigma_0-c}
+ \frac{\Gamma(d/2-\sigma_0)\Gamma(\sigma_0+c-d/2)}
+ {\Gamma(d/2)\Gamma(c)} .
+ \label{eq:notes-vac-ml-radial}
+\end{align}
+The substitution is $x=m^2t$. The second equality follows from the beta integral, initially in its convergent domain and then by analytic continuation~\cite{Weinzierl2022}. Thus the dimensionless coefficient is
+\begin{equation}
+ C_T(\mathbf a,\mathbf v,c;d)=
+ \frac{\Gamma(d/2-\sigma_0)\Gamma(\sigma_0+c-d/2)}{\Gamma(d/2)\Gamma(c)}
+ \prod_{j=1}^{L-1}G(u_j,v_j).
+ \label{eq:notes-vac-ml-gamma}
+\end{equation}
+Let $A=c+\sum_{j=1}^{L-1}(a_j+v_j)$, let $P=2L-1$ be the number of physical denominators, and let $M_T=V_T(\mathbf1,\mathbf1,1)$. The sum of all transferred powers gives the mass factor $(m^2)^{Ld/2-A}$. Restoring the original denominator signs gives $(-1)^A$; division by the unit-power master therefore gives
+\begin{equation}
+ V_T(\mathbf a,\mathbf v,c)=
+ (-m^2)^{-(A-P)}
+ \frac{C_T(\mathbf a,\mathbf v,c;d)}{C_T(\mathbf1,\mathbf1,1;d)}M_T.
+ \label{eq:notes-vac-ml-ratio}
+\end{equation}
+The Gamma arguments have the same dimension-dependent parts for every target in a fixed tree. Their remaining differences are integers, so the recurrence $\Gamma(z+1)=z\Gamma(z)$ gives a rational function of $d$ and $m^2$. We cancel equal Gamma factors before expanding the finite products, as derived in Appendix~\ref{app:notes-gamma-cancel}. This calculation reduces the family to its unit-power master without an IBP solve. It does not evaluate a general multiscale vacuum integral.
+
+For the native part of the method, let $x_i$ be the physical and target-power features of request $i$, and let $t_{ia}$ be its measured complete time under admissible seed choice $a$. A terminal leaf containing requests $S$ selects the action that minimizes $\sum_{i\in S}t_{ia}$. A candidate split into $S_1$ and $S_2$ reduces this training objective by
+\begin{equation}
+ \min_a\sum_{i\in S}t_{ia}
+ -\min_a\sum_{i\in S_1}t_{ia}
+ -\min_a\sum_{i\in S_2}t_{ia}.
+ \label{eq:notes-vac-ml-loss}
+\end{equation}
+This expression follows by subtracting the two child costs from the parent cost. Unverified actions receive a cost of at least sixty seconds. Separate validation requests select tree depth, leaf size, ensemble size, and the required predicted saving. A fixed action minimizes total validation time and supplies the comparison with ML disabled. Inputs outside the training feature ranges use this fixed action. No predicted reduction coefficient enters the algebra.
+
+The native tests use the planar and nonplanar momenta defined in Appendix~\ref{app:families}. For the planar graph, $s=2p_1\cdot p_2$ and $t=2p_1\cdot p_3$; for the nonplanar graph, $s=(p_1+p_2)^2$ and $t=(p_1-p_3)^2$. We use $s=-1009-12h$ and $t=-1021-14h$ for the planar graph, and $s=-113-18h$ and $t=-127-10h$ for the nonplanar graph. The profile is $h=6011$ for training, $6029$ for validation, $6043$ for the first reserved test, and $6079$ for the separate final application test. All values use a common squared-momentum unit. Each target has index vector $(1,1,1,1,1,1,1,-a,-b)$ with nonnegative integers $a,b$ satisfying $1\leq a+b\leq4$. The batch, rather than the individual pair $(a,b)$, defines a split member.
