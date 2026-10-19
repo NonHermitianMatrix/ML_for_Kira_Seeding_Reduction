@@ -1,22 +1,25 @@
 ## Current fast exact and learned decomposition
 
-Use [the current method guide](../ML_model_adaptive_reduction/fast_decomposition/README.md) for the new recurrence model, exact formulas, tests, and limits.
-The final entry point is s12_deploy.py in fast_decomposition.
-The paper and notes include the 65-request timing test and the 110-request coverage audit.
+Use [the current method guide](../ML_model_adaptive_reduction/fast_decomposition/README.md) for exact formulas, retained seed selection, tests, and limits.
+The final entry point is s12_deploy.py in fast_decomposition. Use --method final.
+Complete-time validation keeps the fixed recurrence strategy and the retained seed model.
+The trained recurrence tree remains available for comparison.
+The paper and notes include the initial 65-request timing test and the 110-request coverage audit.
+They also include full-cost validation and the separate twelve-request test of the final application.
 Earlier studies retain their original evidence.
 
-## Current exact and learned decomposition
+## Preceding exact-recurrence study
 
-The current application adds an exact scalar one-loop recurrence to the frozen learned Kira workflow.
-The final application uses the recurrence for direct rational kinematics and keeps native Kira or earlier exact formulas for symbolic inputs.
+The preceding application added an exact scalar one-loop recurrence to the frozen learned Kira workflow.
+That version used the recurrence for direct rational kinematics and kept native Kira or earlier exact formulas for symbolic inputs.
 Read [the method guide](../ML_model_adaptive_reduction/analytic_decomposition/README.md) for the code, tests, and supported inputs.
 The paper studies loop-integral decomposition into master integrals. The notes retain earlier methods and results.
 
 <!-- BEGIN COMPLETE TIME SELECTION -->
-The current combined application is ML_model_adaptive_reduction/hybrid_experts/s01_runtime.py.
+The earlier hybrid application is ML_model_adaptive_reduction/hybrid_experts/s01_runtime.py.
 Read its README for exact routes, the sparse expert, complete-time controls, and measured limits.
 The preceding broad comparison remains in refined_time_policy/.
-The current paper and detailed notes retain all three new comparisons.
+The paper and notes retain those comparisons.
 <!-- END COMPLETE TIME SELECTION -->
 
 # Paper and notes
@@ -71,8 +74,9 @@ It writes the shared-model time and coverage plots, and the compact retained-mod
 `paper_figures/README.md` explains each plot's message and controls.
 
 Older scripts can overwrite current prose with historical result text.
-Use `../ML_model_adaptive_reduction/hybrid_experts/s08_validate.py` for the current paper and notes.
-Read its output before replacing edited prose.
+Use `../ML_model_adaptive_reduction/fast_decomposition/s11_validate.py` for the complete study checks on Hoffman.
+That script can regenerate result prose. Preserve editorial changes before you run a writer.
+For editorial changes alone, use `make` and `python s01_check_paper.py`.
 
 Read [ARCHIVED_CODE_GUIDE.md](ARCHIVED_CODE_GUIDE.md) for earlier report generators and their evidence files.
 Use the current writer for the concise paper. Older writers can replace its text.
@@ -102,11 +106,11 @@ Use the current writer and check both PDFs after changes.
 
 ## Complete-time method selection
 
-refined_time_results.tex gives the current nine-candidate method and reserved results.
+refined_time_results.tex gives the earlier nine-candidate method and reserved results.
 refined_time_appendix.tex derives the tighter master-basis cutoff.
 total_time_appendix.tex gives the shared cost objective, features, and target definitions.
 refined_time_data.json contains the compact checked measurements.
-refined_time_validation.json records the checks and current PDF file checks.
+refined_time_validation.json records that study and its earlier PDF checks.
 The notes preserve total_time_results.tex, its earlier comparison, and both detailed parameter records.
 
 ## Integrated expert report
@@ -115,4 +119,15 @@ hybrid_expert_results.tex gives the combined method and direct comparisons.
 hybrid_baseline_summary.tex summarizes the preceding broad baseline in the main paper.
 hybrid_expert_appendix.tex defines fresh targets, candidate boundaries, and deployment rules.
 The notes use matching copies with references to the historical derivations.
-hybrid_expert_data.json and hybrid_expert_validation.json contain the compact evidence and current PDF checks.
+hybrid_expert_data.json and hybrid_expert_validation.json contain that study and its earlier PDF checks.
+
+## Current fast-decomposition files
+
+fast_decomposition_method.tex explains the exact changes and trained recurrence selector.
+fast_decomposition_results.tex gives the initial timing comparison and coverage audit.
+fast_decomposition_appendix.tex derives the identities and defines the inputs.
+fast_deployment_results.tex gives complete-time validation and the separate final test.
+fast_deployment_appendix.tex defines the fresh final-test inputs.
+The matching data JSON files contain the checked result summaries.
+fast_decomposition_validation.json identifies the current PDF checks.
+The matching notes files preserve the same evidence in the detailed document.

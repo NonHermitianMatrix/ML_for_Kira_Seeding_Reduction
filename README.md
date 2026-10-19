@@ -1,22 +1,25 @@
 ## Current fast exact and learned decomposition
 
-Use [the current method guide](ML_model_adaptive_reduction/fast_decomposition/README.md) for the new recurrence model, exact formulas, tests, and limits.
-The final entry point is s12_deploy.py in fast_decomposition.
-The paper and notes include the 65-request timing test and the 110-request coverage audit.
+Use [the current method guide](ML_model_adaptive_reduction/fast_decomposition/README.md) for exact formulas, retained seed selection, tests, and limits.
+The final entry point is s12_deploy.py in fast_decomposition. Use --method final.
+Complete-time validation keeps the fixed recurrence strategy and the retained seed model.
+The trained recurrence tree remains available for comparison.
+The paper and notes include the initial 65-request timing test and the 110-request coverage audit.
+They also include full-cost validation and the separate twelve-request test of the final application.
 Earlier studies retain their original evidence.
 
-## Current exact and learned decomposition
+## Preceding exact-recurrence study
 
-The current application adds an exact scalar one-loop recurrence to the frozen learned Kira workflow.
-The final application uses the recurrence for direct rational kinematics and keeps native Kira or earlier exact formulas for symbolic inputs.
+The preceding application added an exact scalar one-loop recurrence to the frozen learned Kira workflow.
+That version used the recurrence for direct rational kinematics and kept native Kira or earlier exact formulas for symbolic inputs.
 Read [the method guide](ML_model_adaptive_reduction/analytic_decomposition/README.md) for the code, tests, and supported inputs.
 The paper studies loop-integral decomposition into master integrals. The notes retain earlier methods and results.
 
 <!-- BEGIN COMPLETE TIME SELECTION -->
-The current combined application is ML_model_adaptive_reduction/hybrid_experts/s01_runtime.py.
+The earlier hybrid application is ML_model_adaptive_reduction/hybrid_experts/s01_runtime.py.
 Read its README for exact routes, the sparse expert, complete-time controls, and measured limits.
 The preceding broad comparison remains in refined_time_policy/.
-The current paper and detailed notes retain all three new comparisons.
+The paper and notes retain those comparisons.
 <!-- END COMPLETE TIME SELECTION -->
 
 <!-- BEGIN THIRTEEN LOOP BLOCKS -->
