@@ -1,4 +1,12 @@
-## Current connected bubble-tree application
+## Current exact-cancellation application
+
+Read [the current method guide](../ML_model_adaptive_reduction/gamma_cancellation/README.md).
+Use gamma_cancellation/s02_runtime.py with --method integrated.
+The method cancels complete Gamma factors before finite expansion and shares subtree calculations within target batches.
+It preserves the preceding native models and exact methods for other supported inputs.
+The paper and notes give the derivation, complete-time comparisons, and limits.
+
+## Preceding connected bubble-tree application
 
 Read [the current method guide](../ML_model_adaptive_reduction/loop_coverage13/README.md).
 Use loop_coverage13/s02_runtime.py with --method integrated.

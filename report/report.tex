@@ -153,8 +153,12 @@ The reserved physical profile is new. Its 110 requests span the defined one-mass
 
 \input{loop_coverage13_results}
 
+\input{gamma_cancellation_results}
+
 \section{Overall interpretation}
 \label{sec:overall-new}
+The cancellation comparison in Section~\ref{sec:gamma-cancel} holds the connected master basis and output procedure fixed. Its reduction in complete time comes from exact factor cancellation and calculations shared by targets in the same batch. The separate native controls continue to determine the added effect of the trained choices.
+
 The connected-tree calculation in Section~\ref{sec:loop-tree-results} extends the exact physical domain before further native work. Its proof identifies the allowed integrals, and its coverage table states what the application actually completes at each loop order. The fresh two-loop control then measures the retained ML contribution on work that still needs Kira. This division follows the mathematical structure of the integrals and keeps the sources of time savings separate.
 
 The batch comparison in Section~\ref{sec:analytic-batch-results} separates three changes: a checked master-index registry, an exact triangle formula, and a learned choice of target grouping and sparse seed region. The same-basis control isolates the latter two changes. The fixed-action control then measures the added batch model under the same exact implementation, while the control with both learned choices disabled measures its combination with the retained sparse expert. The preceding formula and recurrence experiments remain separate comparisons with their original inputs and controls.
@@ -177,6 +181,7 @@ The preceding complete application combined validated learned choices with exact
 \input{fast_deployment_appendix}
 \input{analytic_batch_appendix}
 \input{loop_coverage13_appendix}
+\input{gamma_cancellation_appendix}
 \clearpage
 \renewcommand{\refname}{References}
 \bibliographystyle{unsrt}
