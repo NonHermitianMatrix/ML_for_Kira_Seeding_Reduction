@@ -1,3 +1,15 @@
+## Current analytic batch report files
+
+analytic_batch_method.tex explains exact triangle reduction and learned target grouping.
+analytic_batch_results.tex gives model admission, reserved times, controls, and failures.
+analytic_batch_appendix.tex derives the coefficient and defines all training and test inputs.
+analytic_batch_data.json contains the compact measured summary.
+analytic_batch_validation.json identifies the current evidence and PDF checks.
+paper_figures/analytic_batch.pdf compares complete time and the separate batch-model effect.
+The notes_analytic_batch files give the same current evidence in the detailed notes.
+Use s15_finish.py in analytic_batch to rebuild the current sections and check both PDFs.
+Earlier study writers can replace current prose. Use the current writer for this extension.
+
 ## Current fast exact and learned decomposition
 
 Use [the current method guide](../ML_model_adaptive_reduction/fast_decomposition/README.md) for exact formulas, retained seed selection, tests, and limits.
@@ -129,5 +141,5 @@ fast_decomposition_appendix.tex derives the identities and defines the inputs.
 fast_deployment_results.tex gives complete-time validation and the separate final test.
 fast_deployment_appendix.tex defines the fresh final-test inputs.
 The matching data JSON files contain the checked result summaries.
-fast_decomposition_validation.json identifies the current PDF checks.
+fast_decomposition_validation.json identifies the preceding publication checks.
 The matching notes files preserve the same evidence in the detailed document.

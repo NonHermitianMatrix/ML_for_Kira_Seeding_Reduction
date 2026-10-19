@@ -1,3 +1,10 @@
+## Current analytic batch application
+
+Use [analytic_batch/README.md](analytic_batch/README.md) for the current entry point.
+It checks an exact one-scale triangle identity and trains native target-batch choices on complete cost.
+It retains matched fixed controls, exact checks, and failed outcomes.
+The preceding fast_decomposition application remains unchanged for comparison.
+
 ## Current fast exact and learned decomposition
 
 Use [the current method guide](fast_decomposition/README.md) for exact formulas, retained seed selection, tests, and limits.

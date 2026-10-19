@@ -266,3 +266,7 @@ Retain independent tests, exact checks, previous evidence, resource limits, and 
 
 - Improve total decomposition time using exact formulas, new training data, and unrestricted learned methods where measured validation supports them. Extend a declared test grid across loop orders one through thirteen and across scalar, numerator, massive, massless, vacuum, propagator, and scattering structures. Preserve failed and unsupported cases, distinguish connected graphs from products, and state the finite coverage limits.
 - Compare the new application with the last published application and equally prepared fixed and native controls. Freeze new decisions before reserved tests, preserve exact verification, and update both documents, guides, Hoffman, GitHub, and the local report under the existing resource limits.
+
+## Exact simplification and learned target batches
+
+- Improve total reduction time with new training data, complete-cost models, and exact analytic identities. Test shared work across target batches when applicable. Include prediction, native reduction, verification, failed attempts, and recovery. Preserve independent comparisons, earlier evidence, resource limits, and all required document and repository copies.

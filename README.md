@@ -1,7 +1,16 @@
-## Current fast exact and learned decomposition
+## Current exact triangle and target-batch method
+
+Use [the current application guide](ML_model_adaptive_reduction/analytic_batch/README.md).
+The entry point is analytic_batch/s02_batch_runtime.py. Use --method learned.
+It combines exact triangle reduction with complete-cost selection of native target batches.
+The guide states the admitted model, fixed controls, measured gains, and supported inputs.
+The paper and notes contain the derivation and the 58-request reserved comparison.
+Earlier methods and their evidence remain available.
+
+## Preceding fast exact and learned decomposition
 
 Use [the current method guide](ML_model_adaptive_reduction/fast_decomposition/README.md) for exact formulas, retained seed selection, tests, and limits.
-The final entry point is s12_deploy.py in fast_decomposition. Use --method final.
+That version uses s12_deploy.py in fast_decomposition with --method final.
 Complete-time validation keeps the fixed recurrence strategy and the retained seed model.
 The trained recurrence tree remains available for comparison.
 The paper and notes include the initial 65-request timing test and the 110-request coverage audit.

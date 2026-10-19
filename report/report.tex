@@ -25,7 +25,7 @@ We study how to reduce the time needed for this decomposition into master integr
 
 Our method combines independent-loop factorization, exact analytic recurrences, and learned seed choices. We also study elimination-row and equation selection to determine where prediction helps. Earlier machine-assisted searches motivate the seed intervention~\cite{Song2025,TubeSeeding2026}, while known analytic one-loop reduction motivates the recurrence stage~\cite{Hu2025}. We measure the complete application time, including model use, exact algebra, checks, and unsuccessful attempts. Separate controls distinguish the benefit of a learned decision from the benefit of exact formulas and fixed tuning.
 
-We first define the notation used in this paper and derive the decomposition problem. We then explain the exact stage and the three learned interventions, compare their measured benefits and limits, and test their integration. The latest comparison improves the exact arithmetic, trains a recurrence-strategy model, and measures independent products and analytic families through thirteen loops. A separate audit records completion and failure across vacuum, propagator, and scattering sequences at each loop count. It also includes symbolic kinematics. The companion notes preserve historical methods, secondary experiments, and their full results.
+We first define the notation used in this paper and derive the decomposition problem. We then explain the exact stage and the three learned interventions, compare their measured benefits and limits, and test their integration. The latest comparison adds a derived triangle formula and trains a complete-cost model to choose shared native reductions. It tests new two-loop target batches, symbolic triangle kinematics, and independent products through thirteen loops. A separate audit records completion and failure across vacuum, propagator, and scattering sequences at each loop count. It also includes symbolic kinematics. The companion notes preserve historical methods, secondary experiments, and their full results.
 
 \section{The reduction problem and the three decisions}
 \label{sec:physics}
@@ -71,6 +71,8 @@ Equation selection & Retention score for a seed--operator pair & Symbolic coeffi
 
 \input{analytic_decomposition_method}
 \input{fast_decomposition_method}
+
+\input{analytic_batch_method}
 
 \section{Training and comparison design}
 \label{sec:design}
@@ -145,9 +147,11 @@ The reserved physical profile is new. Its 110 requests span the defined one-mass
 \input{fast_decomposition_results}
 \input{fast_deployment_results}
 
+\input{analytic_batch_results}
+
 \section{Overall interpretation}
 \label{sec:overall-new}
-The current comparison in Section~\ref{sec:fast-results} measures the direct formulas, revised exact arithmetic, and learned recurrence strategy against the preceding deployed method. The fixed control separates these exact changes from the request-dependent learned choices. The initial analytic-enabled comparison in Section~\ref{sec:analytic-results} tests the added recurrence together with the retained learned application. The preceding hybrid comparison in Section~\ref{sec:hybrid-experts} isolates its seed choices after the earlier exact formulas and block decomposition. Its fixed control isolates the added learned choice under the same exact checks and recovery rules.
+The latest comparison in Section~\ref{sec:analytic-batch-results} separates three changes: a checked master-index registry, an exact triangle formula, and a learned choice of target grouping and sparse seed region. The same-basis control isolates the latter two changes. The fixed-action control then measures the added batch model under the same exact implementation, while the control with both learned choices disabled measures its combination with the retained sparse expert. The preceding formula and recurrence experiments remain separate comparisons with their original inputs and controls.
 
 The direct local comparisons establish savings for seed and equation decisions within their measured domains (Table~\ref{tab:retained}). The shared-model comparison tests the additional question of transfer without a family-specific rule (Section~\ref{sec:general-results}). These are separate workloads and controls, so their ratios do not form a cumulative speedup. Learned row selection remains omitted because its measured gain is not resolved from timing variation. The combined application uses the validated sparse expert together with the exact methods in Sections~\ref{sec:blocks13} and~\ref{sec:analytic-method}. The shared model and equation filter retain their separately tested applications, and their gains are not added to the hybrid result.
 
@@ -165,6 +169,7 @@ The preceding complete application combined validated learned choices with exact
 \input{parser_guard_appendix}
 \input{fast_decomposition_appendix}
 \input{fast_deployment_appendix}
+\input{analytic_batch_appendix}
 \clearpage
 \renewcommand{\refname}{References}
 \bibliographystyle{unsrt}

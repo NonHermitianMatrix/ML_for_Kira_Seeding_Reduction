@@ -1,0 +1,166 @@
+\section{Exact one-scale triangles and shared target reductions}
+\label{app:notes-analytic-batch}
+
+The new exact rule applies to a massless triangle whose two adjacent external momenta satisfy
+\(p_1^2=p_2^2=0\), while \(s=(p_1+p_2)^2\ne0\). We use the same Minkowski denominator convention as the preceding integral definitions and write
+\begin{equation}
+ T(a,b,c)=\int\frac{\mathrm d^d\ell}{i\pi^{d/2}}\,
+ \frac{1}{[\ell^2+i0]^a[(\ell-p_1)^2+i0]^b
+ [(\ell-p_1-p_2)^2+i0]^c},
+ \qquad \mathcal B(s,d)=T(1,0,1).
+ \label{eq:notes-batch-triangle-definition}
+\end{equation}
+Here \(a,b,c\) are integer propagator powers and \(\mathcal B(s,d)\) is the off-shell bubble master integral. The rule keeps \(d\) symbolic. It does not evaluate the master integral numerically.
+
+Substituting the three external shifts and zero internal masses into Eq.~\eqref{eq:notes-analytic-y} gives
+\begin{equation}
+ Y=\begin{pmatrix}0&0&-s\\0&0&0\\-s&0&0\end{pmatrix},
+ \qquad \det Y=0.
+ \label{eq:notes-batch-triangle-matrix}
+\end{equation}
+The zero middle row makes the full triangle matrix singular. The preceding recurrence requires its inverse, so this sector needs another identity. The parameter integral below provides that identity directly.
+
+Let \(A=a+b+c\). Feynman parametrization and the loop-momentum integral give the standard simplex representation \cite{Weinzierl2022}. For this triangle the quadratic form is \(-s x_1x_3-i0\), so the representation becomes
+\begin{align}
+ T(a,b,c)
+ &=
+ \frac{(-1)^A\Gamma(A-d/2)}{\Gamma(a)\Gamma(b)\Gamma(c)}
+ (-s-i0)^{d/2-A}
+ \int_{x_j\ge0}\!\mathrm dx_1\,\mathrm dx_2\,\mathrm dx_3\,
+ \delta(1-x_1-x_2-x_3)
+ \nonumber\\[-2pt]
+ &\hspace{30mm}\times
+ x_1^{d/2-b-c-1}x_2^{b-1}x_3^{d/2-a-b-1}.
+ \label{eq:notes-batch-triangle-simplex}
+\end{align}
+We first take powers and dimension in a convergence domain and then continue the result meromorphically. Here \(\Gamma\) is Euler's gamma function. Its integral definition gives a useful relation for the parameter integrals:
+\begin{align}
+ \Gamma(\alpha)\Gamma(\beta)
+ &=\int_0^\infty\!\mathrm dt\int_0^\infty\!\mathrm dr\,
+ t^{\alpha-1}r^{\beta-1}e^{-t-r}
+ \nonumber\\
+ &=\Gamma(\alpha+\beta)
+ \int_0^1\!\mathrm dz\,z^{\alpha-1}(1-z)^{\beta-1}.
+ \label{eq:notes-batch-beta}
+\end{align}
+The second line follows from \(\rho=t+r\), \(z=t/(t+r)\), and the Jacobian \(\rho\). The \(\rho\) integral equals \(\Gamma(\alpha+\beta)\), which derives the beta integral in terms of gamma functions. To evaluate the simplex integral, set \(x_1=u\), \(x_2=(1-u)v\), and \(x_3=(1-u)(1-v)\). The Jacobian is \(1-u\), and two applications of Eq.~\eqref{eq:notes-batch-beta} give
+\begin{equation}
+ \int\!\mathrm d^3x\,\delta(1-\textstyle\sum_jx_j)
+ \prod_{j=1}^3x_j^{\alpha_j-1}
+ =
+ \frac{\Gamma(\alpha_1)\Gamma(\alpha_2)\Gamma(\alpha_3)}
+ {\Gamma(\alpha_1+\alpha_2+\alpha_3)}.
+ \label{eq:notes-batch-dirichlet}
+\end{equation}
+The three exponents in Eq.~\eqref{eq:notes-batch-triangle-simplex} correspond to
+\(\alpha_1=d/2-b-c\), \(\alpha_2=b\), and \(\alpha_3=d/2-a-b\). Substitution cancels \(\Gamma(b)\) and yields
+\begin{equation}
+ T(a,b,c)=
+ (-1)^A(-s-i0)^{d/2-A}
+ \frac{\Gamma(A-d/2)\Gamma(d/2-a-b)\Gamma(d/2-b-c)}
+ {\Gamma(a)\Gamma(c)\Gamma(d-A)}.
+ \label{eq:notes-batch-triangle-gamma}
+\end{equation}
+The same continued expression supplies \(b=0\) and negative integer \(b\), where the middle inverse propagator appears in the numerator. The native checks include these cases. When \(a\le0\) or \(c\le0\), the remaining loop denominators carry only a lightlike external momentum. Tensor expansion of the polynomial numerator then leaves scaleless integrals, which vanish in dimensional regularization \cite{Weinzierl2022}.
+
+For \(a,c\ge1\), set \(\Delta=A-2\) and divide Eq.~\eqref{eq:notes-batch-triangle-gamma} by its value at \((1,0,1)\):
+\begin{align}
+ \frac{T(a,b,c)}{\mathcal B(s,d)}
+ ={}&
+ \frac{s^{-\Delta}}{(a-1)!(c-1)!}
+ \frac{\Gamma(2-d/2+\Delta)}{\Gamma(2-d/2)}
+ \frac{\Gamma(d/2-a-b)}{\Gamma(d/2-1)}
+ \nonumber\\
+ &\times
+ \frac{\Gamma(d/2-b-c)}{\Gamma(d/2-1)}
+ \frac{\Gamma(d-2)}{\Gamma(d-2-\Delta)}.
+ \label{eq:notes-batch-triangle-ratio}
+\end{align}
+The integer power \(\Delta\) makes the signs from \((-1)^\Delta\) and \((-s)^{-\Delta}\) cancel. Every gamma-function argument differs from its denominator argument by an integer. Repeated application of \(\Gamma(z+1)=z\Gamma(z)\), used in Appendix~\ref{app:notes-fast-method}, therefore gives
+\begin{equation}
+ G(z,n)=\frac{\Gamma(z+n)}{\Gamma(z)}
+ =
+ \begin{cases}
+ \displaystyle\prod_{j=0}^{n-1}(z+j),&n\ge0,\\[4pt]
+ \displaystyle\left[\prod_{j=1}^{-n}(z-j)\right]^{-1},&n<0 .
+ \end{cases}
+ \label{eq:notes-batch-gamma-shift}
+\end{equation}
+The empty product equals one. These finite products express every tested triangle coefficient as a rational function of \(d\) and \(s\). The method needs no seed prediction or elimination sequence within this domain. Independent loop blocks use the factorization derived earlier in the paper.
+
+The learned decision concerns the native reductions that remain. For a target set \(\mathcal T\), we compare the preceding application, two shared sparse seed regions, groups with equal numerator rank, and separate target reductions. All choices use exact IBP relations. A shared reduction solves the common equations once and reads the rows for every target. If
+\begin{equation}
+ I_{\mathbf a}=\sum_m r_{\mathbf a m}M_m
+ \quad(\mathbf a\in\mathcal T),
+ \qquad
+ \mathbf I_{\mathcal T}=R_{\mathcal T}\mathbf M,
+ \label{eq:notes-batch-shared}
+\end{equation}
+then selecting several rows of \(R_{\mathcal T}\) requires the same master basis \(\mathbf M\). Sharing the equations changes the work needed to construct these rows; it preserves each reduction identity.
+
+The sparse regions extend the earlier seed rule to a union over the requested targets. In a sector \(S\), let \(a_j\le0\) denote a seed numerator power at an absent denominator. Its distance from a target's numerator box is
+\begin{equation}
+ D_S(\mathbf a,\mathbf t)
+ =\sum_{j\notin S}\max\!\left(0,-a_j-\max(0,-t_j)\right).
+ \label{eq:notes-batch-seed-distance}
+\end{equation}
+The shared region retains a seed when the smallest distance over \(\mathbf t\in\mathcal T\) lies within the selected radius. It also keeps admissible target and master seeds and applies the native rank and propagator bounds. The two tested radii and bound parameters are fixed before collection. If the selected seed set does not complete the requested reduction, the existing recovery procedure expands the native calculation.
+
+We train the policy from complete measured time. Let \(C_{ia}\) be the measured cost of choice \(a\) on training request \(i\), including the fresh process, reduction, recovery, and exact coefficient comparison. An unsuccessful result receives a cost of at least \(250\) seconds. A leaf with request set \(S\) predicts
+\begin{equation}
+ \widehat C_a(S)=\frac{1}{|S|}\sum_{i\in S}C_{ia}.
+ \label{eq:notes-batch-leaf-cost}
+\end{equation}
+If a split creates \(S_L\) and \(S_R\), the least recorded cost available to its two leaves is
+\begin{equation}
+ \mathcal L(S_L,S_R)=
+ \min_a\sum_{i\in S_L}C_{ia}
+ +\min_a\sum_{i\in S_R}C_{ia}.
+ \label{eq:notes-batch-tree-loss}
+\end{equation}
+This follows by choosing one action independently in each leaf. We use this cost-sensitive form of recursive tree construction and also test bootstrap ensembles \cite{CART1984,Breiman1996Bagging}. Prediction averages the action costs across the selected trees. Validation selects the model, its margin over a fixed choice, and whether the complete application should enable it.
+
+The model receives seventeen structural quantities: loop count, external-momentum count, total denominator count, physical denominator count, target count, minimum, maximum, and mean numerator rank, number of distinct ranks, maximum number of extra positive propagator powers, minimum active-line count, largest numerator power, maximum and mean pairwise numerator-index distance, largest number of active numerator positions, number of propagators that contain both loop momenta, and largest loop-momentum incidence count. The pairwise distance is the sum of absolute differences over auxiliary indices. These quantities describe the requested algebra and do not contain reference coefficients or family names. The measured learning domain consists of two-loop, seven-line, nine-index requests with numerator rank one through four. The independent-product tests through thirteen loops assess the exact method separately.
+
+
+\subsection{Training inputs, controls, and basis preparation}
+The native learning data use the planar and nonplanar massless boxes defined in Appendix~\ref{app:families-new}. Their first seven indices equal one. We write the last two indices as $(-u,-v)$ and use these eight target collections for each graph and parameter profile:
+\begin{align*}
+ &\{(2,0)\},\quad \{(0,3)\},\quad \{(2,1)\},\quad
+ \{(2,0),(0,2)\},\\
+ &\{(3,0),(0,3),(2,1)\},\quad \{(2,0),(0,3)\},\\
+ &\{(1,0),(2,0),(3,0),(4,0)\},\quad
+ \{(1,1),(2,1),(1,2),(2,2)\}.
+\end{align*}
+Profiles $3011$ and $3019$ supply 32 training requests, while profile $3037$ supplies sixteen validation requests. For profile $h$, the planar invariants are $s=-1009-12h$ and $t=-1021-14h$. The nonplanar convention uses $s=-113-18h$ and $t=-127-10h$, with the scalar products defined in Appendix~\ref{app:families-new}. Each training action runs once and each validation action runs twice. Candidate trees have depths one through four and minimum leaf populations of two, four, or eight. Ensembles contain sixteen bootstrap trees, and a single tree provides the other candidate. We test margins of zero, three, and eight percent against the validation-selected fixed action. A further three-repeat, fresh-process validation at the new profile $3041$ compares the selected model with the fixed action. We assign this validation and the reserved tests to the same compute node before they run. An interrupted validation on heterogeneous workers remains in the notes and does not determine admission. The model enters deployment only if it passes all exact checks, saves at least two percent in this full application comparison, and has an upper paired request-resampling ratio below one. All these decisions precede the reserved test.
+
+The two sparse choices use the boundary vectors
+$(2.5,0,0,1.25,0,1,-0.25)$ and $(1,0,0,0,1,1,0)$ in the earlier sparse-radius definition. Both use the native subsector rank truncation with one additional numerator rank. Rank grouping uses the second vector within each group. Single-target reduction and the preceding-application action preserve the earlier validated choices. The first four physical and structural feature counts are constant within this learning set, so their presence does not establish extrapolation in those quantities.
+
+During development, repeated master discovery caused some planar batches to exceed the application limit. We therefore prepare an additional master-index registry. For three planar target collections and the rational and symbolic triangles, two native reductions with different integral orderings must agree exactly with each other and with the development reference. The planar collections must give the same canonical master-index set. The registry stores those indices and supplies no reduction coefficients. It can therefore remove repeated basis discovery while still requiring a new reduction at each kinematic point. Its preparation time is reported separately. Agreement on these checks establishes consistency for the tested inputs; it does not prove that a finite seed region finds the minimal basis for every kinematic specialization.
+
+The reserved native test uses profiles $3053$ and $3061$, giving 32 requests from the original target collections. Eight further requests use profile $3067$ and the new collections
+\[
+ \{(1,2)\},\qquad\{(3,1)\},\qquad
+ \{(2,0),(1,1),(0,2)\},\qquad
+ \{(0,1),(1,1),(1,2),(1,3)\}.
+\]
+Both graphs receive each new collection. These are new index batches within two known graphs. They do not test a previously unseen connected topology.
+
+The exact tests contain one independent triangle product at every loop order $L=1,\ldots,13$. Block $j=0,\ldots,L-1$ has powers
+\[
+ (a_j,b_j,c_j)=
+ \bigl(1+(j\bmod3),\; b_j,\;1+(j\bmod2)\bigr),
+ \qquad b_j=\begin{cases}-1,&j\bmod3=0,\\1,&\text{otherwise}.\end{cases}
+\]
+The blocks use independent loop and external momenta, with a common rational scale $s=-101-6h$ at profile $h=3071$. Some blocks have identical powers and kinematics, so the implementation can share their intermediate coefficients within the same request. A further one-loop triangle keeps $s$ symbolic at profile $3079$. Four compatibility requests use profile $3083$: a thirteen-loop one-mass vacuum, a thirteen-loop massless propagator, a two-loop massive propagator, and a two-loop ladder. These use the previous family definitions. The entire reserved set therefore contains 58 requests.
+
+Each request compares the final method, the same method with a fixed batch action, the same method with both learned choices disabled, the preceding method supplied with the new checked basis, and the unmodified preceding method. The same-basis control isolates the new analytic and learned choices from basis preparation. The unmodified control measures the practical change from the preceding application. Three repetitions rotate the method order. If the first repetition does not pass its independent check, later repetitions of that request and method are omitted. That outcome remains a failure and contributes no completed-time speedup. All comparisons retain the same target and reference coefficients. Native references use the independent ordering; triangle references require agreement between two native orderings.
+
+For a method $m$ and request $i$, let $t_{imr}$ be complete time in repetition $r$. We first compute $\widetilde t_{im}=\operatorname{median}_r t_{imr}$ and then sum over requests verified by both compared methods. If these totals are $T_{\rm new}$ and $T_{\rm control}$, their time ratio, speed factor, and percentage saving follow directly from
+\[
+ R=\frac{T_{\rm new}}{T_{\rm control}},\qquad
+ S=\frac{1}{R},\qquad
+ P=100(1-R).
+\]
+The result figures use repeated resampling of the three paired repetitions within each fixed request. These intervals describe repetition variation on this test set. They do not quantify uncertainty over all integral families. The deployment gate instead resamples whole validation requests, as stated above.

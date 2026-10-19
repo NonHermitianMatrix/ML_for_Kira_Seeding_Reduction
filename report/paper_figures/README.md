@@ -191,3 +191,5 @@ parser_guard.pdf shows the separate cost reduction from avoiding symbolic setup.
 
 fast_decomposition.pdf separates the total improvement from the added learned decisions.
 fast_coverage.pdf shows completion by integral structure and loop count under the bounded audit.
+
+analytic_batch.pdf compares the new workflow with a same-basis control and isolates the batch-model effect.
