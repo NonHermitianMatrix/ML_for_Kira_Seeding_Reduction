@@ -25,7 +25,7 @@ We study how to reduce the time needed for this decomposition into master integr
 
 Our method combines independent-loop factorization, exact analytic recurrences, and learned seed choices. We also study elimination-row and equation selection to determine where prediction helps. Earlier machine-assisted searches motivate the seed intervention~\cite{Song2025,TubeSeeding2026}, while known analytic one-loop reduction motivates the recurrence stage~\cite{Hu2025}. We measure the complete application time, including model use, exact algebra, checks, and unsuccessful attempts. Separate controls distinguish the benefit of a learned decision from the benefit of exact formulas and fixed tuning.
 
-We first define the notation used in this paper and derive the decomposition problem. We then explain the exact stage and the three learned interventions, compare their measured benefits and limits, and test their integration. The latest comparison adds a derived triangle formula and trains a complete-cost model to choose shared native reductions. It tests new two-loop target batches, symbolic triangle kinematics, and independent products through thirteen loops. A separate audit records completion and failure across vacuum, propagator, and scattering sequences at each loop count. It also includes symbolic kinematics. The companion notes preserve historical methods, secondary experiments, and their full results.
+We first define the notation used in this paper and derive the decomposition problem. We then explain the exact stage and the three learned interventions, compare their measured benefits and limits, and test their integration. We first derive a triangle formula and train a complete-cost model to choose shared native reductions. We then extend exact integration to connected massless bubble trees through thirteen loops and test the unchanged learned choices on fresh two-loop batches. A separate audit records completion and failure across vacuum, propagator, and scattering sequences at each loop count. It also includes symbolic kinematics. The companion notes preserve historical methods, secondary experiments, and their full results.
 
 \section{The reduction problem and the three decisions}
 \label{sec:physics}
@@ -74,11 +74,13 @@ Equation selection & Retention score for a seed--operator pair & Symbolic coeffi
 
 \input{analytic_batch_method}
 
+\input{loop_coverage13_method}
+
 \section{Training and comparison design}
 \label{sec:design}
 We use two kinds of labels. Early models learn membership in a recorded sufficient seed set or the next action in a recorded reduction. Such labels describe one valid history and do not establish a minimum number of seeds or operations. Later cost models learn from complete Kira timings for alternative choices. Section~\ref{sec:shared} uses this second objective to test whether one model can transfer across structures. The notes retain the reverse-construction dataset and its separate label-accuracy tests.
 
-Every reported paired timing ratio uses identical targets, kinematics, and final master bases for its competing methods. The native control disables learned choices in the same exact implementation. A fixed control uses a setting selected before testing and makes no request-dependent prediction. This second control measures what the prediction adds after fixed tuning. The earlier deployed application supplies a further practical comparison. When a study uses a modified executable, ``native'' means its native decision rules; it does not mean an unmodified Kira installation.
+The earlier native paired comparisons use identical targets, kinematics, and final master bases. The connected-tree comparison reduces identical physical integrals into each method's selected basis. Its external check expresses the new unit-power master in the preceding basis and verifies every target coefficient; the application timer excludes that benchmark conversion. The native control disables learned choices in the same exact implementation. A fixed control uses a setting selected before testing and makes no request-dependent prediction. This second control measures what the prediction adds after fixed tuning. The earlier deployed application supplies a further practical comparison. When a study uses a modified executable, ``native'' means its native decision rules; it does not mean an unmodified Kira installation.
 
 The earlier native comparisons keep $d$ symbolic and assign rational values to the other kinematic variables. The analytic comparisons also include symbolic masses and momentum invariants. Thus the exported coefficients are exact rational functions of $d$ and any remaining symbolic scales. Master discovery and an enlarged-region reference calculation precede the supplied-basis timer. The application receives the master indices, while reference coefficients enter only the final check. We report this preparation cost separately where measured. Adding it to a supplied-basis time describes a two-stage workflow, since the reference calculation already performs a reduction; it does not measure a faster first reduction from scratch.
 
@@ -149,9 +151,13 @@ The reserved physical profile is new. Its 110 requests span the defined one-mass
 
 \input{analytic_batch_results}
 
+\input{loop_coverage13_results}
+
 \section{Overall interpretation}
 \label{sec:overall-new}
-The latest comparison in Section~\ref{sec:analytic-batch-results} separates three changes: a checked master-index registry, an exact triangle formula, and a learned choice of target grouping and sparse seed region. The same-basis control isolates the latter two changes. The fixed-action control then measures the added batch model under the same exact implementation, while the control with both learned choices disabled measures its combination with the retained sparse expert. The preceding formula and recurrence experiments remain separate comparisons with their original inputs and controls.
+The connected-tree calculation in Section~\ref{sec:loop-tree-results} extends the exact physical domain before further native work. Its proof identifies the allowed integrals, and its coverage table states what the application actually completes at each loop order. The fresh two-loop control then measures the retained ML contribution on work that still needs Kira. This division follows the mathematical structure of the integrals and keeps the sources of time savings separate.
+
+The batch comparison in Section~\ref{sec:analytic-batch-results} separates three changes: a checked master-index registry, an exact triangle formula, and a learned choice of target grouping and sparse seed region. The same-basis control isolates the latter two changes. The fixed-action control then measures the added batch model under the same exact implementation, while the control with both learned choices disabled measures its combination with the retained sparse expert. The preceding formula and recurrence experiments remain separate comparisons with their original inputs and controls.
 
 The direct local comparisons establish savings for seed and equation decisions within their measured domains (Table~\ref{tab:retained}). The shared-model comparison tests the additional question of transfer without a family-specific rule (Section~\ref{sec:general-results}). These are separate workloads and controls, so their ratios do not form a cumulative speedup. Learned row selection remains omitted because its measured gain is not resolved from timing variation. The combined application uses the validated sparse expert together with the exact methods in Sections~\ref{sec:blocks13} and~\ref{sec:analytic-method}. The shared model and equation filter retain their separately tested applications, and their gains are not added to the hybrid result.
 
@@ -170,6 +176,7 @@ The preceding complete application combined validated learned choices with exact
 \input{fast_decomposition_appendix}
 \input{fast_deployment_appendix}
 \input{analytic_batch_appendix}
+\input{loop_coverage13_appendix}
 \clearpage
 \renewcommand{\refname}{References}
 \bibliographystyle{unsrt}

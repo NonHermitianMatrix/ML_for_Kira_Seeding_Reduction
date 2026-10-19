@@ -276,6 +276,15 @@ def main():
             if value['matched']:assert abs(value['ratio']-value['learned_seconds']/value['control_seconds'])<1e-12
     q=HERE.parent/'ML_model_adaptive_reduction/analytic_batch/summary.json'
     if q.exists():assert json.loads(q.read_text())==batch
+    loop=json.loads((HERE/'loop_coverage13_data.json').read_text())
+    assert loop['complete'] and len(loop['rows'])==165
+    assert loop['coverage']['trees']['methods']['integrated']['completed']==39
+    assert loop['gamma_sample_checks']==819
+    assert 'app:loop-tree' in labels and 'sec:loop-tree-results' in labels
+    for value in loop['comparisons'].values():
+        if value['pairs']:assert abs(value['ratio']-value['new_seconds']/value['control_seconds'])<1e-12
+    q=HERE.parent/'ML_model_adaptive_reduction/loop_coverage13/summary.json'
+    if q.exists():assert json.loads(q.read_text())==loop
     result=dict(general_model_test_complete=True,general_requests=general['requested'],general_checked_cases=general['overall']['cases'],external_citation_keys=len(cites),internal_references=len(refs),figures=len(figs),
         preparation_requests=preparation['requests'],preparation_exact_checks=preparation['coefficient_checks'],
         recovery_requests=recovery['requests'],recovery_exact_checks=recovery['coefficient_checks'],

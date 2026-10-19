@@ -1,4 +1,13 @@
-## Current analytic batch report files
+## Current connected bubble-tree application
+
+Read [the current method guide](../ML_model_adaptive_reduction/loop_coverage13/README.md).
+Use loop_coverage13/s02_runtime.py with --method integrated.
+The new exact identity reduces connected massless bubble trees through thirteen loops.
+The application keeps the preceding trained choices for other supported inputs.
+The paper and notes give the derivation, fresh comparisons, coverage, and limits.
+Earlier methods retain their original data and claims.
+
+## Preceding analytic batch report files
 
 analytic_batch_method.tex explains exact triangle reduction and learned target grouping.
 analytic_batch_results.tex gives model admission, reserved times, controls, and failures.
@@ -10,9 +19,9 @@ The notes_analytic_batch files give the same current evidence in the detailed no
 Use s15_finish.py in analytic_batch to rebuild the current sections and check both PDFs.
 Earlier study writers can replace current prose. Use the current writer for this extension.
 
-## Current fast exact and learned decomposition
+## Earlier fast exact and learned decomposition
 
-Use [the current method guide](../ML_model_adaptive_reduction/fast_decomposition/README.md) for exact formulas, retained seed selection, tests, and limits.
+Use [the preceding method guide](../ML_model_adaptive_reduction/fast_decomposition/README.md) for exact formulas, retained seed selection, tests, and limits.
 The final entry point is s12_deploy.py in fast_decomposition. Use --method final.
 Complete-time validation keeps the fixed recurrence strategy and the retained seed model.
 The trained recurrence tree remains available for comparison.
@@ -143,3 +152,16 @@ fast_deployment_appendix.tex defines the fresh final-test inputs.
 The matching data JSON files contain the checked result summaries.
 fast_decomposition_validation.json identifies the preceding publication checks.
 The matching notes files preserve the same evidence in the detailed document.
+
+## Connected-tree report files
+
+loop_coverage13_method.tex explains the physical domain and its integration with the learned workflow.
+loop_coverage13_results.tex gives all new timing and coverage results.
+loop_coverage13_appendix.tex derives the bubble, triangle, and rational reduction formulas.
+loop_coverage13_data.json contains the report summary.
+loop_coverage13_validation.json records the current checks and PDFs.
+paper_figures/loop_coverage13.pdf shows completed coverage by type and loop order.
+paper_figures/loop_coverage13_time.pdf shows complete times for the connected trees.
+The notes_loop_coverage13 files retain the same current evidence in the notes.
+Use loop_coverage13/s12_finish.py to rebuild this extension after completed tests.
+Earlier document writers can replace current prose. Use the current writer for the latest paper.

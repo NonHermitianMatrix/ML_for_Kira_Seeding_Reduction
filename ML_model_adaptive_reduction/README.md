@@ -1,13 +1,22 @@
-## Current analytic batch application
+## Current connected bubble-tree application
+
+Read [the current method guide](loop_coverage13/README.md).
+Use loop_coverage13/s02_runtime.py with --method integrated.
+The new exact identity reduces connected massless bubble trees through thirteen loops.
+The application keeps the preceding trained choices for other supported inputs.
+The paper and notes give the derivation, fresh comparisons, coverage, and limits.
+Earlier methods retain their original data and claims.
+
+## Preceding analytic batch application
 
 Use [analytic_batch/README.md](analytic_batch/README.md) for the current entry point.
 It checks an exact one-scale triangle identity and trains native target-batch choices on complete cost.
 It retains matched fixed controls, exact checks, and failed outcomes.
 The preceding fast_decomposition application remains unchanged for comparison.
 
-## Current fast exact and learned decomposition
+## Earlier fast exact and learned decomposition
 
-Use [the current method guide](fast_decomposition/README.md) for exact formulas, retained seed selection, tests, and limits.
+Use [the preceding method guide](fast_decomposition/README.md) for exact formulas, retained seed selection, tests, and limits.
 The final entry point is s12_deploy.py in fast_decomposition. Use --method final.
 Complete-time validation keeps the fixed recurrence strategy and the retained seed model.
 The trained recurrence tree remains available for comparison.

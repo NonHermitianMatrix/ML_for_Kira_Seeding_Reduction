@@ -270,3 +270,7 @@ Retain independent tests, exact checks, previous evidence, resource limits, and 
 ## Exact simplification and learned target batches
 
 - Improve total reduction time with new training data, complete-cost models, and exact analytic identities. Test shared work across target batches when applicable. Include prediction, native reduction, verification, failed attempts, and recovery. Preserve independent comparisons, earlier evidence, resource limits, and all required document and repository copies.
+
+## Mathematical coverage and physical reduction structure
+
+- Approach further acceleration through the mathematical identities and physical structure of the integral families. Derive and validate exact subintegral reductions before choosing learned interventions. Use ML to select among admissible remaining reductions from complete measured cost. Test a declared family grid through thirteen loops, preserve failures and unsupported cases, and distinguish proved analytic domains from measured native coverage. Update the report, notes, guides, cluster and GitHub without claiming exhaustive coverage of every integral type.

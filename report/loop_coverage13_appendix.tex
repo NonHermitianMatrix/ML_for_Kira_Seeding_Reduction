@@ -1,0 +1,109 @@
+\section{Connected bubble trees and their exact reduction}
+\label{app:loop-tree}
+\subsection{Integral family and allowed powers}
+We attach massless two-line subintegrals to a triangle with lightlike external momenta $p_1$ and $p_2$, where $p_1^2=p_2^2=0$ and $s=(p_1+p_2)^2\ne0$. Let $\mathcal T$ be a rooted tree with vertices $0,\ldots,L-1$, one loop momentum $\ell_j$ at each vertex, and parent $\pi(j)$ for every vertex $j\ne0$. A rooted tree has a unique path from each vertex to its root. The family is
+\begin{equation}
+ I_{\mathcal T}(\boldsymbol a,\boldsymbol v,b,c)=
+ \int\prod_{j=0}^{L-1}\frac{d^d\ell_j}{i\pi^{d/2}}
+ \frac{1}{(\ell_0^2)^{a_0}[(\ell_0-p_1)^2]^b
+ [ (\ell_0-p_1-p_2)^2]^c}
+ \prod_{j=1}^{L-1}
+ \frac{1}{(\ell_j^2)^{a_j}[(\ell_j-\ell_{\pi(j)})^2]^{v_j}}.
+ \label{eq:loop-tree-family}
+\end{equation}
+Each denominator carries the Feynman prescription of Eq.~\eqref{eq:integral}. We suppress it in this appendix to keep the equations readable. The vector $\boldsymbol a$ contains the powers $a_j$. The vector $\boldsymbol v$ contains the powers $v_j$ of the lines joining each nonroot vertex $j$ to its parent. The supported powers $a_j$, $v_j$, and $c$ are positive integers; $b$ is an integer and can describe a polynomial numerator. Auxiliary scalar-product coordinates have zero powers. The implementation checks these conditions and currently accepts at most thirteen loops and absolute powers at most sixteen. These implementation bounds are narrower than the derived meromorphic identity.
+
+A star attaches every bubble directly to the root. A chain attaches vertex $j$ to $j-1$. The branched test attaches vertex $j$ to $\lfloor(j-1)/2\rfloor$. These denominators share loop momenta, so the integrals are connected rather than products of independent loop integrals. We choose $M_{\mathcal T}$ to be the integral with every physical power equal to one. The reduction below establishes a one-element basis for the stated powers in this family. It does not classify all subsectors or all possible numerator insertions.
+
+\subsection{Integrating the two-line subintegral}
+The method of integrating a massless two-line subgraph before further reduction is established in parametric propagator calculations~\cite{Ruijl2017Forcer}. We give the derivation needed for our vertex family. Use inverse propagators $-q^2-i0$ temporarily, and write $Q^2=-q^2-i0$. For loop momentum $k$, external momentum $q$, and propagator powers $u$ and $v$, define
+\begin{equation}
+ B(u,v;q)=\int\frac{d^d k}{i\pi^{d/2}}
+ \frac{1}{[-k^2-i0]^u[-(k-q)^2-i0]^v}.
+ \label{eq:loop-tree-Bdef}
+\end{equation}
+Combining two inverse propagators $X$ and $Y$ with a Feynman parameter $x$ gives~\cite{Weinzierl2022}
+\begin{equation}
+ \frac{1}{X^uY^v}=\frac{\Gamma(u+v)}{\Gamma(u)\Gamma(v)}
+ \int_0^1 dx\,\frac{x^{u-1}(1-x)^{v-1}}
+ {[xX+(1-x)Y]^{u+v}}.
+ \label{eq:loop-tree-param}
+\end{equation}
+After shifting the loop momentum and carrying out its integral, the remaining parameter integral is a beta integral:
+\begin{align}
+ B(u,v;q)&=(Q^2)^{d/2-u-v}
+ \frac{\Gamma(u+v-d/2)}{\Gamma(u)\Gamma(v)}
+ \int_0^1 dx\,x^{d/2-v-1}(1-x)^{d/2-u-1}\notag\\
+ &=(Q^2)^{d/2-u-v}G(u,v),\label{eq:loop-tree-bubble}\\
+ G(u,v)&=\frac{\Gamma(u+v-d/2)\Gamma(d/2-u)\Gamma(d/2-v)}
+ {\Gamma(u)\Gamma(v)\Gamma(d-u-v)}.\label{eq:loop-tree-G}
+\end{align}
+The parameter representation first holds in a convergence domain and then defines the dimensionally regularized expression by meromorphic continuation~\cite{Weinzierl2022}. Removing a leaf therefore transfers the power $u+v-d/2$ to its parent's squared momentum.
+
+Let $\mathcal C(j)$ be the children of vertex $j$. Starting from the leaves, define the effective squared-momentum power $u_j$ and transferred power $\sigma_j$ by
+\begin{equation}
+ u_j=a_j+\sum_{h\in\mathcal C(j)}\sigma_h,
+ \qquad \sigma_j=u_j+v_j-\frac d2\quad(j\ne0),
+ \qquad \alpha=a_0+\sum_{h\in\mathcal C(0)}\sigma_h.
+ \label{eq:loop-tree-transfer}
+\end{equation}
+Each integration contributes $G(u_j,v_j)$. The remaining triangle has powers $(\alpha,b,c)$. Its first power is generally noninteger, which is why simply treating the contracted line as an ordinary integer-index Kira input would be insufficient.
+
+\subsection{Integrating the remaining triangle}
+For $A=\alpha+b+c$ and $S=-s-i0$, the triangle parameter representation in the same inverse-propagator convention is
+\begin{align}
+ \widetilde T(\alpha,b,c)
+ &=\frac{\Gamma(A-d/2)S^{d/2-A}}
+ {\Gamma(\alpha)\Gamma(b)\Gamma(c)}
+ \int_{x_i\ge0}dx_1dx_2dx_3\,
+ \delta(1-x_1-x_2-x_3)\notag\\[-2pt]
+ &\hspace{20mm}\times x_1^{d/2-b-c-1}x_2^{b-1}
+ x_3^{d/2-\alpha-b-1}\notag\\
+ &=S^{d/2-A}H(\alpha,b,c),\label{eq:loop-tree-triangle}\\
+ H(\alpha,b,c)
+ &=\frac{\Gamma(A-d/2)\Gamma(d/2-\alpha-b)\Gamma(d/2-b-c)}
+ {\Gamma(\alpha)\Gamma(c)\Gamma(d-A)}.
+ \label{eq:loop-tree-H}
+\end{align}
+The Dirichlet integral in the first expression produces a factor $\Gamma(b)$ that cancels its prefactor. This cancellation gives the continuation to zero and negative integer $b$. The formula extends the one-loop parameter derivation in Appendix~\ref{app:analytic-batch} to the shifted power $\alpha$ generated by connected bubbles.
+
+Let $A_{\rm tot}=a_0+b+c+\sum_{j\ne0}(a_j+v_j)$ be the sum of all physical powers and define
+\begin{equation}
+ \mathcal C_{\mathcal T}(\boldsymbol a,\boldsymbol v,b,c)
+ =H(\alpha,b,c)\prod_{j\ne0}G(u_j,v_j).
+ \label{eq:loop-tree-C}
+\end{equation}
+Equations~\eqref{eq:loop-tree-transfer}--\eqref{eq:loop-tree-H} give the scale power $S^{Ld/2-A_{\rm tot}}$, as required directly by dimensional counting. If $\Delta=A_{\rm tot}-(2L+1)$, division by the unit-power integral cancels the common scale dependence. Returning to the original $q^2+i0$ convention contributes $(-1)^\Delta$, and $(-1)^\Delta(-s)^{-\Delta}=s^{-\Delta}$ for integer $\Delta$. Thus
+\begin{equation}
+ I_{\mathcal T}(\boldsymbol a,\boldsymbol v,b,c)=
+ s^{-\Delta}\frac{\mathcal C_{\mathcal T}(\boldsymbol a,\boldsymbol v,b,c)}
+ {\mathcal C_{\mathcal T}(\boldsymbol 1,\boldsymbol 1,1,1)}M_{\mathcal T}.
+ \label{eq:loop-tree-reduction}
+\end{equation}
+The equality holds as a meromorphic identity for generic dimension and nonzero scale, with the continuation fixed by the original Feynman prescription.
+
+\subsection{Obtaining rational coefficients}
+Every Gamma argument has the form $z=A+Bd/2$ with integer $A$ and $B$. Changing integer propagator powers changes $A$ while leaving $B$ fixed for the same tree. Repeated use of $\Gamma(z+1)=z\Gamma(z)$ therefore yields
+\begin{equation}
+ \frac{\Gamma(z+n)}{\Gamma(z)}=
+ \begin{cases}
+ \prod_{r=0}^{n-1}(z+r),&n\ge0,\\
+ \displaystyle\left[\prod_{r=1}^{-n}(z-r)\right]^{-1},&n<0.
+ \end{cases}
+ \label{eq:loop-tree-shift}
+\end{equation}
+The empty product is one. Applying this identity to Eq.~\eqref{eq:loop-tree-reduction} proves that its coefficient lies in $\Q(d,s)$. We cancel common linear factors before expanding any polynomial. This preserves exactness while avoiding large intermediate expressions. Neither a learned coefficient nor a numerical Gamma evaluation enters the deployed reduction.
+
+A longest path from the root terminates at a vertex without children. Equation~\eqref{eq:loop-tree-bubble} removes this leaf and leaves a tree with one fewer loop and a shifted parent power. The Gamma formula permits that noninteger power. Repeating this step reaches the one-loop triangle, which Eq.~\eqref{eq:loop-tree-triangle} evaluates. This induction proves the reduction for every finite rooted tree that satisfies the stated physical assumptions. The numerical tests below cover a finite set of such trees through thirteen loops. They do not extend this proof to massive insertions, general auxiliary numerators, or multi-scale root graphs.
+
+\subsection{The reserved connected targets}
+All powers start at one and all auxiliary powers are zero. Each connected request contains the following seven assignments: the unchanged unit powers; $a_0=2$; $b=0$; $b=-1$; $c=3$; $v_{L-1}=2$ for $L>1$ (or $c=2$ for $L=1$); and the combined assignment $a_0=b=2$, $c=1$, $a_j=1$, $v_j=2$ for every $j\ne0$. An assignment changes only the stated powers. The rational-scale requests use $s=-6296$ in a common squared-momentum unit, and the symbolic requests retain $s$ as a nonzero variable. The tree definitions above specify every physical denominator. Complete independent scalar-product coordinates fill the remaining zero-power positions.
+
+\subsection{Matched application times and request variation}
+For each completed request $i$, let $t_{i,\mathrm{new}}$ and $t_{i,\mathrm{control}}$ be the medians of its three application times. The time ratio divides their sums over the same matched requests, so subtracting this ratio from one gives the fractional saving. To describe variation among requests, we draw $n$ matched request indices $i_1,\ldots,i_n$ with replacement from a collection of size $n$ and calculate
+\begin{equation}
+ R^*=\frac{\sum_{r=1}^{n}t_{i_r,\mathrm{new}}}
+ {\sum_{r=1}^{n}t_{i_r,\mathrm{control}}}.
+ \label{eq:loop-tree-resampling}
+\end{equation}
+This applies the bootstrap construction~\cite{Efron1979} to complete paired requests. We retain the central 95\% of 2,000 resampled ratios. The interval describes the finite request collection; it is not a guarantee for new physical graph classes. This request resampling differs from the paired repetition resampling used in the earlier native comparisons.
