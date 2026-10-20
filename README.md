@@ -1,7 +1,17 @@
+<!-- TRIANGLE ENTRY TOP BEGIN -->
+# Current application
+
+Use `ML_model_adaptive_reduction/triangle_reduction/s32_deploy.py` for one request.
+Use `ML_model_adaptive_reduction/triangle_reduction/s33_batch.py` for shared calls.
+Read [the application guide](ML_model_adaptive_reduction/triangle_reduction/README.md) for commands, results, and limits.
+The report and notes give the exact derivation and measured results.
+The earlier documentation remains below.
+<!-- TRIANGLE ENTRY TOP END -->
+
 <!-- DIRECT ANALYTIC CURRENT BEGIN -->
 
 <!-- RECONSTRUCTION APPLICATION BEGIN -->
-Use `ML_model_adaptive_reduction/reconstruction_policy/s15_deploy.py` for the current application.
+Use `ML_model_adaptive_reduction/reconstruction_policy/s15_deploy.py` for the preceding reconstruction application.
 Read [the reconstruction application guide](ML_model_adaptive_reduction/reconstruction_policy/README.md).
 The integrated-to-preceding complete-time ratio is 0.6261 on 75 matched requests.
 The separate added-model ratio is 1.0081; new-model deployment is `False`.
@@ -12,7 +22,7 @@ It tests new native requests at two and three loops.
 Read the paper for the physics, derivations, measured results, and coverage limits.
 <!-- RECONSTRUCTION APPLICATION END -->
 
-# Current integral decomposition method
+# Preceding integral decomposition method
 
 The preceding application is `ML_model_adaptive_reduction/direct_analytic/s23_deploy.py`.
 Read the [current application guide](ML_model_adaptive_reduction/direct_analytic/README.md) for commands, exact domains, models, and limits.

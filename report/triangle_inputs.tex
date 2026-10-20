@@ -1,0 +1,15 @@
+\subsection{Inputs for the additional comparison}
+The four native propagator structures are those in Appendix~\ref{app:reconstruction-inputs}. For the new planar and nonplanar box requests, the invariants are $s=-(137+6i)$ and $t=-(167+4i)$, with the incoming/outgoing momentum conventions stated there. Training uses $i=2,\ldots,13$, validation uses $i=14,\ldots,18$, and reserved tests use $i=19,\ldots,23$. Each box target has powers $(1,1,1,1,1,1,1,-a,-b)$. The reserved pairs are listed below; both box structures use the same pairs at each $i$.
+\begin{center}\small\begin{tabular}{cl}\toprule
+$i$ & Pairs $(a,b)$ in the target request\\\midrule
+19 & $(3,0), (2,2), (0,2)$ \\
+20 & $(4,0), (3,1)$ \\
+21 & $(4,0), (1,2), (0,2), (0,1)$ \\
+22 & $(3,1), (2,1), (0,2)$ \\
+23 & $(2,1), (2,0), (1,0), (0,4), (0,2), (0,1)$ \\
+\bottomrule\end{tabular}\end{center}
+The sunrise masses remain $(3,7,13)$ and its external invariant is $p^2=-386221-12i$. The three-loop vacuum masses remain $(1,1,1,13,13,64255+2i)$. These families use the same index splits. Even $i$ requests the sector corner, and odd $i$ requests the raised-power targets defined for that structure. Full physical inputs differ between splits. Graph structures and individual index vectors recur; box target batches are distinct across the new splits.
+
+For a triangle product with $L$ loops, every factor has $Q=101+2L$. We choose factor powers from $(1,1,1)$, $(2,1,1)$, $(1,2,1)$, $(1,1,2)$, $(2,2,1)$, $(1,0,1)$, and $(2,0,2)$. We form six products per loop order and remove duplicate full targets. Cross-loop auxiliary powers are zero. Seven additional single-loop requests use $Q=211+2j$, $j=1,\ldots,7$, and the targets $(1,1,1)$, $(1+(j\bmod3),1+(j\bmod2),1)$, $(1,0,1)$, $(2,0,1)$, and $(0,1,1)$, again with duplicate targets removed.
+
+The preceding triangle basis uses unit-power triangle masters. For verification, each such master is replaced by $2(d-3)B/[Q(d-4)]$, and independent components multiply. Kira provides a separate bubble-basis reference for each new single-loop request. The higher-loop comparison combines this exact basis conversion with the product derivation and independent Gamma-function checks.

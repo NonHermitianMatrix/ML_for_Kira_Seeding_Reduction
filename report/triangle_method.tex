@@ -1,0 +1,9 @@
+\subsection{A direct one-scale triangle formula}
+A massless triangle with two lightlike external momenta admits an explicit Gamma-function value~\cite{DavydychevOsland1998}. We use this identity to return both its reduction coefficient and its analytic value. Let $T_{abc}$ have denominators $k^2$, $(k-p_1)^2$, and $(k-p_1-p_2)^2$, with $p_1^2=p_2^2=0$ and $Q=-(p_1+p_2)^2>0$. The integers $a,b,c$ are their powers. With $B(Q,d)=T_{101}$, the unit-power example is
+\begin{equation}
+ T_{111}=\frac{2(d-3)}{Q(d-4)}B(Q,d).
+ \label{eq:triangle-main}
+\end{equation}
+Appendix~\ref{app:triangle} derives the general coefficient as a finite product of linear factors in $d$ and gives the Gamma-function value of $B$. The code accepts nonnegative powers through four with $a+b+c\leq8$, rational $Q>0$, and no extra occupied denominator. It also treats independent products of accepted triangles through thirteen loops.
+
+The preceding application already returned analytic ratios to a triangle master on these inputs. The new implementation evaluates the coefficient directly in a bubble basis and supplies its explicit analytic value. We compare the two outputs after an exact basis conversion, and we also compare the single-loop results with Kira. The timing comparison therefore measures the change from the preceding analytic application, including its setup, rather than attributing all of the gain to avoided IBP elimination.

@@ -1,5 +1,15 @@
+<!-- TRIANGLE ENTRY TOP BEGIN -->
+# Current application
+
+Use `ML_model_adaptive_reduction/triangle_reduction/s32_deploy.py` for one request.
+Use `ML_model_adaptive_reduction/triangle_reduction/s33_batch.py` for shared calls.
+Read [the application guide](../ML_model_adaptive_reduction/triangle_reduction/README.md) for commands, results, and limits.
+The report and notes give the exact derivation and measured results.
+The earlier documentation remains below.
+<!-- TRIANGLE ENTRY TOP END -->
+
 <!-- DIRECT ANALYTIC CURRENT BEGIN -->
-# Current integral decomposition method
+# Preceding integral decomposition method
 
 Use `ML_model_adaptive_reduction/direct_analytic/s23_deploy.py`.
 Read the [current application guide](../ML_model_adaptive_reduction/direct_analytic/README.md) for commands, exact domains, models, and limits.

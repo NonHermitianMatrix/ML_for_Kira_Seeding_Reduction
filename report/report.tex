@@ -85,6 +85,7 @@ Scaleless vacuum families & Homogeneity gives zero; no masses or external moment
 Vacuum factors & Partial fractions and analytic tadpoles; rational nonnegative masses, up to eight denominators per factor, and products through thirteen loops\\
 Symbolic two-point masses & New scalar mass-derivative formula at $p^2=0$; individual powers at most six and total power at most eight\\
 Connected one-scale trees & Successive massless bubble integration; massless two-point root or one massive vacuum root; implemented through thirteen loops\\
+One-scale massless triangles & Two lightlike legs and one spacelike invariant; direct Gamma ratios with powers through four and total power at most eight\\
 Independent products & Product of accepted component reductions; repeated components computed once\\\bottomrule
 \end{tabularx}
 \end{table}
@@ -109,6 +110,8 @@ When every denominator in a component carries the same loop momentum, its integr
 
 This rule also handles repeated masses and polynomial numerators. It applies independently to each separated loop factor and computes identical components once. Recognition requires the absence of a momentum coupling between factors. Connected graphs use a separate identity.
 
+\input{triangle_method}
+
 \subsection{Connected trees and higher loop counts}
 Successive massless bubble integrations also reduce specific connected trees to a unit-power integral of the same tree. For a massless two-point root, the coefficient is a rational function of $d$ and the external invariant. For a massive vacuum root, it is rational in $d$ and the one squared mass. Appendix~\ref{app:trees} derives these statements from Gamma-function products and their integer shifts. Equation~\eqref{eq:direct-tree-value} gives the complete analytic value of a connected vacuum tree, and the application now returns this value with its reduction. This family includes connected high-loop integrals, while independent products provide a separate high-loop test. Neither construction represents general coupled multiscale scattering.
 
@@ -132,11 +135,13 @@ We fit ensembles of 32 extremely randomized regression trees~\cite{Geurts2006Ext
 
 The model selects a method before Kira generates and solves the equations. It supplies no reduction coefficients. Exact formulas retain their mathematical admission checks, and the native comparison checks every returned rational coefficient against a separate symbolic reduction in the same master basis. Reconstruction and basis admission alone do not constitute a formal proof for every new input. The independent coefficient checks support the tested results.
 
+\input{triangle_learning}
+
 \section{Comparison design}
 \label{sec:design}
-We fix the trained weights, selected settings, procedures, and reserved inputs before the final comparison. The native test contains 22 new physical requests. A separate analytic test contains 53 previously verified requests: thirteen two-mass vacuum products, 34 connected one-mass vacuum trees, three zero-invariant tensor bubbles, and three ordinary one-loop tensor requests. The two vacuum grids cover every loop order from one through thirteen. These analytic requests test preservation of the exact methods and are excluded from the new model's training. The companion notes also retain the preceding 26-request repeated-mass and scaleless coverage test.
+We fix the trained weights, selected settings, procedures, and reserved inputs before the final comparison. The first reconstruction comparison contains 22 new native requests. A separate analytic test contains 53 previously verified requests: thirteen two-mass vacuum products, 34 connected one-mass vacuum trees, three zero-invariant tensor bubbles, and three ordinary one-loop tensor requests. The two vacuum grids cover every loop order from one through thirteen. These analytic requests test preservation of the exact methods and are excluded from the new model's training. The companion notes also retain the preceding 26-request repeated-mass and scaleless coverage test.
 
-Four applications process the same requests. The earlier application precedes the direct vacuum additions. The preceding application includes those formulas and the retained native seed model. The fixed application adds a validated algebra setting for each propagator structure. The integrated application enables the new cost model only if validation admits it. The fixed and integrated applications share all exact formulas, native settings, and preceding seed decisions. Their comparison isolates the additional algebra-selection model. Comparing the integrated and earlier applications measures the cumulative change across these two extensions on one matched workload.
+In that first comparison, four applications process the same requests. The earlier application precedes the direct vacuum additions. The preceding application includes those formulas and the retained native seed model. The fixed application adds a validated algebra setting for each propagator structure. The integrated application enables the new cost model only if validation admits it. The fixed and integrated applications share all exact formulas, native settings, and preceding seed decisions. Their comparison isolates the additional algebra-selection model. Comparing the integrated and earlier applications measures the cumulative change across these two extensions on one matched workload.
 
 A subsequent paired comparison uses the same 22 reserved native requests to isolate the inherited learned choices. It holds the validated reconstruction settings fixed and compares the retained learned procedure with its existing all-fixed procedure. Both use the same protected bases, exact references, and resource bounds. This comparison performs no additional fitting or selection from reserved outcomes. Its timings are measured together and are reported separately from the first four-method experiment.
 
@@ -148,6 +153,7 @@ The primary time estimator is the ratio of summed per-request median times on th
 
 \input{reconstruction_results}
 \input{batch_application_results}
+\input{triangle_results}
 
 \section{Conclusion}
 \input{paper_conclusion}
@@ -158,6 +164,8 @@ The primary time estimator is the ratio of summed per-request median times on th
 \input{focused_trees_appendix}
 \input{direct_appendix}
 \input{reconstruction_appendix}
+\input{triangle_appendix}
+\input{triangle_inputs}
 \bibliographystyle{unsrt}
 \bibliography{paper_references}
 \end{document}

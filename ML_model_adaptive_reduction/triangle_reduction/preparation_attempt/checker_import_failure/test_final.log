@@ -1,0 +1,31 @@
+formula checks 120 4 77
+frozen 40 new and 53 regression
+triangle_native_reserved_double_box_19 {'previous': 1.671, 'fixed': 1.7044, 'integrated': 1.6488} verified True
+triangle_native_reserved_double_box_20 {'fixed': 1.6365, 'integrated': 1.6739, 'previous': 3.6637} verified True
+triangle_native_reserved_double_box_21 {'fixed': 1.7538, 'integrated': 1.7245, 'previous': 1.8527} verified True
+triangle_native_reserved_double_box_22 {'integrated': 1.8931, 'fixed': 1.9536, 'previous': 1.9208} verified True
+triangle_native_reserved_double_box_23 {'integrated': 1.8348, 'fixed': 1.7721, 'previous': 1.7724} verified True
+triangle_native_reserved_nonplanar_box_19 {'integrated': 2.5985, 'previous': 2.5823, 'fixed': 2.5957} verified True
+triangle_native_reserved_nonplanar_box_20 {'fixed': 6.6758, 'integrated': 2.5074, 'previous': 6.5063} verified True
+triangle_native_reserved_nonplanar_box_21 {'previous': 2.6159, 'integrated': 2.534, 'fixed': 2.4576} verified True
+triangle_native_reserved_nonplanar_box_22 {'fixed': 2.6305, 'integrated': 2.6262, 'previous': 2.4861} verified True
+triangle_native_reserved_nonplanar_box_23 {'previous': 2.9801, 'fixed': 2.9393, 'integrated': 2.8821} verified True
+triangle_native_reserved_sunrise_19 {'integrated': 2.0059, 'fixed': 1.8276, 'previous': 1.9569} verified True
+triangle_native_reserved_sunrise_20 {'previous': 2.2094, 'integrated': 2.1853, 'fixed': 2.097} verified True
+triangle_native_reserved_sunrise_21 {'fixed': 1.9804, 'integrated': 1.8968, 'previous': 1.8825} verified True
+triangle_native_reserved_sunrise_22 {'previous': 2.1779, 'fixed': 2.1373, 'integrated': 2.2714} verified True
+triangle_native_reserved_sunrise_23 {'fixed': 1.8351, 'integrated': 1.9517, 'previous': 2.0204} verified True
+triangle_native_reserved_vacuum3_19 {'previous': 3.1266, 'fixed': 3.1816, 'integrated': 3.2637} verified True
+triangle_native_reserved_vacuum3_20 {'previous': 3.1553, 'fixed': 3.1788, 'integrated': 3.4054} verified True
+triangle_native_reserved_vacuum3_21 {'integrated': 2.8235, 'fixed': 2.7292, 'previous': 2.8377} verified True
+triangle_native_reserved_vacuum3_22 {'fixed': 3.2357, 'integrated': 3.2401, 'previous': 3.2281} verified True
+Traceback (most recent call last):
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/triangle_reduction/s12_test.py", line 34, in <module>
+    if __name__=='__main__':main(int(sys.argv[1]))
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/triangle_reduction/s12_test.py", line 24, in main
+    r,t=measured(c,a,w);ok,n=compare(c,r,ref) if ref.get('success') and r.get('success') else (False,0)
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/triangle_reduction/s04_triangle_measure.py", line 58, in compare
+    left=triangle_rows(c,r);right=triangle_rows(c,ref)
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/triangle_reduction/s04_triangle_measure.py", line 34, in triangle_rows
+    from s01_triangle import recognize
+ImportError: cannot import name 'recognize' from 's01_triangle' (/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/analytic_batch/s01_triangle.py)

@@ -1,0 +1,56 @@
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/triangle_reduction/s05_development.py", line 20, in <module>
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/triangle_reduction/s05_development.py", line 20, in <module>
+        if __name__=='__main__':main(int(sys.argv[1]))if __name__=='__main__':main(int(sys.argv[1]))
+
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/triangle_reduction/s05_development.py", line 14, in main
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/triangle_reduction/s05_development.py", line 10, in main
+        ref=native_triangle(c);write(HERE/'development'/(c['id']+'_reference.json.gz'),ref)for c in native_cases('development')[w::2]:
+
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/triangle_reduction/s04_measure.py", line 26, in native_triangle
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/triangle_reduction/s02_cases.py", line 27, in native_cases
+        h=helper()h=helper();canon=prior().previous().current().previous().previous().batch.canonical
+
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/triangle_reduction/s00_common.py", line 13, in helper
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/triangle_reduction/s00_common.py", line 13, in helper
+        def helper():return prior().helper()def helper():return prior().helper()
+
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/reconstruction_policy/s00_reconstruction_common.py", line 51, in helper
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/reconstruction_policy/s00_reconstruction_common.py", line 51, in helper
+        return previous().helper()return previous().helper()
+
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/direct_analytic/s00_direct_common.py", line 14, in helper
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/direct_analytic/s00_direct_common.py", line 14, in helper
+        def helper():return current().previous().previous().batch.legacy().hdef helper():return current().previous().previous().batch.legacy().h
+
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/analytic_batch/s00_batch_common.py", line 29, in legacy
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/analytic_batch/s00_batch_common.py", line 29, in legacy
+    def legacy():return previous.candidate.legacy()
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/fast_decomposition/s00_fast_common.py", line 14, in legacy
+    def legacy():return previous.candidate.legacy()
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/fast_decomposition/s00_fast_common.py", line 14, in legacy
+    sys.path.insert(0,str(PRIOR));m=module('fast_prior_runtime',PRIOR/'s10_runtime.py');sys.path.insert(0,str(HERE));return m
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/fast_decomposition/s00_fast_common.py", line 12, in module
+    sys.path.insert(0,str(PRIOR));m=module('fast_prior_runtime',PRIOR/'s10_runtime.py');sys.path.insert(0,str(HERE));return m
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/fast_decomposition/s00_fast_common.py", line 12, in module
+        s=importlib.util.spec_from_file_location(name,path);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return ms=importlib.util.spec_from_file_location(name,path);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/analytic_decomposition/s10_runtime.py", line 2, in <module>
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/analytic_decomposition/s10_runtime.py", line 2, in <module>
+    from s01_common import *
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/analytic_decomposition/s01_common.py", line 6, in <module>
+    from s01_common import *
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/analytic_decomposition/s01_common.py", line 6, in <module>
+    import s00_cost_common as h
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/hybrid_experts/s00_cost_common.py", line 8, in <module>
+    import s00_cost_common as h
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/hybrid_experts/s00_cost_common.py", line 8, in <module>
+    from s00_common import (copy,gzip,hashlib,json,math,os,re,statistics,time,READ,sha,canonical,key,restore_basis,label,equal,inputs,rt,nontrivial)
+ImportError: cannot import name 'math' from 's00_common' (/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/triangle_reduction/s00_common.py)
+    from s00_common import (copy,gzip,hashlib,json,math,os,re,statistics,time,READ,sha,canonical,key,restore_basis,label,equal,inputs,rt,nontrivial)
+ImportError: cannot import name 'math' from 's00_common' (/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/triangle_reduction/s00_common.py)

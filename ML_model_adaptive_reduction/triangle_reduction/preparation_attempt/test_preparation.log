@@ -1,0 +1,15 @@
+formula checks 120 4 77
+Traceback (most recent call last):
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/triangle_reduction/s11_freeze.py", line 15, in <module>
+    if __name__=='__main__':main()
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/triangle_reduction/s11_freeze.py", line 6, in main
+    assert read(HERE/'training_summary.json')['complete'];assert read(HERE/'formula_checks.json')['complete']
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/triangle_reduction/s00_triangle_common.py", line 15, in read
+    p=Path(p);return json.loads(gzip.decompress(p.read_bytes()) if p.suffix=='.gz' else p.read_text())
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/pathlib.py", line 1256, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/pathlib.py", line 1242, in open
+    return io.open(self, mode, buffering, encoding, errors, newline,
+  File "/u/local/apps/python/3.9.6/gcc-4.8.5/lib/python3.9/pathlib.py", line 1110, in _opener
+    return self._accessor.open(self, flags, mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/triangle_reduction/training_summary.json'

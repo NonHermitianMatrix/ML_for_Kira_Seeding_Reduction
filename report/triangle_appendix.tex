@@ -1,0 +1,65 @@
+\section{Exact reduction of a one-scale massless triangle}
+\label{app:triangle}
+The on-shell triangle has a Gamma-function representation~\cite{DavydychevOsland1998}. We derive its coefficient in our normalization to specify the signs and the master basis used by the implementation. Let
+\begin{equation}
+ T_{abc}(Q,d)=\int\frac{d^d k}{i\pi^{d/2}}
+ \frac{1}{[k^2+i0]^a[(k-p_1)^2+i0]^b[(k-p_1-p_2)^2+i0]^c},
+ \label{eq:triangle-definition}
+\end{equation}
+where $p_1^2=p_2^2=0$, $Q=-(p_1+p_2)^2>0$, and $a,b,c$ are propagator powers. Write $A=a+b+c$ and $h=d/2$. For initially positive powers in a convergence region, Feynman parametrization and the shifted loop integral give
+\begin{align}
+ T_{abc}&=\frac{(-1)^A\Gamma(A-h)}{\Gamma(a)\Gamma(b)\Gamma(c)}
+ \int_{x_j\geq0} d^3x\,\delta(1-x_1-x_2-x_3)
+ x_1^{a-1}x_2^{b-1}x_3^{c-1}(Qx_1x_3)^{h-A}.
+ \label{eq:triangle-parameters}
+\end{align}
+The only nonzero squared momentum difference is between the first and third propagators, which gives the factor $Qx_1x_3$. The Dirichlet integral follows by writing three Gamma integrals and changing their variables to a common scale and three fractions. Explicitly, the substitution $t_j=u x_j$ in $\prod_j\int_0^\infty dt_j\,t_j^{z_j-1}e^{-t_j}$ gives
+\begin{equation}
+ \int d^3x\,\delta(1-\textstyle\sum_j x_j)\prod_jx_j^{z_j-1}
+ =\frac{\prod_j\Gamma(z_j)}{\Gamma(\sum_jz_j)}.
+ \label{eq:triangle-dirichlet}
+\end{equation}
+Applying this identity with $z_1=h-b-c$, $z_2=b$, and $z_3=h-a-b$ yields
+\begin{equation}
+ T_{abc}=(-1)^A Q^{h-A}
+ \frac{\Gamma(A-h)\Gamma(h-b-c)\Gamma(h-a-b)}
+ {\Gamma(a)\Gamma(c)\Gamma(d-A)}.
+ \label{eq:triangle-gamma}
+\end{equation}
+Dimensional continuation defines the expression outside the initial convergence region. The limit $b\to0$ gives the two-point integral obtained by removing the middle propagator. Its unit-power value is
+\begin{equation}
+ B(Q,d)=T_{101}=Q^{h-2}
+ \frac{\Gamma(2-h)\Gamma(h-1)^2}{\Gamma(d-2)}.
+ \label{eq:triangle-bubble}
+\end{equation}
+For positive integers $a,c$ and a nonnegative integer $b$, division of Eq.~\eqref{eq:triangle-gamma} by Eq.~\eqref{eq:triangle-bubble} gives a rational coefficient. To evaluate it with finite products, define
+\begin{equation}
+ (z)_n=\frac{\Gamma(z+n)}{\Gamma(z)}=
+ \begin{cases}
+ \prod_{j=0}^{n-1}(z+j),&n\geq0,\\
+ \displaystyle\frac{1}{\prod_{j=1}^{-n}(z-j)},&n<0.
+ \end{cases}
+ \label{eq:triangle-pochhammer}
+\end{equation}
+The empty product equals one. The identity follows by repeated application of $\Gamma(z+1)=z\Gamma(z)$ and gives
+\begin{align}
+ T_{abc}&=R_{abc}(Q,d)B(Q,d),\\
+ R_{abc}&=\frac{(-1)^A Q^{2-A}}{(a-1)!(c-1)!}
+ (2-h)_{A-2}(h-1)_{1-a-b}(h-1)_{1-b-c}(d-A)_{A-2}.
+ \label{eq:triangle-rational}
+\end{align}
+For example, $R_{111}=2(d-3)/[Q(d-4)]$. Increasing $a$ by one gives the recurrence
+\begin{equation}
+ R_{a+1,b,c}=-\frac{(A-h)(d-A-1)}{Qa(h-a-b-1)}R_{abc},
+ \label{eq:triangle-recurrence}
+\end{equation}
+which supplies a separate exact check on the finite-product calculation. If $a=0$ or $c=0$, the remaining massless denominators have no nonzero external invariant. Those sectors vanish in dimensional regularization~\cite{Weinzierl2022}.
+
+The implementation checks all masses and pairwise momentum differences before using this formula. It accepts rational $Q>0$, powers from zero through four, and $A\leq8$. It rejects cut propagators, additional occupied lines, and negative indices. For independent loop components with no occupied cross-loop denominator, the product measure then gives
+\begin{equation}
+ \prod_{j=1}^{L}T_{a_jb_jc_j}(Q_j,d)
+ =\left[\prod_{j=1}^{L}R_{a_jb_jc_j}(Q_j,d)\right]
+ \prod_{j=1}^{L}B(Q_j,d).
+ \label{eq:triangle-product}
+\end{equation}
+The proof follows by factoring the integrand and measure in a common convergence region and then continuing the result analytically. If the requested integer powers have no common convergence region in $d$, we first allow the propagator powers to vary independently. Equation~\eqref{eq:triangle-gamma} gives their meromorphic continuation, which defines the product at the requested powers and dimension. This extension covers products through thirteen loops in the implementation. The implementation retains this product of component coefficients instead of expanding it into a larger polynomial. It supplies no formula for a general connected thirteen-loop scattering graph.
