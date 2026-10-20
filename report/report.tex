@@ -5,13 +5,13 @@
 \usepackage{amsmath,amssymb,graphicx,booktabs,tabularx,array,placeins}
 \usepackage[font=small,labelfont=bf]{caption}
 \usepackage{hyperref}
-\hypersetup{hidelinks,pdftitle={Accelerating loop-integral decomposition with exact recurrences and learned Kira strategies},pdfauthor={Rushil Saraswat}}
+\hypersetup{hidelinks,pdftitle={Accelerating integral decomposition with Kira, machine learning, and exact reductions},pdfauthor={Rushil Saraswat}}
 \setlength{\parindent}{1em}
 \setlength{\parskip}{3pt}
 \setlength{\emergencystretch}{2em}
 \newcommand{\Q}{\mathbb Q}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
-\title{Accelerating loop-integral decomposition with exact recurrences and learned Kira strategies}
+\title{Accelerating integral decomposition with Kira, machine learning, and exact reductions}
 \author{Rushil Saraswat}
 \date{October 19, 2026}
 \begin{document}
@@ -19,26 +19,26 @@
 \input{paper_abstract}
 
 \section{Introduction}
-Feynman integrals arise when we integrate over the internal loop momenta in higher-order perturbative corrections to scattering amplitudes and particle decay amplitudes. In quantum chromodynamics, these corrections contribute to predictions for cross sections and decay rates. Many integrals in the same calculation have related numerator and denominator structures, and integration-by-parts (IBP) identities allow us to express them in terms of a smaller set of master integrals~\cite{Weinzierl2022,ChetyrkinTkachov}.
+Feynman integrals arise from integration over internal loop momenta in higher-order perturbative corrections to scattering amplitudes and particle decay amplitudes. Many integrals in a calculation share propagators and differ only in their powers or numerators. Integration-by-parts (IBP) identities relate these integrals and express them in terms of a smaller set of master integrals~\cite{Weinzierl2022,ChetyrkinTkachov}. This decomposition supplies the coefficients needed to assemble an amplitude; the evaluation of the master integrals is a subsequent calculation~\cite{Weinzierl2022}.
 
-We study how to reduce the time needed for this decomposition into master integrals. Kira generates identities and solves the resulting linear system, with existing seed and equation-selection methods that remove some unnecessary work~\cite{KiraOriginal,Laporta,Kira3}. Exact recurrences can avoid a general linear system for suitable integral structures, while learned choices can reduce the work left for Kira. Throughout this paper, a target is an integral or linear combination requested by the user, and a seed is an index vector at which Kira generates identities. Decomposition determines the coefficients of the master integrals; their numerical or analytic evaluation is a further calculation~\cite{Weinzierl2022}.
+Kira automates the generation and solution of the IBP system, and its current methods already remove unnecessary seeds and equations~\cite{KiraOriginal,Kira3}. The remaining cost depends on the integral structure and the requested targets. Generating fewer useful equations can reduce work, but a restricted system can also fail to reach the required basis and require a larger calculation. We therefore optimize complete reduction time, including prediction, algebra, and recovery. Seed-count reduction alone does not measure this objective.
 
-Our method combines independent-loop factorization, exact analytic recurrences, and learned seed choices. We also study elimination-row and equation selection to determine where prediction helps. Earlier machine-assisted searches motivate the seed intervention~\cite{Song2025,TubeSeeding2026}, while known analytic one-loop reduction motivates the recurrence stage~\cite{Hu2025}. We measure the complete application time, including model use, exact algebra, checks, and unsuccessful attempts. Separate controls distinguish the benefit of a learned decision from the benefit of exact formulas and fixed tuning.
+Our method first identifies structures that admit an exact reduction formula. It applies those formulas to complete requests, individual targets, and recognized intermediate sectors. For the remaining supported native calculations, a trained cost model chooses a seed region before Kira generates the identities. Exact algebra determines every output coefficient. Related machine-assisted searches motivate the seed intervention~\cite{Song2025,TubeSeeding2026}, while analytic one-loop reduction motivates the formula stage~\cite{DennerDittmaier2006,Hu2025}. We derive the particular formulas and cost objective used here in the appendices.
 
-We first define the notation used in this paper and derive the decomposition problem. We then explain the exact stage and the three learned interventions, compare their measured benefits and limits, and test their integration. We first derive a triangle formula and train a complete-cost model to choose shared native reductions. We then extend exact integration to connected massless bubble trees through thirteen loops and test the unchanged learned choices on fresh two-loop batches. A separate audit records completion and failure across vacuum, propagator, and scattering sequences at each loop count. It also includes symbolic kinematics. The companion notes preserve historical methods, secondary experiments, and their full results.
+The new extension treats two-point sectors with zero external invariant, including unequal, equal, and zero masses and polynomial numerators. It also retrains native seed selection on measured costs of target batches. We compare the integrated method with the preceding application and with a fixed seed choice. These controls distinguish improvements from exact identities and their integration from improvements attributable to ML. Earlier equation-selection and row-selection studies explain which other learned decisions we retain. The companion notes contain the full historical experiments and broader coverage audits.
 
-\section{The reduction problem and the three decisions}
+\section{The decomposition problem and Kira}
 \label{sec:physics}
-An integral family specifies inverse propagators and external kinematics. We use the convention~\cite{Weinzierl2022,KiraOriginal}
+We first define the notation used in this paper. An integral family specifies inverse propagators, masses, and external scalar products. In dimensional regularization, we write~\cite{Weinzierl2022,KiraOriginal}
 \begin{equation}
- I_{\boldsymbol a}(\boldsymbol x,d)=
- \int\prod_{h=1}^{L}\frac{d^d\ell_h}{i\pi^{d/2}}
- \prod_{j=1}^{N}D_j^{-a_j},\qquad D_j=q_j^2-m_j^2+i0.
+ I_{\boldsymbol a}(\boldsymbol x,d)=\int\prod_{h=1}^{L}
+ \frac{d^d\ell_h}{i\pi^{d/2}}\prod_{j=1}^{N}D_j^{-a_j},
+ \qquad D_j=Q_j^2-m_j^2+i0,\qquad d=4-2\epsilon.
  \label{eq:integral}
 \end{equation}
-Here $L$ is the number of loops, $\ell_h$ is loop momentum $h$, $q_j$ is a fixed linear combination of loop and external momenta, and $m_j$ is the mass associated with propagator $j$. The vector $\boldsymbol x$ contains squared masses and external momentum invariants. Dimensional regularization uses $d=4-2\epsilon$, where $\epsilon$ is the regulator, and $i0$ specifies the Feynman pole prescription. The normalization of the measure is a convention. A positive integer $a_j$ places $D_j$ in the denominator, a negative integer places it in the numerator, and zero removes that factor. The list of $N$ entries includes auxiliary inverse propagators when the physical denominators alone do not span the loop scalar products~\cite{Weinzierl2022}.
+Here $L$ is the number of loops, $\ell_h$ is loop momentum $h$, $N$ is the number of integral coordinates, and $Q_j$ is a specified linear combination of loop and external momenta. The quantity $m_j$ is the mass on line $j$, $\boldsymbol x$ contains squared masses and external invariants, $\epsilon$ is the dimensional regulator, and $i0$ specifies the Feynman pole prescription. A positive integer $a_j$ gives a denominator power, zero removes that factor, and a negative integer gives a numerator power. Auxiliary inverse propagators complete the coordinates for loop scalar products when the physical lines do not suffice~\cite{KiraOriginal}.
 
-Integrals with the same positive-index positions belong to the same sector. A subsector removes some of those positions~\cite{KiraOriginal}. At seed $\boldsymbol\sigma$, differentiating the integrand with respect to loop momentum $\ell_k$ gives the identity~\cite{ChetyrkinTkachov}
+A sector consists of integrals with the same positive-index positions. Removing a positive position gives a sub-sector. A seed $\boldsymbol\sigma$ is an index vector at which we generate identities~\cite{KiraOriginal}. For a loop or external momentum $v$, the IBP relation is~\cite{ChetyrkinTkachov}
 \begin{equation}
  0=\int\prod_h\frac{d^d\ell_h}{i\pi^{d/2}}
  \frac{\partial}{\partial\ell_k^\mu}
@@ -47,156 +47,96 @@ Integrals with the same positive-index positions belong to the same sector. A su
  I_{\boldsymbol a^{(u)}}.
  \label{eq:identity}
 \end{equation}
-The vector $v$ is a loop or external momentum, and $o$ labels the pair $(k,v)$. The coefficient $A_{\boldsymbol\sigma,o;u}$ multiplies the integral with index vector $\boldsymbol a^{(u)}$. Appendix~\ref{app:derivation} expands the derivative and derives the resulting index shifts. Several operators act on the same seed, so seed selection retains or removes a group of candidate equations.
+The operator label $o$ specifies $(k,v)$, and $A_{\boldsymbol\sigma,o;u}$ is the coefficient of integral $u$. Appendix~\ref{app:derivation} expands the derivative into index shifts and explains why the coefficients are rational. Each seed supplies several operators and therefore several equations.
 
-Kira combines IBP identities with symmetry and Lorentz-invariance relations, removes redundant equations, and eliminates integrals in a chosen order. Back-substitution then expresses the requested targets in the remaining master basis~\cite{KiraOriginal,Kira3}. For target $T$, the result has the form
+Kira orders integrals, uses symmetries and other valid relations, selects equations, and performs elimination and back-substitution~\cite{KiraOriginal,Kira3,Laporta}. For a target $T$, the result has the form
 \begin{equation}
  T=\sum_{m=1}^{n_M}r_{Tm}(\boldsymbol x,d)M_m,
  \qquad r_{Tm}\in\Q(\boldsymbol x,d).
  \label{eq:reduction}
 \end{equation}
-Here $M_m$ is master integral $m$, $n_M$ is the number of masters, and $\Q(\boldsymbol x,d)$ is the field of rational functions with rational coefficients. Equation~\eqref{eq:reduction} follows by the exact row operations derived in Appendix~\ref{app:derivation}. It determines reduction coefficients; evaluating the masters is a further part of an amplitude calculation~\cite{Weinzierl2022}. Kira can use symbolic rational arithmetic or repeated finite-field solutions followed by rational reconstruction~\cite{Kira2}. We leave finite-field reconstruction unchanged in the native solver. The added recurrence obtains its rational coefficients directly.
+Here $M_m$ is master integral $m$, $n_M$ is the number of masters, and $\Q(\boldsymbol x,d)$ is the field of rational functions with rational coefficients. Exact row operations give Eq.~\eqref{eq:reduction}, as derived in Appendix~\ref{app:derivation}. A remaining free integral in a restricted system does not by itself establish a master of the full family. We check completion against a reference basis. Kira can solve symbolically or use finite fields and reconstruct rational functions~\cite{Kira2}; this study leaves its reconstruction algorithm unchanged.
 
-Table~\ref{tab:places} locates the three learned decisions. Our implementation always obtains the coefficients through exact algebra. If a restricted system does not reach the supplied basis, it repeats the reduction with less restrictive settings, and the timer includes this recovery. Exactness follows from the retained identities and row operations; sufficiency must still be checked for each target, as explained in Appendix~\ref{app:derivation}.
+The three learned interventions occur at distinct points (Table~\ref{tab:places}). A seed policy changes which identities are generated. An equation policy selects seed--operator pairs. A row policy chooses among allowed elimination steps after coefficients exist. All three can change cost without predicting the physical coefficients themselves.
 \begin{table}[!htbp]\centering\small
-\caption{The three places where a learned decision can change the work. These are the interventions tested in this study.}
+\caption{Learned decisions studied here. The last column states their use in the measured method.}
 \label{tab:places}
 \begin{tabularx}{\linewidth}{@{}lYY@{}}\toprule
-Decision & Model output & Work affected\\\midrule
-Seed selection & Seed region or seed-retention score & Number and structure of identities generated\\
-Row selection & Score for each allowed source row & Intermediate expressions during elimination\\
-Equation selection & Retention score for a seed--operator pair & Symbolic coefficient construction\\\bottomrule
+Decision & Work affected & Use in this study\\\midrule
+Seed region & Generation and solution of the IBP system & Cost-trained policy in supported native requests\\
+Equation retention & Construction of selected IBP coefficients & Separately validated native filter\\
+Elimination row & Intermediate expressions and row operations & Omitted from the retained application\\\bottomrule
 \end{tabularx}
 \end{table}
 
-\input{analytic_decomposition_method}
-\input{fast_decomposition_method}
+\section{Exact reductions before native elimination}
+\label{sec:exact}
+The exact stage uses the propagator structure to determine whether a formula applies. For independent loop components, the product measure and separated integrand factorize Eq.~\eqref{eq:integral}; Appendix~\ref{app:derivation} proves the resulting product of component reductions. Identical components share their calculation. Connected graphs require their own identities, so a high loop count alone does not select this shortcut.
 
-\input{analytic_batch_method}
-
-\input{loop_coverage13_method}
-
-\section{Training and comparison design}
-\label{sec:design}
-We use two kinds of labels. Early models learn membership in a recorded sufficient seed set or the next action in a recorded reduction. Such labels describe one valid history and do not establish a minimum number of seeds or operations. Later cost models learn from complete Kira timings for alternative choices. Section~\ref{sec:shared} uses this second objective to test whether one model can transfer across structures. The notes retain the reverse-construction dataset and its separate label-accuracy tests.
-
-The earlier native paired comparisons use identical targets, kinematics, and final master bases. The connected-tree comparison reduces identical physical integrals into each method's selected basis. Its external check expresses the new unit-power master in the preceding basis and verifies every target coefficient; the application timer excludes that benchmark conversion. The native control disables learned choices in the same exact implementation. A fixed control uses a setting selected before testing and makes no request-dependent prediction. This second control measures what the prediction adds after fixed tuning. The earlier deployed application supplies a further practical comparison. When a study uses a modified executable, ``native'' means its native decision rules; it does not mean an unmodified Kira installation.
-
-The earlier native comparisons keep $d$ symbolic and assign rational values to the other kinematic variables. The analytic comparisons also include symbolic masses and momentum invariants. Thus the exported coefficients are exact rational functions of $d$ and any remaining symbolic scales. Master discovery and an enlarged-region reference calculation precede the supplied-basis timer. The application receives the master indices, while reference coefficients enter only the final check. We report this preparation cost separately where measured. Adding it to a supplied-basis time describes a two-stage workflow, since the reference calculation already performs a reduction; it does not measure a faster first reduction from scratch.
-
-The new comparisons start a fresh process for each measurement and include imports, model loading, prediction, IBP generation, elimination, exact coefficient comparison, retries, output, and process exit. Three repetitions rotate method order on the same worker for each request. Earlier retained comparisons use their stated timers and repetitions in Table~\ref{tab:retained}. For the seed, equation, and shared-model workloads, we sum the median time of each request and divide by the corresponding control total. The historical row comparison uses a geometric mean, as stated in Section~\ref{sec:seed-row}. Appendix~\ref{app:statistics} defines this ratio and its resampling interval. A nontrivial batch contains at least one target that reduces to a nonzero expression beyond an unchanged basis element. Failures remain in the coverage counts and receive no completed-time ratio.
-
-\section{Seed selection and elimination-row selection}
-\label{sec:seed-row}
-\subsection{Learning a sparse seed region}
-The sparse-seed model limits the distance between a seed's numerator powers and the numerator-power regions of the targets. Its boundary also depends on the seed rank and sector. We fit the boundary by running complete reductions, then train cost predictors to choose among candidate boundaries. Appendix~\ref{app:sparse} defines the geometry and objective. Trees and forests provide the candidate cost models~\cite{CART1984,Breiman2001Forest,Geurts2006ExtraTrees}; validation determines whether request-dependent prediction improves on a fixed sparse setting.
-
-This retained comparison uses planar and nonplanar two-loop boxes with numerator ranks two through four, unit positive physical indices, rational kinematics, and symbolic $d$. Twelve training requests and ten validation requests per graph precede the reserved test. Validation retains a fixed boundary for the planar graph and enables a depth-two, 32-tree extremely randomized forest for the nonplanar graph. The 20 reserved requests have seven repetitions per method. All 560 timed reductions pass exact checks, with 5,600 coefficient comparisons. Table~\ref{tab:retained} shows 22.2\% less time than tuned native choices and 3.6\% less time than the fixed sparse control. These measurements test new parameter profiles within known graphs; they motivate, but do not establish, cross-family transfer.
-
-\subsection{Why the final method retains native row choices}
-The row model scores the allowed source rows of the current coefficient matrix. Its original network maps 132 inputs to 32 features, pools the available actions, and uses a 64-component hidden layer to produce a probability for each action. The inputs describe the pivot, nonzero entries, matrix size, and sampled cancellations. Exact arithmetic performs the selected row operation, as derived in Appendix~\ref{app:derivation}. The network learns the recorded next action through categorical cross-entropy; the notes give its full specification and the derivation of that loss.
-
-In our live Kira comparison, the original row network takes 1.305 times the stock reduction time across 84 exactly checked trials. A later compiled policy trained on algebraic cost gives a geometric mean time ratio of 0.982 with repeat interval $[0.959,1.003]$. Since this interval includes equal time, that experiment supplies no reliable complete-time gain. We therefore omit learned row selection from the retained method and leave Kira's row choices active. The historical row measurements and their different controls remain in the notes.
-
-\section{Selecting equations before coefficient construction}
-\label{sec:equation}
-Equation selection makes a finer choice within the seed region. A classification tree scores each seed--operator pair before Kira builds its symbolic coefficients. Its seventeen features describe loop and external-momentum counts, index counts, target number, seed powers, sector membership, distance to a target, and operator index. The score is the weighted positive fraction in the reached leaf, using the tree construction of Ref.~\cite{CART1984}. Appendix~\ref{app:equation-model} defines the features, weights, and threshold rule.
-
-A positive training label means that the equation's set of participating integrals appears in Kira's selected system. This proxy does not identify a unique necessary equation. We collect 137,015 sampled records, including 39,285 positive labels, from 66 training batches. Shared and graph-specific trees use depths 6, 10, 14, or 18 and minimum leaf populations 4 or 16. Separate validation first retains high-recall candidates, then measures complete reduction cost. A graph uses a filter only when validation gives at least 5\% less time than the same tuned calculation with all ML disabled. The selected filter can retain an individual equation or all operators from a retained seed.
-
-The reserved comparison contains 68 matched nontrivial batches from a 74-request grid at one through four loops. Four reference checks fail and two batches are identity-only. Filtering reduces summed median time from 153.937 to 146.586 seconds, or 4.8\%, with ratio interval $[0.946,0.959]$. On the 32 batches where validation enables filtering, time falls from 91.707 to 84.384 seconds, or 8.0\%. All 700 timed completions, including the identity-only batches, pass exact checks. Prediction and five recovery attempts remain inside the timer. These results use known graph structures and partly repeated target patterns.
-
-A separate test changes the index batches within the enabled structures while keeping the model fixed. It retains only batches absent from training and validation, with at least one previously unseen index vector. All 24 requests complete, with 144 exact timed reductions and 5,106 coefficient comparisons. Their summed median time changes from 72.295 to 67.478 seconds, or 6.7\%, with ratio interval $[0.928,0.940]$. This index-transfer result supplies the equation-model entry in Table~\ref{tab:retained}; it remains separate from transfer to new graphs.
-
+Table~\ref{tab:exact-domains} summarizes the retained domains. For generic one-loop sectors, we resolve numerator scalar products along the external directions and average the perpendicular components. This yields scalar integrals whose raised powers are lowered by an exact IBP recurrence. Appendix~\ref{app:tensor-reduction} derives both steps. Their coefficients are rational in $d$, and keeping known linear dimension factors separate reduces repeated symbolic simplification. A singular matrix can prevent those particular recurrences from being used, which motivates the new two-point rule.
 \begin{table}[!htbp]\centering\small
-\caption{Direct results for the retained local decisions. Times are sums of request medians in seconds. Sparse seeding includes seven repetitions; equation filtering on new index batches includes three. Their workloads differ, so the ratios cannot be multiplied. These are measurements of this study.}
-\label{tab:retained}
-\begin{tabularx}{\linewidth}{@{}Yrrr@{}}\toprule
-Comparison & Control & Learned & Ratio\\\midrule
-Sparse seeds / tuned native, 20 two-loop requests & 75.843 & 58.972 & 0.778\\
-Sparse seeds / fixed sparse, same requests & 61.203 & 58.972 & 0.964\\
-Equation filter / ML off, 24 new index batches & 72.295 & 67.478 & 0.933\\\bottomrule
+\caption{Exact identities used by the application. Bounds describe the implementation and do not classify all reducible integrals.}
+\label{tab:exact-domains}
+\begin{tabularx}{\linewidth}{@{}YY@{}}\toprule
+Integral structure & Identity and accepted domain\\\midrule
+Generic one-loop sectors & Tensor angular average and scalar IBP recurrence; rational kinematics, at most five coordinates, numerator and excess positive powers at most six; required matrices invertible\\
+Zero-invariant two-point sectors & New endpoint formula; equal, unequal, or zero masses; rational kinematics, at most five coordinates, numerator and excess positive powers at most four\\
+Symbolic two-point masses & New scalar mass-derivative formula at $p^2=0$; individual powers at most six and total power at most eight\\
+Connected one-scale trees & Successive massless bubble integration; massless two-point root or one massive vacuum root; implemented through thirteen loops\\
+Independent products & Product of accepted component reductions; repeated components computed once\\\bottomrule
 \end{tabularx}
 \end{table}
-\begin{figure}[!htbp]\centering
-\includegraphics[width=\linewidth]{paper_figures/paper_local_results.pdf}
-\caption{The retained local models reduce time on their stated workloads. Seed selection is compared with both native and fixed sparse choices. Equation selection changes target indices within known structures. Horizontal intervals describe paired repetition variation; the line at one marks equal time. Row selection remains omitted because its later interval includes one.}
-\label{fig:local}
-\end{figure}
-\FloatBarrier
 
-\section{A shared model for transfer across integral families}
-\label{sec:shared}
-The preceding gains depend on validated graph domains. We therefore train a shared model from structural quantities, with graph names, stored family signatures, and coordinate-position identifiers excluded from its inputs. Its 44 inputs summarize the family and targets through loop and external-momentum counts, propagator incidence, masses, positive and negative powers, sector occupancy, and normalized versions of these counts. These features have fixed length when the number of loops or propagators changes. Appendix~\ref{app:shared} specifies the representation and prediction equations.
+\subsection{Two-point sectors at zero external invariant}
+Let $D_1=\ell^2-x$ and $D_2=(\ell-p)^2-y$, where $x$ and $y$ are squared masses and $p^2=0$. Write $T(x)$ for the unit-power tadpole with squared mass $x$. Feynman parametrization gives
+\begin{equation}
+ B_{11}(x,y)=\frac{T(x)-T(y)}{x-y},\qquad
+ B_{ab}(x,y)=\frac{\partial_x^{a-1}\partial_y^{b-1}B_{11}(x,y)}{(a-1)!(b-1)!}.
+ \label{eq:light-main}
+\end{equation}
+Here $a$ and $b$ are positive propagator powers, and derivatives treat the two masses as independent before any specialization. Appendix~\ref{app:lightlike} derives this relation, its equal-mass limit, and the finite tensor formula. At equal masses, $B_{ab}(x,x)=T_{a+b}(x)$, where $T_n$ is the tadpole with denominator power $n$. A zero-mass tadpole vanishes in dimensional regularization~\cite{Weinzierl2022}.
 
-For each training request, the model predicts the complete cost of ten seed configurations, including changed positive-power bounds, numerator-rank bounds, and Kira's subsector truncation. We fit logarithms of time ratios to native bounds and penalize incomplete attempts. These labels include recovery to less restrictive configurations. A decision margin requires a predicted improvement before changing a common anchor action. The anchor and margin are global; no graph-specific deployment rule enters this new model.
+For polynomial numerators, the same parameter shift leaves one radial denominator. Angular moments reduce the numerator to a finite sum, and a change from the Feynman parameter to the interpolated squared mass expresses each term through the two endpoint tadpoles. The result is a rational coefficient of $T(x)$ and $T(y)$, with no inverse external Gram matrix. This also applies when a generic one-loop recurrence reaches such a two-line sub-sector. Applying the identity at that intermediate step extends the complete reduction beyond requests that begin as bubbles.
 
-We reuse only recorded training costs and reserve the earlier validation costs for model selection. The distinct-mass vacuum family of Appendix~\ref{app:families-new}, nonplanar boxes, pentagons, and loop orders four and above are excluded from both sets. The remaining data contain 74 training and 51 validation requests. Candidate models include nine tree or forest configurations, two regularized linear regressions, and two neural networks. Five-fold validation keeps each ordered graph structure within one fold, and the model selection also considers the separate validation set. Training selects a neural network with two 48-component hidden layers and a margin of 0.05. The network has 5,002 fitted weights and biases. The runtime evaluates the saved weights directly, and its predictions agree with those of the training library within the numerical check tolerance. Appendix~\ref{app:shared} gives the loss, candidate settings, and selection rule.
+The application tests the stated conditions before using a formula. It retains native reduction for unsupported targets, symbolic numerators outside the accepted domain, and recurrence limits. A request can contain both accepted and remaining targets; the application combines their exact outputs. These checks determine mathematical applicability. They do not ask a learned model to certify an identity.
 
-The reserved physical profile is new. Its 110 requests span the defined one-mass and massive vacuum families, massless and massive two-point families, four-point ladders, boxes with bubble subgraphs, and three additional scattering structures. The declared loop range is one through twelve. This tests both new parameter values in training domains and transfer to the excluded families or higher orders. Appendix~\ref{app:families-new} gives the denominators, kinematics, and target construction. Each request has an explicit outcome; a model prediction for an unsupported native input is recorded without calling it a successful reduction.
-\input{general_policy_results}
+\subsection{Connected trees and higher loop counts}
+Successive massless bubble integrations also reduce specific connected trees to a unit-power integral of the same tree. For a massless two-point root, the coefficient is a rational function of $d$ and the external invariant. For a massive vacuum root, it is rational in $d$ and the one squared mass. Appendix~\ref{app:trees} derives these statements from Gamma-function products and their integer shifts. This family includes connected high-loop integrals, while independent products provide a separate high-loop test. Neither construction represents general coupled multiscale scattering.
 
-\input{preparation_results}
+\section{Learning the remaining Kira cost}
+\label{sec:learning}
+For native requests, the model selects a complete seed region from three allowed choices. Every choice uses exact Kira algebra and retains the same recovery checks. The actions differ in restrictions on the positive powers and numerator powers of seeds; Appendix~\ref{app:sparse} defines them. We measure the elapsed time of each action, including its unsuccessful attempts, so training favors choices that reduce the full cost.
 
-\input{factorized_results}
-\input{hybrid_baseline_summary}
-\input{hybrid_expert_results}
+The new training set contains 34 planar and nonplanar two-loop box batches, and a separate set of 16 batches selects the model. Each batch contains one to six targets with unit physical propagator powers and numerator rank one through four. Twenty-one features describe target counts, numerator distributions, and loop incidence in the physical propagators. Family names and the numerical kinematic profile are excluded from the features. Appendix~\ref{app:families-new} defines the integrals and split construction. Two additional training batches cover single-coordinate numerator distributions after a validation-only coverage check. No reserved timing results enter this revision. Whole target batches are disjoint across training, validation, and testing, although individual index vectors can recur.
 
+We train cost-sensitive trees and bootstrap ensembles, using the tree constructions of Refs.~\cite{CART1984,Breiman2001Forest}. Each leaf stores the mean measured cost of each seed action. A split reduces the sum of chosen action costs; Appendix~\ref{app:shared} derives this objective and lists the candidate settings. Validation chooses both the model and a fixed control action. The new model is enabled only if validation supports a saving of at least one percent without more unverified results. A required predicted-saving margin limits changes near a tie. A separate learned failure score checks the proposed action before it runs. Predicted risky actions and inputs outside the training feature range use a conservative region that completed every training and validation request. The tests record each admission decision and any remaining failure.
 
-\input{analytic_decomposition_results}
-\input{parser_guard_results}
+This policy changes computational choices and leaves all coefficients to exact algebra. If the selected region is insufficient, the native procedure expands it and includes the extra time. A failed action can therefore erase a predicted saving. Our cost objective penalizes unverified actions, and the admission model learns from their observed outcomes. This reduces exposure to costly failed regions, while exact completion checks remain necessary for new requests. A failure label means that the bounded procedure did not return a verified complete reduction; it does not show that the integral cannot be reduced. The reserved tests count both completion and total time.
 
-\input{fast_decomposition_results}
-\input{fast_deployment_results}
+\subsection{Equation and row policies}
+The equation-selection model ranks candidate seed--operator pairs before constructing their full coefficients. Its independently tested filter reduces complete time on its recorded workload. The current combined comparison keeps that filter off, so its benefit is reported separately. Multiplying the seed and equation speed ratios would assume an interaction that these measurements do not test.
 
-\input{analytic_batch_results}
+The original next-row model scores allowed elimination steps in Kira's changing system. Its inference and selection costs exceeded the algebraic savings in the retained comparison. A later compiled cost policy reduced this overhead, but its interval still included equal time. We therefore omit learned row selection from the final application and retain Kira's exact elimination rules. Section~\ref{sec:results} reports the corresponding measurements.
 
-\input{loop_coverage13_results}
+\section{Comparison design}
+\label{sec:design}
+We freeze the formulas, trained model, fixed action, and reserved requests before measuring results. The new comparison contains 68 requests: 20 zero-invariant tensor bubbles, three bubbles with symbolic masses, 12 independent products at loop orders two through thirteen, three larger sectors that contain a zero-invariant two-line sub-sector, three ordinary one-loop tensor requests, three connected vacuum-tree requests, and 24 native box batches. Appendix~\ref{app:families-new} gives their kinematics and target construction. The connected vacuum requests have one, seven, and thirteen loops.
 
-\input{gamma_cancellation_results}
+An independent enlarged-region Kira calculation supplies the coefficients for each one-loop component and native box request. We identify translation-equivalent equal-mass tadpoles before comparing coefficients. Product reductions retain their factored representation, and every component is checked. The vacuum requests check the unchanged exact tree path against its preceding result; they test preservation of that path, while the derivation and earlier Gamma-product checks establish its analytic basis. Development also checks the new identities against signed-index IBP residuals and tests symbolic mass expressions after independent rational substitutions.
 
-\input{propagator_trees_results}
+For each reserved request, we run the integrated application, the same application with a fixed native seed choice, and the preceding published application. Each measurement starts a fresh process and includes imports, model loading, prediction, exact formulas, native generation and elimination where used, recovery, output, and exit. We use one computational thread per application, three repetitions, and rotating method order on the same worker. The external benchmark reference and its final coefficient comparison lie outside this timer. Native reference preparation supplies protected master indices where required; its coefficients are used only for the external check. Thus these native times measure reduction with the stated basis, rather than the cost of discovering that basis from scratch.
 
-\input{vacuum_learning_results}
+Each application has a 20-second bound. Completion requires agreement with the independent reference in all repetitions. Ratios use only requests that both compared methods complete; all remaining requests stay in the completion counts. We sum the per-request median times and form their ratio. Appendix~\ref{app:statistics} defines this estimator and its request-resampling interval. Timing uncertainty reflects this workload and hardware, not universal performance across integral families.
 
-\input{tensor_reduction_results}
+\input{lightlike_results}
 
-\section{Overall interpretation}
-\label{sec:overall-new}
-The final extension in Section~\ref{sec:tensor-results} adds exact polynomial-numerator reduction and exploits its factored dimension poles. Its comparisons separate the new physical identities, their arithmetic, and the learned choice of identity order. The independent-product tests extend that identity to thirteen loops without a coupled high-loop solve. The earlier experiments below retain their own inputs and controls.
-
-The preceding extension in Section~\ref{sec:vac-ml} adds a massive vacuum root to the exact tree identities and trains a new seed-choice model from complete native costs. Its fixed-choice comparison holds the exact formulas, protected master indices, and reduction interface constant. Its comparison with the preceding application includes the revised dispatcher and learned policy. These controls separate the added model effect from analytic and integration changes. The remaining paragraphs describe earlier comparisons with their original workloads.
-
-The cancellation comparison in Section~\ref{sec:gamma-cancel} holds the connected master basis and output procedure fixed. Its reduction in complete time comes from exact factor cancellation and calculations shared by targets in the same batch. The separate native controls continue to determine the added effect of the trained choices.
-
-The connected-tree calculation in Section~\ref{sec:loop-tree-results} extends the exact physical domain before further native work. Its proof identifies the allowed integrals, and its coverage table states what the application actually completes at each loop order. The fresh two-loop control then measures the retained ML contribution on work that still needs Kira. This division follows the mathematical structure of the integrals and keeps the sources of time savings separate.
-
-The batch comparison in Section~\ref{sec:analytic-batch-results} separates three changes: a checked master-index registry, an exact triangle formula, and a learned choice of target grouping and sparse seed region. The same-basis control isolates the latter two changes. The fixed-action control then measures the added batch model under the same exact implementation, while the control with both learned choices disabled measures its combination with the retained sparse expert. The preceding formula and recurrence experiments remain separate comparisons with their original inputs and controls.
-
-The direct local comparisons establish savings for seed and equation decisions within their measured domains (Table~\ref{tab:retained}). The shared-model comparison tests the additional question of transfer without a family-specific rule (Section~\ref{sec:general-results}). These are separate workloads and controls, so their ratios do not form a cumulative speedup. Learned row selection remains omitted because its measured gain is not resolved from timing variation. The combined application uses the validated sparse expert together with the exact methods in Sections~\ref{sec:blocks13} and~\ref{sec:analytic-method}. The shared model and equation filter retain their separately tested applications, and their gains are not added to the hybrid result.
-
-The preceding complete application combined validated learned choices with exact preparation changes. On 41 matched batches it took 56.461 seconds against 66.045 seconds for native choices, a ratio of 0.855. Its isolated new learned choice changed the seed action in only one batch. We retain that earlier experiment in the notes because its combined gain does not establish a general learned policy. Exact sector-storage changes, scaling reuse, and analytic scalar recurrences likewise remain distinct from learned gains. In particular, the scalar recurrence checks through twelve loops verify a restricted exact formula, not a high-loop ML reduction.
-
+\section{Conclusion}
 \input{paper_conclusion}
 \appendix
-\input{paper_derivations}
-\input{preparation_appendix}
-\input{factorized_appendix}
-\input{total_time_appendix}
-\input{refined_time_appendix}
-\input{hybrid_expert_appendix}
-\input{analytic_decomposition_appendix}
-\input{parser_guard_appendix}
-\input{fast_decomposition_appendix}
-\input{fast_deployment_appendix}
-\input{analytic_batch_appendix}
-\input{loop_coverage13_appendix}
-\input{gamma_cancellation_appendix}
-\input{propagator_trees_appendix}
-\input{vacuum_learning_appendix}
-\input{tensor_reduction_appendix}
-\clearpage
-\renewcommand{\refname}{References}
+\input{focused_derivations}
+\input{focused_tensor_appendix}
+\input{lightlike_appendix}
+\input{focused_trees_appendix}
 \bibliographystyle{unsrt}
 \bibliography{paper_references}
 \end{document}

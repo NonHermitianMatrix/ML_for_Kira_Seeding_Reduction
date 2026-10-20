@@ -20,6 +20,7 @@ def main():
     cites={x.strip() for group in re.findall(r'\\cite\{([^}]+)\}',source) for x in group.split(',')}
     keys=set(re.findall(r'@\w+\{([^,]+),',bib))
     labels=re.findall(r'\\label\{([^}]+)\}',source)
+    retained_labels=set(labels) | {x for p in HERE.glob('*.tex') for x in re.findall(r'\\label\{([^}]+)\}',p.read_text())}
     refs=set(re.findall(r'\\(?:eqref|ref)\{([^}]+)\}',source))
     assert cites<=keys,cites-keys
     assert refs<=set(labels),refs-set(labels)
@@ -172,7 +173,7 @@ def main():
     preparation=json.loads((HERE/'preparation_data.json').read_text())
     assert preparation['complete'] and preparation['all_same_basis_matched_outputs_exact']
     assert preparation['requests']==len(preparation['rows'])==33
-    assert 'app:risk' in labels and 'tab:preparation-times' in labels
+    assert 'app:risk' in retained_labels and 'tab:preparation-times' in retained_labels
     for method in preparation['methods']:
         total=preparation['counts'][method]
         assert total['first_completed']==sum(r['first_success'][method] for r in preparation['rows'])
@@ -200,7 +201,7 @@ def main():
     factorized=json.loads((HERE/'factorized_data.json').read_text())
     assert factorized['complete'] and factorized['initial']['requested']==131
     assert set(factorized['initial']['by_loop'])==set(map(str,range(1,14)))
-    assert 'app:blocks13' in labels and 'sec:blocks13' in labels
+    assert 'app:blocks13' in retained_labels and 'sec:blocks13' in retained_labels
     for phase in ['initial','final']:
         d=factorized[phase]
         assert d['requested']==len(d['rows'])
@@ -212,7 +213,7 @@ def main():
     if q.exists():assert json.loads(q.read_text())==factorized
     total_time=json.loads((HERE/'total_time_data.json').read_text())
     assert total_time['complete'] and total_time['requested']==len(total_time['rows'])
-    assert 'sec:total-time' in labels and 'app:total-time' in labels
+    assert 'sec:total-time' in retained_labels and 'app:total-time' in retained_labels
     for group in total_time['comparisons'].values():
         for v in group.values():
             if v['cases']:assert abs(v['ratio']-v['learned_seconds']/v['control_seconds'])<1e-12
@@ -220,7 +221,7 @@ def main():
     if q.exists():assert json.loads(q.read_text())==total_time
     refined_time=json.loads((HERE/'refined_time_data.json').read_text())
     assert refined_time['complete'] and refined_time['requested']==len(refined_time['rows'])
-    assert 'sec:refined-time' in labels and 'app:refined-time' in labels
+    assert 'sec:refined-time' in retained_labels and 'app:refined-time' in retained_labels
     for group in refined_time['comparisons'].values():
         for v in group.values():
             if v['cases']:assert abs(v['ratio']-v['learned_seconds']/v['control_seconds'])<1e-12
@@ -228,7 +229,7 @@ def main():
     if q.exists():assert json.loads(q.read_text())==refined_time
     hybrid_expert=json.loads((HERE/'hybrid_expert_data.json').read_text())
     assert hybrid_expert['complete'] and hybrid_expert['requested']==len(hybrid_expert['rows'])==34
-    assert 'sec:hybrid-experts' in labels and 'app:hybrid-experts' in labels
+    assert 'sec:hybrid-experts' in retained_labels and 'app:hybrid-experts' in retained_labels
     for group in hybrid_expert['comparisons'].values():
         for v in group.values():
             if v['cases']:assert abs(v['ratio']-v['learned_seconds']/v['control_seconds'])<1e-12
@@ -236,7 +237,7 @@ def main():
     if p.exists():assert json.loads(p.read_text())==hybrid_expert
     analytic=json.loads((HERE/'analytic_decomposition_data.json').read_text())
     assert analytic['complete'] and analytic['requests']==len(analytic['rows'])==41
-    assert 'sec:analytic-results' in labels and 'app:analytic-decomposition' in labels
+    assert 'sec:analytic-results' in retained_labels and 'app:analytic-decomposition' in retained_labels
     for group in analytic['comparisons'].values():
         for value in group.values():
             if value['cases']:assert abs(value['ratio']-value['learned_seconds']/value['control_seconds'])<1e-12
@@ -244,7 +245,7 @@ def main():
     if p.exists():assert json.loads(p.read_text())==analytic
     guard=json.loads((HERE/'parser_guard_data.json').read_text())
     assert guard['complete'] and guard['requests']==len(guard['rows'])==9
-    assert 'sec:parser-guard' in labels and 'app:parser-guard' in labels
+    assert 'sec:parser-guard' in retained_labels and 'app:parser-guard' in retained_labels
     for group in guard['comparisons'].values():
         for value in group.values():
             assert abs(value['ratio']-value['learned_seconds']/value['control_seconds'])<1e-12
@@ -254,7 +255,7 @@ def main():
     assert fast['complete'] and fast['requests']==len(fast['rows'])==65
     assert fast['coverage']['total']['requests']==len(fast['coverage']['rows'])==110
     assert set(fast['coverage']['by_loop'])==set(map(str,range(1,14)))
-    assert 'sec:fast-results' in labels and 'app:fast-method' in labels
+    assert 'sec:fast-results' in retained_labels and 'app:fast-method' in retained_labels
     for group in fast['comparisons'].values():
         for value in group.values():
             if value['cases']:assert abs(value['ratio']-value['learned_seconds']/value['control_seconds'])<1e-12
@@ -262,7 +263,7 @@ def main():
     if p.exists():assert json.loads(p.read_text())==fast
     deployment=json.loads((HERE/'fast_deployment_data.json').read_text())
     assert deployment['complete'] and deployment['requests']==12
-    assert 'sec:fast-deployment' in labels and 'app:fast-deployment' in labels
+    assert 'sec:fast-deployment' in retained_labels and 'app:fast-deployment' in retained_labels
     for group in deployment['comparisons'].values():
         for value in group.values():
             if value['cases']:assert abs(value['ratio']-value['final_seconds']/value['control_seconds'])<1e-12
@@ -270,7 +271,7 @@ def main():
     if p.exists():assert json.loads(p.read_text())==deployment
     batch=json.loads((HERE/'analytic_batch_data.json').read_text())
     assert batch['complete'] and batch['requests']==len(batch['rows'])==58
-    assert 'app:analytic-batch' in labels and 'sec:analytic-batch-results' in labels
+    assert 'app:analytic-batch' in retained_labels and 'sec:analytic-batch-results' in retained_labels
     for group in batch['comparisons'].values():
         for value in group.values():
             if value['matched']:assert abs(value['ratio']-value['learned_seconds']/value['control_seconds'])<1e-12
@@ -280,7 +281,7 @@ def main():
     assert loop['complete'] and len(loop['rows'])==165
     assert loop['coverage']['trees']['methods']['integrated']['completed']==39
     assert loop['gamma_sample_checks']==819
-    assert 'app:loop-tree' in labels and 'sec:loop-tree-results' in labels
+    assert 'app:loop-tree' in retained_labels and 'sec:loop-tree-results' in retained_labels
     for value in loop['comparisons'].values():
         if value['pairs']:assert abs(value['ratio']-value['new_seconds']/value['control_seconds'])<1e-12
     q=HERE.parent/'ML_model_adaptive_reduction/loop_coverage13/summary.json'

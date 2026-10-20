@@ -274,3 +274,8 @@ Retain independent tests, exact checks, previous evidence, resource limits, and 
 ## Mathematical coverage and physical reduction structure
 
 - Approach further acceleration through the mathematical identities and physical structure of the integral families. Derive and validate exact subintegral reductions before choosing learned interventions. Use ML to select among admissible remaining reductions from complete measured cost. Test a declared family grid through thirteen loops, preserve failures and unsupported cases, and distinguish proved analytic domains from measured native coverage. Update the report, notes, guides, cluster and GitHub without claiming exhaustive coverage of every integral type.
+
+## Failure-aware native selection (October 19, 2026)
+
+- Reduce failed native attempts before launching expensive reductions. Learn failure risk from observed outcomes and redirect predicted risky or unsupported feature inputs to a conservative choice validated on training and validation requests.
+- Include the admission check and recovery costs in complete timings. Report remaining failures and completions. A learned prediction does not guarantee success for every unseen integral.

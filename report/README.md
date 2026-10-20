@@ -1,5 +1,15 @@
 ## Current exact vacuum and learned application
 
+<!-- LIGHTLIKE STUDY BEGIN -->
+The latest application is `ML_model_adaptive_reduction/lightlike_reduction/s05_runtime.py`.
+Read the [exact and learned reduction guide](../ML_model_adaptive_reduction/lightlike_reduction/README.md).
+The paper now focuses on exact identities, learned Kira decisions, and complete time.
+The notes retain the earlier experiments. Both PDFs include the new measured comparison.
+`paper_before_lightlike.tex` preserves the preceding main-paper narrative in the report folder.
+The historical numerical audits remain active; old labels are checked in retained sources.
+Current-paper references and citations are checked in the current paper itself.
+<!-- LIGHTLIKE STUDY END -->
+
 Read [the current method guide](../ML_model_adaptive_reduction/vacuum_learning/README.md).
 Use vacuum_learning/s18_fast_runtime.py with --method integrated.
 This version adds exact single-mass vacuum trees and a newly trained native seed-choice model.

@@ -1,0 +1,101 @@
+\section{Exact reduction at a zero two-point invariant}
+\label{app:lightlike}
+A singular Gram matrix prevents the projection used by the generic tensor recurrence. For a two-point sector with $p^2=0$, Feynman parameters give a direct reduction to tadpoles. Degenerate one-loop kinematics require such separate identities~\cite{DennerDittmaier2006}. We derive the identity used in this study below. It applies to a polynomial numerator and two positive denominator powers; it does not assume that the two masses differ.
+
+\subsection{Scalar integrals and mass derivatives}
+Let $x$ and $y$ denote squared masses, and define
+\begin{equation}
+ T(x)=\int\frac{d^d\ell}{i\pi^{d/2}}\frac{1}{\ell^2-x+i0},\qquad
+ B_{ab}(x,y)=\left.\int\frac{d^d\ell}{i\pi^{d/2}}
+ \frac{1}{(\ell^2-x+i0)^a[(\ell-p)^2-y+i0]^b}\right|_{p^2=0}.
+ \label{eq:light-def}
+\end{equation}
+Here $a,b$ are positive integers. Dimensional regularization sets $T(0)=0$. With the normalization in Eq.~\eqref{eq:integral}, Wick rotation and the radial beta integral give~\cite{Weinzierl2022}
+\begin{equation}
+ T(x)=-\Gamma(1-d/2)(x-i0)^{d/2-1}.
+ \label{eq:light-tad}
+\end{equation}
+For $a=b=1$, combine the denominators with a parameter $z$ and shift $\ell=k+(1-z)p$. The combined squared mass is $M^2(z)=zx+(1-z)y$, because $p^2=0$. Integrating over $k$ and then $z$ gives
+\begin{align}
+ B_{11}(x,y)
+ &=\Gamma(2-d/2)\int_0^1 [zx+(1-z)y-i0]^{d/2-2}\,dz\nonumber\\
+ &=\frac{T(x)-T(y)}{x-y},\qquad x\ne y.
+ \label{eq:light-difference}
+\end{align}
+The second equality follows from the elementary antiderivative of a power and $\Gamma(2-d/2)=(1-d/2)\Gamma(1-d/2)$. Differentiating a propagator with respect to its squared mass raises its power. Therefore
+\begin{equation}
+ B_{ab}(x,y)=\frac{\partial_x^{a-1}\partial_y^{b-1}B_{11}(x,y)}{(a-1)!(b-1)!}.
+ \label{eq:light-derivative}
+\end{equation}
+This operation preserves a rational combination of $T(x)$ and $T(y)$ because $\partial_xT(x)=(d/2-1)T(x)/x$. We take the derivatives before imposing relations between the masses. If $x=y\ne0$, the combined mass is independent of $z$, and the beta integral instead gives
+\begin{equation}
+ B_{ab}(x,x)=T_{a+b}(x),\qquad
+ T_n(x)=\frac{\prod_{j=1}^{n-1}(d/2-j)}{(n-1)!\,x^{n-1}}T(x).
+ \label{eq:light-equal}
+\end{equation}
+The formula for $T_n$ also follows by differentiating Eq.~\eqref{eq:light-tad}. These identities support independent symbolic squared masses as well as rational values. A relation involving distinct symbolic masses is a generic rational identity; equal masses use Eq.~\eqref{eq:light-equal} directly.
+
+\subsection{Polynomial numerators}
+Let $P(\ell)$ be a polynomial numerator. Combining the two denominators gives
+\begin{equation}
+ B_{ab}[P]=\frac{\Gamma(A)}{\Gamma(a)\Gamma(b)}\int_0^1 dz\,
+ z^{a-1}(1-z)^{b-1}\int\frac{d^dk}{i\pi^{d/2}}
+ \frac{P(k+(1-z)p)}{[k^2-M^2(z)+i0]^A},\quad A=a+b.
+ \label{eq:light-parameter}
+\end{equation}
+For an auxiliary inverse propagator $(\ell-q_j)^2-m_j^2$, put $w_j=(1-z)p-q_j$. Its numerator factor becomes $k^2+2k\cdot w_j+w_j^2-m_j^2$. Both $w_i\cdot w_j$ and $w_j^2-m_j^2$ are polynomials of degree at most one in $z$ when $p^2=0$.
+
+Rotational covariance gives zero for odd moments of $k$. Tracing two indices of an even moment determines its normalization recursively: if its pairing coefficient is $C_h$, then $C_h(d+2h-2)=C_{h-1}$ and $C_0=1$. Consequently,
+\begin{equation}
+ \left\langle\prod_{j=1}^{2h}(k\cdot w_j)\right\rangle
+ =\frac{(k^2)^h}{\prod_{r=0}^{h-1}(d+2r)}
+ \sum_{\mathcal P}\prod_{(i,j)\in\mathcal P}w_i\cdot w_j,
+ \label{eq:light-angular}
+\end{equation}
+where $\mathcal P$ runs over pairings of the $2h$ positions. The trace recurrence follows because one pairing contributes $d$ and the remaining contractions contribute $2h-2$. This also derives the full-dimensional form of the angular identity used in Appendix~\ref{app:tensor-reduction}.
+
+After the finite numerator expansion and angular average, define $c_{ht}(d)$ by
+\begin{equation}
+ \langle P(k+(1-z)p)\rangle=\sum_{h,t}c_{ht}(d)(k^2)^h z^t.
+ \label{eq:light-polynomial}
+\end{equation}
+These coefficients also depend on the fixed external scalar products and numerator masses. They contain no loop momentum. To integrate each term, Wick rotate the radial integral, set $u=k_E^2/M^2$, and use
+$\int_0^\infty u^{\alpha-1}(1+u)^{-A}du=\Gamma(\alpha)\Gamma(A-\alpha)/\Gamma(A)$ with $\alpha=d/2+h$. This gives
+\begin{equation}
+ J_{Ah}(M^2)=\int\frac{d^dk}{i\pi^{d/2}}\frac{(k^2)^h}{(k^2-M^2+i0)^A}
+ =(-1)^{A-h}\frac{\Gamma(d/2+h)\Gamma(A-h-d/2)}{\Gamma(d/2)\Gamma(A)}
+ (M^2-i0)^{d/2+h-A}.
+ \label{eq:light-radial}
+\end{equation}
+The initial convergence region defines the integrals; analytic continuation gives the dimensional-regularization identity outside that region~\cite{Weinzierl2022}.
+
+For $x\ne y$, set $\Delta=x-y$, $\rho=h-A+1$, and $\lambda=d/2-1$. Expand $(1-z)^{b-1}$ and then substitute $u=y+\Delta z$. For an integer $k\ge0$,
+\begin{equation}
+ \int_0^1 z^k(y+\Delta z)^{\lambda+\rho}\,dz
+ =\frac{1}{\Delta^{k+1}}\sum_{j=0}^k\binom{k}{j}(-y)^{k-j}
+ \frac{x^{\lambda+\rho+j+1}-y^{\lambda+\rho+j+1}}{\lambda+\rho+j+1}.
+ \label{eq:light-endpoints}
+\end{equation}
+This follows by expanding $(u-y)^k$ and integrating each power of $u$. Dividing by the tadpole normalization in Eq.~\eqref{eq:light-tad}, define
+\begin{equation}
+ R_h=\frac{(-1)^{A-h+1}(d/2)_h(1-d/2)_{A-h-1}}{(a-1)!(b-1)!},
+ \qquad (z)_n=\frac{\Gamma(z+n)}{\Gamma(z)}.
+ \label{eq:light-factor}
+\end{equation}
+For a negative integer $n$, the last ratio means the inverse finite product $1/\prod_{r=1}^{-n}(z-r)$. Equations~\eqref{eq:light-parameter}--\eqref{eq:light-endpoints} now give the explicit rational reduction
+\begin{align}
+ B_{ab}[P]&=\sum_{h,t}c_{ht}(d)R_h\sum_{v=0}^{b-1}(-1)^v\binom{b-1}{v}
+ \nonumber\\ &\quad\times\sum_{j=0}^{k}\binom{k}{j}\frac{(-y)^{k-j}}{\Delta^{k+1}}
+ \frac{x^{\rho+j+1}T(x)-y^{\rho+j+1}T(y)}{\lambda+\rho+j+1},\nonumber\\[-2pt]
+ &\quad k=a-1+t+v.
+ \label{eq:light-final}
+\end{align}
+If one mass is zero, its endpoint vanishes in a convergence region and hence by analytic continuation; the implementation omits that scaleless endpoint before evaluating powers. If both masses vanish, the sector is scaleless. For equal nonzero masses, use the beta integral directly:
+\begin{equation}
+ B_{ab}[P]=\sum_{h,t}c_{ht}(d)R_h\,
+ \frac{\Gamma(a+t)\Gamma(b)}{\Gamma(A+t)}x^{h-A+1}T(x).
+ \label{eq:light-equal-tensor}
+\end{equation}
+Thus the equal-mass rule has no division by $x-y$. A sector with one positive denominator uses Eq.~\eqref{eq:light-radial} and the same angular expansion without a Feynman parameter.
+
+At rational kinematics, the coefficients have polynomial numerators in $d$ and products of integer-shift linear factors $d+j$ in their denominators. The finite products in Eqs.~\eqref{eq:light-angular} and \eqref{eq:light-factor}, and the linear denominator in Eq.~\eqref{eq:light-endpoints}, prove this statement. We therefore use the exact factored arithmetic of Appendix~\ref{app:tensor-reduction}. The implemented tensor domain has at most five coordinates, numerator rank at most four, and at most four extra positive powers. Symbolic masses currently use the scalar derivative identity. Inputs outside these conditions continue through the existing exact rules and Kira.

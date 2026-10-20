@@ -1,5 +1,15 @@
 ## Current exact vacuum and learned application
 
+<!-- LIGHTLIKE STUDY BEGIN -->
+The latest application is `ML_model_adaptive_reduction/lightlike_reduction/s05_runtime.py`.
+Read the [exact and learned reduction guide](ML_model_adaptive_reduction/lightlike_reduction/README.md).
+The paper now focuses on exact identities, learned Kira decisions, and complete time.
+The notes retain the earlier experiments. Both PDFs include the new measured comparison.
+`paper_before_lightlike.tex` preserves the preceding main-paper narrative in the report folder.
+The historical numerical audits remain active; old labels are checked in retained sources.
+Current-paper references and citations are checked in the current paper itself.
+<!-- LIGHTLIKE STUDY END -->
+
 ## Current tensor reduction extension
 
 Use [tensor_reduction](ML_model_adaptive_reduction/tensor_reduction/README.md) for the current combined application.

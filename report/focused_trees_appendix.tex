@@ -1,0 +1,65 @@
+\section{Connected one-scale tree reductions}
+\label{app:trees}
+We derive the previously retained tree rules to state precisely which high-loop structures they cover. Let $\mathcal T$ be a rooted tree with loop momenta $\ell_0,\ldots,\ell_{L-1}$ and parent $\pi(j)$ for every nonroot vertex. A massless two-point family is
+\begin{equation}
+ J_{\mathcal T}=\int\prod_{j=0}^{L-1}\frac{d^d\ell_j}{i\pi^{d/2}}
+ \frac{1}{(\ell_0^2)^{a_0}[(\ell_0-p)^2]^c}
+ \prod_{j=1}^{L-1}\frac{1}{(\ell_j^2)^{a_j}
+ [ (\ell_j-\ell_{\pi(j)})^2]^{v_j}},\qquad p^2=s\ne0.
+ \label{eq:tree-family}
+\end{equation}
+The massive vacuum version replaces the two root factors by $(\ell_0^2-m^2)^{-c}$ and has no external momentum. Each edge power $v_j$, root power $c$, and leaf self power $a_j$ is positive. Internal self powers can be nonpositive. Auxiliary powers vanish. The implementation admits $L\leq13$ and absolute physical powers at most sixteen. The derivation itself applies to finite trees with meromorphically defined integrals.
+
+Temporarily use negative massless denominators. Feynman parametrization of a massless bubble, translation of its loop momentum, and a radial beta integral give
+\begin{align}
+ G(u,v)&=\frac{\Gamma(u+v-d/2)}{\Gamma(u)\Gamma(v)}
+ \int_0^1z^{d/2-v-1}(1-z)^{d/2-u-1}\,dz\nonumber\\
+ &=\frac{\Gamma(u+v-d/2)\Gamma(d/2-u)\Gamma(d/2-v)}
+ {\Gamma(u)\Gamma(v)\Gamma(d-u-v)}.
+ \label{eq:tree-bubble}
+\end{align}
+The remaining scale factor is $(-P^2-i0)^{d/2-u-v}$ for bubble momentum $P$. The beta identity used here follows by the same radial and parameter integrations as Appendix~\ref{app:lightlike}; analytic continuation supplies the dimensionally regularized relation~\cite{Weinzierl2022}. Recursive subintegral integration has established applications to massless propagator integrals~\cite{Ruijl2017Forcer}.
+
+For each nonroot vertex, define
+\begin{equation}
+ u_j=a_j+\sum_{h:\pi(h)=j}\sigma_h,\qquad
+ \sigma_j=u_j+v_j-d/2.
+ \label{eq:tree-transfer}
+\end{equation}
+Integrating a leaf gives $G(u_j,v_j)$ and transfers power $\sigma_j$ to its parent. Repeating from the leaves to the root proves the product rule by induction. In the two-point case, set $\alpha=a_0+\sum_{h:\pi(h)=0}\sigma_h$; its dimensionless coefficient is
+\begin{equation}
+ C_{\mathcal T}=G(\alpha,c)\prod_{j=1}^{L-1}G(u_j,v_j).
+ \label{eq:tree-coefficient}
+\end{equation}
+The total physical power $A=\sum_j a_j+\sum_{j>0}v_j+c$ gives scale power $(-s-i0)^{Ld/2-A}$. Let $M_{\mathcal T}$ set all physical powers to one and let $C_0$ be its Gamma product. Restoring the original propagator signs and dividing by this master gives
+\begin{equation}
+ J_{\mathcal T}=s^{-(A-2L)}\frac{C_{\mathcal T}}{C_0}M_{\mathcal T}.
+ \label{eq:tree-ratio}
+\end{equation}
+The sign $(-1)^{A-2L}$ from the propagator convention cancels that from $(-s)^{-(A-2L)}$.
+
+For a massive vacuum root, put $\sigma_0=\sum_{h:\pi(h)=0}\sigma_h$. Wick rotation and the substitution $x=m^2t$ give
+\begin{equation}
+ \frac{1}{\Gamma(d/2)}\int_0^\infty
+ \frac{x^{d/2-\sigma_0-1}}{(x+m^2)^c}\,dx
+ =(m^2)^{d/2-\sigma_0-c}
+ \frac{\Gamma(d/2-\sigma_0)\Gamma(\sigma_0+c-d/2)}
+ {\Gamma(d/2)\Gamma(c)}.
+ \label{eq:tree-vacuum}
+\end{equation}
+Multiply the dimensionless Gamma ratio by the nonroot bubble factors to define $C_{\mathcal T}^{V}$. There are $P=2L-1$ physical lines and $A=c+\sum_{j>0}(a_j+v_j)$. Dividing by the unit-power vacuum master $M_{\mathcal T}^{V}$ yields
+\begin{equation}
+ V_{\mathcal T}=(-m^2)^{-(A-P)}
+ \frac{C_{\mathcal T}^{V}}{C_0^{V}}M_{\mathcal T}^{V}.
+ \label{eq:tree-vacuum-ratio}
+\end{equation}
+In either family, a subtree with $n_j$ vertices has $u_j=U_j-(n_j-1)d/2$ with integer $U_j$. This follows from Eq.~\eqref{eq:tree-transfer} by induction. Target and master Gamma arguments therefore have equal slopes in $d$ and integer differences in their constant terms. Repeated use of $\Gamma(z+1)=z\Gamma(z)$ gives
+\begin{equation}
+ \frac{\Gamma(z+n)}{\Gamma(z)}=
+ \begin{cases}\prod_{k=0}^{n-1}(z+k),&n>0,\\
+ 1,&n=0,\\
+ [\prod_{k=1}^{-n}(z-k)]^{-1},&n<0.
+ \end{cases}
+ \label{eq:tree-gamma-ratio}
+\end{equation}
+Thus the target-to-master coefficients are rational in $d$ and the one scale. Cancelling equal Gamma factors before expanding these finite products preserves the identity and avoids repeated symbolic work. This proves the reductions for the stated trees; additional coupled propagators or auxiliary numerators require another reduction.
