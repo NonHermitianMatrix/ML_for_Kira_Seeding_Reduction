@@ -1,6 +1,6 @@
-\section{What the complete project achieved}
+\section{Results}
 \label{sec:project-results}
-The project produced three kinds of result: learned reductions in native Kira cost, exact shortcuts for specified integral structures, and savings from sharing work between compatible requests. The following comparisons identify the control and workload for each result. Their ratios describe separate experiments and are not factors in a single universal speedup.
+We obtained three kinds of result: learned reductions in native Kira cost, exact shortcuts for specified integral structures, and savings from sharing work between compatible requests. The following comparisons identify the control and workload for each result. Their ratios describe separate experiments and are not factors in a single universal speedup.
 
 \subsection{Seed, equation, and row selection inside Kira}
 Using the first seed model with already supplied identities reduced time by 8.6\% on twelve single-target batches: the model-to-full-pool ratio was 0.914, with interval $[0.871,0.958]$. Generating that identity pool was outside this timer. The corresponding sixteen-target comparison had ratio 0.952 with an interval crossing one, so the larger-batch gain was unresolved.
@@ -25,7 +25,7 @@ We then retained those model decisions and reduced repeated symmetry preparation
 The shared structural model supplies a separate generalization result. It used 44 features and a neural network with two 48-component hidden layers to select among ten seed configurations. On 43 matched native requests, complete time fell from 63.450 seconds for native choices to 57.125 seconds, or 10.0\% less time. The fixed control took 60.094 seconds, so the added learned choice saved 4.9\%. Fifteen matched requests came from excluded physical groups or loop orders; their learned-to-fixed ratio was 0.885. The model and physical inputs are specified in Appendix~\ref{project:app:shared}.
 
 \begin{table}[!htbp]\centering\small
-\caption{Selected native comparisons across the project. Each ratio divides the selected method's time by its stated control. Intervals retain the original experiment's paired resampling method; graph-weighted and summed-time estimators are distinct.}
+\caption{Selected native comparisons in this study. Each ratio divides the selected method's time by its stated control. Intervals retain the original experiment's paired resampling method; graph-weighted and summed-time estimators are distinct.}
 \label{tab:project-ml}
 \begin{tabularx}{\linewidth}{@{}YYrr@{}}\toprule
 Intervention & Control and estimator & Ratio & Interval\\\midrule
@@ -41,10 +41,25 @@ Learned choices after reconstruction & Fixed choices; summed medians & 0.983 & $
 \end{table}
 \begin{figure}[!htbp]\centering
 \includegraphics[width=\linewidth]{paper_figures/project_ml.pdf}
-\caption{The project establishes some model-dependent gains and also retains unresolved or slower results. Each point and interval comes from the named experiment and control in Table~\ref{tab:project-ml}. The original row and adapted scattering results are included to show the rejected approaches. The equal-time line is one. These separate comparisons do not form a cumulative sequence.}
+\caption{We measured gains from learned choices on some workloads and retained unresolved or slower results. Each point and interval comes from the named experiment and control in Table~\ref{tab:project-ml}. The original row and adapted scattering results are included to show the rejected approaches. The equal-time line is one. These separate comparisons do not form a cumulative sequence.}
 \label{fig:project-ml}
 \end{figure}
 The shared-model grid contained 110 requests, of which only 43 produced a complete matched native comparison. Twenty-one initial references and ten enlarged-region checks failed, and 36 inputs exceeded the tested native coordinate limit. Completed comparisons reached five loops, with only two matched requests at five loops; their aggregate learned-to-native ratio was 1.172. Figure~\ref{fig:project-coverage} keeps the full requested range visible. The 4.9\% learned gain therefore applies to the matched set and does not establish successful acceleration throughout the grid.
+
+\begin{table}[!htbp]\centering\small
+\caption{Models we developed and the measured reason to use or omit them. Each row names its own control. The final application retains a validated seed policy, while the other rows report distinct experiments in the study.}
+\label{tab:model-study-summary}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{3.4cm}YY@{}}\toprule
+Model and representation & Decision and advantage & Measured result and limitation\\\midrule
+Seed-set neural classifier; 28,097 parameters & Independent seed probabilities allow several seeds per target; learns from exact construction records & 94.515\% sufficient predicted sets on 690,382 constructed test targets. This accuracy does not establish a native runtime gain\\
+Row neural ranker; 10,529 parameters, 132 input features & Scores allowed elimination steps from the current state & 30.5\% slower in 84 native trials. The later compiled cost policy gives ratio 0.982 with interval $[0.959,1.003]$. Omitted\\
+Equation decision tree; 17 seed, operator, and target features & Rejects unlikely useful equations before full construction & $72.295\to67.478$ s on 24 new-index batches: 6.7\% less time. Later nonplanar filtering causes recovery on all attempts; disabled in the final test\\
+Graph-specific cost trees and strategy selectors & Choose seed enlargement, basis conversion, or a complete strategy from measured time & Selective expansion and basis conversion save 7.4\% against a per-graph fixed choice, with equal graph weighting. Requires training and validation for the tested structures\\
+Shared structural neural regressor; 44 inputs, two 48-component layers & Predicts ten seed-action costs without a family-name input & $60.094\to57.125$ s against a global fixed choice: 4.9\% less time on 43 matched requests. Some classes are slower; Table~\ref{tab:native-type-summary} gives every class\\
+Native seed-cost trees with failure checks & Choose a seed region, or use a conservative fixed action when risk is high & Earlier 32-box test: $156.383\to150.663$ s, 3.7\% less than fixed seeds. Later 24-box test: $200.983\to198.313$ s, 1.3\% less, with interval including equal time\\
+Tensor-order cost tree and later arithmetic forests & Attempt to choose an exact recurrence order or native arithmetic setting & Validation did not justify deployment; final methods use fixed choices. Exact-method gains are reported separately\\\bottomrule
+\end{tabularx}
+\end{table}
 
 \subsection{The large cumulative gain from exact vacuum recurrences}
 \label{sec:project-vacuum-results}
@@ -72,7 +87,7 @@ The development included compact basis preparation, failure-aware choices, basis
 Table~\ref{tab:project-overall} collects complete-time results whose baselines were measured directly. They answer different practical questions: repeated reductions of an analytically reducible family, compatible requests that can share a system, a native model choosing a seed configuration, and mixed analytic/native workloads.
 
 \begin{table}[!htbp]\centering\small
-\caption{Project-wide gains with explicit controls. Each row is a separate matched experiment. Times are sums of request or group medians, except the final row, which uses the median time of a complete collection. No row combines percentages from different tests.}
+\caption{Measured gains with explicit controls. Each row is a separate matched experiment. Times are sums of request or group medians, except the final row, which uses the median time of a complete collection. No row combines percentages from different tests.}
 \label{tab:project-overall}
 \begin{tabularx}{\linewidth}{@{}YrrY@{}}\toprule
 Workload and control & Control (s) & Method (s) & Measured gain\\\midrule
@@ -87,7 +102,7 @@ Same 26 batches; fixed portfolio & 67.381 & 64.183 & 4.7\% less; added outer sel
 \end{table}
 On the 75-request collection, enabling the validated finite-field reconstruction settings reduced time from 79.624 to 49.852 seconds, or 37.4\%. Comparing the same final result directly with the application before both the direct-vacuum and reconstruction additions gives 81.827 to 49.852 seconds, or 39.1\%. Those are matched comparisons on the same collection; they are the relevant cumulative measurements for that stage.
 
-The later 93-request study gives the additional 8.8\% reduction from 45.091 to 41.137 seconds. It contains 20 native and 73 analytic requests and checks all 837 outputs from three methods and three repetitions. This is the last incremental comparison, rather than the total result of the project. Appendix~\ref{app:latest-results} retains its full timing tables, three plots, subgroup regressions, and failed parallel predecessor.
+The later 93-request study gives the additional 8.8\% reduction from 45.091 to 41.137 seconds. It contains 20 native and 73 analytic requests and checks all 837 outputs from three methods and three repetitions. This is the last incremental comparison, rather than the overall outcome of the study. Appendix~\ref{app:latest-results} retains its full timing tables, three plots, subgroup regressions, and failed parallel predecessor.
 
 The final application combines admitted exact identities, shared work, the inherited validated seed model, and fixed native arithmetic choices. The original row model remains omitted. The latest arithmetic selector failed its validation condition, and the added nonplanar equation filter was 71.1\% slower after recovery; both remain disabled. In the reconstruction-era model-only comparison, the ratio to fixed choices was 0.983 with interval $[0.951,1.003]$, so a reliable extra aggregate ML gain was unresolved. Earlier positive model results remain valid for their own tests; they do not make every later configuration faster.
 

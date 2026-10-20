@@ -1,3 +1,12 @@
+# Optimizing Methods for Feynman Integral Reduction with Kira
+
+The paper reports the full study. Its title page has no author or date. Read `report.pdf` for the methods, final formulas, physical uses, measured gains, and limitations. The tables compare exact methods, learned choices, all completed native physical classes, and the one-loop tensor mass classes. `notes.pdf` keeps the historical experiments and remains unchanged in this editorial update.
+
+- `paper_integral_results.tex` connects integral structures, QCD/QFT uses, formulas, and timings.
+- `s06_method_tables.py` reads saved summaries and writes `paper_native_type_rows.tex`, `paper_tensor_type_rows.tex`, and `method_table_data.json`. It does not run a scientific calculation.
+- `s07_check_method_tables.py` checks this revision after the existing three paper checks.
+- `writing_review.md` records the use of the user-supplied UVU scientific-writing guide and the claim checks.
+
 The main paper now explains the whole project. It covers the constructed integral data, the first seed and row models, their native Kira tests, equation selection, models trained on complete cost, exact recurrences, shared requests, and analytic extensions. Direct original-to-optimized comparisons appear in the main results. The final 93-request update is in a supporting appendix. Each gain has its own control and scope.
 
 # Feynman integral reduction with Kira
@@ -45,7 +54,7 @@ Run `python s01_check_paper.py` to check references, citations, saved numerical 
 Run `python s03_check_rewrite.py` for the new paper's figure, timing, and equation checks.
 Read `rewrite_validation.json` for the result and `writing_review.md` for the evidence map.
 The historical `*_validation.json` files refer to their original experiment and document versions.
-Use `project_validation.json` and `rewrite_validation.json` for the present PDFs.
+Use `project_validation.json`, `rewrite_validation.json`, and `method_table_validation.json` for the present PDFs.
 
 Keep this complete folder on Hoffman, GitHub, and the local machine.
 Keep integral data, trained weights, and native reduction outputs on Hoffman and GitHub only.

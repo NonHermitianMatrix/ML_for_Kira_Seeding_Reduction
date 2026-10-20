@@ -1,3 +1,15 @@
+# Study report and comparative tables
+
+The title is “Optimizing Methods for Feynman Integral Reduction with Kira”. The author and displayed date are blank; the PDF author field is empty. We use active first-person language for the work performed in the study.
+
+We read the user-supplied [UVU Scientific Writing: IMRaD guide](https://www.uvu.edu/writingcenter/docs/scientificwriting.pdf). We applied its sequence: background and objective, reproducible methods, measured results, then interpretation and limits. We also retained the reader and audience guidance listed below. These guides concern writing; they are not evidence for physics claims.
+
+The report now links integral structures to physical uses, final formulas, and measured gains. The analytic table states each domain and baseline. Separate tables give all twenty one-loop tensor requests by type and all nine completed physical classes in the shared-model study. A model table connects representations, decisions, and measured outcomes. The discussion compares advantages and disadvantages, including failure cost, offline fitting, restricted analytic domains, and unresolved gains.
+
+New physical context uses primary studies of heavy-quark decoupling, planar and nonplanar double boxes, and five-parton QCD amplitudes. Formula cells refer to derivations in the paper. Existing measurements supply every timing entry. No training, integral generation, or benchmark was run for this revision.
+
+Run `s06_method_tables.py` to recreate the two numerical tables from the retained evidence. `method_table_data.json` records their source checksums. Run `s07_check_method_tables.py` after the PDF build to check titles, formulas, counts, and controls. Checksums and implementation details stay in this guide and validation files.
+
 # Whole-project scope correction
 
 The revised main narrative covers the complete study, beginning with known-answer integral data and ending with the combined application. It gives central space to the original-to-optimized vacuum comparison, native ML controls, shared requests, and the 75-request cumulative comparison. The latest 93-request increment is supporting detail. No new training or timing data were produced for this revision.
@@ -55,7 +67,7 @@ The following saved records support them:
 
 ## Interpretation checks
 
-The main result is 8.8% less median time than the preceding application on 93 requests.
+The 8.8% result is the final incremental comparison on 93 requests. The paper also presents the original-to-optimized vacuum result and the independent native ML controls.
 The control already includes earlier exact and learned methods.
 The external coefficient audit is outside the final application timer for every method.
 Internal group sums have a different timing boundary from complete-collection time.

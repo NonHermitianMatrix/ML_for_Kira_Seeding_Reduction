@@ -300,3 +300,9 @@ Retain independent tests, exact checks, previous evidence, resource limits, and 
 
 - The main report must explain the complete project: its starting question, training data, models, Kira integration, exact methods, unsuccessful approaches, and measured gains. Give original-to-optimized comparisons a central place; the latest incremental update is only one result.
 - State the baseline, workload, timing boundary, and scope of each gain. Separate model-only effects from exact reductions, shared work, and other changes. Never multiply gains from different test sets to invent a project-wide speedup.
+
+## Study report, comparative tables, and author voice (October 20, 2026)
+
+- Title the paper “Optimizing Methods for Feynman Integral Reduction with Kira”. Leave the author and date blank.
+- Write about the study and use active first-person descriptions such as “we developed” for our work. Follow the supplied Utah Valley University scientific-writing guide: establish the research objective, explain the methods, present measurements, then discuss their meaning and limits.
+- Connect integral structures, their QCD/QFT applications, final formulas, models, timing controls, and measured gains in readable tables. Compare advantages and disadvantages explicitly. Cite physical applications and derive or cite formulas. Keep exact-method gains separate from learned gains, and include slower and incomplete cases.

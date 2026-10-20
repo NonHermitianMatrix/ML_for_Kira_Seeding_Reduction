@@ -395,3 +395,5 @@ ML_model_adaptive_reduction/portfolio_policy contains the new family-aware seed-
 <!-- BEGIN SHARED APPLICATION SETUP -->
 The current single-request application remains `ML_model_adaptive_reduction/reconstruction_policy/s15_deploy.py`. Collections can use `s37_batch.py` in the same folder. It keeps routines and policies loaded across requests. The verified 75-request collection takes 37.247 s in one call, compared with 58.980 s for separate current calls and 70.051 s for an equally prepared earlier shared call. These are medians of three full-collection times. All 900 request executions pass their coefficient checks. See that folder's README and `batch_summary.json` for the scope, commands, and complete results.
 <!-- END SHARED APPLICATION SETUP -->
+
+The paper is titled **Optimizing Methods for Feynman Integral Reduction with Kira**. It includes formulas, physical uses, models, type-by-type results, and a comparison of advantages and limitations. See [report/report.pdf](report/report.pdf). Its title page has no author or date. The historical notes remain available.

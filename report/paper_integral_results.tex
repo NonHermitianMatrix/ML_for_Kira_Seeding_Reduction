@@ -1,0 +1,93 @@
+\section{Results by integral structure and physical use}
+\label{sec:integral-results}
+The preceding comparisons measure different parts of the reduction. We now connect them to the integrals that each method accepts. Table~\ref{tab:integral-methods} gives the final analytic expressions, the corresponding physical context, and a directly measured gain. Tables~\ref{tab:tensor-type-summary} and \ref{tab:native-type-summary} separate the one-loop tensor and shared-model results by integral type. These tables describe reductions of specified integral families; we did not calculate a complete scattering amplitude or decay rate in this study.
+
+The physical examples explain why these mathematical structures matter. A two-point integral depends on one external momentum and enters propagator corrections; three-point and four-point integrals enter vertex and scattering corrections, respectively~\cite{Weinzierl2022,DennerDittmaier2006}. Massive vacuum integrals also enter heavy-quark threshold matching in QCD after external momenta are set to zero~\cite{SchroderSteinhauser2006}. Five-point integrals occur in amplitudes for five external partons~\cite{Agarwal2024}. Our particular mass choices and reducible tree structures are test inputs within these broader classes. The application does not infer that a formula covers a full physical process from the number of loops or external particles alone.
+
+We report seconds and a speed factor $S=T_{\rm control}/T_{\rm method}$. Thus $S>1$ means a faster calculation, and the percentage time saving is $100(1-1/S)$. These are the reciprocal and percentage forms of the time ratio defined in Appendix~\ref{app:statistics}. Each factor below comes from one matched experiment. Except for the explicitly identified original-vacuum comparison, the analytic controls are preceding versions of our application and already contain earlier improvements. Offline training and external reference preparation remain outside these production times.
+
+\begin{landscape}
+\small
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{3.9cm}>{\raggedright\arraybackslash}p{8.0cm}>{\raggedright\arraybackslash}p{5.1cm}>{\raggedright\arraybackslash}p{6.2cm}@{}}
+\caption{Analytic methods, physical uses, and measured gains. Each formula uses the integral normalization defined in its cited equation or appendix. $d=4-2\epsilon$ throughout. Times sum matched request medians, or group medians for the original vacuum test. The gains in this table come from exact algebra and shared work; none is an isolated ML gain.}\label{tab:integral-methods}\\
+\toprule
+Integral and physical context & Final formula and reduction method & Measured control and gain & Applicability and limitation\\\midrule
+\endfirsthead
+\multicolumn{4}{l}{\tablename~\thetable\ continued}\\
+\toprule Integral and physical context & Final formula and reduction method & Measured control and gain & Applicability and limitation\\\midrule
+\endhead
+\midrule\multicolumn{4}{r}{Continued on the next page}\\\endfoot
+\bottomrule\endlastfoot
+Massive tadpoles and independent vacuum factors. Vacuum integrals occur in heavy-quark decoupling calculations~\cite{SchroderSteinhauser2006}.
+& $\displaystyle T_a(x)=(-1)^a(x-i0)^{d/2-a}\frac{\Gamma(a-d/2)}{\Gamma(a)}$.
+\par $x$ is a squared mass. Partial fractions reduce several masses carrying the same loop momentum to these tadpoles. Independent factors multiply. We derive the normalization and repeated-mass limits in Appendix~\ref{app:direct-vacuum}.
+& Thirteen two-mass product requests, loops 1--13: preceding application $2.271$ s; direct method $1.935$ s. Speedup $1.17\times$; 14.8\% less time.
+& Provides analytic values as well as master coefficients. The measured high-loop targets are independent products. A general coupled vacuum graph requires additional identities. No separate standalone-tadpole speed factor was measured.\\\addlinespace[7pt]
+
+One-loop scalar and polynomial-numerator bubbles, triangles, and boxes. These enter two-, three-, and four-point corrections~\cite{DennerDittmaier2006}.
+& $\displaystyle I_{\boldsymbol a}=\sum_{\boldsymbol t}c_{\boldsymbol t}(d)I_{\boldsymbol a_S-\boldsymbol t}$.
+\par $S$ contains the positive denominator indices. Angular averaging gives the finite numerator polynomial $\sum_{\boldsymbol t}c_{\boldsymbol t}\prod_{i\in S}D_i^{t_i}$; each term cancels denominator powers. Equation~\eqref{eq:tensor-moment} gives every angular coefficient, and Eq.~\eqref{eq:tensor-signed-recurrence} lowers the remaining raised powers.
+& Twenty one-loop requests: $53.518\to6.343$ s against the preceding application. Speedup $8.44\times$; 88.1\% less time. Twelve independent tensor products, loops 2--13: $121.891\to3.006$ s, or $40.5\times$.
+& We derived the angular reduction and used factored dimension denominators. Required Gram or Cayley matrices must be invertible; the tested inputs have rational kinematics and symbolic $d$. Validation rejected the tensor-order model, so these gains use a fixed exact path.\\\addlinespace[7pt]
+
+Two-point sectors at $p^2=0$. These are zero-invariant limits of self-energy integrals and can occur as lower sectors of larger families~\cite{Weinzierl2022}.
+& $\displaystyle B_{11}(0;x,y)=\frac{T_1(x)-T_1(y)}{x-y}$,
+\par $\displaystyle B_{ab}=\frac{\partial_x^{a-1}\partial_y^{b-1}B_{11}}{(a-1)!(b-1)!}$;
+\par $B_{ab}(0;x,x)=T_{a+b}(x)$. Here $x,y$ are squared masses. Appendix~\ref{app:lightlike} derives the scalar and numerator formulas.
+& Twenty tensor requests: $27.055\to5.856$ s, or $4.62\times$ and 78.4\% less time. Three symbolic-mass scalar requests: $4.564\to3.958$ s, or $1.15\times$. Controls use the preceding application.
+& Avoids a singular external Gram-matrix inversion at this limit. The equal-mass expression supplies the finite limit of the difference quotient. The rule requires the stated invariant and power conditions; it does not apply at generic $p^2$.\\\addlinespace[7pt]
+
+One-scale massless triangles and their independent products. The two-lightlike-leg configuration occurs in on-shell vertex calculations~\cite{DavydychevOsland1998}.
+& $\displaystyle T_{abc}=(-1)^A Q^{h-A}\frac{\Gamma(A-h)\Gamma(h-b-c)\Gamma(h-a-b)}{\Gamma(a)\Gamma(c)\Gamma(d-A)}$.
+\par $A=a+b+c$, $h=d/2$, $Q=-(p_1+p_2)^2>0$, and $p_1^2=p_2^2=0$. In a bubble basis,
+\par $\displaystyle T_{111}=\frac{2(d-3)}{Q(d-4)}B$, with $B=T_{101}$.
+\par Equation~\eqref{eq:triangle-rational} gives the general integer-power coefficient. For independent components, $\prod_jT_j=(\prod_jR_j)\prod_jB_j$.
+& Thirteen independent triangle-product requests, loops 1--13: $55.253\to2.540$ s, or $21.75\times$ and 95.4\% less time, against the preceding application. With the earlier reference preparation already supplied, its control takes $29.240$ s, giving $11.51\times$.
+& Provides explicit values or rational coefficients in a bubble basis. The measured comparison belongs to the earlier analytic-batch stage; the final triangle-to-bubble derivation fixes the later basis. These timings do not isolate that basis change. No coupled multiscale high-loop triangle graph is covered.\\\addlinespace[7pt]
+
+Restricted coupled-vacuum family with shared massive momentum. This is our special benchmark within the broader class of QCD vacuum integrals~\cite{SchroderSteinhauser2006}.
+& $\displaystyle V_{\boldsymbol b}^{(L)}=\mu^{1-B}\sum_jC_{\boldsymbol b j}(L(d-2))M_j^{(L)}$,
+\par $\displaystyle C_{\boldsymbol b j}(z)=\sum_{k=1}^{b_j}a_{jk}\prod_{h=1}^{k-1}\frac{2h-z}{2h\rho_j}$,
+\par $\displaystyle a_{jk}=[t^{b_j-k}]\prod_{i\ne j}(\rho_i-\rho_j+t)^{-b_i}$.
+\par $\mu_j=\rho_j\mu$, $B=\sum_jb_j$, and $M_j^{(L)}=V_{\boldsymbol e_j}^{(L)}$. The brackets select a Taylor coefficient. Appendix~\ref{app:project-vacuum} defines the family and derives the formula.
+& Eight groups, three mass profiles per group, loops 1--12: original supplied-equation Kira $1,027.781$ s; exact recurrence and shared coefficients $1.922$ s. Speedup $534.9\times$; 99.81\% less time. All 120 repeated workflows pass.
+& One polynomial calculation serves several loop orders. All massive lines share $Q=\sum_h\ell_h$, massless powers equal one, and squared masses are distinct. This control solves supplied Euler and mass identities; it does not time native generation for arbitrary multiloop graphs.\\\addlinespace[7pt]
+
+Connected massless two-point bubble trees. Recursive one-loop subintegrals occur in propagator reductions~\cite{Ruijl2017Forcer}.
+& $\displaystyle J_{\mathcal T}=s^{-(A-2L)}\frac{C_{\mathcal T}}{C_0}M_{\mathcal T}$,
+\par $\displaystyle C_{\mathcal T}=G(\alpha,c)\prod_{j>0}G(u_j,v_j)$.
+\par $s=p^2$, $A$ is the total denominator power, and $M_{\mathcal T}$ has unit powers. $G$ is the bubble Gamma ratio in Eq.~\eqref{eq:tree-bubble}; Eq.~\eqref{eq:tree-transfer} defines the powers transferred from each child to its parent. $C_0$ is the product for the master.
+& The new method completes 34/34 requests through 13 loops; the preceding application completes 3/34. On those three matched requests, $11.185\to0.433$ s: $25.9\times$ and 96.1\% less time.
+& Integrating leaves successively avoids a large IBP system. Extra occupied propagators can destroy the tree structure. The other 31 requests have no completed control and therefore no finite measured speed factor. This is a gain in both supported coverage and matched time.\\\addlinespace[7pt]
+
+Connected trees with a massive vacuum root. These are a reducible subset of massive vacuum integrals relevant to zero-momentum expansions~\cite{SchroderSteinhauser2006}.
+& $\displaystyle V_{\mathcal T}=(-m^2)^{-(A-P)}\frac{C_{\mathcal T}^{V}}{C_0^{V}}M_{\mathcal T}^{V}$,
+\par $P=2L-1$. The superscript $V$ denotes the vacuum case. $C_{\mathcal T}^{V}$ multiplies the nonroot bubble factors by the root Gamma ratio in Eq.~\eqref{eq:tree-vacuum}. Appendix~\ref{app:trees} derives the signs and scale power.
+& Thirty-four matched requests through 13 loops: $7.900\to5.719$ s, or $1.38\times$ and 27.6\% less time against the preceding application. A separate cancellation test reduces 34 large batches from $14.305$ to $6.731$ s, or 52.9\% less time.
+& Early recognition avoids unnecessary symbolic preparation. Cancelling common Gamma factors before expansion helps large batches. In the cancellation test, seven-target batches instead take 2.6\% more time, with an interval including equal time. The two savings use different tests and are not multiplied.\\\addlinespace[7pt]
+
+Scaleless vacuum sectors. Massless vacuum terms with no external scale arise as removed-line sectors and vanish in dimensional regularization~\cite{Weinzierl2022}.
+& $\displaystyle I_{\rm scaleless}=0$.
+\par Scaling and dimensional continuation give the zero identity derived in Appendix~\ref{app:direct-vacuum}. Recognition avoids generating equations for a sector whose integral vanishes.
+& Thirteen coupled massless vacuum requests through 13 loops pass the analytic coverage checks. No matched standalone speed factor is available for this subset.
+& The rule applies only when all dimensionful scales are absent. We report coverage without assigning a speedup to an unsupported native control.\\
+\end{longtable}
+\end{landscape}
+
+\subsection{One-loop tensor results by mass and denominator structure}
+The aggregate tensor saving in Table~\ref{tab:integral-methods} contains several physical structures. Table~\ref{tab:tensor-type-summary} separates them so that the larger group does not hide a poorly performing class. We used rational masses and scalar products, kept $d$ symbolic, and compared every request with the same preceding application. All twenty requests completed in all repetitions. Four mass classes contain only one request each, so their timings describe those cases alone.
+\input{paper_tensor_type_rows}
+
+\subsection{Native reductions with the shared structural model}
+The neural model described in Appendix~\ref{project:app:shared} used 44 structural features and two hidden layers of 48 components to predict the cost of ten seed choices. We trained it on complete measured cost rather than the length of a constructed reduction path. Table~\ref{tab:native-type-summary} gives its results for every completed physical class in the 110-request grid. The comparison with a global fixed strategy isolates its added request-dependent choice; the native column also includes the benefit or cost of replacing Kira's own choice by our candidate strategies.
+
+For all 43 matched requests, the model takes $57.125$ seconds, compared with $63.450$ seconds for native choices and $60.094$ seconds for the fixed strategy. The corresponding savings are 10.0\% and 4.9\%. The per-class results include slower cases. In particular, the one-mass vacuum class is slower than native choices even though its point estimate is slightly faster than the fixed strategy. Only two matched requests reach five loops. The remaining 67 requested cases retain the reference failures and coordinate limits shown in Fig.~\ref{fig:project-coverage}.
+
+\input{paper_native_type_rows}
+
+The final application uses a later, restricted seed-cost tree and fixed arithmetic settings; it does not deploy every historical selector at once. On its last five-request native subgroups, planar double-box time changes from $8.948$ to $7.191$ seconds and nonplanar double-box time from $14.517$ to $11.137$ seconds. These are 19.6\% and 23.3\% savings against the preceding integrated application. The sunrise subgroup instead changes from $7.509$ to $8.407$ seconds, or 12.0\% more time, and the three-loop vacuum subgroup changes from $12.971$ to $12.988$ seconds. Appendix~\ref{app:latest-results} gives the shared protocol. These final gains include arithmetic and application changes and do not isolate a new ML effect.
+
+The tables therefore support a conditional use of the method. We can replace reduction by a formula for the proved analytic domains, and we can use a learned strategy when its matched timing control supports it. A connected multiscale integral outside those domains still requires native reduction and a separate performance test.
+\FloatBarrier
