@@ -1,0 +1,233 @@
+{
+  "complete": true,
+  "editorial_only": true,
+  "sources": {
+    "paper_figure_data.json": "114ad2a302962edec9b56d661b78166d06f28586e0c349e4d3a7e81148a18e89",
+    "general_policy_data.json": "cd4dd2c19057ac041ce78641f5da32ec5698924b3aa13810129b42f6409568af",
+    "type_specialist_figure_data.json": "c43f386f084f2e42bb5059e1657d3b8e6d00034290dd0105acc62f86541b92d1",
+    "basis_completion_figure_data.json": "69c16b55ddab1eeccbd2229e38cb3178cd7767f84820a725d77c55a72673f4e7",
+    "scattering_figure_data.json": "0ada2039adb05e7e828479f886a391c472b99d961823bbe0db483b26e7ca160e",
+    "rewrite_figure_data.json": "d40ab3467bb841f625f80fc9043a824805a09c289752c3d4b9a786d724157b25",
+    "reconstruction_data.json": "cd122b693c8e21a41938cc9f191ae8d7a3e2ccab6c4c327f411667dc607499e7",
+    "batching_figure_data.json": "0cc6017a31f6cbf4fca3355faff2877a11ffbad04cd9911a69497957af2387b2",
+    "portfolio_data.json": "7b05955af75ce7bceb42a10f08ab54c7f1e3d983859bcae196318bd77cbdd9fc",
+    "parametric_data.json": "a55e61c59734da16bf072960a8d945afaec0ab3c018f050e84b7931de4ce3515"
+  },
+  "seed_metrics": [
+    95.75,
+    96.892,
+    84.332,
+    94.51535526708402,
+    100.0
+  ],
+  "ml_comparisons": [
+    [
+      "Original equation filter / native",
+      0.9429067821241063,
+      [
+        0.9150251500904328,
+        0.9697899709853433
+      ]
+    ],
+    [
+      "Equation filter, new indices / native",
+      0.9333697392801784,
+      [
+        0.9281307822325005,
+        0.9401317035114821
+      ]
+    ],
+    [
+      "Graph-specific selection / graph-fixed",
+      0.94407688688112,
+      [
+        0.8991572110639479,
+        0.9863474608758689
+      ]
+    ],
+    [
+      "Selective expansion / fixed",
+      0.9264396134667635,
+      [
+        0.8759765099649582,
+        0.9747287509003368
+      ]
+    ],
+    [
+      "Shared structural model / fixed",
+      0.9505899386129184,
+      [
+        0.9160186611807583,
+        0.9710412607828984
+      ]
+    ],
+    [
+      "Retained box seed model / fixed",
+      0.9634204448752147,
+      [
+        0.9365616433704154,
+        0.9838379126410454
+      ]
+    ],
+    [
+      "Compiled row policy / native",
+      0.9822483275810221,
+      [
+        0.9592062439431809,
+        1.0034675184479878
+      ]
+    ],
+    [
+      "After reconstruction / fixed",
+      0.9827463084120055,
+      [
+        0.9514484540757435,
+        1.0029511078160738
+      ]
+    ],
+    [
+      "Retrained scattering equations / native",
+      1.0171477115360326,
+      [
+        0.9877272320206627,
+        1.0540162733935414
+      ]
+    ],
+    [
+      "Original row model / native (point only)",
+      1.3053438106387103,
+      null
+    ]
+  ],
+  "portfolio_totals": {
+    "native": 108.02879147976637,
+    "adaptive": 102.56125613301992,
+    "published": 95.38217768073082,
+    "fixed": 86.80888842046261,
+    "selected": 85.4965427517891
+  },
+  "preparation_totals": {
+    "previous": 79.78381753899157,
+    "native": 87.84697016328573,
+    "fixed": 67.380715822801,
+    "selected": 64.18275847658515
+  },
+  "vacuum_totals": {
+    "original_kira": 1027.7807076349272,
+    "chain_baseline": 160.91056761000073,
+    "final": 1.921513651846908
+  },
+  "vacuum_sum_speedup": 534.8807731066868,
+  "vacuum_geometric_speedup": 543.8148107331921,
+  "native_coverage": {
+    "Matched reduction": [
+      12,
+      13,
+      10,
+      6,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "Reference/check failed": [
+      0,
+      1,
+      2,
+      6,
+      10,
+      8,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "Above interface limit": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      4,
+      6,
+      6,
+      6,
+      6,
+      6
+    ]
+  },
+  "basis_sums": {
+    "native": 106.24350965581834,
+    "selected": 77.02843731082976
+  },
+  "shared_model": {
+    "cases": 43,
+    "summed_median_seconds": {
+      "native": 63.449792897328734,
+      "fixed": 60.09384850598872,
+      "learned": 57.12460776232183,
+      "previous": 59.1983514521271
+    },
+    "ratios": {
+      "native": 0.9003119656317554,
+      "fixed": 0.9505899386129184,
+      "previous": 0.9649695702847016
+    },
+    "intervals": {
+      "native": [
+        0.8672714243208366,
+        0.9188346007784857
+      ],
+      "fixed": [
+        0.9160186611807583,
+        0.9710412607828984
+      ],
+      "previous": [
+        0.8998926061576502,
+        0.9793008394448109
+      ]
+    },
+    "changed_native": 43,
+    "changed_fixed": 17
+  },
+  "joint_native_ratio": {
+    "ratio": 0.5174741975477563,
+    "interval": [
+      0.5072934593914187,
+      0.5345718069519456
+    ]
+  },
+  "reconstruction_cumulative": {
+    "requests": 75,
+    "matched_completed": 75,
+    "old_completed": 75,
+    "new_completed": 75,
+    "old_seconds": 81.8268567386549,
+    "new_seconds": 49.85177112580277,
+    "ratio": 0.6092348296479639,
+    "interval": [
+      0.46963806456607116,
+      0.7872105318974729
+    ],
+    "slower": 8,
+    "old_failed_applications": 0,
+    "new_failed_applications": 0,
+    "all_attempt_seconds": {
+      "before_formulas": 246.77508009504527,
+      "integrated": 150.40558192669414
+    }
+  },
+  "figures": {
+    "project_labels.pdf": "3c01d37116a50ab5497d33fb7ab09a595e183e5e4e6087eff9d55aa03c535c58",
+    "project_ml.pdf": "60db1bbfd2eedebb7a1f424eefea9f2d28c2a9169ba36842bb94b65c5f79ee9e",
+    "project_cumulative.pdf": "db43b37cf36f4d3e3f3ffa9e518161c1ec48555f4871ec79963a49cf9f26e2df",
+    "project_coverage.pdf": "9e819293091687ee165d4ffdb8d3300f3347e19c96d5f95e1abffe58a9e7b560"
+  }
+}

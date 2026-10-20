@@ -1,0 +1,120 @@
+\section{Shared structural model, actions, and fitting}
+\label{project:app:shared}
+Let $n$ be the number of physical propagators and $E$ the number of independent external momenta. Let $B_{ih}$ be one when loop momentum $\ell_h$ appears in propagator momentum $q_i$, and zero otherwise. Table~\ref{project:tab:structural-inputs} groups the 27 base inputs. Means run over the target batch unless another set is specified. A weighted incidence multiplies the relevant numerator power or extra denominator power by the corresponding row sum of $B$ before summing over propagators.
+\begin{table}[!htbp]\centering\small
+\caption{The base structural inputs. Each quantity is computed from the family definition and target indices before Kira generates equations.}
+\label{project:tab:structural-inputs}
+\begin{tabularx}{\linewidth}{@{}lYr@{}}\toprule
+Group & Quantities & Number\\\midrule
+Family dimensions & $L,E,N,n$; number of symbolic invariants & 5\\
+Propagator structure & Massive-entry count; coupled-physical-entry count; maximum physical row and column sums of $B$; mean external-momentum incidence over all entries & 5\\
+Target batch & Log of one plus target count; number of target sectors & 2\\
+Power ranges & Minimum, mean, and maximum extra positive powers and numerator rank & 6\\
+Positive indices & Minimum, mean, and maximum number of positive indices & 3\\
+Further index limits & Largest absolute index; maximum positive-power sum; maximum number of absent physical denominators & 3\\
+Weighted powers & Mean dots on massive entries; mean numerator-weighted and dot-weighted loop incidence & 3\\\bottomrule
+\end{tabularx}
+\end{table}
+
+We add eight ratios: $N/n$, $n/L$, massive-entry fraction, coupled-physical-entry fraction, maximum dots divided by $n$, maximum rank divided by $N-n$, maximum physical loop incidence divided by $L$, and maximum physical loop degree divided by $n$. Each denominator is replaced by at least one. Six further features are the mean fractions of indices equal to $-2,-1,0,1,2,3$. The final three are $\log[1+L(L+E)]$, $\log(1+n)(1+D_T)$, and $\log[1+\max(1,N-n)](1+R_T)$. These definitions give 44 features. Permuting loop names or entries within the physical and auxiliary groups preserves the pooled counts when the indices are permuted consistently. A change of momentum routing need not preserve them, and identical features need not identify identical reduction problems.
+
+Let $(r_0,s_0,d_0)$ be the target maxima of positive-power sum, numerator rank, and extra positive power. Table~\ref{project:tab:shared-actions} defines ten candidate actions. Bounds are nonnegative and $r$ is at least the number $t_{\rm top}$ of positive entries in the largest top sector. Kira's subsector restriction uses~\cite{Kira3}
+\begin{equation}
+ s\leq\max\{1,t-l+1,s_{\max,\mathrm{sector}}\},
+ \label{project:eq:truncation-new}
+\end{equation}
+where $t$ is that sector's positive-index count, $l$ is the chosen parameter, and the last term is an explicitly assigned sector limit.
+\begin{table}[!htbp]\centering\small
+\caption{The shared model's candidate seed configurations. Changes are relative to the target maxima. A dash disables the additional subsector restriction.}
+\label{project:tab:shared-actions}
+\begin{tabular}{@{}lrrrr@{}}\toprule
+Action & $\Delta r$ & $\Delta s$ & $\Delta d_0$ & $l$\\\midrule
+Native &0&0&0&---\\
+Numerator expansion &0&1&0&---\\
+Tight & $-1$&$-1$&$-1$&---\\
+Reduced dots &$-1$&0&$-1$&---\\
+Reduced numerator rank &0&$-1$&0&---\\
+Expanded &1&1&1&---\\
+Truncated native &0&0&0&$t_{\rm top}-s_0$\\
+Truncated expansion &0&1&0&$t_{\rm top}-s_0$\\
+Truncated reduced dots &$-1$&0&$-1$&$t_{\rm top}-s_0$\\
+Relaxed truncation &0&0&0&$t_{\rm top}-s_0-1$\\\bottomrule
+\end{tabular}
+\end{table}
+
+For request $c$ and action $a$, define the cost label $y_{ca}=\log(T_{ca}/T_{c0})$, with native action $0$. Because the denominator is positive and independent of $a$, and the logarithm is increasing, minimizing the unmodified label selects the action with the least recorded time. Training clips this label to $[-4,5]$ after assigning failures at least 180 seconds or three times the measured attempt cost, whichever is larger. Clipping limits extreme labels and can merge their order; the validation comparison therefore uses the recorded costs directly.
+
+The neural regression model uses composed affine maps and componentwise activations~\cite{Pedregosa2011Bounds}. The selected network standardizes each feature by its training mean and standard deviation, with a minimum scale of $10^{-6}$. With standardized vector $z$, its outputs are defined by
+\begin{equation}
+ h_1=\operatorname{ReLU}(W_1^{\mathsf T}z+b_1),\quad
+ h_2=\operatorname{ReLU}(W_2^{\mathsf T}h_1+b_2),\quad
+ \widehat y=W_3^{\mathsf T}h_2+b_3,
+ \label{project:eq:network-new}
+\end{equation}
+where $\operatorname{ReLU}(u)=\max(0,u)$ acts on each component. Both hidden vectors have 48 components and the output has ten components, one per action. We fit squared prediction error with a squared-weight penalty of strength 0.1 using the regression implementation of Ref.~\cite{Pedregosa2011Bounds}. For $n_{\rm tr}$ training requests, the corresponding objective is
+\begin{equation}
+ \mathcal L=\frac{1}{2n_{\rm tr}}\sum_{c,a}
+ (\widehat y_{ca}-y_{ca})^2+
+ \frac{0.1}{2n_{\rm tr}}\sum_j\|W_j\|_F^2.
+ \label{project:eq:loss-new}
+\end{equation}
+To motivate the first term, assign a formal residual $e_{ca}=\widehat y_{ca}-y_{ca}$ the density $p(e)=(2\pi)^{-1/2}\exp(-e^2/2)$. Then
+\begin{equation*}
+ -\frac{1}{n_{\rm tr}}\log\prod_{c,a}p(e_{ca})
+ =\frac{1}{2n_{\rm tr}}\sum_{c,a}e_{ca}^2+\frac{10}{2}\log(2\pi).
+\end{equation*}
+Removing the constant and adding the stated quadratic penalty gives Eq.~\eqref{project:eq:loss-new}. This construction motivates a regression objective; the study does not infer a Gaussian distribution of timing errors.
+
+The candidate set also contains trees, random forests, and extremely randomized forests at depths 2, 4, and 7, with at least three samples per leaf; forests contain 48 trees~\cite{CART1984,Breiman2001Forest,Geurts2006ExtraTrees}. Two ridge fits use regularization strengths 1 and 10, and the neural candidates have two hidden layers of either 24 or 48 components. Neural fitting uses L-BFGS with at most 500 iterations~\cite{Pedregosa2011Bounds}. The initial implementation exposed an inconsistent scaling between the installed multi-output loss and its gradient. We corrected the loss to match the summed-output gradient, checked it by finite differences, and refitted using the same training and validation inputs. The initial comparison remains in the notes; the corrected model uses a new reserved profile. Candidate convergence warnings remain recorded, and no fit certifies a global optimum.
+
+For every candidate, five-fold cross-validation withholds whole ordered graph structures, with feature scaling fitted within each training fold. The separate validation set selects a single fixed action. We compare that action and native bounds as global anchors, with margins $0,0.05,0.12,0.25$. If $b$ is the anchor and $a_* =\arg\min_a\widehat y_a$, the policy changes to $a_*$ only when $\widehat y_{a_*}<\widehat y_b-\eta$. Exponentiation gives the predicted ratio condition $\exp(\widehat y_{a_*}-\widehat y_b)<\exp(-\eta)$. We select the candidate minimizing the worse of its grouped-fold and separate-validation ratios to native cost. This rule is fixed before the reserved test. A score below 0.97 permits default deployment; it is evidence from validation, not a guarantee for future inputs.
+
+The selected candidate is the 48-component network, with action 7 from Table~\ref{project:tab:shared-actions} (numbered from zero) as anchor and margin 0.05. Training uses only historical training records after the physical holdouts. Their historical timers differ in whether initial imports are included; all new reserved controls use the same complete fresh-process timer. The training record contains every source and model candidate. A failed new seed attempt retries native and expanded bounds with duplicate configurations removed. The shared model never uses target coefficients or measured test time as an input.
+
+\section{Physical inputs and the loop-order test}
+\label{project:app:families-new}
+The following equations define the physical inputs for our benchmark families. All denominators follow Eq.~\eqref{eq:integral}. Let $Q=\sum_{i=1}^{L}\ell_i$. For $L\geq2$, the vacuum families contain
+\begin{equation}
+ q_i=\ell_i\quad(1\leq i\leq L),\qquad q_{L+1}=Q.
+ \label{project:eq:vacuum-new}
+\end{equation}
+The one-mass case gives only the final entry a nonzero mass; the massive case assigns distinct nonzero masses to all physical entries. The one-loop vacuum is a single massive tadpole. The two-point families replace the final momentum by $p-Q$, with either all zero masses or distinct nonzero masses. Their single independent external invariant is $p^2$.
+
+For the four-point families, choose massless external momenta with $p_1+p_2+p_3+p_4=0$, and write $P=p_1+p_2$, $U=p_1+p_2+p_3$, $s=P^2$, $t=(p_2+p_3)^2$. Expanding these squares gives $2p_1\cdot p_2=s$, $2p_2\cdot p_3=t$, and $2p_1\cdot p_3=-s-t$. The physical momenta of the $L$-loop ladder are
+\begin{equation}
+ \{\ell_i,\ell_i-P:1\leq i\leq L\} \cup\
+ \{\ell_i-\ell_{i+1}:1\leq i<L\}\ \cup\
+ \{\ell_1-p_1,\ell_L-U\}.
+ \label{project:eq:ladder-new}
+\end{equation}
+We order the loop momenta first, the $P$-shifted momenta next, then adjacent differences, and finally the two end entries. The box with bubble subgraphs has
+\begin{equation}
+ (q_1,q_2,q_3,q_4)=(\ell_1,\ell_1-p_1,\ell_1-P,\ell_1-U),\qquad
+ (q_{2j+1},q_{2j+2})=(\ell_j,\ell_j-\ell_1),\quad 2\leq j\leq L.
+ \label{project:eq:bubbles-new}
+\end{equation}
+All these four-point propagators are massless. This box family has bubble subgraphs and is a restricted connected scattering class.
+
+The additional massless nonplanar box uses the routing of Ref.~\cite{KiraOriginal}:
+\begin{align}
+ (q_1,\ldots,q_9)=(&\ell_1,\ell_2,p_1-\ell_1,p_2-\ell_2,
+ p_1+p_2-p_3-\ell_1,\nonumber\\
+ &p_1-\ell_1+\ell_2,p_1-p_3-\ell_1+\ell_2,
+ \ell_1-p_3,\ell_2-p_1-p_2).
+ \label{project:eq:nonplanar-new}
+\end{align}
+Its first seven entries are physical. Here the outgoing-momentum convention gives $p_i^2=(p_1+p_2-p_3)^2=0$, $s=(p_1+p_2)^2$, and $t=(p_1-p_3)^2$. Expansion gives $2p_1\cdot p_3=-t$ and $2p_2\cdot p_3=s+t$. The pentagon uses five massless external momenta with zero sum and physical momenta $\ell$, $\ell-p_1$, $\ell-p_1-p_2$, $\ell-p_1-p_2-p_3$, and $\ell-p_1-p_2-p_3-p_4$. Adjacent invariants are $s_{ij}=(p_i+p_j)^2$. Squaring complementary momentum sums gives, for example, $2p_1\cdot p_3=s_{45}-s_{12}-s_{23}$. The box with one virtual external leg uses $(\ell,\ell-p_1,\ell-p_1-p_2,\ell-p_3)$, with $p_i^2=0$ for $i=1,2,3$ and $v=(p_1+p_2-p_3)^2$; its remaining product is $2p_2\cdot p_3=s+t-v$.
+
+There are $L$ loop squares, $L(L-1)/2$ products of distinct loop momenta, and $LE$ loop--external products. Adding these counts gives the complete coordinate number
+\begin{equation}
+ N=\frac{L(L+1)}2+LE.
+ \label{project:eq:count-new}
+\end{equation}
+This is the representation used by Kira~\cite{Kira3}. We append squared momentum differences when their scalar-product coefficient vectors increase the exact rank, until all $N$ coordinates are independent. The candidate order follows loop momenta and then external momenta. Auxiliary indices are nonpositive. The tested interface admits at most 31 coordinates; this is an implementation limit, not an upper bound on the mathematics of IBP. It permits the defined vacuum inputs through seven loops, two-point inputs through six, and four-point inputs through five. Completion remains a separate test.
+
+For the final fresh profile $h=1213$, choose $m_{\rm one}^2=2h+17$, $m_i^2=2h+19+6(i-1)$, $p^2=-2h-29$, $s=-1009-12h$, and $t=-1021-14h$, using only the variables required by each of the six recursive families. All values use a common squared-momentum unit. Additional scattering profiles follow the explicit assignments in Table~\ref{tab:extra-kinematics}. The independent reference increases the target's positive-power, numerator, and dot limits by one; the check increases the numerator allowance once more and changes integral ordering. Every checked reference and every failure is retained.
+\input{paper_extra_kinematics}
+
+Let $a_i^{(0)}=1$ on the $n$ physical entries and zero otherwise. For $j=0,\ldots,\min(n,3)-1$, set $i_j=1+[(h+j)\bmod n]$ and, when $N>n$, $k_j=n+1+[(h+j)\bmod(N-n)]$. The dotted batch uses $\boldsymbol a^{(0)}+2\boldsymbol e_{i_j}$; the mixed batch uses $\boldsymbol a^{(0)}+\boldsymbol e_{i_j}-\boldsymbol e_{k_j}$. Without an auxiliary entry, the latter has only the extra physical power. The three additional structures use the earlier generator, which puts a second physical dot on the next entry when no auxiliary entry exists. The notes give its full historical target definitions. These are indexed Feynman integrals whose reductions come from exact Kira calculations.
+
+For the retained two-loop sparse-seed test, the planar box has physical momenta $(\ell_1,\ell_1-p_1,\ell_1-p_1-p_2,\ell_2,\ell_2-p_1-p_2,\ell_2-p_1-p_2-p_3,\ell_1-\ell_2)$ and auxiliary momenta $(\ell_1-p_3,\ell_2-p_1)$. Its convention is $2p_1\cdot p_2=s$, $2p_1\cdot p_3=t$, and $2p_2\cdot p_3=-s-t$. The nonplanar family is Eq.~\eqref{project:eq:nonplanar-new}. Both use unit physical powers and numerator ranks two through four on one or two auxiliary entries. The equation-transfer comparison also includes the three-loop vacuum with momenta $(\ell_1,\ell_2,\ell_3,\ell_1-\ell_2,\ell_2-\ell_3,\ell_1-\ell_3)$ and the massive two-point ladder $(\ell_1,\ell_1-p,\ell_2,\ell_2-p,\ell_3,\ell_3-p,\ell_1-\ell_2,\ell_2-\ell_3,\ell_1-\ell_3)$, whose final entry is auxiliary. For the three-loop vacuum the squared masses are $(1,1,1,13,13,53+2h)$; for the two-point ladder they are $(1,0,0,0,0,0,0,0)$ on the physical entries, with $p^2=-1009-12h$. The earlier sparse-seed fit uses profiles $h=831,832$ for training, $841,842$ for validation, and $851,852$ for the 20-request test. Its planar invariants are $(-1009-12h,-1021-14h)$ and its nonplanar invariants are $(-113-18h,-127-10h)$. A single-direction numerator carries rank two, three, or four; a distributed numerator splits rank three or four into its ceiling and floor halves on the two auxiliary entries. The equation-filter training uses profiles $511,512$, validation uses $513$, and its new-index comparison uses $605,606$. The notes preserve the complete finite target enumeration and source records for those earlier experiments.

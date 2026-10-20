@@ -1,0 +1,156 @@
+\section{Known-answer targets and the original learning objectives}
+\label{app:project-construction}
+Let each known integral have coefficients $C_{\boldsymbol a m}$ in the chosen master basis. A valid source identity has the form $R=\sum_{\boldsymbol a}r_{\boldsymbol a}I_{\boldsymbol a}=0$. Adding $\lambda R$ to a target gives
+\begin{equation}
+ {\cal T}'={\cal T}+\lambda\sum_{\boldsymbol a}r_{\boldsymbol a}I_{\boldsymbol a}
+ ={\cal T},\qquad
+ C'_m=C_m+\lambda\sum_{\boldsymbol a}r_{\boldsymbol a}C_{\boldsymbol a m}=C_m.
+\end{equation}
+This proves preservation of the reference coefficients in Eq.~\eqref{eq:project-generation}. To cancel a present term with coefficient $w_{\boldsymbol b}$, choose $\lambda=-w_{\boldsymbol b}/r_{\boldsymbol b}$ when $r_{\boldsymbol b}\ne0$. An identity that contains only one integral with an unknown reduction instead gives
+\begin{equation}
+ h_0 I_{\boldsymbol b}+\sum_jh_jI_{\boldsymbol a^{(j)}}=0
+ \quad\Longrightarrow\quad
+ C_{\boldsymbol b m}=-\frac{1}{h_0}\sum_jh_jC_{\boldsymbol a^{(j)}m},
+ \qquad h_0\ne0.
+\end{equation}
+Thus some constructions produce a single indexed integral; a general sum of masters followed by replacements produces an integral expression. The recorded source identities distinguish these cases.
+
+The measure and denominator factors in Eq.~\eqref{eq:integral} give mass dimension $Ld-2\sum_i a_i$. If master $m$ has index sum $B_m$ and the target is assigned index sum $A$, multiplying it by $(Q^2)^{B_m-A}$ gives common dimension $Ld-2A$, where $Q^2$ is a nonzero squared-momentum scale. The construction can therefore use dimensionless rational functions of $d$ and invariant ratios without losing dimensional consistency. Neither this identity nor the recorded path proves a minimum number of operations.
+
+For binary seed label $y\in\{0,1\}$ and predicted probability $p$, the Bernoulli likelihood is $p^y(1-p)^{1-y}$. Taking minus its logarithm gives
+\begin{equation}
+ \ell_{\rm seed}=-y\log p-(1-y)\log(1-p).
+\end{equation}
+The implemented loss averages candidate losses within each target and then gives targets equal weight. Each seed score $s$ gives its own sigmoid output $p=1/(1+e^{-s})$, so several seeds can receive label one. For row scores $s_j$, define $p_j=e^{s_j}/\sum_k e^{s_k}$ over the allowed actions. The likelihood of recorded action $j_*$ is $p_{j_*}$, giving $\ell_{\rm row}=-\log p_{j_*}$. These definitions justify training to reproduce recorded choices. The later cost models train on measured execution time.
+
+If TP counts selected reference seeds, FP counts selected nonreference seeds, and FN counts omitted reference seeds, precision and recall are
+\begin{equation}
+ P=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FP}},\qquad
+ R=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FN}},\qquad
+ F_1=\frac{2}{P^{-1}+R^{-1}}=\frac{2PR}{P+R}.
+\end{equation}
+Complete-set agreement instead counts targets with exactly the recorded set. Sufficiency tests whether the selected equations span a reduction to the required masters. Distinct sufficient sets explain why these measures need not agree. These distinctions also avoid misleading accuracy when most candidate labels are zero~\cite{SaitoRehmsmeier2015}.
+
+Two later reuse steps follow directly from linearity. If targets reduce through intermediate masters $J_j=\sum_mB_{jm}M_m$, then
+\begin{equation}
+ I_i=\sum_j C_{ij}J_j
+     =\sum_m\left(\sum_j C_{ij}B_{jm}\right)M_m.
+\end{equation}
+The conversion must include every intermediate master before the final coefficients are accepted. If two requests share the same family and kinematics, reducing the union of their targets gives one coefficient row for each target; selecting the corresponding rows returns each request's answer. Duplicate targets need only one reduction. These are exact algebraic statements; their time savings remain empirical.
+
+\section{Exact reuse for the restricted vacuum family}
+\label{app:project-vacuum}
+The large cumulative saving in Section~\ref{sec:project-vacuum-results} follows from exact recurrences in a particular Euclidean vacuum family. We derive them here to state both the source of the saving and the restrictions on its use. The family has positive, distinct squared masses $\mu_j=\rho_j\mu$:
+\begin{equation}
+ V^{(L)}_{\boldsymbol b}=
+ \int\prod_{h=1}^L\frac{d^d\ell_h}{\pi^{d/2}}
+ \frac{1}{\ell_1^2\cdots\ell_L^2}
+ \prod_{j=1}^{R}(Q^2+\mu_j)^{-b_j},
+ \qquad Q=\sum_{h=1}^L\ell_h.
+ \label{eq:vacuum}
+\end{equation}
+Here $b_j$ is a nonnegative integer, $B=\sum_jb_j\geq1$, $R$ is the number of massive denominators, $\mu$ is a common squared-mass scale and $\rho_j$ is a positive mass ratio. Each massless denominator has power one. All massive denominators share $Q$, so this family has special algebraic dependencies. Its prescribed masters are $M_j^{(L)}=V^{(L)}_{\boldsymbol e_j}$. The comparison uses $R=2,3,4$ and $\mu=1$ in the selected units.
+
+\subsection{Euler and mass partial-fraction identities}
+We first derive two relations that lower the massive propagator powers. Let $f$ be the integrand without the measure. The simultaneous Euler derivative gives $\sum_h\ell_h\cdot\partial_{\ell_h}(\ell_i^2)^{-1}=-2(\ell_i^2)^{-1}$ for each massless factor. Also, $\sum_h\ell_h\cdot\partial_{\ell_h}Q^2=2Q^2$. Therefore
+\begin{equation}
+ \sum_h\partial_{\ell_h}\cdot(\ell_h f)
+ =\left[Ld-2L-2\sum_jb_j\frac{Q^2}{Q^2+\mu_j}\right]f.
+\end{equation}
+Use $Q^2=(Q^2+\mu_j)-\mu_j$ and integrate the derivative as in Appendix~\ref{app:derivation}. This gives
+\begin{equation}
+ 0=[L(d-2)-2B]V^{(L)}_{\boldsymbol b}
+       +2\sum_j b_j\mu_jV^{(L)}_{\boldsymbol b+\boldsymbol e_j}.
+ \label{eq:euler-vac}
+\end{equation}
+For two present massive denominators, the integrand identity
+$(Q^2+\mu_i)-(Q^2+\mu_j)=\mu_i-\mu_j$ separately gives
+\begin{equation}
+ (\mu_i-\mu_j)V_{\boldsymbol b}^{(L)}
+   =V_{\boldsymbol b-\boldsymbol e_i}^{(L)}
+    -V_{\boldsymbol b-\boldsymbol e_j}^{(L)}.
+ \label{eq:mass-vac}
+\end{equation}
+This second relation is an algebraic partial fraction, so it introduces no additional IBP seed.
+
+\subsection{A recurrence shared across loop orders}
+To make the common loop dependence explicit, define $z=L(d-2)$ and $W_{\boldsymbol b}^{(L)}=\mu^{B-1}V_{\boldsymbol b}^{(L)}$. Multiplication by this power of $\mu$ gives $W$ the same mass dimension as the masters. Substituting in Eqs.~\eqref{eq:euler-vac} and \eqref{eq:mass-vac} removes the common scale. If $\boldsymbol C_{\boldsymbol b}(z)$ is the vector of master coefficients of $W_{\boldsymbol b}^{(L)}$, then
+\begin{align}
+ \boldsymbol C_{\boldsymbol b}(z)
+ &=\frac{\boldsymbol C_{\boldsymbol b-\boldsymbol e_i}(z)
+          -\boldsymbol C_{\boldsymbol b-\boldsymbol e_j}(z)}{\rho_i-\rho_j},
+       &&b_i,b_j>0,\label{eq:mass-rec}\\
+ \boldsymbol C_{k\boldsymbol e_j}(z)
+ &=\frac{2(k-1)-z}{2(k-1)\rho_j}
+         \boldsymbol C_{(k-1)\boldsymbol e_j}(z),
+       &&k\geq2.\label{eq:euler-rec}
+\end{align}
+The initial vector is $\boldsymbol C_{\boldsymbol e_j}=\boldsymbol e_j$. Every recurrence lowers $B$, so it terminates at the prescribed masters. Its coefficients depend on $L$ only through $z$. Induction on $B$ shows that they are polynomials in $z$ with rational coefficients at fixed rational $\rho_j$. One calculation can therefore supply all requested loop orders by substituting $z=L(d-2)$.
+
+\subsection{An independent coefficient check}
+The recurrence result is checked by obtaining the mixed-denominator coefficients through a Taylor partial-fraction expansion. For a dimensionless auxiliary variable $x$, write
+\begin{equation}
+ \prod_i(x+\rho_i)^{-b_i}
+   =\sum_{j:b_j>0}\sum_{k=1}^{b_j}\frac{a_{jk}}{(x+\rho_j)^k}.
+\end{equation}
+At the pole $x=-\rho_j$, set $t=x+\rho_j$. Multiplying by $t^{b_j}$ and expanding the regular factors shows that the principal-part coefficient is
+\begin{equation}
+ a_{jk}=[t^{b_j-k}]\prod_{i\ne j}(\rho_i-\rho_j+t)^{-b_i}.
+ \label{eq:taylor}
+\end{equation}
+Here $[t^n]$ extracts Taylor coefficient $n$ and factors with $b_i=0$ are one. Applying Eq.~\eqref{eq:euler-rec} repeatedly to each pole term gives
+\begin{equation}
+ C_{\boldsymbol b j}(z)=\sum_{k=1}^{b_j}a_{jk}
+       \prod_{h=1}^{k-1}\frac{2h-z}{2h\rho_j},
+ \qquad
+ V^{(L)}_{\boldsymbol b}
+ =\mu^{1-B}\sum_j C_{\boldsymbol b j}(L(d-2))M_j^{(L)}.
+ \label{eq:checked-vacuum}
+\end{equation}
+An empty product is defined as one. This Taylor calculation checks every returned polynomial coefficient before the substitution for $z$ and does not follow the chosen sequence of pair recurrences. The derivation requires distinct $\rho_j$, unit powers for the massless propagators, and the shared momentum $Q$. These assumptions delimit the family to which the result applies.
+
+\section{Project-wide timing estimators}
+\label{app:project-estimators}
+For method $a$, batch $b$, and repetition $r$, let $T_{abr}$ be the elapsed time and $\widetilde T_{ab}$ its median over repetitions. Given control $c$, the ratio of summed medians and the equally weighted geometric ratio are
+\begin{equation}
+ R_{\rm sum}=\frac{\sum_b\widetilde T_{ab}}{\sum_b\widetilde T_{cb}},
+ \qquad
+ R_{\rm geom}=\exp\left(\frac{1}{B}\sum_{b=1}^{B}
+       \log\frac{\widetilde T_{ab}}{\widetilde T_{cb}}\right).
+\end{equation}
+The first expression compares total time when every batch is counted once. The second gives equal weight to each batch's relative change. When physical groups contain different numbers of batches, we first average the log ratios within each group and then average those group values. Exponentiating yields the equal-group geometric mean used in the native model studies.
+
+For either declared ratio $R$, speedup is $1/R$ because reversing the comparison reverses its numerator and denominator. The fraction of time saved is $(T_c-T_a)/T_c=1-R$ for the corresponding estimator. Thus the restricted-vacuum summed ratio gives a speedup of 534.9, while its equal-group geometric ratio gives 543.8. Neither number is obtained by multiplying earlier improvements.
+
+The cumulative vacuum experiment uses eight groups, three mass profiles per group, loop orders one through twelve, and five repetitions per method. Maximum total massive powers are 8, 10, 12, and 14, with two groups at each bound. Requested target counts per profile are 16, 32, 48, and 64, capped by available vectors. Its descriptive interval resamples the eight complete groups 10,000 times, keeping the paired methods and repetitions together~\cite{Efron1979}. The other comparisons retain their original group, request, or repetition resampling units. This describes the uncertainty of each recorded experiment and does not establish a distribution over all Feynman integral families.
+
+
+\section{Finite minimum-operation checks}
+\label{app:project-optimal}
+The saved construction supplies a valid reduction path, but a minimum-cost claim requires a defined set of alternatives. We therefore specify the allowed equations, row operations, and cost before checking all paths for two small systems. These bounded examples make precise the distinction between a known path and a certified minimum. Define the massless bubble $B_{a,b}=I_{(a,b)}$ with denominators $\ell^2+i0$ and $(\ell-p)^2+i0$, where $p^2=s\ne0$. Contracting the derivative with $\ell$ uses $2\ell\cdot(\ell-p)=\ell^2+(\ell-p)^2-s$. Equation~\eqref{eq:product-rule} then gives
+\begin{equation}
+ 0=(d-2a-b)B_{a,b}-bB_{a-1,b+1}+bsB_{a,b+1}.
+\end{equation}
+Changing variables $\ell\mapsto p-\ell$ exchanges $a,b$ and gives the second operator identity. Integrals with only a massless denominator vanish in dimensional regularization~\cite{Weinzierl2022}. The two operators at $(1,1)$, the first at $(2,1)$ and the second at $(1,2)$ therefore give
+\begin{equation}
+ \begin{pmatrix}0&s&0&d-3\\s&0&0&d-3\\d-5&-1&s&0\\-1&d-5&s&0\end{pmatrix}
+ \begin{pmatrix}B_{2,1}\\B_{1,2}\\B_{2,2}\\B_{1,1}\end{pmatrix}=0.
+\end{equation}
+The first two rows yield $B_{2,1}=B_{1,2}=(3-d)B_{1,1}/s$. Substituting in the third yields $B_{2,2}=(d-6)(d-3)B_{1,1}/s^2$.
+
+For the massive tadpole $T_a=\int d^d\ell\,(\ell^2-m^2+i0)^{-a}/(i\pi^{d/2})$, the same derivative gives
+\begin{equation}
+ 0=dT_a-2a\int\frac{d^d\ell}{i\pi^{d/2}}
+ \frac{\ell^2}{(\ell^2-m^2+i0)^{a+1}}
+ =(d-2a)T_a-2am^2T_{a+1}.
+\end{equation}
+Seeds $a=1,2,3$ reduce $T_2,T_3,T_4$ to $T_1$. We keep the master column protected in both systems. An allowed step selects a nonzero pivot in an unprocessed nonmaster column, normalizes its row and eliminates that column from the other rows. The cost counts one division per nonzero nonpivot source entry when normalization is needed, plus one multiplication and one subtraction for each nonpivot source-entry update. It excludes assignments and the internal polynomial operations of a rational-function operation.
+
+Let $S$ be the exact matrix state, $\mathcal A(S)$ its allowed actions, $c(S,a)$ the stated step cost and $S_a$ the resulting state. Splitting every complete path into its first action and its remaining path gives the finite recurrence~\cite{Bellman1952}
+\begin{equation}
+ V(S)=\min_{a\in\mathcal A(S)}\{c(S,a)+V(S_a)\},
+ \qquad V(S_{\rm done})=0.
+\end{equation}
+Each action removes an unprocessed column. Induction on the number of remaining columns proves the minimum after all actions have been evaluated. Repeating this calculation for every source-row subset of nonmaster rank three also minimizes over initial equation selection.
+
+Our bubble check covers 113 states, 234 transitions and 152 complete paths across five sufficient subsets. Its minimum is seven coefficient operations with subset selection and thirteen with the full pool. The tadpole check covers 24 states, 32 transitions and fifteen paths; its minimum is seven operations with its single sufficient subset. Each pool requires at least three equations. The smallest number of distinct seed labels is two for the bubble and three for the tadpole. Exact replay and six native Kira master-coefficient comparisons agree. These are minima for the displayed identities, protected basis, allowed operations and cost. They do not establish minimum elapsed time or an optimum over all IBP identities.

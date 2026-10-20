@@ -93,7 +93,9 @@ def main():
                          if p.name in ["paper_abstract.tex", "paper_background.tex",
                                        "paper_methods.tex", "paper_study_design.tex",
                                        "paper_results.tex", "paper_discussion.tex",
-                                       "paper_conclusion.tex"]},
+                                       "paper_conclusion.tex", "paper_project_data.tex",
+                                       "paper_project_results.tex", "paper_project_appendix.tex",
+                                       "paper_project_structural.tex", "paper_latest_appendix.tex"]},
     }
     (HERE / "rewrite_validation.json").write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result))

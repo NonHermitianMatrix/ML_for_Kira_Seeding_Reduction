@@ -1,3 +1,5 @@
+The four `project_*.pdf` figures summarize the full project. `project_labels.pdf` separates seed-label quality from exact sufficiency. `project_ml.pdf` compares learned choices with their matched controls. `project_cumulative.pdf` shows the direct restricted-vacuum cumulative comparison. `project_coverage.pdf` separates native completion from restricted analytic loop coverage. Create them with `report/s04_project_figures.py`. Each source and numerical result is recorded in `report/project_figure_data.json`.
+
 # Focused paper figures
 
 Use `report/s02_rewrite_figures.py` to make the current figures from saved measurements.

@@ -1,3 +1,9 @@
+# Whole-project scope correction
+
+The revised main narrative covers the complete study, beginning with known-answer integral data and ending with the combined application. It gives central space to the original-to-optimized vacuum comparison, native ML controls, shared requests, and the 75-request cumulative comparison. The latest 93-request increment is supporting detail. No new training or timing data were produced for this revision.
+
+Own measurements are supported by saved numerical evidence, methods, and named controls. External methods retain primary citations. New appendix material derives target construction, learning losses, basis conversion, request sharing, vacuum recurrences, and timing estimators. The earlier checked writing guidance remains below.
+
 # Writing and evidence review
 
 This revision changes the paper's explanation and structure. It adds no scientific timing measurements.

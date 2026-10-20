@@ -295,3 +295,8 @@ Retain independent tests, exact checks, previous evidence, resource limits, and 
 - Define technical terms before use and explain a worked reduction example. Use external primary citations for established claims and appendix derivations for the equations used here. Support the study's measured claims with its own methods, tables, and saved evidence.
 - Use scientific-writing guidance to improve the reader's path through the argument. Keep timing baselines explicit, label plotted axes and intervals correctly, retain slower cases and failures, and separate learned savings from other changes.
 - This request is an editorial revision. Preserve scientific data and models, rebuild and inspect the documents, and synchronize the complete report across Hoffman, GitHub, and the local machine.
+
+## Whole-project scientific narrative (October 20, 2026)
+
+- The main report must explain the complete project: its starting question, training data, models, Kira integration, exact methods, unsuccessful approaches, and measured gains. Give original-to-optimized comparisons a central place; the latest incremental update is only one result.
+- State the baseline, workload, timing boundary, and scope of each gain. Separate model-only effects from exact reductions, shared work, and other changes. Never multiply gains from different test sets to invent a project-wide speedup.

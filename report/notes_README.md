@@ -1,3 +1,5 @@
+The main paper now explains the whole project. It covers the constructed integral data, the first seed and row models, their native Kira tests, equation selection, models trained on complete cost, exact recurrences, shared requests, and analytic extensions. Direct original-to-optimized comparisons appear in the main results. The final 93-request update is in a supporting appendix. Each gain has its own control and scope.
+
 # Focused paper and retained notes
 
 Read `report.pdf` for the current physics narrative and comparisons.

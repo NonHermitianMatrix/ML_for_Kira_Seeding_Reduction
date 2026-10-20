@@ -1,6 +1,8 @@
-\section{Reading the focused reduction paper}
+\section{Reading the whole-project reduction paper}
 \label{notes:paper-reading-guide}
-The accompanying paper, \emph{Speeding up Feynman integral reduction with Kira: exact identities and learned choices}, reorganizes the completed study around the reduction problem. It first defines the integrals, gives a tadpole example of integration by parts, and then explains the exact identities and learned decisions. Its main comparison is the completed serial experiment with 93 requests. The present notes retain the original experiments, models, intermediate comparisons, and failures.
+The accompanying paper, \emph{Speeding up Feynman integral reduction with Kira: exact identities and learned choices}, reorganizes the completed study around the reduction problem. It first defines the integrals, gives a tadpole example of integration by parts, and then explains the exact identities and learned decisions. It now covers the full project: constructed targets, the original seed and row models, equation selection, cost-based redesign, exact recurrences, shared reductions, and later analytic extensions. The 93-request experiment is its final incremental comparison. The present notes retain the original experiments, models, intermediate comparisons, and failures.
+
+The restricted-vacuum cumulative study gives 1,027.781 seconds for the original supplied-equation Kira control and 1.922 seconds for the exact recurrence method. The shared structural model gives 60.094 to 57.125 seconds against a matched fixed choice on 43 completed native requests. These results have different domains and controls.
 
 The final serial comparison gives median complete-collection times of 45.091 seconds for the preceding application and 41.137 seconds for the final application, with all 837 results verified. These values include processing all requests in one call. The earlier 75-request result, including its 39.1\% cumulative reduction across the vacuum and reconstruction changes, uses a different collection and timing procedure. The paper states both controls explicitly and does not combine the percentages.
 

@@ -1,3 +1,5 @@
+The research paper now reports the complete project and its measured gains. Read `report/report.pdf` for the study and `report/notes.pdf` for the full experiment history.
+
 <!-- FOCUSED PAPER REVISION BEGIN -->
 # Current paper
 
