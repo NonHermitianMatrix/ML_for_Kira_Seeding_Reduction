@@ -61,34 +61,49 @@ The separately tested equation classifier has seventeen features: four family an
 
 \section{Measured-cost learning}
 \label{app:shared}
-Let $C_{ia}$ be the measured complete time of training request $i$ under action $a$. Unverified actions receive $C_{ia}\geq60$ seconds. This is a training penalty, and test failures are reported as failures. A leaf containing requests $S$ assigns action cost
+For training request $i$ and action $a$, let $t_{ia}$ be measured elapsed time, $f_{ia}$ the fraction of unsuccessful repetitions, and $b_i$ the measured preceding-application time. We define the training cost and relative cost by
 \begin{equation}
- \widehat C_a(S)=\frac{1}{|S|}\sum_{i\in S}C_{ia},\qquad
- a_S=\arg\min_a\sum_{i\in S}C_{ia}.
- \label{eq:cost-leaf}
+ C_{ia}=t_{ia}+f_{ia}b_i,\qquad y_{ia}=C_{ia}/b_i.
+ \label{eq:reconstruction-cost}
 \end{equation}
-The second formula follows because the first denominator does not depend on the action. A proposed split $S=S_1\cup S_2$ improves the empirical chosen cost by
-\begin{equation}
- \Delta(S_1,S_2)=\min_a\sum_{i\in S}C_{ia}
- -\min_a\sum_{i\in S_1}C_{ia}
- -\min_a\sum_{i\in S_2}C_{ia}.
- \label{eq:cost-split}
-\end{equation}
-This is the parent cost minus the sum of child costs. We require $\Delta>0.002|S|$ seconds before splitting. This cost-sensitive objective uses the recursive tree and bootstrap-ensemble constructions of Refs.~\cite{CART1984,Breiman2001Forest}.
+The first expression adds the measured failed attempt and the estimated cost of recovery. The second expresses this cost relative to the same request's control. These are training definitions. The reserved comparison measures actual complete applications, including actual recovery.
 
-For each target, let $u$ and $v$ be its two nonnegative auxiliary numerator powers and let $R=u+v$. The 21 inputs are batch size; minimum, maximum, and mean $R$; number of distinct $R$ values; minimum, maximum, and mean of each of $u,v$; counts with $u=0$ and $v=0$; sums of $uv$ and $(u-v)^2$; number of physical propagators containing both loops; largest number of physical propagators incident on a loop; and counts with $R=1,2,3,4$. All are available before reduction.
+The ensemble predicts the vector $\boldsymbol z_i=(y_{i1},\ldots,y_{i6},f_{i1},\ldots,f_{i6})$. It minimizes weighted squared error at its regression leaves, following the extremely randomized tree construction of Ref.~\cite{Geurts2006ExtraTrees}. For one component $z$ and a leaf containing requests $S$, its loss is $\sum_{i\in S}b_i(z_i-\mu)^2$. Differentiation with respect to $\mu$ gives
+\begin{equation}
+ 0=2\sum_{i\in S}b_i(\mu-z_i),\qquad
+ \widehat z(S)=\frac{\sum_{i\in S}b_i z_i}{\sum_{i\in S}b_i}.
+ \label{eq:reconstruction-leaf}
+\end{equation}
+For a cost component, inserting $z_i=C_{ia}/b_i$ gives
+\begin{equation}
+ \widehat y_a(S)=\frac{\sum_{i\in S}C_{ia}}{\sum_{i\in S}b_i},
+ \qquad
+ \arg\min_a\widehat y_a(S)=\arg\min_a\sum_{i\in S}C_{ia}.
+ \label{eq:reconstruction-leaf-choice}
+\end{equation}
+The denominator is independent of the action, which proves the second equality. Thus a leaf ranks actions by their aggregate measured cost on its requests. The ensemble averages the 32 leaf predictions. Weighting by $b_i$ gives slower baseline requests more influence, while relative costs permit one model to represent different physical structures. This local cost interpretation does not prove global minimum time on unseen requests.
 
-We compare 1, 12, or 32 trees, maximum depths 1 through 5, minimum leaf populations 2, 4, or 8, and required fractional savings $\eta=0,0.03,0.08,0.15$. An ensemble averages leaf cost vectors. A single tree uses the complete training set; each ensemble tree samples training requests with replacement. The fixed action $b$ minimizes total validation cost among actions that completed every training and validation request. If $a_*$ has the least predicted cost, we choose it only when
+Validation compares maximum depths 2, 4, and 6, minimum leaf populations 2 and 4, and predicted saving margins $\eta=0,0.05,0.10,0.20$. For the fixed action $b$ selected for a propagator structure, we choose the least predicted relative cost among actions with predicted failure fraction at most 0.02. We use that action $a_*$ only if
 \begin{equation}
- \widehat C_{a_*}+0.002 < (1-\eta)\widehat C_b.
- \label{eq:cost-margin}
+ \widehat y_{a_*}<(1-\eta)\widehat y_b.
+ \label{eq:reconstruction-margin}
 \end{equation}
-The allowance is two milliseconds per prediction during selection. Equation~\eqref{eq:cost-margin} is the defined minimum predicted saving, obtained by adding prediction overhead to the selected cost. Validation compares candidates by unverified count, complete cost, tree count, and depth, in that order. Deployment additionally requires at least one percent less validation cost and a change from the fixed action. We also fit a failure classifier for each action from its verified/unverified training labels. Each classifier has twelve trees of depth at most three and at least two requests per child. One tree uses all requests, and eleven use bootstrap samples. A leaf returns its failed fraction $p_f$. Binary Gini impurity for $n$ requests with $k$ failures is
-\begin{equation}
- n\left[1-(k/n)^2-(1-k/n)^2\right]=\frac{2k(n-k)}{n}.
- \label{eq:failure-gini}
-\end{equation}
-The equality follows by expansion. Splits maximize the decrease in this quantity, following the classification-tree construction of Ref.~\cite{CART1984}. Averaging the leaf fractions gives an empirical risk score for each action, without a claim of calibrated failure probability. Validation selects a threshold from $0,0.05,0.15,0.30$ jointly with the cost policy. If the proposed score exceeds that threshold, or any feature lies outside its training range, the policy selects the fully verified fixed region. Validation requires no unverified selected actions before enabling the model. This guard uses observed evidence; a zero score is not a proof that an unseen reduction will complete. The application timer includes both predictions and any subsequent recovery.
+This inequality is the defined fractional saving condition. If no alternative satisfies it, the action remains $b$. A feature outside the training minimum or maximum uses the preceding procedure. Validation must then show a complete-cost ratio below 0.97 with no failed selected attempt before deployment enables the model. Failure scores describe observed training outcomes; a zero score does not certify an unseen reduction.
+
+To specify the features, define target excess power $D=\sum_j\max(a_j-1,0)$, numerator rank $R=\sum_j\max(-a_j,0)$, and line count $P_T=\sum_j{\bf1}_{a_j>0}$. A line is incident on a loop momentum when that momentum occurs in its inverse propagator. The 29 features are listed in Table~\ref{tab:reconstruction-features}. Every feature follows from the supplied indices and propagator definitions.
+\begin{table}[!htbp]\centering\small
+\caption{Inputs to the algebra-cost model. Means and extrema over targets use the complete requested batch.}
+\label{tab:reconstruction-features}
+\begin{tabularx}{\linewidth}{@{}lY@{}}\toprule
+Positions & Quantities\\\midrule
+1--6 & Number of loops, external momenta, integral coordinates, physical propagators, symbolic external invariants, and $\log(1+n_T)$ for $n_T$ targets\\
+7--13 & Maximum and mean $D$, maximum and mean $R$, minimum and maximum $P_T$, and number of distinct sectors\\
+14--18 & Number of massive coordinates; number of physical lines containing several loops; maximum loop incidence per physical line; maximum physical-line incidence per loop; mean external-momentum incidence per coordinate\\
+19--22 & Minimum $D$, minimum $R$, mean $P_T$, and maximum absolute index\\
+23--25 & Mean excess power on massive coordinates; mean numerator rank weighted by loop incidence; mean excess power weighted by loop incidence\\
+26--29 & Maximum sum of positive powers; maximum number of absent physical lines; maximum numerator and denominator bit lengths among rational masses and scalar products\\\bottomrule
+\end{tabularx}\end{table}
+The ordering within positions 7--10 is maximum $D$, maximum $R$, mean $D$, mean $R$. The remaining entries follow the listed order. The bit lengths describe the supplied rational numbers and do not encode a family identifier.
 
 \section{Physical test inputs}
 \label{app:families-new}
@@ -122,17 +137,17 @@ and the auxiliary momenta are $(\ell_1-p_3,\ell_2-p_1)$. The nonplanar routing f
  \ell_1-p_3,\ell_2-p_1-p_2).
  \label{eq:nonplanar-input}
 \end{align}
-The first seven entries are physical and all masses vanish. Its convention gives $p_i^2=(p_1+p_2-p_3)^2=0$, $s=(p_1+p_2)^2$, and $t=(p_1-p_3)^2$. Expanding the squares gives $2p_1\cdot p_3=-t$ and $2p_2\cdot p_3=s+t$. The planar profiles use $(s,t)=(-1009-12h,-1021-14h)$ and the nonplanar profiles use $(-113-18h,-127-10h)$.
+The first seven entries are physical and all masses vanish. Its convention gives $p_i^2=(p_1+p_2-p_3)^2=0$, $s=(p_1+p_2)^2$, and $t=(p_1-p_3)^2$. Expanding the squares gives $2p_1\cdot p_3=-t$ and $2p_2\cdot p_3=s+t$. The low-rank profiles use $(s,t)=(-1009-12h,-1021-14h)$ for the planar graph and $(-113-18h,-127-10h)$ for the nonplanar graph. Appendix~\ref{app:reconstruction-inputs} gives the independently chosen high-rank invariants.
 
-Every native target is $(1,1,1,1,1,1,1,-u,-v)$ with $u,v\geq0$ and $1\leq u+v\leq4$. The current split uses the profiles and batch counts in Appendix~\ref{app:direct-inputs}. Both graph types occur in all splits, so the test measures new batches and kinematic points within these structures.
+Every high-rank box target is $(1,1,1,1,1,1,1,-u,-v)$ with $u,v\geq0$ and $1\leq u+v\leq4$. The current split uses the profiles and batch counts in Appendix~\ref{app:reconstruction-inputs}. Both graph types occur in all splits, so the test measures new batches and kinematic points within these structures.
 
 \section{Time ratios and uncertainty}
 \label{app:statistics}
 Let $T_{imr}$ be complete elapsed time for request $i$, method $m$, and repetition $r$. For the set $\mathcal C$ completed by both methods in all repetitions, define
 \begin{equation}
  S_m=\sum_{i\in\mathcal C}\operatorname{median}_{r=1,2,3}T_{imr},\qquad
- R=\frac{S_{\rm new}}{S_{\rm control}},\qquad
- \text{fractional saving}=1-R.
+ \rho=\frac{S_{\rm new}}{S_{\rm control}},\qquad
+ \text{fractional saving}=1-\rho.
  \label{eq:time-ratio}
 \end{equation}
-These definitions compare identical completed requests. Dividing both times by the control time gives $R$, and subtracting gives the fractional saving. Completion counts remain separate because an unfinished reduction has no verified finite speedup. To estimate variation across requests, we draw $|\mathcal C|$ paired request indices with replacement and recompute $R$. We report the central 95\% of 4,000 such ratios, using the bootstrap construction of Ref.~\cite{Efron1979}. This interval describes the sampled request collection and does not establish performance for every integral family.
+These definitions compare identical completed requests. Dividing both times by the control time gives $\rho$, and subtracting gives the fractional saving. Completion counts remain separate because an unfinished reduction has no verified finite speedup. To estimate variation across requests, we draw $|\mathcal C|$ paired request indices with replacement and recompute $\rho$. We report the central 95\% of 5,000 such ratios, using the bootstrap construction of Ref.~\cite{Efron1979}. This interval describes the sampled request collection and does not establish performance for every integral family.

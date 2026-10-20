@@ -1,0 +1,823 @@
+{
+  "case": "reconstruction_training_double_box_8",
+  "success": false,
+  "reference": {
+    "success": false,
+    "blocks": [
+      {
+        "case": {
+          "id": "reconstruction_training_double_box_8_block0",
+          "group": "double_box_h26721",
+          "topology_group": "double_box",
+          "split": "training",
+          "definition": {
+            "name": "F",
+            "kind": "double_box",
+            "loop_momenta": [
+              "k1",
+              "k2"
+            ],
+            "external_momenta": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "propagators": [
+              {
+                "momentum": "k1",
+                "mass_squared": "0"
+              },
+              {
+                "momentum": "k1-p1",
+                "mass_squared": "0"
+              },
+              {
+                "momentum": "k1-p1-p2",
+                "mass_squared": "0"
+              },
+              {
+                "momentum": "k2",
+                "mass_squared": "0"
+              },
+              {
+                "momentum": "k2-p1-p2",
+                "mass_squared": "0"
+              },
+              {
+                "momentum": "k2-p1-p2-p3",
+                "mass_squared": "0"
+              },
+              {
+                "momentum": "k1-k2",
+                "mass_squared": "0"
+              },
+              {
+                "momentum": "k1-p3",
+                "mass_squared": "0"
+              },
+              {
+                "momentum": "k2-p1",
+                "mass_squared": "0"
+              }
+            ],
+            "invariants": [],
+            "scalarproduct_rules": [
+              [
+                [
+                  "p1",
+                  "p1"
+                ],
+                "0"
+              ],
+              [
+                [
+                  "p2",
+                  "p2"
+                ],
+                "0"
+              ],
+              [
+                [
+                  "p3",
+                  "p3"
+                ],
+                "0"
+              ],
+              [
+                [
+                  "p1",
+                  "p2"
+                ],
+                "-105/2"
+              ],
+              [
+                [
+                  "p1",
+                  "p3"
+                ],
+                "-111/2"
+              ],
+              [
+                [
+                  "p2",
+                  "p3"
+                ],
+                "108"
+              ]
+            ],
+            "top_level_sectors": [
+              127
+            ],
+            "physical_propagators": 7,
+            "parameters": {
+              "s": -105,
+              "t": -111
+            },
+            "coefficient_field": "Q(d); all listed squared masses and invariants fixed in a common unit",
+            "rank": 9
+          },
+          "targets": [
+            [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              -2,
+              0
+            ],
+            [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              -1,
+              -3
+            ]
+          ],
+          "size": 2,
+          "shape": "rank2",
+          "test_group": "native"
+        },
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "result": {
+          "case": "reconstruction_training_double_box_8_block0",
+          "group": "double_box_h26721",
+          "topology": "double_box",
+          "split": "training",
+          "loops": 2,
+          "size": 2,
+          "policy": "native",
+          "targets": [
+            [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              -2,
+              0
+            ],
+            [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              -1,
+              -3
+            ]
+          ],
+          "margin": 0,
+          "success": false,
+          "complete": false,
+          "status": "time_limit",
+          "reference": null,
+          "allow_auxiliary": false,
+          "scratch_location": "node",
+          "worker_host": "n6406",
+          "node_tmpdir": "/work/15221604.1.pod_smp.q",
+          "permutation_option": 1,
+          "requested_seed_bounds": [
+            8,
+            5,
+            1
+          ],
+          "positive_bound_floor_applied": false,
+          "seed_bounds": [
+            8,
+            5,
+            1
+          ],
+          "truncate_sp": null,
+          "integral_ordering": 2,
+          "prescribed_basis": [
+            [
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              1,
+              1,
+              0,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              1,
+              1,
+              0,
+              1,
+              1,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              1,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              -1,
+              0
+            ],
+            [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              0,
+              0
+            ]
+          ],
+          "binary_sha256": "b810b0813685b9a822968daffb45694d9637c691fce08a6b1705ebd7949b4dd1",
+          "driver_sha256": "82cef613ebb3024ccf9c0629f8094299958147d1b83a9ffd6251b42fa3a26871",
+          "limits": {
+            "complete_timeout_seconds": 45,
+            "scratch_bytes": 33554432,
+            "tree_rss_bytes": 5452595200,
+            "address_bytes": 6442450944,
+            "file_bytes": 67108864
+          },
+          "parallel_evaluation": true,
+          "shared_evaluation": true,
+          "pair_fastpath": true,
+          "sparse_row_features": true,
+          "ephemeral_database": true,
+          "equation_mode": "off",
+          "equation_threshold": 0.0,
+          "preparation_seconds": 0.038237228989601135,
+          "worker_threads": 1,
+          "kira_seconds": 35.09961472824216,
+          "returncode": -15,
+          "peak_rss_bytes": 313245696,
+          "peak_scratch_bytes": 196608,
+          "compact_back_substitution": true,
+          "stage_metrics": [
+            {
+              "stage": "parametric_construction",
+              "seconds": 0.003548,
+              "early_projection": true
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 0.0001774318516254425
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.3548643589019775e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.40496951341629e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.6563724279403687e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 7.106363773345947e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.863498568534851e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.811584949493408e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.406219184398651e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.291666507720947e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.631599247455597e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.264471888542175e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.290230572223663e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.7454068660736084e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.608370363712311e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.589185118675232e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.561431705951691e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 6.566941738128662e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.404224455356598e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 6.880797445774078e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.5516138672828674e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 6.771460175514221e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.476254642009735e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.309175372123718e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.684684634208679e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.335997462272644e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.289671778678894e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.736652433872223e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.572421312332153e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.726780414581299e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.6699697375297546e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.40254807472229e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.340521991252899e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.2051618695259094e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.431232810020447e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.594082176685333e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.7515535950660706e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.69977205991745e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.3412670493125916e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.626011312007904e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.039013922214508e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.305131733417511e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.6080520153045654e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.704110324382782e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.591047763824463e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.88688999414444e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.6061351895332336e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 7.915124297142029e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.8867037296295166e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 7.623247802257538e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.4460797905921936e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.3153221011161804e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.776140511035919e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.2922253012657166e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.2010098695755005e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.740377724170685e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.5783817768096924e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.263913094997406e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.296936094760895e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.1836872696876526e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.8801302909851074e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.6664848923683167e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 6.813369691371918e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.3143128752708435e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 6.259605288505554e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.3857300877571106e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.7165900468826294e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.2887404561042786e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.2655115723609924e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.3371692299842834e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.731359124183655e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.0047412514686584e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 6.269104778766632e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.326552152633667e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.826540291309357e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 6.862357258796692e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 7.036514580249786e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.713663995265961e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 7.630884647369385e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 7.196702063083649e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 9.268335998058319e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.538094460964203e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.365108907222748e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 6.031431257724762e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.276501178741455e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.3859705328941345e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.4778531193733215e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 6.274133920669556e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 6.493926048278809e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.8683414459228516e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.954822361469269e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.24669885635376e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 6.110221147537231e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.2386894822120667e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 6.734393537044525e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 6.435997784137726e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 7.88029283285141e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 3.842264413833618e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.286373198032379e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 5.210191011428833e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 7.468461990356445e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.961341619491577e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 6.849132478237152e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 6.146542727947235e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 7.849372923374176e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 4.795193672180176e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 6.446801126003265e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 6.455555558204651e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 7.936544716358185e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 6.302259862422943e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 8.648820221424103e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 9.089335799217224e-05
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 0.00010502338409423828
+            },
+            {
+              "stage": "generation_modular",
+              "seconds": 17.500782180577517
+            },
+            {
+              "stage": "equation_selection",
+              "seconds": 0.012427344918251038
+            },
+            {
+              "stage": "equation_regeneration",
+              "seconds": 16.75099366530776
+            },
+            {
+              "stage": "modular_solve",
+              "seconds": 0.05914941057562828
+            },
+            {
+              "stage": "equation_selection",
+              "seconds": 0.014938808977603912
+            }
+          ],
+          "master_admission_rejected": false,
+          "counters": {
+            "generated_equations": [
+              564457,
+              8448
+            ],
+            "selected_equations": [
+              0
+            ],
+            "forward_insertions": []
+          },
+          "metrics": [],
+          "reference_checked": false,
+          "verification_mode": "native_exact_basis",
+          "basis_admitted": false,
+          "complete_seconds": 35.14380299858749,
+          "log_tail": "equations for topology F, sector 94 (18 of 43)\nGenerate equations for topology F, sector 95 (19 of 43)\nGenerate equations for topology F, sector 98 (20 of 43)\nGenerate equations for topology F, sector 99 (21 of 43)\nGenerate equations for topology F, sector 106 (22 of 43)\nGenerate equations for topology F, sector 107 (23 of 43)\nGenerate equations for topology F, sector 101 (24 of 43)\nGenerate equations for topology F, sector 108 (25 of 43)\nGenerate equations for topology F, sector 109 (26 of 43)\nGenerate equations for topology F, sector 102 (27 of 43)\nGenerate equations for topology F, sector 103 (28 of 43)\nGenerate equations for topology F, sector 110 (29 of 43)\nGenerate equations for topology F, sector 111 (30 of 43)\nGenerate equations for topology F, sector 113 (31 of 43)\nGenerate equations for topology F, sector 121 (32 of 43)\nGenerate equations for topology F, sector 114 (33 of 43)\nGenerate equations for topology F, sector 115 (34 of 43)\nGenerate equations for topology F, sector 122 (35 of 43)\nGenerate equations for topology F, sector 123 (36 of 43)\nGenerate equations for topology F, sector 117 (37 of 43)\nGenerate equations for topology F, sector 124 (38 of 43)\nGenerate equations for topology F, sector 125 (39 of 43)\nGenerate equations for topology F, sector 118 (40 of 43)\nGenerate equations for topology F, sector 119 (41 of 43)\nGenerate equations for topology F, sector 126 (42 of 43)\nGenerate equations for topology F, sector 127 (43 of 43)\n\nNumber of selected equations to reduce: 0 equations\nsolve forward:      0.0\nmax insertions:     0\nsolve backward: 0.0\nprepare content for selector: 0.0\ntotal solve time:   0.1\n    8448 equations: 0 zero + 8448 independent\nmaster integrals which should be avoided\nRegenerate:\nGenerate equations for topology F, sector 29 (1 of 43)\n"
+        }
+      }
+    ],
+    "reference_method": "Independent symbolic Kira, ordering 2 and expanded bounds, with the published application master basis."
+  }
+}

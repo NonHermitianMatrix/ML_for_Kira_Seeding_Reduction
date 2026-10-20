@@ -1,7 +1,20 @@
 <!-- DIRECT ANALYTIC CURRENT BEGIN -->
+
+<!-- RECONSTRUCTION APPLICATION BEGIN -->
+Use `ML_model_adaptive_reduction/reconstruction_policy/s15_deploy.py` for the current application.
+Read [the reconstruction application guide](ML_model_adaptive_reduction/reconstruction_policy/README.md).
+The integrated-to-preceding complete-time ratio is 0.6261 on 75 matched requests.
+The separate added-model ratio is 1.0081; new-model deployment is `False`.
+The separate inherited-ML ratio is 0.9827.
+The matched cumulative ratio across the two latest extensions is 0.6092.
+The study retains exact formulas through thirteen loops in their stated domains.
+It tests new native requests at two and three loops.
+Read the paper for the physics, derivations, measured results, and coverage limits.
+<!-- RECONSTRUCTION APPLICATION END -->
+
 # Current integral decomposition method
 
-Use `ML_model_adaptive_reduction/direct_analytic/s23_deploy.py`.
+The preceding application is `ML_model_adaptive_reduction/direct_analytic/s23_deploy.py`.
 Read the [current application guide](ML_model_adaptive_reduction/direct_analytic/README.md) for commands, exact domains, models, and limits.
 The method combines analytic formulas with measured-cost native choices.
 The paper reports the current comparison. The notes retain the earlier experiments.

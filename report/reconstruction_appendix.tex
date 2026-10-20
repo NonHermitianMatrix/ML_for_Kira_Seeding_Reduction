@@ -1,0 +1,88 @@
+\section{Native reconstruction inputs}
+\label{app:reconstruction-inputs}
+The planar and nonplanar boxes use Eqs.~\eqref{eq:planar-input} and \eqref{eq:nonplanar-input}, respectively. The high-rank targets are $(1,1,1,1,1,1,1,-u,-v)$ with $u,v\geq0$ and $1\leq u+v\leq4$. Each graph contributes fourteen training, six validation, and six reserved high-rank batches. The complete target sets differ between splits and exclude the preceding comparison batches. Individual target vectors can occur in more than one batch.
+
+For batch index $i=0,\ldots,25$, define $j=i\bmod6$ and $q=\lfloor i/6\rfloor$. Let
+\begin{align}
+ (A_0,\ldots,A_5)&=(3,13,103,1009,10007,100003),\nonumber\\
+ (B_0,\ldots,B_5)&=(7,19,107,1013,10009,100019).
+ \label{eq:reconstruction-scales}
+\end{align}
+We set $s=-(A_j+2q)$ and $t=-(B_j+4q)$ in both graphs, using each graph's scalar-product convention. Indices $0$--$13$ train the model, $14$--$19$ select it, and $20$--$25$ test it. These equations define the chosen input points. In the planar graph the fourth momentum is $-p_1-p_2-p_3$, and in the nonplanar graph it is $p_1+p_2-p_3$. Expanding their squares with the listed scalar products gives zero in both cases. The test batches are specified in Table~\ref{tab:reconstruction-batches}.
+\begin{table}[!htbp]\centering\small
+\caption{Reserved high-rank target batches. The same $(u,v)$ sets and invariants enter both box routings. Every row defines a complete request for each graph.}
+\label{tab:reconstruction-batches}
+\begin{tabularx}{\linewidth}{@{}rrrY@{}}\toprule
+$i$ & $s$ & $t$ & Numerator powers $(u,v)$\\\midrule
+20 & -109 & -119 & $(2,0), (0,2), (0,1)$ \\
+21 & -1015 & -1025 & $(2,2), (0,4)$ \\
+22 & -10013 & -10021 & $(3,1), (3,0), (2,1), (1,3), (0,1)$ \\
+23 & -100009 & -100031 & $(3,1), (2,2), (2,1), (2,0), (1,2), (0,4)$ \\
+24 & -11 & -23 & $(2,2), (2,1), (1,2), (1,1), (0,2), (0,1)$ \\
+25 & -21 & -35 & $(2,1), (1,3), (1,2), (1,0), (0,2), (0,1)$ \\
+\bottomrule\end{tabularx}\end{table}
+
+For the lower-rank box requests, the sector corner is $(1,1,1,1,1,1,1,0,0)$. A numerator request uses the supplied first-rank auxiliary targets, and a raised-power request increases one physical index. Table~\ref{tab:reconstruction-low-targets} lists their precise target vectors. Their profiles are $h=27701,27713$ for training, $27733$ for validation, and $27739$ for testing, with the low-rank kinematics of Appendix~\ref{app:families-new}.
+
+The sunrise family has loop momenta $(\ell_1,\ell_2)$ and one external momentum $p$. Its inverse-propagator momenta and squared masses are
+\begin{equation}
+ (Q_1,\ldots,Q_5)=(\ell_1,\ell_2,p-\ell_1-\ell_2,p-\ell_1,p-\ell_2),
+ \qquad (m_1^2,\ldots,m_5^2)=(3,7,13,0,0).
+ \label{eq:reconstruction-sunrise}
+\end{equation}
+The first three coordinates are physical denominators and the last two are auxiliary. The three-loop vacuum uses
+\begin{align}
+ (Q_1,\ldots,Q_6)&=(\ell_1,\ell_2,\ell_3,\ell_1-\ell_2,\ell_2-\ell_3,\ell_1-\ell_3),\nonumber\\
+ (m_1^2,\ldots,m_6^2)&=(1,1,1,13,13,2h+53).
+ \label{eq:reconstruction-vacuum}
+\end{align}
+All six coordinates are physical. Both structures use the same profile split as the low-rank boxes. For the sunrise, $p^2=-1009-12h$. These assignments specify test families, rather than universal relations between masses and invariants. In every native request the kinematic quantities are fixed rational numbers and $d$ remains symbolic, so the coefficients belong to $\Q(d)$. This test does not reconstruct general symbolic scattering invariants.
+
+\begin{table}[!htbp]\centering\small
+\caption{Lower-rank reserved targets. Training and validation use the same index patterns at different physical points. A corner request contains the all-unit physical sector.}
+\label{tab:reconstruction-low-targets}
+\begin{tabularx}{\linewidth}{@{}lY@{}}\toprule
+Structure and request & Target indices\\\midrule
+Planar box, corner & $(1,1,1,1,1,1,1,0,0)$ \\
+Planar box, numerator & $(1,1,1,1,1,1,1,0,-1), (1,1,1,1,1,1,1,-1,0)$ \\
+Planar box, raised power & $(1,1,1,1,1,2,1,0,0), (1,1,1,1,1,1,2,0,0), (2,1,1,1,1,1,1,0,0)$ \\
+Nonplanar box, corner & $(1,1,1,1,1,1,1,0,0)$ \\
+Nonplanar box, numerator & $(1,1,1,1,1,1,1,0,-1), (1,1,1,1,1,1,1,-1,0)$ \\
+Nonplanar box, raised power & $(1,1,1,1,1,2,1,0,0), (1,1,1,1,1,1,2,0,0), (2,1,1,1,1,1,1,0,0)$ \\
+Sunrise, corner & $(1,1,1,0,0)$ \\
+Sunrise, raised power & $(1,2,1,0,0), (1,1,2,0,0), (2,1,1,0,0)$ \\
+Vacuum, corner & $(1,1,1,1,1,1)$ \\
+Vacuum, raised power & $(1,2,1,1,1,1), (1,1,2,1,1,1), (1,1,1,2,1,1)$ \\
+\bottomrule\end{tabularx}\end{table}
+
+The protected native bases consist of the integral indices below. Each listed vector $\boldsymbol b$ denotes $M_{\boldsymbol b}=I_{\boldsymbol b}$ in its corresponding family. The independently prepared symbolic and reconstructed calculations use the same basis for each request. The lists specify the comparison basis; they do not assert a proof of global master independence from a finite seed system.
+
+Planar box:\[\begin{aligned}\{&(0,0,1,1,0,0,1,0,0),(0,1,0,0,0,1,1,0,0),\\&(0,1,0,1,1,0,1,0,0),(0,1,1,1,0,1,1,0,0),\\&(1,0,1,1,1,0,0,0,0),(1,1,1,0,0,1,1,0,0),\\&(1,1,1,1,1,1,1,-1,0),(1,1,1,1,1,1,1,0,0)\}.\end{aligned}\]
+
+Nonplanar box:\[\begin{aligned}\{&(0,0,1,1,1,1,0,0,0),(0,1,0,0,1,1,0,0,0),\\&(0,1,1,1,1,1,1,0,0),(1,0,0,1,0,1,0,0,0),\\&(1,0,1,1,1,1,0,0,0),(1,1,0,0,0,0,1,0,0),\\&(1,1,0,1,0,1,1,0,0),(1,1,0,1,1,1,0,0,0),\\&(1,1,1,0,1,0,1,0,0),(1,1,1,1,0,0,1,0,0),\\&(1,1,1,1,1,1,1,-1,0),(1,1,1,1,1,1,1,0,0)\}.\end{aligned}\]
+
+Sunrise, basis 1:\[\begin{aligned}\{&(0,1,1,0,0),(1,0,1,0,0),\\&(1,1,0,0,0),(1,1,1,-1,0),\\&(1,1,1,0,-1),(1,1,1,0,0),\\&(1,1,2,0,0)\}.\end{aligned}\]
+
+Sunrise, basis 2:\[\begin{aligned}\{&(1,1,1,0,0)\}.\end{aligned}\]
+
+Three-loop vacuum, basis 1:\[\begin{aligned}\{&(0,1,1,1,0,1),(0,1,1,1,0,2),\\&(0,1,1,2,0,1),(1,0,0,1,1,1),\\&(1,0,1,1,0,1),(1,0,1,1,1,0),\\&(1,0,1,1,1,1),(1,0,1,1,2,0),\\&(1,1,0,1,0,1),(1,1,0,1,1,0),\\&(1,1,0,1,1,1),(1,1,1,0,0,1),\\&(1,1,1,1,0,0),(1,1,1,1,0,1),\\&(1,1,1,1,1,0),(1,1,1,1,1,1)\}.\end{aligned}\]
+
+Three-loop vacuum, basis 2:\[\begin{aligned}\{&(1,1,1,1,1,1)\}.\end{aligned}\]
+
+
+\section{Coefficient reconstruction}
+\label{app:reconstruction-algebra}
+Kira and FireFly provide the finite-field algorithms used here~\cite{Kira2,FireFly2019,FireFly2020}. To explain the relation to an exact rational coefficient, suppose
+\begin{equation}
+ r(d)=P(d)/Q(d),\qquad
+ P(d)=\sum_{j=0}^{n}p_jd^j,\quad Q(d)=\sum_{j=0}^{m}q_jd^j.
+ \label{eq:reconstruction-rational}
+\end{equation}
+One nonzero denominator coefficient fixes the overall normalization. At a nonsingular point $d=z$ modulo a prime, a numerical reduction returns $r(z)$. Multiplying by the denominator gives the linear constraint
+\begin{equation}
+ \sum_{j=0}^{n}p_jz^j-r(z)\sum_{j=0}^{m}q_jz^j=0\pmod p.
+ \label{eq:reconstruction-sample}
+\end{equation}
+This follows directly from Eq.~\eqref{eq:reconstruction-rational}. With correct degree bounds and sufficiently many independent nonsingular samples, the constraints determine the normalized coefficients over the field. Combining suitable primes and reconstructing rational numbers then supplies rational coefficients~\cite{FireFly2019,FireFly2020}. FireFly determines the necessary information adaptively; our model chooses the native procedure and probe batch size.
+
+The field operations are exact, while reconstruction termination relies on its degree discovery and checks. Our evaluation therefore also subtracts every reconstructed coefficient from a separately computed symbolic reference and requires the rational difference to vanish. This checks the actual tested answer. Neither a model score nor a successful reduction to the supplied basis alone proves every coefficient for an arbitrary unseen request.
