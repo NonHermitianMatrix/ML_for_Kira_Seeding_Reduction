@@ -1,5 +1,4 @@
-# Transient application inputs
+# Temporary application requests
 
-The timer writes one small request and result here for each active worker.
-It removes those files after collecting the bounded record.
-This folder must be empty apart from this guide before publication.
+The comparison writes bounded request and result files here. Each worker uses its own file names and removes its files after reading the results.
+Completed scientific records are stored in the test folders. This folder must contain no request or result JSON files when validation and publication run.

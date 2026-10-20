@@ -1,0 +1,125 @@
+{
+  "complete": true,
+  "requests": 75,
+  "repetitions": 3,
+  "applications": 900,
+  "coefficient_checks": 18132,
+  "failed_applications": [],
+  "changed_reconstruction_actions": [],
+  "recorded_inner_failures": {
+    "earlier_separate": 0,
+    "separate": 0,
+    "earlier_batch": 0,
+    "batch": 0
+  },
+  "reconstruction_fallbacks": {
+    "earlier_separate": 0,
+    "separate": 0,
+    "earlier_batch": 0,
+    "batch": 0
+  },
+  "methods": {
+    "earlier_separate": {
+      "seconds": [
+        103.0771744158119,
+        96.35530470125377,
+        94.79387403232977
+      ],
+      "median_seconds": 96.35530470125377,
+      "minimum_seconds": 94.79387403232977,
+      "maximum_seconds": 103.0771744158119,
+      "sum_seconds": 294.22635314939544
+    },
+    "separate": {
+      "seconds": [
+        59.16304560843855,
+        58.98043855512515,
+        57.66892323619686
+      ],
+      "median_seconds": 58.98043855512515,
+      "minimum_seconds": 57.66892323619686,
+      "maximum_seconds": 59.16304560843855,
+      "sum_seconds": 175.81240739976056
+    },
+    "earlier_batch": {
+      "seconds": [
+        69.20999919809401,
+        71.53798450808972,
+        70.05057442304678
+      ],
+      "median_seconds": 70.05057442304678,
+      "minimum_seconds": 69.20999919809401,
+      "maximum_seconds": 71.53798450808972,
+      "sum_seconds": 210.7985581292305,
+      "included_parent_output_seconds": [
+        0.025138411205261946,
+        0.02654393995180726,
+        0.025422702077776194
+      ]
+    },
+    "batch": {
+      "seconds": [
+        38.25626857415773,
+        37.24674771889113,
+        36.71285806200467
+      ],
+      "median_seconds": 37.24674771889113,
+      "minimum_seconds": 36.71285806200467,
+      "maximum_seconds": 38.25626857415773,
+      "sum_seconds": 112.21587435505353,
+      "included_parent_output_seconds": [
+        0.028763642068952322,
+        0.028784581925719976,
+        0.025850215926766396
+      ]
+    }
+  },
+  "comparisons": {
+    "batch_setup": {
+      "baseline": "separate",
+      "new": "batch",
+      "ratio_of_medians": 0.6315101859420567,
+      "paired_repetition_ratios": [
+        0.6466243950210223,
+        0.6315101859420567,
+        0.6366142456247775
+      ]
+    },
+    "cumulative": {
+      "baseline": "earlier_separate",
+      "new": "batch",
+      "ratio_of_medians": 0.3865562755924374,
+      "paired_repetition_ratios": [
+        0.37114199909897094,
+        0.3865562755924374,
+        0.3872914619934578
+      ]
+    },
+    "shared_process_algebra": {
+      "baseline": "earlier_batch",
+      "new": "batch",
+      "ratio_of_medians": 0.5317122382744783,
+      "paired_repetition_ratios": [
+        0.5527563793876085,
+        0.5206569345643105,
+        0.5240907496388219
+      ]
+    },
+    "earlier_batch_setup": {
+      "baseline": "earlier_separate",
+      "new": "earlier_batch",
+      "ratio_of_medians": 0.7270027803890623,
+      "paired_repetition_ratios": [
+        0.6714386535170418,
+        0.7424395027330433,
+        0.7389778626323026
+      ]
+    }
+  },
+  "protocol_sha256": "6a5267cf4e4b16d5a170033b926e688ca7834d80741afe5deaaa7f62e5eb9de5",
+  "worker_hosts": [
+    "n1891"
+  ],
+  "scope": "Implementation regression comparison; existing verified inputs, no new fit or transfer claim.",
+  "estimator": "Median complete collection time; ranges span three full repetitions, not confidence intervals."
+}

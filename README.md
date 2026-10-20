@@ -367,3 +367,7 @@ These results use known massless two-loop boxes, rational kinematics, symbolic d
 The current frozen application has a broader test in `Kira_comparison/extended_coverage/`. It records native completion, failures, input limits, and separate exact analytic checks through twelve loops. Read that folder and the new report section for the measured scope.
 
 ML_model_adaptive_reduction/portfolio_policy contains the new family-aware seed-cost models and complete-time comparisons. It also records the higher-loop sector-storage change and scalar full-coordinate checks.
+
+<!-- BEGIN SHARED APPLICATION SETUP -->
+The current single-request application remains `ML_model_adaptive_reduction/reconstruction_policy/s15_deploy.py`. Collections can use `s37_batch.py` in the same folder. It keeps routines and policies loaded across requests. The verified 75-request collection takes 37.247 s in one call, compared with 58.980 s for separate current calls and 70.051 s for an equally prepared earlier shared call. These are medians of three full-collection times. All 900 request executions pass their coefficient checks. See that folder's README and `batch_summary.json` for the scope, commands, and complete results.
+<!-- END SHARED APPLICATION SETUP -->

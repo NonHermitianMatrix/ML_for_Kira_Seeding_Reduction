@@ -1,0 +1,17 @@
+Frozen batch comparison: 75 requests
+Traceback (most recent call last):
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/reconstruction_policy/s39_batch_test.py", line 79, in <module>
+    if __name__=='__main__':main(int(sys.argv[1]))
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/reconstruction_policy/s39_batch_test.py", line 69, in main
+    ok,n=direct.compare(c,rows[c['id']]['result'],read(refpath))
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/direct_analytic/s27_deploy_test.py", line 16, in compare
+    old=load('direct_old_compare',PRIOR/'s15_test.py');return old.compare(c,r,ref)
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/direct_analytic/s00_direct_common.py", line 9, in load
+    spec=importlib.util.spec_from_file_location(name,path);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/u/home/r/rushil/ML_for_Kira_Seeding_Reduction/ML_model_adaptive_reduction/lightlike_reduction/s15_test.py", line 2, in <module>
+    from s00_light_common import *
+ModuleNotFoundError: No module named 's00_light_common'
+0 earlier_separate 89.58926342660561 failures 0 checks 1511
+0 separate 54.919642959721386 failures 0 checks 1511

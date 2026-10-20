@@ -429,3 +429,7 @@ Analytic savings and ML savings remain separate.
 <!-- END BANANA -->
 
 portfolio_policy/ adds family-aware seed-cost models, exact sector-storage checks, and full-coordinate scalar checks. Read its README for the tested scope.
+
+<!-- BEGIN SHARED APPLICATION SETUP -->
+The current single-request application remains `ML_model_adaptive_reduction/reconstruction_policy/s15_deploy.py`. Collections can use `s37_batch.py` in the same folder. It keeps routines and policies loaded across requests. The verified 75-request collection takes 37.247 s in one call, compared with 58.980 s for separate current calls and 70.051 s for an equally prepared earlier shared call. These are medians of three full-collection times. All 900 request executions pass their coefficient checks. See that folder's README and `batch_summary.json` for the scope, commands, and complete results.
+<!-- END SHARED APPLICATION SETUP -->

@@ -177,3 +177,21 @@ The larger bound is 9,984,259,072 bytes; `resource_plan.json` gives the exact co
 Each native calculation uses one computational thread.
 The wrappers limit address space and output files.
 Keep other user jobs unchanged.
+
+<!-- BEGIN SHARED APPLICATION SETUP -->
+Use `s15_deploy.py` for one request. Use `s37_batch.py` for a bounded collection of 1 to 128 requests. The shared call retains loaded routines and policies. It receives no reference answers and computes each requested reduction.
+
+From the project root, run:
+
+```sh
+.tools/seed-model/venv/bin/python ML_model_adaptive_reduction/reconstruction_policy/s37_batch.py --cases /path/to/cases.json --output /path/to/new-results.jsonl
+```
+
+The input is a JSON list of request objects in the existing application format. Each request needs a distinct `id`. The input must be smaller than 2 MiB. The output path must not exist. Each output line contains `case`, `result`, and the internal request time `seconds`. Read `result.success` for each request. A caught request exception produces a failed result and the next request runs. Native attempt limits remain active. An outer process failure can leave a partial file; check that every input ID has a result. The output is limited to 8 MiB and each line to 2 MiB. Use compute nodes and the same one-thread settings as the test script.
+
+The optional `--method` selects `integrated`, `fixed`, `previous`, or `before_formulas`. The default is `integrated`. These choices match the single-request application. A collection call does not create a new learned model.
+
+The frozen comparison uses the same 75 verified requests, four methods, and three repetitions. It reverses request order in the middle repetition and checks every coefficient against the saved independent references. It is an implementation regression test, not a new held-out physics sample. Current separate calls take 58.980439 s at the median; the shared call takes 37.246748 s. The earlier shared call takes 70.050574 s. All 900 executions pass 18132 coefficient checks. No reconstruction choices change.
+
+`s38_prepare_batch.py` freezes the inputs, code, weights, binary, and references. `s39_batch_test.py` times and verifies the applications. `s40_batch_test.sh` submits two bounded workers. `s41_analyze_batch.py` computes the summaries. `s42_write_batch.py` updates the documents and guides. `s43_validate_batch.py` verifies the final files. Read `batch_protocol.json.gz`, `batch_summary.json`, and `batch_resource_plan.json` for the protocol, complete results, and storage bounds. The `batch_test` folder contains all timed outputs. Training and all earlier experiments remain unchanged.
+<!-- END SHARED APPLICATION SETUP -->

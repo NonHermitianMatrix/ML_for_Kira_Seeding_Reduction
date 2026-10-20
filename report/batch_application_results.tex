@@ -1,0 +1,25 @@
+\subsection{Processing a collection together}
+\label{sec:batch-application}
+The preceding comparison loads the application separately for each request. A further test processes the same 75 requests in one call, so numerical routines, mathematical objects, and learned policies can remain in memory. The shared call also uses one bounded output stream for the collection. Every request still receives its own reduction, and the exact formulas, model weights, algebra settings, and protected bases remain unchanged. The input supplies no reference coefficients.
+
+We compare separate and shared calls for both the earlier and current methods. The earlier method precedes the direct vacuum formulas and reconstruction extension. Each comparison uses three complete repetitions. Two workers run on the same Intel Gold compute node, with one computation thread per application. We alternate method order and reverse the request order in the middle repetition. Time includes loading, all reductions, output, exit, reading the returned data, and cleanup; the separate-call total sums those complete call times. Independent reference comparisons remain outside both timers. These implementation checks reuse the previously verified physical inputs.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Complete time for the same collection of 75 requests. Each value is the median of three full-collection times. The range contains all three repetitions and is not a confidence interval. Every method completes every request in every repetition.}
+\label{tab:batch-application}
+\begin{tabular}{lrr}
+\toprule
+Method & Median (s) & Observed range (s)\\
+\midrule
+Earlier method, separate calls & 96.355 & 94.794--103.077 \\
+Current method, separate calls & 58.980 & 57.669--59.163 \\
+Earlier method, shared call & 70.051 & 69.210--71.538 \\
+Current method, shared call & 37.247 & 36.713--38.256 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+For the current method, shared processing changes complete time from 58.980 to 37.247 seconds, a ratio of 0.632. The matched cumulative comparison changes from 96.355 seconds for the earlier separate calls to 37.247 seconds for the current shared call. When both methods share their setup, the earlier method takes 70.051 seconds and the current method takes 37.247 seconds. This control preserves a comparison of the algebraic changes after both methods receive the same setup benefit. These collection-level medians differ from the sum of per-request medians in Table~\ref{tab:reconstruction-times} and come from a separate timing job. We compare each method with the controls measured in the same experiment.
+
+All 900 request executions pass 18,132 coefficient comparisons, with zero failed applications. Shared processing preserves every recorded reconstruction choice. This change comes from reuse within a call. The models and verified physical domain remain those of the preceding comparison.
