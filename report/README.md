@@ -187,3 +187,9 @@ paper_figures/loop_coverage13_time.pdf shows complete times for the connected tr
 The notes_loop_coverage13 files retain the same current evidence in the notes.
 Use loop_coverage13/s12_finish.py to rebuild this extension after completed tests.
 Earlier document writers can replace current prose. Use the current writer for the latest paper.
+
+The current tensor extension appears in tensor_reduction_results.tex and tensor_reduction_appendix.tex.
+The appendix derives angular moments, signed-index IBP, and arithmetic with factored dimension poles.
+Matching notes files preserve the same derivation and evidence.
+The compact data file is tensor_reduction_data.json.
+The structured coefficient outputs and model weights stay in the cluster study folder and GitHub.

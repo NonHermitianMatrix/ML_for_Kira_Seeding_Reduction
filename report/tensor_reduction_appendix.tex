@@ -1,0 +1,132 @@
+\section{Exact reduction of polynomial numerators}
+\label{app:tensor-reduction}
+\subsection{Resolving the loop momentum}
+One-loop tensor reduction expresses loop-momentum numerators through scalar integrals. Established methods include tensor decompositions and generating functions for arbitrary numerator and denominator powers~\cite{DennerDittmaier2006,Hu2025}. We derive the particular identities used in our extension here. The algebra uses rational kinematic values and keeps $d$ symbolic. It applies to a one-loop sector and to independent products of such sectors. Applying it inside a coupled graph would require coefficients that depend on the other loop momenta, which this implementation does not support.
+
+Write $D_i=(\ell-q_i)^2-m_i^2$ and let $S=\{i:a_i>0\}$ contain the denominator positions. The $q_i$ in this appendix are fixed external shifts; the infinitesimal prescription is understood. Choose $r\in S$, set $k=\ell-q_r$, and define $R_i=q_i-q_r$. The vectors $R_i$ with $i\in S\setminus\{r\}$ span the external directions seen by the denominators. Their Gram matrix and their contractions with $k$ are
+\begin{equation}
+ G_{ij}=R_i\cdot R_j,\qquad
+ u_i=k\cdot R_i=\frac{D_r-D_i+m_r^2-m_i^2+R_i^2}{2}.
+ \label{eq:tensor-u}
+\end{equation}
+The second equality follows by expanding $D_i=(k-R_i)^2-m_i^2$ and subtracting it from $D_r=k^2-m_r^2$. Assume that $G$ is invertible, and split $k$ into its projection onto this span and its perpendicular part:
+\begin{equation}
+ k_\parallel^\mu=\sum_{i,j\in S\setminus\{r\}}R_i^\mu(G^{-1})_{ij}u_j,
+ \qquad k_\perp=k-k_\parallel.
+ \label{eq:tensor-projection}
+\end{equation}
+Contracting with each $R_i$ gives $k_\perp\cdot R_i=0$. Contracting the parallel part with itself gives $k_\parallel^2=u^TG^{-1}u$, so
+\begin{equation}
+ T(D):=k_\perp^2=D_r+m_r^2-u^TG^{-1}u.
+ \label{eq:tensor-radius}
+\end{equation}
+Empty matrices and sums give zero when $S$ has one element.
+
+An inverse propagator $D_j$ with $a_j<0$ appears in the numerator and can be resolved into the same components. Define $v_{ji}=R_j\cdot R_i$, $R_{j,\perp}=R_j-\sum_{i,h}R_i(G^{-1})_{ih}v_{jh}$, and $z_j=k_\perp\cdot R_{j,\perp}$. Direct substitution gives
+\begin{align}
+ D_j&=B_j(D)-2z_j,\\
+ B_j(D)&=D_r+m_r^2+R_j^2-m_j^2-2v_j^TG^{-1}u,\\
+ H_{jh}&:=R_{j,\perp}\cdot R_{h,\perp}
+       =R_j\cdot R_h-v_j^TG^{-1}v_h.
+ \label{eq:tensor-numerator}
+\end{align}
+Thus the remaining task is to average products of the $z_j$ over perpendicular directions. All positive-power denominators depend on $k_\perp$ only through $T(D)$, so this angular average leaves the denominator unchanged.
+
+\subsection{Angular moments and the finite numerator expansion}
+Let $\nu=d-|S|+1$ be the dimension perpendicular to the denominator span. Rotational symmetry makes odd angular moments vanish. For $2h$ perpendicular components, the invariant symmetric tensor is the sum of all pairings of metric tensors, multiplied by a coefficient $C_h T^h$. Tracing two indices gives
+\begin{equation}
+ C_h(\nu+2h-2)=C_{h-1},\qquad C_0=1,
+ \qquad C_h=\frac{1}{\prod_{b=0}^{h-1}(\nu+2b)}.
+ \label{eq:tensor-trace}
+\end{equation}
+The trace factor contains $\nu$ from the pairing of the traced indices and $2h-2$ from their pairings with the other indices. Contracting the tensor with the external perpendicular vectors therefore gives
+\begin{equation}
+ \left\langle\prod_{t=1}^{2h}z_{j_t}\right\rangle
+ =\frac{T(D)^h}{\prod_{b=0}^{h-1}(\nu+2b)}
+ \sum_{\mathcal P}\prod_{(s,t)\in\mathcal P}H_{j_sj_t}.
+ \label{eq:tensor-moment}
+\end{equation}
+Here $\mathcal P$ runs over the distinct pairings of the $2h$ positions, including their multiplicities when an index repeats. In particular,
+\begin{equation}
+ \langle z_i z_j\rangle=\frac{T H_{ij}}{\nu},\qquad
+ \langle z_i z_j z_k z_l\rangle
+ =\frac{T^2(H_{ij}H_{kl}+H_{ik}H_{jl}+H_{il}H_{jk})}{\nu(\nu+2)}.
+ \label{eq:tensor-low-moments}
+\end{equation}
+One can first derive these relations after a Wick rotation in an integer dimension, where the angular average is well defined, and then continue the rational tensor coefficients in $d$. This uses the dimensional-regularization convention of Eq.~\eqref{eq:integral}~\cite{Weinzierl2022}. Poles in $d$ remain exact rational poles.
+
+For $b_j=-a_j>0$, expand $\prod_{j:a_j<0}(B_j-2z_j)^{b_j}$ and insert Eq.~\eqref{eq:tensor-moment}. The result is a finite polynomial in the positive-sector denominators:
+\begin{equation}
+ \left\langle\prod_{j:a_j<0}D_j^{b_j}\right\rangle
+ =\sum_{\boldsymbol t}c_{\boldsymbol t}(d)\prod_{i\in S}D_i^{t_i},
+ \qquad
+ I_{\boldsymbol a}=\sum_{\boldsymbol t}c_{\boldsymbol t}(d)
+ I_{\boldsymbol a_S-\boldsymbol t}.
+ \label{eq:tensor-expansion}
+\end{equation}
+The vector $\boldsymbol a_S$ equals $\boldsymbol a$ on $S$ and vanishes elsewhere; the $t_i$ are nonnegative and vanish outside $S$. The coefficients also depend rationally on the fixed kinematics. Each power $D_i^{t_i}$ cancels the corresponding denominator power. If a cancellation creates a new negative index, that line leaves the positive sector. Repeating the angular step therefore decreases the positive-sector size whenever a numerator remains. A sector with no denominators is scaleless and vanishes in dimensional regularization~\cite{Weinzierl2022}. The process terminates in scalar sectors with nonnegative indices.
+
+\subsection{Lowering powers before removing the numerator}
+A second exact route starts with IBP. Define $A=\sum_j a_j$ and $Y_{ij}=m_i^2+m_j^2-(q_i-q_j)^2$. Expanding the total derivative with vector $\ell-q_i$ gives
+\begin{align}
+ 0&=d I_{\boldsymbol a}
+ -\sum_j a_j\int\frac{d^d\ell}{i\pi^{d/2}}
+ \frac{2(\ell-q_i)\cdot(\ell-q_j)}{D_j}\prod_hD_h^{-a_h},\\
+ 2(\ell-q_i)\cdot(\ell-q_j)&=D_i+D_j+Y_{ij},\\
+ 0&=(d-A)I_{\boldsymbol a}
+ -\sum_j a_j I_{\boldsymbol a+\boldsymbol e_j-\boldsymbol e_i}
+ -\sum_j a_jY_{ij}I_{\boldsymbol a+\boldsymbol e_j}.
+ \label{eq:tensor-ibp}
+\end{align}
+Here $\boldsymbol e_j$ is the unit index vector. This derivation holds for signed integer indices, so it includes numerator terms. Let $N_- =\{j:a_j<0\}$. Moving the negative-index terms to the right gives, for $i\in S$,
+\begin{align}
+ \sum_{j\in S}a_jY_{ij}I_{\boldsymbol a+\boldsymbol e_j}&=F_i(\boldsymbol a),\\
+ F_i(\boldsymbol a)&=(d-A)I_{\boldsymbol a}
+ -\sum_{j:a_j\ne0}a_j I_{\boldsymbol a+\boldsymbol e_j-\boldsymbol e_i}
+ -\sum_{j\in N_-}a_jY_{ij}I_{\boldsymbol a+\boldsymbol e_j}.
+ \label{eq:tensor-signed-system}
+\end{align}
+For target $\boldsymbol b$ with $b_k>1$, choose $\boldsymbol a=\boldsymbol b-\boldsymbol e_k$. If $Y_S$ is invertible, multiply this system by its inverse to obtain
+\begin{equation}
+ I_{\boldsymbol b}=\frac{1}{a_k}
+ \sum_{i\in S}(Y_S^{-1})_{ki}F_i(\boldsymbol a).
+ \label{eq:tensor-signed-recurrence}
+\end{equation}
+Every integral on the right has a smaller sum of positive indices than $\boldsymbol b$, and the numerator rank does not increase. When the positive powers reach one, the angular step removes the remaining numerator. With no negative indices, Eq.~\eqref{eq:tensor-signed-recurrence} reduces to the scalar Cayley recurrence derived earlier. These identities give a finite reduction to unit-power scalar sectors. They produce a spanning set; special kinematics can introduce further relations between its elements.
+
+\subsection{Scope and learned choice of identity}
+The implementation admits two through five complete one-loop coordinates, rational masses and scalar products, numerator rank $\sum_j\max(-a_j,0)\leq6$, and excess positive power $\sum_j\max(a_j-1,0)\leq6$. It rejects cuts, symbolic indices, and any singular Gram or Cayley matrix required by the chosen route. Bounded recurrence work supplies a further rejection condition. Such inputs return to the preceding exact and native Kira procedure. The derivation explains the exact result on admitted inputs; it does not assert that this bounded implementation covers every one-loop family.
+
+The four candidate actions combine numerator-first or power-first reduction with lowering the largest or smallest available raised positive power. For a request, let $x$ contain the coordinate count, target count, minimum, maximum, and mean numerator rank and excess positive power, minimum and maximum positive-sector size, largest positive index, number of distinct numerator patterns, and five coordinatewise maxima of each sign. This gives 22 features. We train regression trees whose leaves store the mean measured cost of each action, using the cost-sensitive split objective of Appendix~\ref{app:fast-method} and the tree and forest constructions of Refs.~\cite{CART1984,Breiman2001Forest}. The labels include process startup, exact reduction, model use where present, output, and exit. Failed choices receive a cost of at least 60 seconds.
+
+We compare one tree with 24 bootstrap trees, depths one through four, minimum leaf populations two, four, or eight, and fractional-saving margins zero, 0.03, 0.08, or 0.15. Each ensemble tree draws 24 requests with replacement and considers 11 of the 22 features at each split. A split must improve the empirical action cost by more than 0.002 seconds per request in its parent node. Separate validation chooses the model settings and the fixed action with the lowest total validation cost. A learned action is enabled only when its predicted cost plus one millisecond is below the fixed cost by this margin. Inputs outside the training feature ranges use the fixed action. Validation must also show at least one percent less total cost and no increase in unverified results before deployment. This rule follows by comparing predicted total costs; it changes only the order of exact identities. Section~\ref{sec:tensor-results} reports whether that model improves on the fixed control in the reserved test.
+
+\subsection{Keeping the dimension poles in factored form}
+The preceding identities restrict the form of every dimension-dependent denominator. The inverse Gram and Cayley matrices have rational entries at the chosen kinematic point, and Eq.~\eqref{eq:tensor-signed-recurrence} introduces only polynomial dependence on $d$. Equation~\eqref{eq:tensor-moment} introduces products of linear factors $d+j$, where $j$ is an integer. By induction through the recurrence, each coefficient therefore has the form
+\begin{equation}
+ r(d)=\frac{P(d)}{\prod_j(d+j)^{n_j}},\qquad
+ P(d)\in\Q[d],\quad n_j\in\mathbb Z_{\geq0}.
+ \label{eq:tensor-factored-field}
+\end{equation}
+The finite products contain only factors introduced by the angular moments. For addition, take $Q$ to be the least common multiple of two such denominators $Q_1$ and $Q_2$. Multiplying each summand by its missing factors gives
+\begin{equation}
+ \frac{P_1}{Q_1}+\frac{P_2}{Q_2}
+ =\frac{P_1(Q/Q_1)+P_2(Q/Q_2)}{Q}.
+ \label{eq:tensor-factored-add}
+\end{equation}
+The exponent of $d+j$ in $Q$ is the larger of its two exponents. Multiplication adds these exponents. A factor $d+j$ cancels exactly when $P(-j)=0$, because division with remainder gives $P(d)=(d+j)\widetilde P(d)+P(-j)$. We repeat this cancellation for each retained factor. These operations preserve the exact rational function and require only rational polynomial coefficients and integer factor multiplicities. They avoid general rational-function simplification in the new path. We check the resulting coefficients against both the first symbolic-field implementation and the native pilot reductions, retrain the action model on the revised costs, and freeze a separate final test.
+
+\subsection{Defined kinematics and target collections}
+To specify the measured domain, let $P$ be the number of physical denominators and let $e$ be the number of auxiliary coordinates. We use $(P,e)=(2,1),(2,2),(3,1),(4,1)$, set $N=P+e$, and introduce $N-1$ independent external vectors $p_i$. The shifts are $q_1=0$ and $q_{i+1}=p_i$. With all squared quantities in a common fixed unit, the massive profile $h$ is defined by
+\begin{align}
+ m_i^2&=h+11i^2\quad(1\leq i\leq P),\\
+ m_i^2&=0\quad(P<i\leq N),\\
+ p_i^2&=-(10h+17i),\\
+ p_i\cdot p_j&=-(h+i+2j-2)\quad(1\leq i<j<N).
+ \label{eq:tensor-kinematics}
+\end{align}
+Equation~\eqref{eq:tensor-kinematics} defines the test kinematics. Their negative-definite external Gram matrices define off-shell analytic points. The mixed-mass tests retain only the odd-position physical masses, and the massless test sets them all to zero. Each target starts with unit powers on its $P$ physical denominators. We distribute $\delta$ further positive powers over these positions and $R$ negative powers over the $e$ auxiliary positions, retaining distinct targets. The requested batch size $B$ can exceed the number of distinct vectors for a small setting, in which case the batch contains the whole available set.
+
+The training settings $(R,\delta,B)$ are $(1,0,1)$, $(1,2,2)$, $(2,1,2)$, $(2,3,3)$, $(3,1,2)$, and $(4,2,2)$. Validation uses $(1,3,2)$, $(3,2,2)$, and $(4,1,2)$. For structure position $k=0,\ldots,3$ and setting position $j$ starting at zero, training uses $h=7103+8k+j$ and validation uses $h=7301+8k+j$. The first reserved comparison uses $h=7507+8k+j$ with settings $(2,2,2)$, $(3,3,2)$, $(4,0,1)$, and $(4,3,3)$. The final comparison uses $h=7801+8k+j$ with $(1,2,2)$, $(2,3,3)$, $(3,1,2)$, and $(4,2,2)$. The final massless or mixed-mass profiles use $h=7867+P+e$, numerator rank three, and excess power one. Independent products use $L$ massive tensor bubbles with $h=7901+L$, numerator rank two, and excess power two in each component. Cross-loop auxiliary powers vanish, so the factorization follows directly from the product measure and integrand. The model receives the component requests after this exact separation.
+
+The final native tests retain the massless planar and nonplanar box definitions of Appendix~\ref{app:families-new}, with profile $h=7949$ in the invariant formulas of Appendix~\ref{app:vac-ml}. They use four previously unused numerator-batch sets per topology and the unchanged preceding seed policy. These tests check that the enlarged exact dispatcher preserves native ML use; they do not train that native model again.

@@ -1,5 +1,15 @@
 ## Current exact vacuum and learned application
 
+## Current tensor reduction extension
+
+Use [tensor_reduction](tensor_reduction/README.md) for the current combined application.
+Its s18_fast_runtime.py adds exact polynomial-numerator reduction with factored dimension denominators.
+A measured validation rule selects whether to use the trained identity-order policy or its fixed action.
+It retains the previous exact rules and native seed model.
+The new tensor high-loop tests use independent products; the report states the connected and factorized domains separately.
+Read the folder guide for costs, controls, limits, and commands.
+
+
 Read [the current method guide](vacuum_learning/README.md).
 Use vacuum_learning/s18_fast_runtime.py with --method integrated.
 This version adds exact single-mass vacuum trees and a newly trained native seed-choice model.
