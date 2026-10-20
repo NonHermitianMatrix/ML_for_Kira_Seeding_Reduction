@@ -279,3 +279,12 @@ Retain independent tests, exact checks, previous evidence, resource limits, and 
 
 - Reduce failed native attempts before launching expensive reductions. Learn failure risk from observed outcomes and redirect predicted risky or unsupported feature inputs to a conservative choice validated on training and validation requests.
 - Include the admission check and recovery costs in complete timings. Report remaining failures and completions. A learned prediction does not guarantee success for every unseen integral.
+
+## Direct analytic evaluation and further acceleration
+
+- Use direct analytic evaluations when they are available, as well as exact recurrences and learned choices, to reduce complete calculation time through thirteen loops. State the domain of each identity and distinguish a complete analytic value from a reduction to unevaluated masters. Compare the new application with the published method, preserve exact checks and failures, and update the report, notes, guides, cluster, and GitHub under the existing resource limits.
+
+## Continued optimization without repeated prompts
+
+- After completing and publishing a measured improvement, continue the authorized optimization without waiting for another request to make it faster. Investigate the remaining measured costs with exact identities, derived decomposition formulas, recurrences, ML, and implementation changes.
+- Retain only supported changes, verify their mathematical conditions, and compare complete time against the preceding application and appropriate controls. Keep independent tests, negative results, resource limits, and all documentation copies current. A finite investigation cannot prove that no further improvement exists.

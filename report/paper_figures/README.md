@@ -1,4 +1,24 @@
-## Current concise-paper figures
+<!-- DIRECT FIGURES BEGIN -->
+# Current paper figures
+
+`direct_vacuum.pdf` compares complete time at each loop order from 1 through 13.
+It separates independent two-mass products from connected one-mass vacuum trees.
+The shaded band gives the full range across tested tree shapes.
+The formulas reduce the summed time in both tested groups.
+
+`direct_native.pdf` compares the retained native ML policy with its fixed control.
+The model selects the fixed action in all 16 final batches.
+The figure shows no additional ML saving in this sample.
+The aggregate point gives the ratio of summed request medians.
+Its interval uses 4,000 request resamples. Individual points retain the slower cases.
+
+Run `ML_model_adaptive_reduction/direct_analytic/s30_deploy_plot.py` to make both figures.
+The input is `ML_model_adaptive_reduction/direct_analytic/final_summary.json`.
+The paper also contains the input definitions, exact checks, and timing conditions.
+The sections below describe earlier figures kept for the notes.
+<!-- DIRECT FIGURES END -->
+
+## Earlier concise-paper figures
 
 `paper_local_results.pdf` shows the retained seed and equation savings and the unresolved row-policy result.
 Each row uses its own stated workload and control. The ratios cannot be multiplied.

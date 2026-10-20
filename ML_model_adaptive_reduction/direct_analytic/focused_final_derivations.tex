@@ -1,0 +1,138 @@
+\section{IBP identities, row operations, and exactness}
+\label{app:derivation}
+The starting total-derivative identity follows from integration by parts in a region where the integral converges, followed by dimensional analytic continuation~\cite{ChetyrkinTkachov,Weinzierl2022}. Write $P_{\boldsymbol\sigma}=\prod_iD_i^{-\sigma_i}$ and $\partial_k=\partial/\partial\ell_k$. The product rule gives
+\begin{align}
+ \partial_k\!\cdot(vP_{\boldsymbol\sigma})
+ &=(\partial_k\!\cdot v)P_{\boldsymbol\sigma}
+ -\sum_i\sigma_i(v\!\cdot\partial_kD_i)
+ D_i^{-\sigma_i-1}\prod_{j\ne i}D_j^{-\sigma_j}.
+ \label{eq:product-rule}
+\end{align}
+For $v=\ell_h$, the first factor is $d\delta_{kh}$; for an external momentum it is zero. Completeness of the inverse-propagator coordinates permits us to write $v\!\cdot\partial_kD_i=u_i+\sum_jv_{ij}D_j$, where $u_i$ and $v_{ij}$ are coefficients fixed by the propagators and kinematics, with the invariant and mass terms included in $u_i$. Integrating Eq.~\eqref{eq:product-rule} therefore gives
+\begin{equation}
+ 0=(\partial_k\!\cdot v)I_{\boldsymbol\sigma}
+ -\sum_i\sigma_i u_i I_{\boldsymbol\sigma+\boldsymbol e_i}
+ -\sum_{i,j}\sigma_i v_{ij}
+ I_{\boldsymbol\sigma+\boldsymbol e_i-\boldsymbol e_j}.
+ \label{eq:index-shifts-new}
+\end{equation}
+The unit vector $\boldsymbol e_i$ raises index $i$ by one. This derivation explains how a seed and an operator generate a row of the reduction system.
+
+Let $q$ be a source row and $k$ a pivot column with $A_{qk}\ne0$. Solving the identity $\sum_jA_{qj}I_j=0$ for $I_k$ gives $I_k=-\sum_{j\ne k}(A_{qj}/A_{qk})I_j$. Subtracting $A_{rk}/A_{qk}$ times that zero identity from row $r$ yields
+\begin{equation}
+ A'_{rj}=A_{rj}-\frac{A_{rk}}{A_{qk}}A_{qj},\qquad A'_{rk}=0.
+ \label{eq:row-new}
+\end{equation}
+Every step preserves the represented relation. Repetition until only prescribed master columns remain gives Eq.~\eqref{eq:reduction}. Removing seeds or equations preserves the validity of the retained identities, but can prevent this elimination from finishing. We therefore require reduction to the prescribed basis and exact agreement with the reference coefficients. Generic kinematics avoid singular pivot denominators; special kinematic limits require their own treatment.
+
+
+For independent components, write the loop momenta as disjoint groups and the integrand as $\prod_b f_b$. In a convergence domain, repeated integration gives $I=\prod_b\int f_b$. Dimensional analytic continuation preserves that identity~\cite{Weinzierl2022}. Substituting each exact component reduction therefore gives
+\begin{equation}
+ I=\prod_b\left(\sum_m r_{bm}M_{bm}\right).
+ \label{eq:product-reduction}
+\end{equation}
+Our product output retains this factored form. It avoids expanding the Cartesian product of master terms and uses the same representation in all timed methods.
+
+\section{The seed regions and equation score}
+\label{app:sparse}
+For seed $\boldsymbol\sigma$, define excess positive power $D=\sum_i\max(\sigma_i-1,0)$, numerator rank $R=\sum_i\max(-\sigma_i,0)$, and positive sector $P=\{i:\sigma_i>0\}$. Let $h$ be the number of absent physical lines relative to the largest top sector, and let $D_T,R_T$ be the largest target values. The distance from the target numerator rectangles is defined by
+\begin{equation}
+ q(\boldsymbol\sigma,\mathcal T)=\min_{\boldsymbol a\in\mathcal T}
+ \sum_{i\notin P}\max\{0,-\sigma_i-\max(0,-a_i)\}.
+ \label{eq:seed-distance}
+\end{equation}
+Projection onto the interval from zero to each target numerator power leaves precisely this positive excess. Summing the distances and minimizing over targets gives Eq.~\eqref{eq:seed-distance}. We define the region by
+\begin{align}
+ q&\leq\max\{0,\lfloor\theta_0+\theta_1h+\theta_2D+\theta_6R\rfloor\},\nonumber\\
+ R&\leq\max\{0,\lfloor R_T+\theta_3-\theta_4h\rfloor\},\qquad
+ D\leq\max\{0,\lfloor D_T+\theta_5\rfloor\}.
+ \label{eq:seed-regions}
+\end{align}
+These inequalities specify a search family rather than a sufficiency theorem. Native outer bounds, retained sector corners, and admissible target and master seeds also apply. The previously studied sparse choices use
+\begin{align}
+ \boldsymbol\theta_{\rm wide}&=(2.5,0,0,1.25,0,1,-0.25),\nonumber\\
+ \boldsymbol\theta_{\rm tight}&=(1,0,0,0,1,1,0),\nonumber\\
+ \boldsymbol\theta_{\rm medium}&=(1.5,0,0,0.5,0,1,0).
+ \label{eq:seed-values}
+\end{align}
+The retained native model uses these three sparse choices. The rejected replacement uses the wide and tight choices and a third action that retains all seeds within the tight procedure's native outer bounds. The native procedure retains its subsector truncation and recovery rules. The model selects one complete procedure before generating equations.
+
+The separately tested equation classifier has seventeen features: four family and request dimensions; three seed counts; two differences from target power maxima; three sector descriptors; exact target membership and minimum index distance; the operator index; and the two target maxima. Positive labels mark equations retained by a complete reference reduction. Sampling at most 2,000 records of each class $y$ in batch $c$ gives each sampled record weight $N_{cy}/(n_{cy}N_c)$, where $N_{cy}$ and $n_{cy}$ are the native and sampled class counts and $N_c$ is the full batch count. Multiplying this weight by $n_{cy}$ preserves the class fraction $N_{cy}/N_c$. A leaf with weighted totals $W_0,W_1$ returns $p=W_1/(W_0+W_1)$, and a fixed threshold retains equations. The decision-tree construction follows Ref.~\cite{CART1984}. This empirical score does not certify sufficiency or probability calibration; the native completion check remains necessary.
+
+\section{Measured-cost learning}
+\label{app:shared}
+Let $C_{ia}$ be the measured complete time of training request $i$ under action $a$. Unverified actions receive $C_{ia}\geq60$ seconds. This is a training penalty, and test failures are reported as failures. A leaf containing requests $S$ assigns action cost
+\begin{equation}
+ \widehat C_a(S)=\frac{1}{|S|}\sum_{i\in S}C_{ia},\qquad
+ a_S=\arg\min_a\sum_{i\in S}C_{ia}.
+ \label{eq:cost-leaf}
+\end{equation}
+The second formula follows because the first denominator does not depend on the action. A proposed split $S=S_1\cup S_2$ improves the empirical chosen cost by
+\begin{equation}
+ \Delta(S_1,S_2)=\min_a\sum_{i\in S}C_{ia}
+ -\min_a\sum_{i\in S_1}C_{ia}
+ -\min_a\sum_{i\in S_2}C_{ia}.
+ \label{eq:cost-split}
+\end{equation}
+This is the parent cost minus the sum of child costs. We require $\Delta>0.002|S|$ seconds before splitting. This cost-sensitive objective uses the recursive tree and bootstrap-ensemble constructions of Refs.~\cite{CART1984,Breiman2001Forest}.
+
+For each target, let $u$ and $v$ be its two nonnegative auxiliary numerator powers and let $R=u+v$. The 21 inputs are batch size; minimum, maximum, and mean $R$; number of distinct $R$ values; minimum, maximum, and mean of each of $u,v$; counts with $u=0$ and $v=0$; sums of $uv$ and $(u-v)^2$; number of physical propagators containing both loops; largest number of physical propagators incident on a loop; and counts with $R=1,2,3,4$. All are available before reduction.
+
+We compare 1, 12, or 32 trees, maximum depths 1 through 5, minimum leaf populations 2, 4, or 8, and required fractional savings $\eta=0,0.03,0.08,0.15$. An ensemble averages leaf cost vectors. A single tree uses the complete training set; each ensemble tree samples training requests with replacement. The fixed action $b$ minimizes total validation cost among actions that completed every training and validation request. If $a_*$ has the least predicted cost, we choose it only when
+\begin{equation}
+ \widehat C_{a_*}+0.002 < (1-\eta)\widehat C_b.
+ \label{eq:cost-margin}
+\end{equation}
+The allowance is two milliseconds per prediction during selection. Equation~\eqref{eq:cost-margin} is the defined minimum predicted saving, obtained by adding prediction overhead to the selected cost. Validation compares candidates by unverified count, complete cost, tree count, and depth, in that order. Deployment additionally requires at least one percent less validation cost and a change from the fixed action. We also fit a failure classifier for each action from its verified/unverified training labels. Each classifier has twelve trees of depth at most three and at least two requests per child. One tree uses all requests, and eleven use bootstrap samples. A leaf returns its failed fraction $p_f$. Binary Gini impurity for $n$ requests with $k$ failures is
+\begin{equation}
+ n\left[1-(k/n)^2-(1-k/n)^2\right]=\frac{2k(n-k)}{n}.
+ \label{eq:failure-gini}
+\end{equation}
+The equality follows by expansion. Splits maximize the decrease in this quantity, following the classification-tree construction of Ref.~\cite{CART1984}. Averaging the leaf fractions gives an empirical risk score for each action, without a claim of calibrated failure probability. Validation selects a threshold from $0,0.05,0.15,0.30$ jointly with the cost policy. If the proposed score exceeds that threshold, or any feature lies outside its training range, the policy selects the fully verified fixed region. Validation requires no unverified selected actions before enabling the model. This guard uses observed evidence; a zero score is not a proof that an unseen reduction will complete. The application timer includes both predictions and any subsequent recovery.
+
+\section{Physical test inputs}
+\label{app:families-new}
+All profiles below define squared quantities in a common fixed unit. The zero-invariant families use shifts $(0,p,q,r)$ and masses $(x,y,0,0)$, with
+\begin{align}
+ &p^2=0,\quad p\cdot q=-h-1,\quad p\cdot r=-h-2,\nonumber\\
+ &q^2=-2h-7,\quad q\cdot r=-h-3,\quad r^2=-3h-13.
+ \label{eq:light-input}
+\end{align}
+The unequal case has $(x,y)=(h+3,h+11)$, the equal case $(h+3,h+3)$, the mixed case $(h+3,0)$, and the massless case $(0,0)$. Targets have the form $(1+\delta_1,1+\delta_2,-b_1,-b_2)$, where $\delta_1+\delta_2$ is the excess positive power and $b_1+b_2$ is numerator rank.
+
+Ordinary tensor families have $P$ physical lines, one auxiliary coordinate, shifts $q_1=0$, $q_{i+1}=p_i$, and
+\begin{equation}
+ m_i^2=h+11i^2\ (i\leq P),\quad m_{P+1}^2=0,\quad
+ p_i^2=-(10h+17i),\quad p_i\cdot p_j=-(h+i+2j-2)\ (i<j).
+ \label{eq:ordinary-input}
+\end{equation}
+Appendix~\ref{app:direct-inputs} specifies the current profiles, targets, and separate vacuum grids.
+
+For the native planar box, let $p_1,p_2,p_3$ be massless, $2p_1\cdot p_2=s$, $2p_1\cdot p_3=t$, and $2p_2\cdot p_3=-s-t$. The seven physical line momenta are
+\begin{equation}
+ (\ell_1,\ell_1-p_1,\ell_1-p_1-p_2,\ell_2,
+ \ell_2-p_1-p_2,\ell_2-p_1-p_2-p_3,\ell_1-\ell_2),
+ \label{eq:planar-input}
+\end{equation}
+and the auxiliary momenta are $(\ell_1-p_3,\ell_2-p_1)$. The nonplanar routing follows Ref.~\cite{KiraOriginal}:
+\begin{align}
+ (Q_1,\ldots,Q_9)=(&\ell_1,\ell_2,p_1-\ell_1,p_2-\ell_2,
+ p_1+p_2-p_3-\ell_1,\nonumber\\
+ &p_1-\ell_1+\ell_2,p_1-p_3-\ell_1+\ell_2,
+ \ell_1-p_3,\ell_2-p_1-p_2).
+ \label{eq:nonplanar-input}
+\end{align}
+The first seven entries are physical and all masses vanish. Its convention gives $p_i^2=(p_1+p_2-p_3)^2=0$, $s=(p_1+p_2)^2$, and $t=(p_1-p_3)^2$. Expanding the squares gives $2p_1\cdot p_3=-t$ and $2p_2\cdot p_3=s+t$. The planar profiles use $(s,t)=(-1009-12h,-1021-14h)$ and the nonplanar profiles use $(-113-18h,-127-10h)$.
+
+Every native target is $(1,1,1,1,1,1,1,-u,-v)$ with $u,v\geq0$ and $1\leq u+v\leq4$. The current split uses the profiles and batch counts in Appendix~\ref{app:direct-inputs}. Both graph types occur in all splits, so the test measures new batches and kinematic points within these structures.
+
+\section{Time ratios and uncertainty}
+\label{app:statistics}
+Let $T_{imr}$ be complete elapsed time for request $i$, method $m$, and repetition $r$. For the set $\mathcal C$ completed by both methods in all repetitions, define
+\begin{equation}
+ S_m=\sum_{i\in\mathcal C}\operatorname{median}_{r=1,2,3}T_{imr},\qquad
+ R=\frac{S_{\rm new}}{S_{\rm control}},\qquad
+ \text{fractional saving}=1-R.
+ \label{eq:time-ratio}
+\end{equation}
+These definitions compare identical completed requests. Dividing both times by the control time gives $R$, and subtracting gives the fractional saving. Completion counts remain separate because an unfinished reduction has no verified finite speedup. To estimate variation across requests, we draw $|\mathcal C|$ paired request indices with replacement and recompute $R$. We report the central 95\% of 4,000 such ratios, using the bootstrap construction of Ref.~\cite{Efron1979}. This interval describes the sampled request collection and does not establish performance for every integral family.

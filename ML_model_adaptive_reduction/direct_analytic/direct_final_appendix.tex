@@ -1,0 +1,71 @@
+\section{Direct evaluation of vacuum factors}
+\label{app:direct-vacuum}
+We first identify a case that requires no master integral. If all masses vanish, there is no external momentum, and every active inverse propagator is the square of a homogeneous linear combination of loop momenta, the integrand has no dimensional scale. After Wick rotation, let $R$ be the common radial coordinate for all loop momenta. The measure and denominators give radial power $R^{\omega-1}$ with $\omega=Ld-2\sum_j a_j$. Split the radial integral at an arbitrary $\mu>0$ and continue its two pieces separately:
+\begin{equation}
+ \int_0^\mu R^{\omega-1}\,dR+
+ \int_\mu^\infty R^{\omega-1}\,dR
+ =\frac{\mu^\omega}{\omega}-\frac{\mu^\omega}{\omega}=0.
+ \label{eq:direct-scaleless}
+\end{equation}
+The two pieces initially converge on opposite half-planes and their meromorphic continuations cancel. Angular singularities can be treated by analytic regularization before the same scaling argument. This is the standard scaleless-integral prescription in dimensional regularization~\cite{Weinzierl2022}. It gives the combined integral as zero; separating ultraviolet and infrared poles requires retaining the two regulated contributions separately. The implementation checks the masses and momentum homogeneity, rejects a zero denominator with positive power, and accepts up to thirteen loops and 128 coordinates. It excludes cut denominators and symbolic-index inputs. Couplings between loop momenta are permitted for this zero-integral rule.
+
+Consider a loop momentum $k$ that occurs only in denominators $k^2-x_j+i0$, where $x_j$ is a squared mass. There is no external momentum in this component. Denominator powers can be positive, zero, or negative. Equal masses first combine by addition of their powers. With $z=k^2$, let $A_x$ be the resulting integer power at each distinct squared mass $x$. The integrand is the rational function
+\begin{equation}
+ F(z)=\prod_x(z-x)^{-A_x}.
+ \label{eq:direct-rational}
+\end{equation}
+For a mass with $A_x>0$, multiply by $(z-x)^{A_x}$ and expand the remaining analytic factor at $z=x$. Its first $A_x$ Taylor coefficients give the principal part at that pole. Subtracting every principal part leaves a rational function without a finite pole, which is a polynomial $P(z)$. Thus
+\begin{align}
+ F(z)&=P(z)+\sum_{x:A_x>0}\sum_{r=1}^{A_x}\frac{c_{xr}}{(z-x)^r},\label{eq:direct-apart}\\
+ c_{xr}&=\left.\frac{1}{(A_x-r)!}\frac{d^{A_x-r}}{dz^{A_x-r}}
+ \prod_{y\ne x}(z-y)^{-A_y}\right|_{z=x}.\label{eq:direct-residue}
+\end{align}
+This derivation also covers negative powers, since they supply polynomial factors in the product. For distinct rational masses, the coefficients are rational numbers. The implementation obtains them by multiplying truncated Taylor series, so it avoids general symbolic differentiation. A factor with exponent $-A_y$ has coefficient
+\begin{equation}
+ [t^n](x-y+t)^{-A_y}=\binom{-A_y}{n}(x-y)^{-A_y-n}.
+ \label{eq:direct-binomial}
+\end{equation}
+The binomial series proves Eq.~\eqref{eq:direct-binomial}; only $0\leq n<A_x$ is needed in Eq.~\eqref{eq:direct-residue}. Equal masses must be combined before this expansion, which avoids division by a vanishing mass difference.
+
+Polynomial terms in $k$ and massless vacuum integrals have no scale and vanish in dimensional regularization~\cite{Weinzierl2022}. For a nonzero squared mass $x$, define the normalized tadpole
+\begin{equation}
+ T_r(x)=\int\frac{d^dk}{i\pi^{d/2}}(k^2-x+i0)^{-r}.
+ \label{eq:direct-tadpole}
+\end{equation}
+To evaluate it, first take $x>0$ and a convergent Euclidean domain. The Schwinger representation follows from the defining Gamma integral after the change of variable $u=\alpha(q^2+x)$:
+\begin{equation}
+ (q^2+x)^{-r}=\frac{1}{\Gamma(r)}\int_0^\infty
+ \alpha^{r-1}e^{-\alpha(q^2+x)}\,d\alpha.
+ \label{eq:direct-schwinger}
+\end{equation}
+The Gaussian momentum integral is $\int d^dq\,e^{-\alpha q^2}=\pi^{d/2}\alpha^{-d/2}$. Inserting this in Eq.~\eqref{eq:direct-schwinger} and setting $u=\alpha x$ gives $x^{d/2-r}\Gamma(r-d/2)/\Gamma(r)$. Wick rotation supplies $(-1)^r$ for the denominator convention in Eq.~\eqref{eq:direct-tadpole}. Analytic continuation therefore gives
+\begin{equation}
+ T_r(x)=(-1)^r\frac{\Gamma(r-d/2)}{\Gamma(r)}(x-i0)^{d/2-r},\qquad
+ \frac{T_r(x)}{T_1(x)}=
+ \frac{\prod_{j=1}^{r-1}(d/2-j)}{(r-1)!x^{r-1}}.
+ \label{eq:direct-gamma}
+\end{equation}
+The second equality follows by applying $\Gamma(z+1)=z\Gamma(z)$ repeatedly to the first. The empty product at $r=1$ is one. Applying Eq.~\eqref{eq:direct-gamma} term by term in Eq.~\eqref{eq:direct-apart} proves both the reduction to unit tadpoles and their full analytic evaluation. The result is a meromorphic expression in $d$; ultraviolet or infrared poles are retained. The same tadpole value also evaluates any unit tadpole returned by the retained zero-invariant tensor formulas. A remaining master with several denominators still requires its own evaluation.
+
+Independent components multiply, as proved in Appendix~\ref{app:derivation}. The direct implementation accepts one through thirteen such loop momenta, at most eight denominators per component, individual absolute powers at most eight, and total positive power after equal-mass combination at most 48 per component. Masses are nonnegative rational numbers. Denominators with nonzero target power must carry one of those individual momenta with coefficient $+1$ or $-1$. These tests exclude couplings between components and specify the actual scope of the rule.
+
+The connected one-mass vacuum trees have a separate analytic evaluation. Appendix~\ref{app:trees} derives their dimensionless Gamma product $C^V_{\mathcal T}$. With total physical power $A$, Wick rotation of all integer-power denominators gives
+\begin{equation}
+ V_{\mathcal T}=(-1)^A(m^2-i0)^{Ld/2-A}C^V_{\mathcal T}.
+ \label{eq:direct-tree-value}
+\end{equation}
+The exponent follows either from the final radial integral or from the mass dimension of the $L$ measures and $A$ denominators. For a unit-power master, $A=P=2L-1$. The application now returns its explicit Gamma arguments and scale exponent together with the rational reduction. This exposes the analytic master value already implied by the tree derivation and avoids a separate master evaluation for these families.
+
+\section{Inputs and checks for the direct-evaluation comparison}
+\label{app:direct-inputs}
+The two-mass vacuum grid contains one request at each $L=1,\ldots,13$. At loop order $L$, each independent component has squared masses $(h+2,h+7)$ with $h=23011+L$. Its four final target power pairs are $(2,1),(3,1),(2,3),(3,-1)$, and each full target repeats the same pair across all $L$ components. These are products of one-loop factors. The connected vacuum grid has 34 requests: chains at $L=1,\ldots,13$, stars at $L=3,\ldots,13$, and binary trees at $L=4,\ldots,13$. Their parent maps are $\pi(j)=j-1$, $\pi(j)=0$, and $\pi(j)=\lfloor(j-1)/2\rfloor$, respectively. These starting orders omit coincident small-loop routings. The root squared mass remains symbolic. Each final request has root power two, root power three, root and final edge powers two, and root power four, with every other physical power one. The one-loop request instead uses powers two through five. The unit-power integral remains the master. The profiles are $23111+L$, $23211+L$, and $23311+L$ for the three shapes and fix any auxiliary construction choices. These requests test preservation of the connected identity and the earlier symbolic single-loop dispatch.
+
+The repeated-mass coverage grid uses four denominators per component with squared masses $(h+2,h+7,h+2,0)$, where $h=23511+L$. The four power assignments are $(1,1,2,0)$, $(2,1,1,1)$, $(1,2,0,-2)$, and $(0,0,0,2)$. This tests repeated masses, a massless pole, a polynomial numerator, and a scaleless target. It is checked through all thirteen loop orders, with no speed claim against an unfinished or unsupported native calculation.
+
+The scaleless coverage grid has one family for each $L=1,\ldots,13$, with inverse propagators $\ell_i^2$ and $(\ell_i-\ell_j)^2$ for all $i<j$. It therefore contains $L(L+1)/2$ coordinates and coupled loop momenta for $L>1$. The three targets set all powers to one, raise the first power to two, or change the first power to minus one. Equation~\eqref{eq:direct-scaleless} supplies the reference zero. Native one- and two-loop checks test the same rule separately.
+
+The three retained zero-invariant checks use the unequal, equal, and mixed mass choices of Eq.~\eqref{eq:light-input}, with profiles $23211,23212,23213$, numerator rank two, and two excess positive powers. The second excess power is placed on the first physical denominator. The three ordinary tensor checks use Eq.~\eqref{eq:ordinary-input} with $h=23311+P$ for $P=2,3,4$. Their numerator rank and excess positive power are both two, with one of the excess powers placed on the first physical denominator.
+
+The native inputs use Eqs.~\eqref{eq:planar-input} and \eqref{eq:nonplanar-input}. Development contains two batches per graph at profile 22307; training contains twelve per graph at 22343; validation contains six per graph at 22349; and the preceding candidate test contains eight per graph at 22367. The final deployment test uses eight fresh whole batches per graph at profile 24443, excluding all batches in those earlier sets. Each batch has two to six distinct targets of the form stated in Appendix~\ref{app:families-new}. Whole batches are disjoint across these sets and exclude the preceding native collections. The final native model is retained without refitting; the fresh batches therefore enter only the final test. Individual target vectors can recur, and both graph types occur in training and testing.
+
+An independent symbolic partial-fraction calculation checks the vacuum grid. Random rational-function checks verify that subtracting the proposed poles leaves only a polynomial. Convergent Euclidean radial quadrature checks the tadpole normalization, and a native IBP comparison checks its raised-power recurrence. Native box and ordinary tensor coefficients are checked against independently prepared Kira reductions. The connected tree comparison checks preservation against the preceding exact rule; its mathematical justification is the separate derivation in Appendix~\ref{app:trees}.

@@ -1,0 +1,142 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=24mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,graphicx,booktabs,tabularx,array,placeins}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{hyperref}
+\hypersetup{hidelinks,pdftitle={Accelerating integral decomposition with Kira, machine learning, and exact reductions},pdfauthor={Rushil Saraswat}}
+\setlength{\parindent}{1em}
+\setlength{\parskip}{3pt}
+\setlength{\emergencystretch}{2em}
+\newcommand{\Q}{\mathbb Q}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\title{Accelerating integral decomposition with Kira, machine learning, and exact reductions}
+\author{Rushil Saraswat}
+\date{October 19, 2026}
+\begin{document}
+\maketitle
+\input{paper_abstract}
+
+\section{Introduction}
+Feynman integrals arise from integration over internal loop momenta in higher-order perturbative corrections to scattering amplitudes and particle decay amplitudes. Many integrals in a calculation share propagators and differ only in their powers or numerators. Integration-by-parts (IBP) identities relate these integrals and express them in terms of a smaller set of master integrals~\cite{Weinzierl2022,ChetyrkinTkachov}. This decomposition supplies the coefficients needed to assemble an amplitude; the evaluation of the master integrals is a subsequent calculation~\cite{Weinzierl2022}.
+
+Kira automates the generation and solution of the IBP system, and its current methods already remove unnecessary seeds and equations~\cite{KiraOriginal,Kira3}. The remaining cost depends on the integral structure and the requested targets. Generating fewer useful equations can reduce work, but a restricted system can also fail to reach the required basis and require a larger calculation. We therefore optimize complete reduction time, including prediction, algebra, and recovery. Seed-count reduction alone does not measure this objective.
+
+Our method first identifies structures that admit an exact reduction formula. It applies those formulas to complete requests, individual targets, and recognized intermediate sectors. For the remaining supported native calculations, a trained cost model chooses a seed region before Kira generates the identities. Exact algebra determines every output coefficient. Related machine-assisted searches motivate the seed intervention~\cite{Song2025,TubeSeeding2026}, while analytic one-loop reduction motivates the formula stage~\cite{DennerDittmaier2006,Hu2025}. We derive the particular formulas and cost objective used here in the appendices.
+
+The new extension treats two-point sectors with zero external invariant, including unequal, equal, and zero masses and polynomial numerators. It also retrains native seed selection on measured costs of target batches. We compare the integrated method with the preceding application and with a fixed seed choice. These controls distinguish improvements from exact identities and their integration from improvements attributable to ML. Earlier equation-selection and row-selection studies explain which other learned decisions we retain. The companion notes contain the full historical experiments and broader coverage audits.
+
+\section{The decomposition problem and Kira}
+\label{sec:physics}
+We first define the notation used in this paper. An integral family specifies inverse propagators, masses, and external scalar products. In dimensional regularization, we write~\cite{Weinzierl2022,KiraOriginal}
+\begin{equation}
+ I_{\boldsymbol a}(\boldsymbol x,d)=\int\prod_{h=1}^{L}
+ \frac{d^d\ell_h}{i\pi^{d/2}}\prod_{j=1}^{N}D_j^{-a_j},
+ \qquad D_j=Q_j^2-m_j^2+i0,\qquad d=4-2\epsilon.
+ \label{eq:integral}
+\end{equation}
+Here $L$ is the number of loops, $\ell_h$ is loop momentum $h$, $N$ is the number of integral coordinates, and $Q_j$ is a specified linear combination of loop and external momenta. The quantity $m_j$ is the mass on line $j$, $\boldsymbol x$ contains squared masses and external invariants, $\epsilon$ is the dimensional regulator, and $i0$ specifies the Feynman pole prescription. A positive integer $a_j$ gives a denominator power, zero removes that factor, and a negative integer gives a numerator power. Auxiliary inverse propagators complete the coordinates for loop scalar products when the physical lines do not suffice~\cite{KiraOriginal}.
+
+A sector consists of integrals with the same positive-index positions. Removing a positive position gives a sub-sector. A seed $\boldsymbol\sigma$ is an index vector at which we generate identities~\cite{KiraOriginal}. For a loop or external momentum $v$, the IBP relation is~\cite{ChetyrkinTkachov}
+\begin{equation}
+ 0=\int\prod_h\frac{d^d\ell_h}{i\pi^{d/2}}
+ \frac{\partial}{\partial\ell_k^\mu}
+ \left(v^\mu\prod_jD_j^{-\sigma_j}\right)
+ =\sum_u A_{\boldsymbol\sigma,o;u}(\boldsymbol x,d)
+ I_{\boldsymbol a^{(u)}}.
+ \label{eq:identity}
+\end{equation}
+The operator label $o$ specifies $(k,v)$, and $A_{\boldsymbol\sigma,o;u}$ is the coefficient of integral $u$. Appendix~\ref{app:derivation} expands the derivative into index shifts and explains why the coefficients are rational. Each seed supplies several operators and therefore several equations.
+
+Kira orders integrals, uses symmetries and other valid relations, selects equations, and performs elimination and back-substitution~\cite{KiraOriginal,Kira3,Laporta}. For a target $T$, the result has the form
+\begin{equation}
+ T=\sum_{m=1}^{n_M}r_{Tm}(\boldsymbol x,d)M_m,
+ \qquad r_{Tm}\in\Q(\boldsymbol x,d).
+ \label{eq:reduction}
+\end{equation}
+Here $M_m$ is master integral $m$, $n_M$ is the number of masters, and $\Q(\boldsymbol x,d)$ is the field of rational functions with rational coefficients. Exact row operations give Eq.~\eqref{eq:reduction}, as derived in Appendix~\ref{app:derivation}. A remaining free integral in a restricted system does not by itself establish a master of the full family. We check completion against a reference basis. Kira can solve symbolically or use finite fields and reconstruct rational functions~\cite{Kira2}; this study leaves its reconstruction algorithm unchanged.
+
+The three learned interventions occur at distinct points (Table~\ref{tab:places}). A seed policy changes which identities are generated. An equation policy selects seed--operator pairs. A row policy chooses among allowed elimination steps after coefficients exist. All three can change cost without predicting the physical coefficients themselves.
+\begin{table}[!htbp]\centering\small
+\caption{Learned decisions studied here. The last column states their use in the measured method.}
+\label{tab:places}
+\begin{tabularx}{\linewidth}{@{}lYY@{}}\toprule
+Decision & Work affected & Use in this study\\\midrule
+Seed region & Generation and solution of the IBP system & Cost-trained policy in supported native requests\\
+Equation retention & Construction of selected IBP coefficients & Separately validated native filter\\
+Elimination row & Intermediate expressions and row operations & Omitted from the retained application\\\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Exact reductions before native elimination}
+\label{sec:exact}
+The exact stage uses the propagator structure to determine whether a formula applies. For independent loop components, the product measure and separated integrand factorize Eq.~\eqref{eq:integral}; Appendix~\ref{app:derivation} proves the resulting product of component reductions. Identical components share their calculation. Connected graphs require their own identities, so a high loop count alone does not select this shortcut.
+
+Table~\ref{tab:exact-domains} summarizes the retained domains. For generic one-loop sectors, we resolve numerator scalar products along the external directions and average the perpendicular components. This yields scalar integrals whose raised powers are lowered by an exact IBP recurrence. Appendix~\ref{app:tensor-reduction} derives both steps. Their coefficients are rational in $d$, and keeping known linear dimension factors separate reduces repeated symbolic simplification. A singular matrix can prevent those particular recurrences from being used, which motivates the new two-point rule.
+\begin{table}[!htbp]\centering\small
+\caption{Exact identities used by the application. Bounds describe the implementation and do not classify all reducible integrals.}
+\label{tab:exact-domains}
+\begin{tabularx}{\linewidth}{@{}YY@{}}\toprule
+Integral structure & Identity and accepted domain\\\midrule
+Generic one-loop sectors & Tensor angular average and scalar IBP recurrence; rational kinematics, at most five coordinates, numerator and excess positive powers at most six; required matrices invertible\\
+Zero-invariant two-point sectors & New endpoint formula; equal, unequal, or zero masses; rational kinematics, at most five coordinates, numerator and excess positive powers at most four\\
+Symbolic two-point masses & New scalar mass-derivative formula at $p^2=0$; individual powers at most six and total power at most eight\\
+Connected one-scale trees & Successive massless bubble integration; massless two-point root or one massive vacuum root; implemented through thirteen loops\\
+Independent products & Product of accepted component reductions; repeated components computed once\\\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Two-point sectors at zero external invariant}
+Let $D_1=\ell^2-x$ and $D_2=(\ell-p)^2-y$, where $x$ and $y$ are squared masses and $p^2=0$. Write $T(x)$ for the unit-power tadpole with squared mass $x$. Feynman parametrization gives
+\begin{equation}
+ B_{11}(x,y)=\frac{T(x)-T(y)}{x-y},\qquad
+ B_{ab}(x,y)=\frac{\partial_x^{a-1}\partial_y^{b-1}B_{11}(x,y)}{(a-1)!(b-1)!}.
+ \label{eq:light-main}
+\end{equation}
+Here $a$ and $b$ are positive propagator powers, and derivatives treat the two masses as independent before any specialization. Appendix~\ref{app:lightlike} derives this relation, its equal-mass limit, and the finite tensor formula. At equal masses, $B_{ab}(x,x)=T_{a+b}(x)$, where $T_n$ is the tadpole with denominator power $n$. A zero-mass tadpole vanishes in dimensional regularization~\cite{Weinzierl2022}.
+
+For polynomial numerators, the same parameter shift leaves one radial denominator. Angular moments reduce the numerator to a finite sum, and a change from the Feynman parameter to the interpolated squared mass expresses each term through the two endpoint tadpoles. The result is a rational coefficient of $T(x)$ and $T(y)$, with no inverse external Gram matrix. This also applies when a generic one-loop recurrence reaches such a two-line sub-sector. Applying the identity at that intermediate step extends the complete reduction beyond requests that begin as bubbles.
+
+The application tests the stated conditions before using a formula. It retains native reduction for unsupported targets, symbolic numerators outside the accepted domain, and recurrence limits. A request can contain both accepted and remaining targets; the application combines their exact outputs. These checks determine mathematical applicability. They do not ask a learned model to certify an identity.
+
+\subsection{Connected trees and higher loop counts}
+Successive massless bubble integrations also reduce specific connected trees to a unit-power integral of the same tree. For a massless two-point root, the coefficient is a rational function of $d$ and the external invariant. For a massive vacuum root, it is rational in $d$ and the one squared mass. Appendix~\ref{app:trees} derives these statements from Gamma-function products and their integer shifts. This family includes connected high-loop integrals, while independent products provide a separate high-loop test. Neither construction represents general coupled multiscale scattering.
+
+\section{Learning the remaining Kira cost}
+\label{sec:learning}
+For native requests, the model selects a complete seed region from three allowed choices. Every choice uses exact Kira algebra and retains the same recovery checks. The actions differ in restrictions on the positive powers and numerator powers of seeds; Appendix~\ref{app:sparse} defines them. We measure the elapsed time of each action, including its unsuccessful attempts, so training favors choices that reduce the full cost.
+
+The new training set contains 34 planar and nonplanar two-loop box batches, and a separate set of 16 batches selects the model. Each batch contains one to six targets with unit physical propagator powers and numerator rank one through four. Twenty-one features describe target counts, numerator distributions, and loop incidence in the physical propagators. Family names and the numerical kinematic profile are excluded from the features. Appendix~\ref{app:families-new} defines the integrals and split construction. Two additional training batches cover single-coordinate numerator distributions after a validation-only coverage check. No reserved timing results enter this revision. Whole target batches are disjoint across training, validation, and testing, although individual index vectors can recur.
+
+We train cost-sensitive trees and bootstrap ensembles, using the tree constructions of Refs.~\cite{CART1984,Breiman2001Forest}. Each leaf stores the mean measured cost of each seed action. A split reduces the sum of chosen action costs; Appendix~\ref{app:shared} derives this objective and lists the candidate settings. Validation chooses both the model and a fixed control action. The new model is enabled only if validation supports a saving of at least one percent without more unverified results. A required predicted-saving margin limits changes near a tie. A separate learned failure score checks the proposed action before it runs. Predicted risky actions and inputs outside the training feature range use a conservative region that completed every training and validation request. The tests record each admission decision and any remaining failure.
+
+This policy changes computational choices and leaves all coefficients to exact algebra. If the selected region is insufficient, the native procedure expands it and includes the extra time. A failed action can therefore erase a predicted saving. Our cost objective penalizes unverified actions, and the admission model learns from their observed outcomes. This reduces exposure to costly failed regions, while exact completion checks remain necessary for new requests. A failure label means that the bounded procedure did not return a verified complete reduction; it does not show that the integral cannot be reduced. The reserved tests count both completion and total time.
+
+\subsection{Equation and row policies}
+The equation-selection model ranks candidate seed--operator pairs before constructing their full coefficients. Its independently tested filter reduces complete time on its recorded workload. The current combined comparison keeps that filter off, so its benefit is reported separately. Multiplying the seed and equation speed ratios would assume an interaction that these measurements do not test.
+
+The original next-row model scores allowed elimination steps in Kira's changing system. Its inference and selection costs exceeded the algebraic savings in the retained comparison. A later compiled cost policy reduced this overhead, but its interval still included equal time. We therefore omit learned row selection from the final application and retain Kira's exact elimination rules. Section~\ref{sec:results} reports the corresponding measurements.
+
+\section{Comparison design}
+\label{sec:design}
+We freeze the formulas, trained model, fixed action, and reserved requests before measuring results. The new comparison contains 68 requests: 20 zero-invariant tensor bubbles, three bubbles with symbolic masses, 12 independent products at loop orders two through thirteen, three larger sectors that contain a zero-invariant two-line sub-sector, three ordinary one-loop tensor requests, three connected vacuum-tree requests, and 24 native box batches. Appendix~\ref{app:families-new} gives their kinematics and target construction. The connected vacuum requests have one, seven, and thirteen loops.
+
+An independent enlarged-region Kira calculation supplies the coefficients for each one-loop component and native box request. We identify translation-equivalent equal-mass tadpoles before comparing coefficients. Product reductions retain their factored representation, and every component is checked. The vacuum requests check the unchanged exact tree path against its preceding result; they test preservation of that path, while the derivation and earlier Gamma-product checks establish its analytic basis. Development also checks the new identities against signed-index IBP residuals and tests symbolic mass expressions after independent rational substitutions.
+
+For each reserved request, we run the integrated application, the same application with a fixed native seed choice, and the preceding published application. Each measurement starts a fresh process and includes imports, model loading, prediction, exact formulas, native generation and elimination where used, recovery, output, and exit. We use one computational thread per application, three repetitions, and rotating method order on the same worker. The external benchmark reference and its final coefficient comparison lie outside this timer. Native reference preparation supplies protected master indices where required; its coefficients are used only for the external check. Thus these native times measure reduction with the stated basis, rather than the cost of discovering that basis from scratch.
+
+Each application has a 20-second bound. Completion requires agreement with the independent reference in all repetitions. Ratios use only requests that both compared methods complete; all remaining requests stay in the completion counts. We sum the per-request median times and form their ratio. Appendix~\ref{app:statistics} defines this estimator and its request-resampling interval. Timing uncertainty reflects this workload and hardware, not universal performance across integral families.
+
+\input{lightlike_results}
+
+\section{Conclusion}
+\input{paper_conclusion}
+\appendix
+\input{focused_derivations}
+\input{focused_tensor_appendix}
+\input{lightlike_appendix}
+\input{focused_trees_appendix}
+\bibliographystyle{unsrt}
+\bibliography{paper_references}
+\end{document}

@@ -1,18 +1,31 @@
-## Current exact vacuum and learned application
+<!-- DIRECT ANALYTIC CURRENT BEGIN -->
+# Current integral decomposition method
+
+Use `ML_model_adaptive_reduction/direct_analytic/s23_deploy.py`.
+Read the [current application guide](ML_model_adaptive_reduction/direct_analytic/README.md) for commands, exact domains, models, and limits.
+The method combines analytic formulas with measured-cost native choices.
+The paper reports the current comparison. The notes retain the earlier experiments.
+Both documents include analytic derivations, exact checks, failures, and limits through 13 loops.
+This does not establish coverage of every high-loop scattering family.
+
+The sections below describe earlier versions.
+<!-- DIRECT ANALYTIC CURRENT END -->
+
+## Earlier exact vacuum and learned application
 
 <!-- LIGHTLIKE STUDY BEGIN -->
-The latest application is `ML_model_adaptive_reduction/lightlike_reduction/s05_runtime.py`.
+The preceding application is `ML_model_adaptive_reduction/lightlike_reduction/s05_runtime.py`.
 Read the [exact and learned reduction guide](ML_model_adaptive_reduction/lightlike_reduction/README.md).
 The paper now focuses on exact identities, learned Kira decisions, and complete time.
 The notes retain the earlier experiments. Both PDFs include the new measured comparison.
 `paper_before_lightlike.tex` preserves the preceding main-paper narrative in the report folder.
 The historical numerical audits remain active; old labels are checked in retained sources.
-Current-paper references and citations are checked in the current paper itself.
+Earlier-paper references and citations are checked in the current paper itself.
 <!-- LIGHTLIKE STUDY END -->
 
-## Current tensor reduction extension
+## Earlier tensor reduction extension
 
-Use [tensor_reduction](ML_model_adaptive_reduction/tensor_reduction/README.md) for the current combined application.
+Use [tensor_reduction](ML_model_adaptive_reduction/tensor_reduction/README.md) for the earlier combined application.
 Its s18_fast_runtime.py adds exact polynomial-numerator reduction with factored dimension denominators.
 A measured validation rule selects whether to use the trained identity-order policy or its fixed action.
 It retains the previous exact rules and native seed model.
@@ -21,7 +34,7 @@ Read the folder guide for costs, controls, limits, and commands.
 
 
 Read [the current method guide](ML_model_adaptive_reduction/vacuum_learning/README.md).
-Use vacuum_learning/s18_fast_runtime.py with --method integrated.
+Use vacuum_learning/s03_runtime.py with --method integrated.
 This version adds exact single-mass vacuum trees and a newly trained native seed-choice model.
 The paper and notes give separate exact and ML measurements, failures, and domain limits.
 

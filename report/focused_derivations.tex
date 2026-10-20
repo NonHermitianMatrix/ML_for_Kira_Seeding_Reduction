@@ -48,14 +48,14 @@ Projection onto the interval from zero to each target numerator power leaves pre
  D\leq\max\{0,\lfloor D_T+\theta_5\rfloor\}.
  \label{eq:seed-regions}
 \end{align}
-These inequalities specify a search family rather than a sufficiency theorem. Native outer bounds, retained sector corners, and admissible target and master seeds also apply. The three choices use
+These inequalities specify a search family rather than a sufficiency theorem. Native outer bounds, retained sector corners, and admissible target and master seeds also apply. The previously studied sparse choices use
 \begin{align}
  \boldsymbol\theta_{\rm wide}&=(2.5,0,0,1.25,0,1,-0.25),\nonumber\\
  \boldsymbol\theta_{\rm tight}&=(1,0,0,0,1,1,0),\nonumber\\
  \boldsymbol\theta_{\rm medium}&=(1.5,0,0,0.5,0,1,0).
  \label{eq:seed-values}
 \end{align}
-The native procedure retains its subsector truncation and recovery rules. The model selects one complete choice before generating equations.
+The retained native model uses these three sparse choices. The rejected replacement uses the wide and tight choices and a third action that retains all seeds within the tight procedure's native outer bounds. The native procedure retains its subsector truncation and recovery rules. The model selects one complete procedure before generating equations.
 
 The separately tested equation classifier has seventeen features: four family and request dimensions; three seed counts; two differences from target power maxima; three sector descriptors; exact target membership and minimum index distance; the operator index; and the two target maxima. Positive labels mark equations retained by a complete reference reduction. Sampling at most 2,000 records of each class $y$ in batch $c$ gives each sampled record weight $N_{cy}/(n_{cy}N_c)$, where $N_{cy}$ and $n_{cy}$ are the native and sampled class counts and $N_c$ is the full batch count. Multiplying this weight by $n_{cy}$ preserves the class fraction $N_{cy}/N_c$. A leaf with weighted totals $W_0,W_1$ returns $p=W_1/(W_0+W_1)$, and a fixed threshold retains equations. The decision-tree construction follows Ref.~\cite{CART1984}. This empirical score does not certify sufficiency or probability calibration; the native completion check remains necessary.
 
@@ -98,19 +98,15 @@ All profiles below define squared quantities in a common fixed unit. The zero-in
  &q^2=-2h-7,\quad q\cdot r=-h-3,\quad r^2=-3h-13.
  \label{eq:light-input}
 \end{align}
-The unequal case has $(x,y)=(h+3,h+11)$, the equal case $(h+3,h+3)$, the mixed case $(h+3,0)$, and the massless case $(0,0)$. Targets have the form $(1+\delta_1,1+\delta_2,-b_1,-b_2)$ with $\delta_1+\delta_2=\delta$ and $b_1+b_2=R$. For class position $j=0,1,2,3$, we use $R=0,\ldots,4$, $\delta=\min(R,3)$, and $h=211+17j+R$. Each batch contains at most three distinct assignments. These definitions give the 20 tensor requests.
+The unequal case has $(x,y)=(h+3,h+11)$, the equal case $(h+3,h+3)$, the mixed case $(h+3,0)$, and the massless case $(0,0)$. Targets have the form $(1+\delta_1,1+\delta_2,-b_1,-b_2)$, where $\delta_1+\delta_2$ is the excess positive power and $b_1+b_2$ is numerator rank.
 
-The three symbolic requests retain the same zero-invariant geometry with $h=301,302,303$ and squared masses $(x,y)$, $(x,x)$, and $(x,0)$ as symbols. Their positive-power pairs are $(1,1),(2,1),(1,2),(2,2)$, with zero numerator powers. Independent products contain $L$ identical components at $h=351+L$, $R=2$, and $\delta=1$, with unequal masses for odd $L$ and equal masses for even $L$. Each target is a product of the same component assignment, and $L=2,\ldots,13$. No factor connects different loop momenta.
-
-The embedded-sector requests promote the $q$ line to a physical denominator with squared mass $421+j$ and use $h=391+j$ in the three nonzero-mass classes, $j=0,1,2$. Their targets are $(2,1,1,-1)$, $(1,2,1,-1)$, and $(2,1,0,-1)$. The first two require a three-line reduction, and the last explicitly tests its zero-invariant sub-sector.
-
-The ordinary tensor checks have $P=2,3,4$ physical lines, one auxiliary coordinate, shifts $q_1=0$, $q_{i+1}=p_i$, and profile $h=433+P$. Their masses and scalar products are
+Ordinary tensor families have $P$ physical lines, one auxiliary coordinate, shifts $q_1=0$, $q_{i+1}=p_i$, and
 \begin{equation}
  m_i^2=h+11i^2\ (i\leq P),\quad m_{P+1}^2=0,\quad
  p_i^2=-(10h+17i),\quad p_i\cdot p_j=-(h+i+2j-2)\ (i<j).
  \label{eq:ordinary-input}
 \end{equation}
-Targets have numerator rank two and one excess positive power. The unchanged connected-vacuum checks use chains at $L=1,7,13$, the family of Appendix~\ref{app:trees}, and four target assignments per request. The input records retain the exact integer assignments for every batch in this finite comparison.
+Appendix~\ref{app:direct-inputs} specifies the current profiles, targets, and separate vacuum grids.
 
 For the native planar box, let $p_1,p_2,p_3$ be massless, $2p_1\cdot p_2=s$, $2p_1\cdot p_3=t$, and $2p_2\cdot p_3=-s-t$. The seven physical line momenta are
 \begin{equation}
@@ -128,7 +124,7 @@ and the auxiliary momenta are $(\ell_1-p_3,\ell_2-p_1)$. The nonplanar routing f
 \end{align}
 The first seven entries are physical and all masses vanish. Its convention gives $p_i^2=(p_1+p_2-p_3)^2=0$, $s=(p_1+p_2)^2$, and $t=(p_1-p_3)^2$. Expanding the squares gives $2p_1\cdot p_3=-t$ and $2p_2\cdot p_3=s+t$. The planar profiles use $(s,t)=(-1009-12h,-1021-14h)$ and the nonplanar profiles use $(-113-18h,-127-10h)$.
 
-Every native target is $(1,1,1,1,1,1,1,-u,-v)$ with $u,v\geq0$ and $1\leq u+v\leq4$. Distinct batches contain one to six targets. Training uses 16 batches per graph at $h=19079$ and one additional batch per graph at $h=19083$ with numerator powers $(u,v)=(0,2),(0,3),(0,4)$, validation uses eight per graph at $h=19121$, and testing uses 12 per graph at $h=19139$. We exclude whole batches used by the preceding native and tensor studies. The same graph types occur in all three new splits, so the test measures new batches and kinematic points within these structures rather than transfer to an unseen topology.
+Every native target is $(1,1,1,1,1,1,1,-u,-v)$ with $u,v\geq0$ and $1\leq u+v\leq4$. The current split uses the profiles and batch counts in Appendix~\ref{app:direct-inputs}. Both graph types occur in all splits, so the test measures new batches and kinematic points within these structures.
 
 \section{Time ratios and uncertainty}
 \label{app:statistics}
@@ -139,4 +135,4 @@ Let $T_{imr}$ be complete elapsed time for request $i$, method $m$, and repetiti
  \text{fractional saving}=1-R.
  \label{eq:time-ratio}
 \end{equation}
-These definitions compare identical completed requests. Dividing both times by the control time gives $R$, and subtracting gives the fractional saving. Completion counts remain separate because an unfinished reduction has no verified finite speedup. To estimate variation across requests, we draw $|\mathcal C|$ paired request indices with replacement and recompute $R$. We report the central 95\% of 2,000 such ratios, using the bootstrap construction of Ref.~\cite{Efron1979}. This interval describes the sampled request collection and does not establish performance for every integral family.
+These definitions compare identical completed requests. Dividing both times by the control time gives $R$, and subtracting gives the fractional saving. Completion counts remain separate because an unfinished reduction has no verified finite speedup. To estimate variation across requests, we draw $|\mathcal C|$ paired request indices with replacement and recompute $R$. We report the central 95\% of 4,000 such ratios, using the bootstrap construction of Ref.~\cite{Efron1979}. This interval describes the sampled request collection and does not establish performance for every integral family.
