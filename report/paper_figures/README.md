@@ -1,5 +1,22 @@
+# Focused paper figures
+
+Use `report/s02_rewrite_figures.py` to make the current figures from saved measurements.
+It runs no reduction or training.
+
+- `rewrite_total.pdf` shows all three complete-collection observations and their medians.
+- `rewrite_scope.pdf` shows fresh-call ratios by physical structure and triangle loop order.
+- `rewrite_ml.pdf` separates earlier model-only tests from rejected latest additions.
+
+The axes state the control and units. Dashed ratio lines mark equal time.
+The collection plot shows observations, without a confidence interval.
+The other intervals retain the request or repetition resampling used by the original study.
+The triangle plot retains the slower seven-loop point.
+Read the paper captions and `rewrite_figure_data.json` for the sampling details.
+
+The figures below remain available for the notes and historical evidence.
+
 <!-- DIRECT FIGURES BEGIN -->
-# Current paper figures
+# Earlier direct-formula figures
 
 `direct_vacuum.pdf` compares complete time at each loop order from 1 through 13.
 It separates independent two-mass products from connected one-mass vacuum trees.

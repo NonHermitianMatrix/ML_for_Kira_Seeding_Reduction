@@ -288,3 +288,10 @@ Retain independent tests, exact checks, previous evidence, resource limits, and 
 
 - After completing and publishing a measured improvement, continue the authorized optimization without waiting for another request to make it faster. Investigate the remaining measured costs with exact identities, derived decomposition formulas, recurrences, ML, and implementation changes.
 - Retain only supported changes, verify their mathematical conditions, and compare complete time against the preceding application and appropriate controls. Keep independent tests, negative results, resource limits, and all documentation copies current. A finite investigation cannot prove that no further improvement exists.
+
+## Beginner-facing scientific report (October 20, 2026)
+
+- Focus the paper on speeding up Feynman integral reduction with Kira. Introduce the physics problem, notation, methods, scope, comparisons, results, and limits in that order.
+- Define technical terms before use and explain a worked reduction example. Use external primary citations for established claims and appendix derivations for the equations used here. Support the study's measured claims with its own methods, tables, and saved evidence.
+- Use scientific-writing guidance to improve the reader's path through the argument. Keep timing baselines explicit, label plotted axes and intervals correctly, retain slower cases and failures, and separate learned savings from other changes.
+- This request is an editorial revision. Preserve scientific data and models, rebuild and inspect the documents, and synchronize the complete report across Hoffman, GitHub, and the local machine.

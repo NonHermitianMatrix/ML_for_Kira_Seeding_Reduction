@@ -18,6 +18,13 @@ For $v=\ell_h$, the first factor is $d\delta_{kh}$; for an external momentum it 
 \end{equation}
 The unit vector $\boldsymbol e_i$ raises index $i$ by one. This derivation explains how a seed and an operator generate a row of the reduction system.
 
+For the introductory tadpole example, put $D=\ell^2-x+i0$ and $v=\ell$. Direct differentiation gives
+\begin{equation}
+ \partial_\ell\!\cdot(\ell D^{-a})=dD^{-a}-2a\ell^2D^{-a-1}.
+ \label{eq:tadpole-derivative-proof}
+\end{equation}
+Using $\ell^2=D+x$ with the infinitesimal prescription understood, then integrating, gives $(d-2a)T_a-2axT_{a+1}=0$. Solving at $a=1$ proves Eq.~\eqref{eq:intro-recurrence}. This uses the same analytically continued total-derivative identity as Eq.~\eqref{eq:identity}.
+
 Let $q$ be a source row and $k$ a pivot column with $A_{qk}\ne0$. Solving the identity $\sum_jA_{qj}I_j=0$ for $I_k$ gives $I_k=-\sum_{j\ne k}(A_{qj}/A_{qk})I_j$. Subtracting $A_{rk}/A_{qk}$ times that zero identity from row $r$ yields
 \begin{equation}
  A'_{rj}=A_{rj}-\frac{A_{rk}}{A_{qk}}A_{qj},\qquad A'_{rk}=0.
@@ -26,7 +33,7 @@ Let $q$ be a source row and $k$ a pivot column with $A_{qk}\ne0$. Solving the id
 Every step preserves the represented relation. Repetition until only prescribed master columns remain gives Eq.~\eqref{eq:reduction}. Removing seeds or equations preserves the validity of the retained identities, but can prevent this elimination from finishing. We therefore require reduction to the prescribed basis and exact agreement with the reference coefficients. Generic kinematics avoid singular pivot denominators; special kinematic limits require their own treatment.
 
 
-For independent components, write the loop momenta as disjoint groups and the integrand as $\prod_b f_b$. In a convergence domain, repeated integration gives $I=\prod_b\int f_b$. Dimensional analytic continuation preserves that identity~\cite{Weinzierl2022}. Substituting each exact component reduction therefore gives
+For independent components, write the loop momenta as disjoint groups and the integrand as $\prod_b f_b$. In a common convergence domain, repeated integration gives $I=\prod_b\int f_b$. If the chosen integer powers have no such domain in $d$, first vary the propagator powers independently and then continue them to the requested values. Analytic continuation preserves the resulting identity~\cite{Weinzierl2022}. Substituting each exact component reduction therefore gives
 \begin{equation}
  I=\prod_b\left(\sum_m r_{bm}M_{bm}\right).
  \label{eq:product-reduction}
@@ -61,34 +68,34 @@ The separately tested equation classifier has seventeen features: four family an
 
 \section{Measured-cost learning}
 \label{app:shared}
-For training request $i$ and action $a$, let $t_{ia}$ be measured elapsed time, $f_{ia}$ the fraction of unsuccessful repetitions, and $b_i$ the measured preceding-application time. We define the training cost and relative cost by
+Let $i$ label a training request and $a$ an allowed arithmetic procedure. In the latest study, $C_{ia}$ is the measured complete time, including recovery, and $b_i>0$ is the time for the preceding procedure on the same request. Define the relative training target by
 \begin{equation}
- C_{ia}=t_{ia}+f_{ia}b_i,\qquad y_{ia}=C_{ia}/b_i.
+ y_{ia}=C_{ia}/b_i.
  \label{eq:reconstruction-cost}
 \end{equation}
-The first expression adds the measured failed attempt and the estimated cost of recovery. The second expresses this cost relative to the same request's control. These are training definitions. The reserved comparison measures actual complete applications, including actual recovery.
+There are five actions, so the latest model predicts the vector $\boldsymbol z_i=(y_{i1},\ldots,y_{i5})$. These quantities are training definitions. The three-loop structure uses the preceding procedure by an explicit guard and is excluded from the 36-request fit. The earlier reconstruction study used six actions and an estimated recovery penalty; its separate objective and outcomes remain in the notes.
 
-The ensemble predicts the vector $\boldsymbol z_i=(y_{i1},\ldots,y_{i6},f_{i1},\ldots,f_{i6})$. It minimizes weighted squared error at its regression leaves, following the extremely randomized tree construction of Ref.~\cite{Geurts2006ExtraTrees}. For one component $z$ and a leaf containing requests $S$, its loss is $\sum_{i\in S}b_i(z_i-\mu)^2$. Differentiation with respect to $\mu$ gives
+The ensemble has 32 extremely randomized regression trees~\cite{Geurts2006ExtraTrees}. At a terminal branch, or leaf, let $S$ be the set of training requests that reach it and let $\mu$ be the predicted value of one output component $z$. We use the loss $\sum_{i\in S}b_i(z_i-\mu)^2$, which defines the baseline-time weighting. Differentiating gives
 \begin{equation}
  0=2\sum_{i\in S}b_i(\mu-z_i),\qquad
  \widehat z(S)=\frac{\sum_{i\in S}b_i z_i}{\sum_{i\in S}b_i}.
  \label{eq:reconstruction-leaf}
 \end{equation}
-For a cost component, inserting $z_i=C_{ia}/b_i$ gives
+Substituting the relative cost from Eq.~\eqref{eq:reconstruction-cost} gives
 \begin{equation}
  \widehat y_a(S)=\frac{\sum_{i\in S}C_{ia}}{\sum_{i\in S}b_i},
  \qquad
  \arg\min_a\widehat y_a(S)=\arg\min_a\sum_{i\in S}C_{ia}.
  \label{eq:reconstruction-leaf-choice}
 \end{equation}
-The denominator is independent of the action, which proves the second equality. Thus a leaf ranks actions by their aggregate measured cost on its requests. The ensemble averages the 32 leaf predictions. Weighting by $b_i$ gives slower baseline requests more influence, while relative costs permit one model to represent different physical structures. This local cost interpretation does not prove global minimum time on unseen requests.
+The second equality follows because the denominator is positive and independent of the action. Thus an individual leaf ranks actions by their aggregate measured training cost. The ensemble averages its 32 tree predictions. This construction does not establish a minimum cost on unseen requests.
 
-Validation compares maximum depths 2, 4, and 6, minimum leaf populations 2 and 4, and predicted saving margins $\eta=0,0.05,0.10,0.20$. For the fixed action $b$ selected for a propagator structure, we choose the least predicted relative cost among actions with predicted failure fraction at most 0.02. We use that action $a_*$ only if
+For the fixed action $a_0$ selected for the request's propagator structure, an alternative $a_*$ is proposed only if
 \begin{equation}
- \widehat y_{a_*}<(1-\eta)\widehat y_b.
+ \widehat y_{a_*}<(1-\eta)\widehat y_{a_0}.
  \label{eq:reconstruction-margin}
 \end{equation}
-This inequality is the defined fractional saving condition. If no alternative satisfies it, the action remains $b$. A feature outside the training minimum or maximum uses the preceding procedure. Validation must then show a complete-cost ratio below 0.97 with no failed selected attempt before deployment enables the model. Failure scores describe observed training outcomes; a zero score does not certify an unseen reduction.
+The margin $\eta$ is a defined acceptance parameter. Validation compares $\eta=0,0.05,0.10$, tree depths 2, 4, and 6, and minimum leaf populations 2 and 4. The complete selected policy must cost less than 0.97 times its structure-dependent fixed control and select no failed validation action. The latest policy does not pass this condition. The final application therefore uses full reconstruction with eight evaluation points grouped together for the planar box, nonplanar box, and sunrise structures, and the preceding procedure for the three-loop vacuum structure.
 
 To specify the features, define target excess power $D=\sum_j\max(a_j-1,0)$, numerator rank $R=\sum_j\max(-a_j,0)$, and line count $P_T=\sum_j{\bf1}_{a_j>0}$. A line is incident on a loop momentum when that momentum occurs in its inverse propagator. The 29 features are listed in Table~\ref{tab:reconstruction-features}. Every feature follows from the supplied indices and propagator definitions.
 \begin{table}[!htbp]\centering\small
@@ -143,6 +150,15 @@ Every high-rank box target is $(1,1,1,1,1,1,1,-u,-v)$ with $u,v\geq0$ and $1\leq
 
 \section{Time ratios and uncertainty}
 \label{app:statistics}
+For the final shared-call comparison, let $U_{mr}$ be elapsed time for the entire 93-request collection, method $m$, and repetition $r$. We define
+\begin{equation}
+ \widetilde U_m=\operatorname{median}_{r=1,2,3}U_{mr},\qquad
+ \rho_{\rm collection}=\frac{\widetilde U_{\rm final}}{\widetilde U_{\rm preceding}},\qquad
+ g=1-\rho_{\rm collection}.
+ \label{eq:collection-ratio}
+\end{equation}
+The saving $g$ follows by dividing the time difference $\widetilde U_{\rm preceding}-\widetilde U_{\rm final}$ by the preceding time. The observed range is $[\min_r U_{mr},\max_r U_{mr}]$. It describes the three measurements and is not a statistical confidence interval. Internal per-request timers exclude some initialization and collection overhead, so summing their medians need not give $\widetilde U_m$.
+
 Let $T_{imr}$ be complete elapsed time for request $i$, method $m$, and repetition $r$. For the set $\mathcal C$ completed by both methods in all repetitions, define
 \begin{equation}
  S_m=\sum_{i\in\mathcal C}\operatorname{median}_{r=1,2,3}T_{imr},\qquad
@@ -151,3 +167,6 @@ Let $T_{imr}$ be complete elapsed time for request $i$, method $m$, and repetiti
  \label{eq:time-ratio}
 \end{equation}
 These definitions compare identical completed requests. Dividing both times by the control time gives $\rho$, and subtracting gives the fractional saving. Completion counts remain separate because an unfinished reduction has no verified finite speedup. To estimate variation across requests, we draw $|\mathcal C|$ paired request indices with replacement and recompute $\rho$. We report the central 95\% of 5,000 such ratios, using the bootstrap construction of Ref.~\cite{Efron1979}. This interval describes the sampled request collection and does not establish performance for every integral family.
+
+
+For the historical compiled-row result, the estimator is the geometric mean of paired ratios, $\rho_G=\exp[n^{-1}\sum_{i=1}^{n}\log(t_i^{\rm learned}/t_i^{\rm native})]$, where $n$ is the number of matched units in that study. This is the $n$th root of their product, obtained by applying the logarithm to that product. It weights relative changes equally, unlike the total-time ratio in Eq.~\eqref{eq:time-ratio}; the notes preserve the original grouping and resampling procedure.

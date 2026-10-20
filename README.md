@@ -1,3 +1,15 @@
+<!-- FOCUSED PAPER REVISION BEGIN -->
+# Current paper
+
+Read [the paper](report/report.pdf) for the method, physical scope, and measured results.
+Read [the notes](report/notes.pdf) for the full experiment history.
+The paper introduces the physics terms and gives a worked reduction example.
+It separates exact methods, learned decisions, complete-time gains, and slower cases.
+Read [the report guide](report/README.md) to rebuild the figures and documents.
+The editorial revision changes no reduction code, trained model, or benchmark data.
+The application guides and earlier records follow below.
+<!-- FOCUSED PAPER REVISION END -->
+
 <!-- TRIANGLE ENTRY TOP BEGIN -->
 # Current application
 

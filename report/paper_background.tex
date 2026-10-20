@@ -1,0 +1,78 @@
+\section{Introduction}
+\label{sec:introduction}
+Predictions for particle scattering and decay involve amplitudes, whose squared magnitudes enter measurable probabilities and rates. In perturbation theory, an amplitude is calculated as an expansion in the interaction strength. Higher-order terms contain integrations over internal momenta that are not fixed by the external particles. These integrations give Feynman integrals, and the number of independent internal momenta is the number of loops~\cite{Weinzierl2022}. Quantum chromodynamics, the theory of the strong interaction, requires these integrals in higher-order perturbative corrections to scattering amplitudes and particle decay amplitudes~\cite{Weinzierl2022}.
+
+Many integrals share the same denominator factors and differ only in their powers or numerators. Integration-by-parts (IBP) identities relate such integrals, so the calculation can express them through master integrals: a set of integrals that remains after the chosen reduction relations have been used~\cite{ChetyrkinTkachov,Laporta}. Kira automates the construction and solution of these relations~\cite{KiraOriginal}. Finding the coefficients of the masters is the reduction problem studied here. Evaluating the remaining masters is a further step, although some of the analytic formulas used below also provide their values.
+
+The question is how to complete the requested reduction with less elapsed time. Kira already has methods for restricting equation generation and removing unnecessary relations~\cite{Kira3}. A further restriction can save work, but an insufficient equation system requires recovery. Our study therefore compares complete calculations, including the choice of method and any repeated attempt. Machine-assisted seed search provides a related approach to reducing the equation system~\cite{Song2025}; analytic reduction provides another route when the denominator factors satisfy suitable conditions~\cite{DennerDittmaier2006,Hu2025}.
+
+We combine these routes and measure their contributions separately. Section~\ref{sec:physics} defines the integrals and explains how Kira reduces them. Section~\ref{sec:method} describes the exact formulas and learned choices, followed by the comparison design in Section~\ref{sec:design}. Sections~\ref{sec:results} and \ref{sec:discussion} state the measured gains, slower cases, and range of application. The appendices give the derivations and physical inputs; the companion notes retain the full sequence of experiments.
+
+\section{From a loop integral to a master-integral reduction}
+\label{sec:physics}
+We first define the notation used in this paper. This makes it possible to state both the reduction problem and the conditions under which an exact shortcut applies.
+
+\subsection{What the integrals contain}
+We use the normalized integral
+\begin{equation}
+ I_{\boldsymbol a}(\boldsymbol x,d)=
+ \int\prod_{h=1}^{L}\frac{d^d\ell_h}{i\pi^{d/2}}
+ \prod_{j=1}^{N}D_j^{-a_j},
+ \qquad D_j=Q_j^2-m_j^2+i0,\qquad d=4-2\epsilon.
+ \label{eq:integral}
+\end{equation}
+Here $L$ is the number of loops, $\ell_h$ is an integration momentum, and $N$ is the number of denominator coordinates. Each $Q_j$ is a specified linear combination of loop momenta and external momenta, and $m_j$ is a mass. The vector $\boldsymbol x$ contains squared masses and scalar products of external momenta. The symbol $i$ is the imaginary unit, and $i0$ means an infinitesimal positive imaginary part that specifies the Feynman pole prescription. An external invariant is a scalar product that does not change between inertial reference frames. For a physical internal line, $1/D_j$ is its scalar propagator and $D_j$ is its inverse. The normalization $i\pi^{d/2}$ is conventional. Analytic continuation extends an integral formula from a region where the integral converges to other parameter values. Dimensional regularization uses this continuation in $d$; its poles describe divergences as the regulator $\epsilon$ approaches zero~\cite{Weinzierl2022}.
+
+The integer vector $\boldsymbol a=(a_1,\ldots,a_N)$ identifies an integral. A positive $a_j$ places $D_j^{a_j}$ in the denominator, $a_j=0$ removes that factor, and a negative $a_j$ places a power of $D_j$ in the numerator. An \emph{integral family} fixes all $Q_j$, masses, and external scalar products while allowing these indices to vary. Auxiliary coordinates represent numerator scalar products that the physical denominators do not span~\cite{KiraOriginal}. Thus a family specifies the mathematical problem before any model makes a choice.
+
+For example, a one-loop two-point integral, commonly called a bubble, has the form
+\begin{equation}
+ B_{ab}(p^2;x,y)=
+ \int\frac{d^d\ell}{i\pi^{d/2}}\,
+ \frac{1}{(\ell^2-x+i0)^a[(\ell-p)^2-y+i0]^b}.
+ \label{eq:example-bubble}
+\end{equation}
+This equation defines $x$ and $y$ as squared masses, $p$ as the external momentum, and $a,b$ as denominator powers. The integrals $B_{11}$ and $B_{21}$ belong to the same family and have different powers of the first denominator. More complicated families introduce additional loop momenta and denominator factors, using the same notation.
+
+The chosen set of masters is called a master basis. A \emph{target} is an integral whose reduction is requested. A \emph{sector} groups integrals with the same positive-index positions, and a sub-sector removes one or more of those positions~\cite{KiraOriginal}. A request in our experiments contains one family, its physical parameters, and one or more targets. This distinction matters because a single timing measurement can cover several targets.
+
+\subsection{How integration by parts relates the targets}
+Integration by parts supplies an equation by integrating a total derivative. A seed is an integer index vector at which we generate these identities. For seed indices $\boldsymbol\sigma$ and a loop or external momentum $v$, the identity is~\cite{ChetyrkinTkachov}
+\begin{equation}
+ 0=\int\prod_h\frac{d^d\ell_h}{i\pi^{d/2}}\,
+ \frac{\partial}{\partial\ell_k^\mu}
+ \left(v^\mu\prod_jD_j^{-\sigma_j}\right)
+ =\sum_u A_{\boldsymbol\sigma,o;u}(\boldsymbol x,d)
+ I_{\boldsymbol a^{(u)}}.
+ \label{eq:identity}
+\end{equation}
+The repeated component index $\mu$ is summed, $k$ selects the differentiated loop momentum, and $o=(k,v)$ labels the derivative operation. Expanding the derivative changes denominator powers, giving the coefficients $A_{\boldsymbol\sigma,o;u}$, where $u$ labels the resulting integrals. Appendix~\ref{app:derivation} derives these index shifts. Analytic continuation gives the dimensionally regularized identity outside an initial convergence region~\cite{ChetyrkinTkachov}.
+
+A simple example shows how an identity becomes a reduction. A vacuum integral has no external momentum entering its denominators. Define its one-denominator example, called a tadpole, by
+\begin{equation}
+ T_a(x)=\int\frac{d^d\ell}{i\pi^{d/2}}(\ell^2-x+i0)^{-a},
+ \qquad x\ne0.
+ \label{eq:intro-tadpole}
+\end{equation}
+Applying Eq.~\eqref{eq:identity} with $v=\ell$ gives
+\begin{equation}
+ 0=(d-2a)T_a(x)-2ax\,T_{a+1}(x),
+ \qquad
+ T_2(x)=\frac{d-2}{2x}\,T_1(x).
+ \label{eq:intro-recurrence}
+\end{equation}
+Appendix~\ref{app:derivation} shows the intermediate derivative. The last relation expresses the target $T_2$ through the master $T_1$. Its coefficient depends on $d$ and the squared mass; reduction coefficients need not be constants.
+
+\subsection{What Kira calculates and where the work occurs}
+A seed is the index vector $\boldsymbol\sigma$ used in Eq.~\eqref{eq:identity}, and each seed supplies several derivative equations. Kira constructs a finite system, identifies relations using symmetry and linear dependence, and eliminates integrals according to an ordering. Back-substitution then writes the requested targets in terms of the remaining masters~\cite{KiraOriginal,Laporta}. The desired result is
+\begin{equation}
+ I_{\boldsymbol a}=\sum_{m=1}^{n_M}
+ r_{\boldsymbol a m}(\boldsymbol x,d)M_m,
+ \qquad r_{\boldsymbol a m}\in\Q(\boldsymbol x,d).
+ \label{eq:reduction}
+\end{equation}
+Here $M_m$ is master $m$, $n_M$ is the size of the chosen master set, and $\Q(\boldsymbol x,d)$ denotes rational functions with rational coefficients. Solving the linear identities gives this form, as shown in Appendix~\ref{app:derivation}. A smaller seed system can leave extra free integrals, so its remaining columns alone do not establish a complete master basis.
+
+There are three distinct choices that a learned model can address: which seeds generate equations, which equations to retain, and which allowed row operation to perform next. A row is one equation in the coefficient matrix; an elimination step uses a nonzero coefficient to remove an integral from other rows. Appendix~\ref{app:derivation} derives that operation. Table~\ref{tab:learned-places} gives the models studied at these three locations and explains which remain active.
+
+The coefficient arithmetic creates another cost. Symbolic elimination manipulates rational functions throughout the calculation. Alternatively, Kira can evaluate the system at numerical points modulo a prime and use FireFly to reconstruct the rational functions~\cite{Kira2,FireFly2019,FireFly2020}. Such a finite field uses exact arithmetic on residues, so the numerical samples are not floating-point approximations. Appendix~\ref{app:reconstruction-algebra} explains how samples constrain a coefficient. Our method can choose this existing arithmetic procedure, in addition to changing the equations or applying a direct identity.

@@ -1,0 +1,84 @@
+\section{A combined method for reducing the total time}
+\label{sec:method}
+Our procedure first tests the mathematical conditions for an exact identity. It applies an accepted formula to a whole target or to a reducible part, then uses Kira for the remaining integrals. Within that calculation, a learned choice is used only in the domain where its validation supports it. This ordering gives each method a defined role and allows a direct comparison with the same calculation performed without the additional learned choice.
+
+\subsection{Exact formulas and recurrences}
+\label{sec:exact}
+The tadpole relation in Eq.~\eqref{eq:intro-recurrence} illustrates the first route: a recurrence repeatedly lowers an integer power. A direct formula can go further and provide an analytic value. In our normalization, Appendix~\ref{app:direct-vacuum} derives
+\begin{equation}
+ T_a(x)=(-1)^a(x-i0)^{d/2-a}
+ \frac{\Gamma(a-d/2)}{\Gamma(a)}.
+ \label{eq:main-tadpole-value}
+\end{equation}
+The Gamma function is defined for $\operatorname{Re}z>0$ by
+$\Gamma(z)=\int_0^\infty t^{z-1}e^{-t}\,dt$ and elsewhere by analytic continuation~\cite{NISTGamma}.
+It satisfies $\Gamma(z+1)=z\Gamma(z)$, so integer shifts of its argument give finite products. These products explain why the ratios of the target and master values in our analytic families are rational.
+
+Some formulas depend on a particular physical limit. Feynman parametrization combines denominator factors through an auxiliary parameter integral. For the bubble of Eq.~\eqref{eq:example-bubble} at $p^2=0$, this procedure gives
+\begin{equation}
+ B_{11}(0;x,y)=\frac{T_1(x)-T_1(y)}{x-y},\qquad
+ B_{ab}(0;x,y)=
+ \frac{\partial_x^{a-1}\partial_y^{b-1}B_{11}(0;x,y)}
+ {(a-1)!(b-1)!}.
+ \label{eq:light-main}
+\end{equation}
+The first expression assumes $x\ne y$. At equal nonzero masses the limiting result is $B_{ab}(0;x,x)=T_{a+b}(x)$. Appendix~\ref{app:lightlike} derives both cases and the extension to polynomial numerators. This separate formula avoids dividing by a matrix of external scalar products that becomes singular at this kinematic point.
+
+The latest exact addition concerns a massless triangle with three denominator powers $a,b,c$, two lightlike external momenta $p_1,p_2$, and one nonzero invariant $Q=-(p_1+p_2)^2>0$. Lightlike means $p_1^2=p_2^2=0$. Appendix~\ref{app:triangle} defines the integral $T_{abc}(Q,d)$, derives its Gamma-function representation, and converts it to a bubble master. In particular,
+\begin{equation}
+ T_{111}(Q,d)=\frac{2(d-3)}{Q(d-4)}\,B(Q,d),
+ \qquad B(Q,d)=T_{101}(Q,d).
+ \label{eq:main-triangle}
+\end{equation}
+This is a standard analytically tractable kinematic configuration~\cite{DavydychevOsland1998}. We derive the coefficient with our sign and normalization conventions before using it. The preceding application already reduced this triangle analytically to a triangle master; the addition supplies the bubble-basis coefficient and an explicit master value.
+
+The same reasoning extends to selected many-loop structures. If separate groups of loop momenta occur in separate factors of the integrand, their reductions multiply. Some connected families also allow successive bubble integrations from the outermost loop inward. Appendix~\ref{app:trees} defines these trees and derives their Gamma products. Appendix~\ref{app:derivation} proves the independent-product rule. The accepted domains are summarized in Table~\ref{tab:exact-domains}; their restrictions prevent the formulas from being applied to a different physical problem.
+
+For clarity, a scalar denominator integral has no free Lorentz index. Polynomial numerators arise after contractions of tensor integrals, whose numerators carry momentum components. We use angular averages to reduce these numerator terms; Appendix~\ref{app:tensor-reduction} derives the required contractions. An integral is scaleless when it has no nonzero mass or external invariant that can supply a dimensionful scale. Appendix~\ref{app:direct-vacuum} derives its zero value in dimensional regularization.
+\begin{table}[!htbp]\centering\small
+\caption{Exact methods used in the application. These are implementation domains, with derivations in the stated appendices. ``Rank'' is the total numerator power, and ``excess power'' counts positive powers beyond one.}
+\label{tab:exact-domains}
+\begin{tabularx}{\linewidth}{@{}YYY@{}}\toprule
+Integral structure & Method & Principal conditions\\\midrule
+One-loop scalar and polynomial-numerator sectors & Angular reduction and a power-lowering recurrence (Appendix~\ref{app:tensor-reduction}) & At most five coordinates; rank and excess power at most six; required matrices invertible\\
+Two-point sectors at $p^2=0$ & Endpoint tadpoles and mass derivatives (Appendix~\ref{app:lightlike}) & Rational tensor inputs: rank and excess power at most four; scalar symbolic masses: individual powers at most six and total at most eight\\
+Vacuum factors with one momentum per factor & Partial fractions and tadpole values (Appendix~\ref{app:direct-vacuum}) & Nonnegative rational squared masses; at most eight denominators per factor; powers bounded as stated there\\
+Scaleless vacuum families & Zero in dimensional regularization (Appendix~\ref{app:direct-vacuum}) & No mass or external momentum scale; homogeneous quadratic denominators\\
+Connected bubble trees & Successive exact bubble integrations (Appendix~\ref{app:trees}) & Massless two-point root or one massive vacuum root; no additional occupied auxiliary lines\\
+Massless triangles & Direct coefficient and Gamma value (Appendix~\ref{app:triangle}) & Two lightlike legs; rational $Q>0$; powers $0$--$4$ and total at most eight\\
+Independent products & Product of component reductions (Appendix~\ref{app:derivation}) & Every occupied factor belongs to an accepted independent component\\\bottomrule
+\end{tabularx}
+\end{table}
+The implementation admits the listed vacuum, tree, and independent-product structures through thirteen loops. This loop range describes specific structures. Additional propagators that couple their loop momenta can invalidate the factorization or the tree integration. Unsupported inputs therefore continue to the remaining exact rules or Kira, subject to the application's resource bounds.
+
+\subsection{Learned choices within Kira}
+\label{sec:learning}
+Machine learning enters as a prediction of a useful computational choice. Training fits a model to examples, validation selects its settings on separate examples, and testing evaluates the frozen choice on reserved inputs. A model receives quantities calculated from the target indices and propagators, called features, and estimates the cost or usefulness of an allowed action. The algebra still determines the reduction coefficients. A decision tree splits its inputs through a sequence of feature tests and returns a prediction at the final branch~\cite{CART1984}. Table~\ref{tab:learned-places} separates the original three interventions. Here and below, \emph{native} means that Kira generates and solves the IBP system.
+
+\begin{table}[!htbp]\centering\small
+\caption{The three learned interventions and their current use. Their separate timing tests appear in Table~\ref{tab:ml-results}; the notes give the earlier architectures and training histories.}
+\label{tab:learned-places}
+\begin{tabularx}{\linewidth}{@{}lYYY@{}}\toprule
+Choice & Model and input & Predicted action & Final application\\\midrule
+Seed selection & A depth-two cost tree, with twelve depth-three failure trees per action; family and target features & One of three seed regions & Retained in its accepted domain\\
+Equation selection & A decision-tree classifier; seed, target, and derivative features & A retention score for each seed--operator pair & Disabled in the final comparison\\
+Row selection & A set-based neural ranker for the current matrix and allowed steps; later a compiled cost policy & The next elimination step & Omitted; native row rules retained\\\bottomrule
+\end{tabularx}
+\end{table}
+The retained seed model selects among wide, medium, and tight regions of seed indices. It was trained on 34 batches and selected using sixteen separate validation batches. Appendix~\ref{app:sparse} defines the regions. They are candidate searches, so a predicted choice does not prove that its equations suffice.
+
+The equation model has seventeen features that describe a candidate seed, its derivative operator, and its relation to the targets. Its training labels identify equations retained by a complete reference reduction. A score threshold selects equations before their full coefficients are constructed. Appendix~\ref{app:sparse} specifies the features and weighted training labels. The original row model uses a neural network: a fitted sequence of numerical maps that assigns each candidate step a score. It combines 132 candidate features through shared 32-component representations, their mean and maximum, and a map with 64 intermediate components. Combining a set of candidates in this way follows the set-based representation of Ref.~\cite{DeepSets}. The notes give its training on constructed target-row reductions and its subsequent test inside Kira's changing matrix. A row model acts when the matrix already exists, and must save enough algebra to cover the cost of choosing each step. The measured row results did not support its use in the final application.
+
+\subsection{Learning the cost of the coefficient arithmetic}
+We also tested a model that chooses the arithmetic for the remaining native reductions. The candidate actions are the preceding procedure and finite-field reconstruction with 1, 4, 8, or 16 evaluation points processed together. This group size is separate from the number of target integrals in a request.
+
+The latest training collection contains 48 requests across four propagator structures, with 20 further requests for validation. A three-loop training comparison did not agree with its reference; later checks did not reproduce the discrepancy. We therefore keep the preceding procedure for that structure and fit the added model to the 36 two-loop training requests. The three-loop requests remain in the complete comparison. The notes preserve the initial failure and the subsequent checks.
+
+The fitted model averages 32 extremely randomized regression trees, using the construction of Geurts, Ernst, and Wehenkel~\cite{Geurts2006ExtraTrees}. Its 29 features describe the loop count, masses, denominator connections, target powers, and sizes of the supplied rational kinematic numbers. It predicts complete time relative to the same request's preceding procedure. Appendix~\ref{app:shared} derives the weighted training objective and lists the features.
+
+Validation selects tree depth from 2, 4, and 6, minimum terminal-branch population from 2 and 4, and the required predicted saving from zero, five, and ten percent. A fixed control chooses its best setting separately for each of the four structures. The model is enabled only if it reduces validation cost by at least three percent and selects no failed procedure. This is an experimental acceptance condition, not a mathematical guarantee for unseen integrals. The model fails this condition in the recorded comparison, so the final application uses the fixed settings and keeps the earlier seed model.
+
+\subsection{Completion, recovery, and shared work}
+An accepted exact formula requires its stated propagator and kinematic conditions. A restricted native calculation must express every target in the required master basis. When it does not, the application attempts its configured broader or preceding procedure and includes the spent time in the result. In the experiments, a separate exact comparison also subtracts every returned coefficient from the reference coefficient in the same basis. This additional check tests the actual output; a model score alone supplies no correctness certificate.
+
+The application also processes a list of requests in one call. This shares initialization and repeated exact component calculations across the list. It preserves the factorized form of independent products instead of expanding all products of master terms. The final timings include this shared-call organization in both the new method and its control, as explained next.

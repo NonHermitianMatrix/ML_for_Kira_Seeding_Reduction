@@ -1,0 +1,41 @@
+\section{Physical scope and comparison design}
+\label{sec:design}
+We use complete reduction requests to test the method, since fewer seeds or a more accurate label prediction does not determine the elapsed time. This section states what the requests contain, which calculations serve as controls, and what enters each timer. All numerical results below are measurements from this study; external references support the established methods, while the appendices derive the identities and estimators used here.
+
+\subsection{The final collection}
+The final collection has 93 requests. It combines 40 new requests with 53 previously checked analytic requests that test whether the existing exact methods still work. Table~\ref{tab:coverage} identifies the physical structures. The exact propagators, master lists, target vectors, and kinematic assignments are given in Appendices~\ref{app:families-new}, \ref{app:direct-inputs}, \ref{app:reconstruction-inputs}, and \ref{app:triangle-inputs}.
+
+\begin{table}[!htbp]\centering\small
+\caption{The 93 requests in the final comparison. A request can contain several targets. Native inputs use rational masses and external invariants with symbolic dimension $d$.}
+\label{tab:coverage}
+\begin{tabularx}{\linewidth}{@{}YrrY@{}}\toprule
+Structure & Loops & Requests & Reduction and scope\\\midrule
+Planar and nonplanar boxes & 2 & $5+5$ & Four external legs; native IBP reduction\\
+Massive sunrise & 2 & 5 & Two-point family with three massive physical lines; native IBP reduction\\
+Massive vacuum family & 3 & 5 & Six coupled physical denominators; native IBP reduction\\
+Massless triangles and independent products & 1--13 & 20 & One nonzero invariant per triangle; direct formula\\
+Independent vacuum products & 1--13 & 13 & Two squared masses per component; partial fractions\\
+Connected one-mass vacuum trees & 1--13 & 34 & Chain, star, and binary-tree connections; successive integrations\\
+Zero-invariant and ordinary one-loop numerator integrals & 1 & $3+3$ & Tensor recurrences and the endpoint formula\\\midrule
+Total & & 93 & 20 native and 73 analytic requests\\\bottomrule
+\end{tabularx}
+\end{table}
+The names planar and nonplanar refer to the line-connection structures of the two box families. Their equations in Appendix~\ref{app:families-new} specify the exact meaning used here. Both structures appear in training, validation, and testing. The new native tests change the physical points and target batches, so they measure transfer within known structures. They do not hold out every graph structure. Individual index patterns can also recur between splits.
+
+For the new box inputs, training uses indices $i=2,\ldots,13$, validation uses $i=14,\ldots,18$, and testing uses $i=19,\ldots,23$, with the physical assignments in Appendix~\ref{app:triangle-inputs}. Targets include numerator powers and raised physical denominator powers. The independent triangle and vacuum products include every loop order from one through thirteen. Connected tree tests cover the same loop range under their specified one-scale assumptions.
+
+\subsection{Controls and time measurements}
+The final experiment compares three applications on exactly the same 93 requests. The \emph{preceding application} is the published method before the direct triangle addition and its new native-setting selection. The \emph{intermediate application} adds those changes with the original runtime monitor. The \emph{final application} also corrects the monitor's handling of temporary entries that disappear while a reduction runs. The inherited seed model is shared by all three. The added arithmetic selector and equation filter are disabled by validation in the final method.
+
+The native implementation uses Kira 3.1 with the retained project reduction choices; its reconstruction-enabled build includes FireFly. Each application processes the collection in one call. We use one worker on the same Intel Gold compute node, one computational thread per application, and three repetitions. We rotate method order and reverse request order in the middle repetition. The measured time includes loading, method selection, algebra, reading outputs, cleanup, and actual recovery. Preparation of independent reference reductions and the external exact coefficient comparisons lie outside every application timer. The comparison therefore measures the reduction application, with an additional untimed correctness audit.
+
+We report the median of the three complete-collection times and their observed minimum and maximum. These three-observation ranges are not confidence intervals. For diagnostic results within a physical group, we sum the per-request median times recorded inside the shared call. These component sums omit some shared overhead and are not the complete-collection estimator. Appendix~\ref{app:statistics} states both definitions.
+
+The native references are independently prepared symbolic reductions in the prescribed bases. Independent symbolic partial fractions check the vacuum products. Tree checks compare the retained recurrence with the preceding exact result and its analytic derivation. Triangle checks use exact conversion between the preceding triangle basis and the new bubble basis, separate one-loop Kira references, and Gamma-function identities. Analytic products are justified by the factorization proof. The notes state the individual check counts and preserve the unsuccessful trials.
+
+\subsection{Separate comparisons needed to identify the cause of a gain}
+The final baseline already contains exact formulas, learned seeds, and earlier Kira improvements. Its time ratio therefore measures the latest combined change; it does not measure a speedup relative to unmodified Kira. We retain three other comparisons to identify what the individual methods contribute.
+
+First, a fresh-call comparison measures 40 new requests separately, including a new process for each request. Second, an earlier 75-request comparison isolates the addition of direct vacuum formulas and validated native reconstruction settings on one matched workload. Third, model-on/model-off comparisons hold the other procedures fixed. An \emph{ablation} is such a comparison with one component removed. We use it to distinguish learned savings from analytic formulas, fixed tuning, and shared work.
+
+The older fresh-call comparisons use sums of per-request median times. Where stated, their uncertainty intervals resample paired requests 5,000 times and report the central 95\% of the resulting ratios, following the bootstrap method~\cite{Efron1979}. This measures variation across the sampled requests. It gives no confidence statement for all possible integral families. We report each workload and control beside its result and do not multiply ratios from different tests.

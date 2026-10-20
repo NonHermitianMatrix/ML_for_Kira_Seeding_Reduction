@@ -1,3 +1,12 @@
+# Focused paper and retained notes
+
+Read `report.pdf` for the current physics narrative and comparisons.
+Section A90 of `notes.pdf` explains how the focused paper relates to these notes.
+The notes preserve the earlier measurements, rejected models, and unresolved comparisons.
+The original notes and their 91 supporting files remain verifiable with `s01_check_paper.py`.
+Read [the report guide](README.md) for current build and review commands.
+The historical guide follows below.
+
 # Research notes
 
 `notes.tex` and `notes.pdf` retain the earlier detailed report and add the latest completed study.
