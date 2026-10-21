@@ -3,3 +3,5 @@
 These text files contain scheduler output and progress messages. Use `../s02_job.sh` to submit jobs. Full scientific records are in the other study folders. Do not use log timing as a replacement for the saved complete-time records.
 
 See the [study guide](../README.md) for inputs, commands, dependencies, and limits. Data stay on Hoffman and GitHub.
+
+These records belong to selective expansion and conversion to the required master basis. Use matching case identifiers when combining files.

@@ -1,8 +1,6 @@
-# integration
+# Integration: native integration and build procedures
 
-This folder supports the calculation described in the parent guide.
-
-Read [the parent guide](../README.md) for the stage and data flow.
+This folder contains the code and records for native integration and build procedures.
 
 ## Code use
 
@@ -14,37 +12,14 @@ Keep each script's memory, time and storage limits.
 Keep existing model and test files before a new run.
 Scripts that write reports describe earlier document names; review their destinations before use.
 
-## Code files
+## Scripts
 
-The entries below follow file-name order.
-Each entry gives its purpose and the input or output interface available in the source.
-
-[interface.cpp.patch](interface.cpp.patch)
-
-This patch records changes to the native Kira source.
-
-The changed source paths are `interface.cpp`.
-
-Use the matching build script in the parent stage. Keep the required Kira source version.
-
-[relations.cpp.patch](relations.cpp.patch)
-
-This patch records changes to the native Kira source.
-
-The changed source paths are `relations.cpp`.
-
-Use the matching build script in the parent stage. Keep the required Kira source version.
-
-[s00_early_policy.h](s00_early_policy.h)
-
-The program predicts seed/operator relevance before constructing symbolic IBP equations.
-
-The required headers are `array`, `chrono`, `cmath`, `cstdlib`, `fstream`, `iomanip`, `map`, `mutex`, `stdexcept`, `string`, `unordered_map`, `vector`.
-
-The matching build script compiles this file with its caller.
-
-Use the parent stage guide for the build order and input records.
+| File | Purpose |
+|---|---|
+| [interface.cpp.patch](interface.cpp.patch) | This patch records changes to the native Kira source. |
+| [relations.cpp.patch](relations.cpp.patch) | This patch records changes to the native Kira source. |
+| [s00_early_policy.h](s00_early_policy.h) | Predicts seed/operator relevance before constructing symbolic IBP equations. |
 
 ## Data and supporting files
 
-- [build.json](build.json): This file contains structured records from the parent calculation.
+- [build.json](build.json): Compiler, source, and executable information from the recorded build.

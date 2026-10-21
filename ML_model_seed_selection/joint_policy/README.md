@@ -151,8 +151,6 @@ The common runner also enforces time, process memory, and file limits.
 Data and models remain on Hoffman and GitHub.
 The paper, notes, and their rendered PDFs also have a local copy.
 
-
-<!-- BEGIN MEASURED RESULTS -->
 Validation retains the preceding ML application for both graphs.
 Neither new joint predictor clears the 2% replacement threshold.
 Across 24 reserved first requests, the selected application uses 1.2% less time than the preceding application.
@@ -163,4 +161,3 @@ Each sequence includes its first Kira solve.
 All 480 first-request reductions and 144 sequence requests pass exact checks.
 Read `summary.json` for intervals, individual slower requests, and all controls.
 These results use known massless two-loop boxes, rational kinematics, symbolic dimension, and supplied masters.
-<!-- END MEASURED RESULTS -->

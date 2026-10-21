@@ -1,20 +1,7 @@
-# training
+# Training view of the integral collection
 
-This folder contains training inputs or saved training results.
-Keep the stored family division unchanged.
+This view supplies 1,610,890 targets from 11,963 family instances for model fitting. Related mass profiles remain in one division across loop orders.
 
-Read [the parent guide](../README.md) for the stage and data flow.
+`manifest.json` identifies the assigned families. The `master_integrals`, `target_integrals`, and `master_to_target` views link to the corresponding original records. The links avoid duplicate datasets.
 
-The producing and reading code is described in [the stage guide](../README.md).
-
-## Data and supporting files
-
-- [manifest.json](manifest.json): This file lists the records and their identifiers.
-
-## Child folders
-
-- [master_integrals](master_integrals/README.md).
-
-- [master_to_target](master_to_target/README.md).
-
-- [target_integrals](target_integrals/README.md).
+Match family names and target IDs when joining inputs to coefficients or traces. Preserve the saved division when reproducing the published tests. Use [the collection reader](../README.md) for record formats and commands.

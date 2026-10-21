@@ -1,37 +1,35 @@
-# archive output allowance v2
+# Archive output allowance v2: exact sufficiency of the neural model’s selected seeds
+
+These records preserve development or earlier comparisons for exact sufficiency of the neural model’s selected seeds. They document the tested settings, including incomplete or rejected attempts.
 
 This folder retains an earlier stage, development check or saved comparison.
 Use its records to interpret that stage.
 Use the current parent application for a new calculation.
 
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
-
 ## Data and supporting files
 
-- [worker_00.json](worker_00.json): This file contains structured records from the parent calculation.
+- [worker_00.json](worker_00.json): Saved worker_00.json record for exact sufficiency of the neural model’s selected seeds; the producer code defines its fields.
 
-- [worker_02.json](worker_02.json): This file contains structured records from the parent calculation.
+- [worker_02.json](worker_02.json): Saved worker_02.json record for exact sufficiency of the neural model’s selected seeds; the producer code defines its fields.
 
-- [worker_03.json](worker_03.json): This file contains structured records from the parent calculation.
+- [worker_03.json](worker_03.json): Saved worker_03.json record for exact sufficiency of the neural model’s selected seeds; the producer code defines its fields.
 
-- [worker_04.json](worker_04.json): This file contains structured records from the parent calculation.
+- [worker_04.json](worker_04.json): Saved worker_04.json record for exact sufficiency of the neural model’s selected seeds; the producer code defines its fields.
 
-- [worker_05.json](worker_05.json): This file contains structured records from the parent calculation.
+- [worker_05.json](worker_05.json): Saved worker_05.json record for exact sufficiency of the neural model’s selected seeds; the producer code defines its fields.
 
-- [worker_06.json](worker_06.json): This file contains structured records from the parent calculation.
+- [worker_06.json](worker_06.json): Saved worker_06.json record for exact sufficiency of the neural model’s selected seeds; the producer code defines its fields.
 
-- [worker_07.json](worker_07.json): This file contains structured records from the parent calculation.
+- [worker_07.json](worker_07.json): Saved worker_07.json record for exact sufficiency of the neural model’s selected seeds; the producer code defines its fields.
 
-- [worker_08.json](worker_08.json): This file contains structured records from the parent calculation.
+- [worker_08.json](worker_08.json): Saved worker_08.json record for exact sufficiency of the neural model’s selected seeds; the producer code defines its fields.
 
-- [worker_09.json](worker_09.json): This file contains structured records from the parent calculation.
+- [worker_09.json](worker_09.json): Saved worker_09.json record for exact sufficiency of the neural model’s selected seeds; the producer code defines its fields.
 
-- [worker_10.json](worker_10.json): This file contains structured records from the parent calculation.
+- [worker_10.json](worker_10.json): Saved worker_10.json record for exact sufficiency of the neural model’s selected seeds; the producer code defines its fields.
 
-- [worker_11.json](worker_11.json): This file contains structured records from the parent calculation.
+- [worker_11.json](worker_11.json): Saved worker_11.json record for exact sufficiency of the neural model’s selected seeds; the producer code defines its fields.
 
-- [worker_12.json](worker_12.json): This file contains structured records from the parent calculation.
+- [worker_12.json](worker_12.json): Saved worker_12.json record for exact sufficiency of the neural model’s selected seeds; the producer code defines its fields.
 
-- [worker_14.json](worker_14.json): This file contains structured records from the parent calculation.
+- [worker_14.json](worker_14.json): Saved worker_14.json record for exact sufficiency of the neural model’s selected seeds; the producer code defines its fields.

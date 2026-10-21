@@ -1,8 +1,6 @@
-# expansion 250
+# The constructed integral collection
 
-This folder supports the calculation described in the parent guide.
-
-Read [the parent guide](../README.md) for the stage and data flow.
+This folder contains the code and records for the constructed integral collection.
 
 ## Code use
 
@@ -14,594 +12,26 @@ Keep each script's memory, time and storage limits.
 Keep existing model and test files before a new run.
 Scripts that write reports describe earlier document names; review their destinations before use.
 
-## Code files
-
-The entries below follow file-name order.
-Each entry gives its purpose and the input or output interface available in the source.
-
-[s00_exact.py](s00_exact.py)
-
-The file provides exact Laurent polynomials in d and m2, and an independent partial-fraction oracle.
-
-The module defines these callable interfaces:
-
-```python
-
-def clean(a)
-def add(a, b)
-def scale(a, s)
-def mul(a, b)
-def div(a, b)
-def expr(a)
-def ev(a, point, p)
-def rowadd(a, b, f)
-def terms(a)
-def key(a)
-def field(a, point, p)
-def order(a)
-def compositions(n, r)
-def all_b(r, maximum)
-def oracle(L, rho, b)
-def oracle_row(L, rho, row)
-
-```
-
-Import this helper module from the stage that uses it.
-
-[s01_generate.py](s01_generate.py)
-
-The program generates bounded coupled vacuum families and reverse constructions from their exact masters.
-
-The module defines these callable interfaces:
-
-```python
-
-def sha(p)
-def write(p, v)
-def gzwrite(p, records)
-def profiles()
-def splits()
-def integral(L, b)
-def sources(L, rho)
-class UnluckySample
-def generate(L, profile, rho)
-def main()
-
-```
-
-The imported project modules are `s00_exact`.
-
-These source constants locate inputs and outputs:
-
-```python
-
-HERE = Path(__file__).resolve().parent
-DATA = HERE.parent
-
-```
-
-The command accepts these parser options:
-
-- `'--loops'`: type=int; nargs='+'; default=list(range(1, 13)).
-- `'--profiles'`: type=int; nargs='+'.
-
-These calls show the stored input and output interface:
-
-```python
-
-tmp.write_text(json.dumps(v, indent=2, sort_keys=True) + '\n', encoding='utf-8')
-(mb / 'masters.txt').write_text('\n'.join((m['expression'] for m in basis['masters'])) + '\n', encoding='utf-8')
-done.read_text(encoding='utf-8')
-p.read_bytes()
-
-```
-
-[s02_run_generation.sh](s02_run_generation.sh)
-
-This shell script runs the recorded commands for this stage.
-
-This is a scheduler job script. Submit it with `qsub` from the project root.
-
-The exact command sequence is:
-
-```bash
-
-#!/bin/bash
-#$ -cwd
-#$ -S /bin/bash
-#$ -N KiraExpand250
-#$ -l h_rt=04:00:00,h_data=1G,h_vmem=4G
-#$ -j y
-#$ -o integrals/expansion_250/full_scheduler.log
-set -euo pipefail
-source /u/local/Modules/default/init/modules.sh
-module load python/3.9.6
-export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
-export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
-ulimit -v 3145728
-ulimit -f 131072
-ulimit -c 0
-GEN_PYTHON=.tools/seed-model/venv/bin/python
-"$GEN_PYTHON" integrals/expansion_250/s01_generate.py --loops 1 2 12 --profiles 101 102
-"$GEN_PYTHON" integrals/expansion_250/s03_validate.py --pilot
-"$GEN_PYTHON" integrals/expansion_250/s01_generate.py
-"$GEN_PYTHON" integrals/expansion_250/s03_validate.py
-
-```
-
-[s03_validate.py](s03_validate.py)
-
-The file provides independent identity and reverse-record checks, including convergent radial integrals.
-
-The module defines these callable interfaces:
-
-```python
-
-def read(p)
-def rows(p)
-def parse(text)
-def rational(text, point)
-def mod(text, d, m, p)
-def field(terms, s)
-def addrow(row, src, f, p)
-def source_poly(text)
-def exact_source_form(e, L, rho)
-def identity_check(e, L, rho)
-def quadrature(definition, basis)
-def check_family(path, numeric=False)
-def check_task(item)
-def checked_tasks(tasks, workers)
-def main()
-
-```
-
-The imported external packages are `mpmath`.
-
-These source constants locate inputs and outputs:
-
-```python
-
-HERE = Path(__file__).resolve().parent
-DATA = HERE.parent
-D = mp.mpf(1) + mp.mpf(1) / (2 * L)
-
-```
-
-The command accepts these parser options:
-
-- `'--pilot'`: action='store_true'.
-
-These calls show the stored input and output interface:
-
-```python
-
-p.read_text(encoding='utf-8')
-(DATA / name).read_bytes()
-Path(__file__).read_bytes()
-
-```
-
-[s04_run_validation.sh](s04_run_validation.sh)
-
-This shell script runs the recorded commands for this stage.
-
-This is a scheduler job script. Submit it with `qsub` from the project root.
-
-The exact command sequence is:
-
-```bash
-
-#!/bin/bash
-#$ -cwd
-#$ -S /bin/bash
-#$ -N KiraLoopCheck
-#$ -l h_rt=02:00:00,h_data=4G
-#$ -j y
-#$ -o integrals/expansion_250/validation_scheduler.log
-set -euo pipefail
-source /u/local/Modules/default/init/modules.sh
-module load python/3.9.6
-export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
-export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
-ulimit -v 3145728
-ulimit -f 131072
-ulimit -c 0
-.tools/seed-model/venv/bin/python integrals/expansion_250/s03_validate.py "$@"
-
-```
-
-[s05_integrate.py](s05_integrate.py)
-
-The program extends canonical catalogs and the existing grouped split after independent validation.
-
-The module defines these callable interfaces:
-
-```python
-
-def read(p)
-def write(p, x)
-def sha(p)
-def rows(p)
-def main()
-
-```
-
-These source constants locate inputs and outputs:
-
-```python
-
-HERE = Path(__file__).resolve().parent
-DATA = HERE.parent
-MODEL = ROOT / 'ML_model_seed_selection'
-
-```
-
-This entry point uses the paths and options set in its source.
-
-These calls show the stored input and output interface:
-
-```python
-
-p.write_text(json.dumps(x, indent=2, sort_keys=True) + '\n', encoding='utf-8')
-(DATA / 'README.md').write_text(text, encoding='utf-8')
-p.write_text(s, encoding='utf-8')
-p.read_text(encoding='utf-8')
-p.read_bytes()
-
-```
-
-[s07_update_report.py](s07_update_report.py)
-
-The program finalizes the report after both expanded-data tests pass; keep immutable data citations.
-
-The module defines these callable interfaces:
-
-```python
-
-def read(p)
-def sha(p)
-def main()
-
-```
-
-These source constants locate inputs and outputs:
-
-```python
-
-HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[1]
-REPORT = ROOT / 'report'
-
-```
-
-The command accepts these parser options:
-
-- `'--data-commit'`: required=True.
-- `'--test-commit'`: required=True.
-
-These calls show the stored input and output interface:
-
-```python
-
-(REPORT / 'higher_loops.tex').write_text((HERE / 'report_section_template.tex').read_text(encoding='utf-8'), encoding='utf-8')
-path.read_text(encoding='utf-8')
-(HERE / 'ml_roles_section_template.tex').read_text(encoding='utf-8')
-path.write_text(s, encoding='utf-8')
-make.read_text(encoding='utf-8')
-make.write_text(text, encoding='utf-8')
-path.write_text(text, encoding='utf-8')
-bib.read_text(encoding='utf-8')
-bib.write_text(b, encoding='utf-8')
-report_readme.read_text(encoding='utf-8')
-report_readme.write_text(notes, encoding='utf-8')
-(HERE / 'report_update.json').write_text(json.dumps(record, indent=2) + '\n', encoding='utf-8')
-p.read_text(encoding='utf-8')
-(HERE / 'report_section_template.tex').read_text(encoding='utf-8')
-(REPORT / (name + '.tex')).read_text(encoding='utf-8')
-p.read_bytes()
-
-```
-
-[s08_finalize_training.py](s08_finalize_training.py)
-
-The program validates both expanded-data models and describe the current trained release.
-
-The module defines these callable interfaces:
-
-```python
-
-def read(p)
-def write(p, o)
-def sha(p)
-def main()
-
-```
-
-These source constants locate inputs and outputs:
-
-```python
-
-HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[1]
-
-```
-
-This entry point uses the paths and options set in its source.
-
-These calls show the stored input and output interface:
-
-```python
-
-p.write_text(json.dumps(o, indent=2, sort_keys=True) + '\n', encoding='utf-8')
-p.read_text(encoding='utf-8')
-(folder / 'README.md').write_text(text.rstrip() + '\n', encoding='utf-8')
-rp.read_text(encoding='utf-8')
-rp.write_text(rt, encoding='utf-8')
-p.read_bytes()
-
-```
-
-[s09_run_training_validation.sh](s09_run_training_validation.sh)
-
-This shell script runs the recorded commands for this stage.
-
-This is a scheduler job script. Submit it with `qsub` from the project root.
-
-The exact command sequence is:
-
-```bash
-
-#!/bin/bash
-#$ -cwd
-#$ -S /bin/bash
-#$ -N KiraAllLoopModelsCheck
-#$ -l h_rt=00:20:00,h_data=2G,h_vmem=4G
-#$ -j y
-#$ -o integrals/expansion_250/training_validation_scheduler.log
-set -euo pipefail
-source /u/local/Modules/default/init/modules.sh
-module load python/3.9.6
-export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
-export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
-ulimit -v 3145728
-ulimit -f 131072
-ulimit -c 0
-.tools/seed-model/venv/bin/python integrals/expansion_250/s08_finalize_training.py
-
-```
-
-[s10_validate_collection.py](s10_validate_collection.py)
-
-The program audits links and source hashes across the complete expanded collection.
-
-The module defines these callable interfaces:
-
-```python
-
-def read(p)
-def sha(p)
-def link(value)
-def rows(p)
-def main()
-
-```
-
-These source constants locate inputs and outputs:
-
-```python
-
-HERE = Path(__file__).resolve().parent
-DATA = HERE.parent
-
-```
-
-The command accepts these parser options:
-
-- `'--family'`: action='append'.
-- `'--compare-source'`: The parser accepts a value..
-
-These calls show the stored input and output interface:
-
-```python
-
-(DATA / 'validation_summary.json').write_text(json.dumps(result, indent=2, sort_keys=True) + '\n', encoding='utf-8')
-p.read_text(encoding='utf-8')
-original.write_bytes(old.read_bytes())
-old.read_bytes()
-
-```
-
-[s11_run_collection_audit.sh](s11_run_collection_audit.sh)
-
-This shell script runs the recorded commands for this stage.
-
-This is a scheduler job script. Submit it with `qsub` from the project root.
-
-The exact command sequence is:
-
-```bash
-
-#!/bin/bash
-#$ -cwd
-#$ -S /bin/bash
-#$ -N KiraCollectionAudit
-#$ -l h_rt=01:00:00,h_data=2G,h_vmem=4G
-#$ -j y
-#$ -o integrals/expansion_250/collection_audit.log
-set -euo pipefail
-source /u/local/Modules/default/init/modules.sh
-module load python/3.9.6
-export PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
-export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
-ulimit -v 3145728
-ulimit -f 131072
-ulimit -c 0
-.tools/seed-model/venv/bin/python integrals/expansion_250/s05_integrate.py
-.tools/seed-model/venv/bin/python integrals/s02_validate.py
-
-```
-
-[s12_finalize_tests.py](s12_finalize_tests.py)
-
-The program records independently checked frozen tests and update affected READMEs.
-
-The module defines these callable interfaces:
-
-```python
-
-def read(p)
-def sha(p)
-def write(p, o)
-def replace_tail(p, marker, text)
-def main()
-
-```
-
-These source constants locate inputs and outputs:
-
-```python
-
-HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[1]
-
-```
-
-This entry point uses the paths and options set in its source.
-
-These calls show the stored input and output interface:
-
-```python
-
-p.write_text(json.dumps(o, indent=2, sort_keys=True) + '\n', encoding='utf-8')
-p.write_text(s + '\n\n' + marker + '\n' + text.strip() + '\n', encoding='utf-8')
-root.read_text(encoding='utf-8')
-root.write_text(s, encoding='utf-8')
-p.read_text(encoding='utf-8')
-p.write_text(s, encoding='utf-8')
-p.write_text(text, encoding='utf-8')
-p.read_bytes()
-
-```
-
-[s13_build_report.sh](s13_build_report.sh)
-
-This shell script runs the recorded commands for this stage.
-
-This is a scheduler job script. Submit it with `qsub` from the project root.
-
-The exact command sequence is:
-
-```bash
-
-#!/bin/bash
-#$ -cwd
-#$ -S /bin/bash
-#$ -N KiraExpandedReport
-#$ -l h_rt=00:20:00,h_data=2G,h_vmem=4G
-#$ -j y
-#$ -o integrals/expansion_250/report_build.log
-set -euo pipefail
-source /u/local/Modules/default/init/modules.sh
-module load python/3.9.6
-export PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
-export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
-ulimit -v 3145728
-ulimit -f 131072
-ulimit -c 0
-.tools/seed-model/venv/bin/python integrals/expansion_250/s07_update_report.py "$@"
-make -C report
-
-```
-
-[s14_stage_data.sh](s14_stage_data.sh)
-
-This shell script runs the recorded commands for this stage.
-
-This is a scheduler job script. Submit it with `qsub` from the project root.
-
-The exact command sequence is:
-
-```bash
-
-#!/bin/bash
-#$ -cwd
-#$ -S /bin/bash
-#$ -N KiraStageData
-#$ -l h_rt=00:30:00,h_data=1G,h_vmem=4G
-#$ -j y
-#$ -o .tools/stage_expanded_data.log
-set -euo pipefail
-ulimit -v 1572864
-ulimit -f 131072
-ulimit -c 0
-if (( $# )); then
-  git -c gc.auto=0 add -A -- "$@"
-else
-  git -c gc.auto=0 add -A -- integrals
-fi
-git diff --cached --shortstat
-
-```
-
-[s15_generate_parallel.py](s15_generate_parallel.py)
-
-The program generates disjoint loop-order groups on four allocated CPU slots.
-
-The module defines these callable interfaces:
-
-```python
-
-def loop_group(L)
-def guard()
-def main()
-
-```
-
-The imported project modules are `s01_generate`.
-
-This entry point uses the paths and options set in its source.
-
-These calls show the stored input and output interface:
-
-```python
-
-p.read_text()
-
-```
-
-[s16_run_parallel_generation.sh](s16_run_parallel_generation.sh)
-
-This shell script runs the recorded commands for this stage.
-
-This is a scheduler job script. Submit it with `qsub` from the project root.
-
-The exact command sequence is:
-
-```bash
-
-#!/bin/bash
-#$ -cwd
-#$ -S /bin/bash
-#$ -N KiraExpand250Par
-#$ -pe shared 4
-#$ -l h_rt=04:00:00,h_data=1G,h_vmem=4G
-#$ -j y
-#$ -o integrals/expansion_250/parallel_scheduler.log
-set -euo pipefail
-source /u/local/Modules/default/init/modules.sh
-module load python/3.9.6
-export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
-export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
-ulimit -v 3145728
-ulimit -f 131072
-ulimit -c 0
-GEN_PYTHON=.tools/seed-model/venv/bin/python
-"$GEN_PYTHON" integrals/expansion_250/s01_generate.py --loops 1 2 12 --profiles 101 102
-"$GEN_PYTHON" integrals/expansion_250/s03_validate.py --pilot
-"$GEN_PYTHON" integrals/expansion_250/s15_generate_parallel.py
-"$GEN_PYTHON" integrals/expansion_250/s03_validate.py
-
-```
+## Scripts
+
+| File | Purpose |
+|---|---|
+| [s00_exact.py](s00_exact.py) | Exact Laurent polynomials in d and m2, and an independent partial-fraction oracle. |
+| [s01_generate.py](s01_generate.py) | Generate bounded coupled vacuum families and reverse constructions from their exact masters. |
+| [s02_run_generation.sh](s02_run_generation.sh) | Scheduler wrapper for run generation; its header sets the resource limits. |
+| [s03_validate.py](s03_validate.py) | Independent identity and reverse-record checks, including convergent radial integrals. |
+| [s04_run_validation.sh](s04_run_validation.sh) | Scheduler wrapper for run validation; its header sets the resource limits. |
+| [s05_integrate.py](s05_integrate.py) | Extends canonical catalogs and the existing grouped split after independent validation. |
+| [s07_update_report.py](s07_update_report.py) | Finalizes the report after both expanded-data tests pass; keep immutable data citations. |
+| [s08_finalize_training.py](s08_finalize_training.py) | Validates both expanded-data models and describe the current trained release. |
+| [s09_run_training_validation.sh](s09_run_training_validation.sh) | Scheduler wrapper for run training validation; its header sets the resource limits. |
+| [s10_validate_collection.py](s10_validate_collection.py) | Audit links and source hashes across the complete expanded collection. |
+| [s11_run_collection_audit.sh](s11_run_collection_audit.sh) | Scheduler wrapper for run collection audit; its header sets the resource limits. |
+| [s12_finalize_tests.py](s12_finalize_tests.py) | Records independently checked frozen tests and update affected READMEs. |
+| [s13_build_report.sh](s13_build_report.sh) | Scheduler wrapper for build report; its header sets the resource limits. |
+| [s14_stage_data.sh](s14_stage_data.sh) | Scheduler wrapper for stage data; its header sets the resource limits. |
+| [s15_generate_parallel.py](s15_generate_parallel.py) | Generate disjoint loop-order groups on four allocated CPU slots. |
+| [s16_run_parallel_generation.sh](s16_run_parallel_generation.sh) | Scheduler wrapper for run parallel generation; its header sets the resource limits. |
 
 ## Data and supporting files
 
@@ -609,79 +39,79 @@ GEN_PYTHON=.tools/seed-model/venv/bin/python
 
 - [full_scheduler.log](full_scheduler.log): This file contains saved program messages.
 
-- [generation_summary.json](generation_summary.json): This file contains structured records from the parent calculation.
+- [generation_summary.json](generation_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
-- [integration_summary.json](integration_summary.json): This file contains structured records from the parent calculation.
+- [integration_summary.json](integration_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
-- [loop_01_progress.json](loop_01_progress.json): This file contains structured records from the parent calculation.
+- [loop_01_progress.json](loop_01_progress.json): Saved loop_01_progress.json record for the constructed integral collection; the producer code defines its fields.
 
-- [loop_01_summary.json](loop_01_summary.json): This file contains structured records from the parent calculation.
+- [loop_01_summary.json](loop_01_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
-- [loop_02_progress.json](loop_02_progress.json): This file contains structured records from the parent calculation.
+- [loop_02_progress.json](loop_02_progress.json): Saved loop_02_progress.json record for the constructed integral collection; the producer code defines its fields.
 
-- [loop_02_summary.json](loop_02_summary.json): This file contains structured records from the parent calculation.
+- [loop_02_summary.json](loop_02_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
-- [loop_03_progress.json](loop_03_progress.json): This file contains structured records from the parent calculation.
+- [loop_03_progress.json](loop_03_progress.json): Saved loop_03_progress.json record for the constructed integral collection; the producer code defines its fields.
 
-- [loop_03_summary.json](loop_03_summary.json): This file contains structured records from the parent calculation.
+- [loop_03_summary.json](loop_03_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
-- [loop_04_progress.json](loop_04_progress.json): This file contains structured records from the parent calculation.
+- [loop_04_progress.json](loop_04_progress.json): Saved loop_04_progress.json record for the constructed integral collection; the producer code defines its fields.
 
-- [loop_04_summary.json](loop_04_summary.json): This file contains structured records from the parent calculation.
+- [loop_04_summary.json](loop_04_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
-- [loop_05_progress.json](loop_05_progress.json): This file contains structured records from the parent calculation.
+- [loop_05_progress.json](loop_05_progress.json): Saved loop_05_progress.json record for the constructed integral collection; the producer code defines its fields.
 
-- [loop_05_summary.json](loop_05_summary.json): This file contains structured records from the parent calculation.
+- [loop_05_summary.json](loop_05_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
-- [loop_06_progress.json](loop_06_progress.json): This file contains structured records from the parent calculation.
+- [loop_06_progress.json](loop_06_progress.json): Saved loop_06_progress.json record for the constructed integral collection; the producer code defines its fields.
 
-- [loop_06_summary.json](loop_06_summary.json): This file contains structured records from the parent calculation.
+- [loop_06_summary.json](loop_06_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
-- [loop_07_progress.json](loop_07_progress.json): This file contains structured records from the parent calculation.
+- [loop_07_progress.json](loop_07_progress.json): Saved loop_07_progress.json record for the constructed integral collection; the producer code defines its fields.
 
-- [loop_07_summary.json](loop_07_summary.json): This file contains structured records from the parent calculation.
+- [loop_07_summary.json](loop_07_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
-- [loop_08_progress.json](loop_08_progress.json): This file contains structured records from the parent calculation.
+- [loop_08_progress.json](loop_08_progress.json): Saved loop_08_progress.json record for the constructed integral collection; the producer code defines its fields.
 
-- [loop_08_summary.json](loop_08_summary.json): This file contains structured records from the parent calculation.
+- [loop_08_summary.json](loop_08_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
-- [loop_09_progress.json](loop_09_progress.json): This file contains structured records from the parent calculation.
+- [loop_09_progress.json](loop_09_progress.json): Saved loop_09_progress.json record for the constructed integral collection; the producer code defines its fields.
 
-- [loop_09_summary.json](loop_09_summary.json): This file contains structured records from the parent calculation.
+- [loop_09_summary.json](loop_09_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
-- [loop_10_progress.json](loop_10_progress.json): This file contains structured records from the parent calculation.
+- [loop_10_progress.json](loop_10_progress.json): Saved loop_10_progress.json record for the constructed integral collection; the producer code defines its fields.
 
-- [loop_10_summary.json](loop_10_summary.json): This file contains structured records from the parent calculation.
+- [loop_10_summary.json](loop_10_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
-- [loop_11_progress.json](loop_11_progress.json): This file contains structured records from the parent calculation.
+- [loop_11_progress.json](loop_11_progress.json): Saved loop_11_progress.json record for the constructed integral collection; the producer code defines its fields.
 
-- [loop_11_summary.json](loop_11_summary.json): This file contains structured records from the parent calculation.
+- [loop_11_summary.json](loop_11_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
-- [loop_12_progress.json](loop_12_progress.json): This file contains structured records from the parent calculation.
+- [loop_12_progress.json](loop_12_progress.json): Saved loop_12_progress.json record for the constructed integral collection; the producer code defines its fields.
 
-- [loop_12_summary.json](loop_12_summary.json): This file contains structured records from the parent calculation.
+- [loop_12_summary.json](loop_12_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
 - [ml_roles_section_template.tex](ml_roles_section_template.tex): This file contains a LaTeX document or document section.
 
-- [parallel_progress.json](parallel_progress.json): This file contains structured records from the parent calculation.
+- [parallel_progress.json](parallel_progress.json): Saved parallel_progress.json record for the constructed integral collection; the producer code defines its fields.
 
 - [parallel_scheduler.log](parallel_scheduler.log): This file contains saved program messages.
 
-- [pilot_summary.json](pilot_summary.json): This file contains structured records from the parent calculation.
+- [pilot_summary.json](pilot_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
-- [pilot_validation.json](pilot_validation.json): This file contains structured records from the parent calculation.
+- [pilot_validation.json](pilot_validation.json): Recorded checks of the calculation, data, or selected settings.
 
-- [previous_catalog.json](previous_catalog.json): This file lists related records and their identifiers.
+- [previous_catalog.json](previous_catalog.json): Execution messages and diagnostics for the named run.
 
-- [previous_splits.json](previous_splits.json): This file contains structured records from the parent calculation.
+- [previous_splits.json](previous_splits.json): Saved previous_splits.json record for the constructed integral collection; the producer code defines its fields.
 
-- [previous_validation_summary.json](previous_validation_summary.json): This file contains structured records from the parent calculation.
+- [previous_validation_summary.json](previous_validation_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
-- [progress.json](progress.json): This file contains structured records from the parent calculation.
+- [progress.json](progress.json): Saved progress.json record for the constructed integral collection; the producer code defines its fields.
 
 - [report_section_template.tex](report_section_template.tex): This file contains a LaTeX document or document section.
 
-- [request.json](request.json): This file contains structured records from the parent calculation.
+- [request.json](request.json): Physical inputs and target lists for the recorded experiment.
 
 - [serial_generation_scheduler.log](serial_generation_scheduler.log): This file contains saved program messages.
 

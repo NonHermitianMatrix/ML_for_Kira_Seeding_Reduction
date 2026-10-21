@@ -6,3 +6,5 @@ The matched repeat corrects that comparison before any reserved test.
 No reserved result informed the repeat or the model refit.
 
 Read [the parent guide](../README.md) for producers, readers, dependencies, and limits.
+
+These records belong to joint seed and Kira-configuration selection. Use matching case identifiers when combining files.

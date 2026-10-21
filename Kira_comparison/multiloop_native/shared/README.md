@@ -4,10 +4,6 @@ This folder stores shared calculation records.
 Read each record through the parent stage reader.
 The reader restores referenced objects and checks their content.
 
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
-
 ## Data and supporting files
 
 This folder contains 458 data entries.

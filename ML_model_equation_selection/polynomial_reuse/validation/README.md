@@ -1,15 +1,10 @@
-# validation
+# Validation: reuse of symbolic coefficient polynomials
 
-This folder contains validation records.
-These records select a method before the reserved test.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These measurements select the model or fixed setting for reuse of symbolic coefficient polynomials. They are separate from the reserved test results.
 
 ## Data and supporting files
 
-- [complete.json](complete.json): This file contains structured records from the parent calculation.
+- [complete.json](complete.json): Completion status recorded by the experiment’s producer.
 
 - [kernel_check.json](kernel_check.json): This file records checks of the corresponding calculation.
 

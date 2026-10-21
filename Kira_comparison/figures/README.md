@@ -1,11 +1,6 @@
-# figures
+# Kira timing and correctness comparisons
 
-This folder contains plots of saved results.
-The parent plotting script defines the inputs, axes and comparison method.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These plots show saved measurements of Kira timing and correctness comparisons. The plotting scripts define each comparison and its timing reference.
 
 ## Data and supporting files
 
@@ -25,6 +20,6 @@ The producing and reading code is described in [the stage guide](../README.md).
 
 - [kira_comparison_time.png](kira_comparison_time.png): This file displays a recorded result or document.
 
-- [kira_native_learned_seeds.pdf](kira_native_learned_seeds.pdf): This file records seed information or seed checks.
+- [kira_native_learned_seeds.pdf](kira_native_learned_seeds.pdf): Figure or document presenting the measurements identified by its filename.
 
-- [kira_native_learned_seeds.png](kira_native_learned_seeds.png): This file records seed information or seed checks.
+- [kira_native_learned_seeds.png](kira_native_learned_seeds.png): Figure or document presenting the measurements identified by its filename.

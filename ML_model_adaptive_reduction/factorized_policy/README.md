@@ -1,5 +1,7 @@
 # Exact blocks and learned Kira seed costs
 
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
 Use `s08_reduce.py` for this extension.
 It checks exact formulas first.
 It then reduces each distinct independent block once.

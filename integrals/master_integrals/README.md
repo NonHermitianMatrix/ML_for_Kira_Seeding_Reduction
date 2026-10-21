@@ -1,15 +1,7 @@
-# master integrals
+# Family definitions and master bases
 
-This folder supports the calculation described in the parent guide.
+Each family folder defines its propagators, kinematics, and master index vectors. Master identifiers connect these bases to the exact coefficients in master_to_target.
 
-Read [the parent guide](../README.md) for the stage and data flow.
+`catalog.json` indexes the collection. [families/](families/README.md) contains one directory per family instance. Use the same folder name in the other integral categories.
 
-The producing and reading code is described in [the stage guide](../README.md).
-
-## Data and supporting files
-
-- [catalog.json](catalog.json): This file lists the integral collection.
-
-## Child folders
-
-- [families](families/README.md).
+[The collection guide](../README.md) gives the data counts, split rules, and streaming reader commands.

@@ -1,64 +1,18 @@
-# documentation
+# Check repository documentation
 
-This folder checks coverage of the folder guides.
-Each tracked directory must contain a regular `README.md` file.
-A linked directory uses the guide at its link destination.
-Archives are files, so their internal paths do not create Git directories.
+This folder checks that a reader can find a guide for every tracked directory and a description for every code file. The check reads Git metadata and guide text. It does not load integral records or model weights.
 
-`s00_check_documentation.py` reads the committed Git tree.
-It checks README coverage and code-file mentions.
-It does not read integral records or load model weights.
-`coverage.json` records the completed check.
+## Files
 
-Run this command from the project root after publication:
+- [s00_check_documentation.py](s00_check_documentation.py): checks README coverage and code-file mentions in a chosen Git tree.
+- [coverage.json](coverage.json): saved coverage result for the tree recorded by that check.
+
+Run the checker from the repository root:
 
 ```bash
-python documentation/s00_check_documentation.py
+python documentation/s00_check_documentation.py --tree HEAD
 ```
 
-The guide review used short active sentences and defined technical terms.
-Exact commands and identifiers retain their source spelling.
-The automated check does not certify every vocabulary choice against the full ASD dictionary.
-Earlier README text remains in Git history.
+Use `--tree COMMIT` to inspect another commit. Use `--output PATH` to save the result as JSON. The command exits with an error when it finds missing guides or undocumented code files.
 
-## Code files
-
-The entries below follow file-name order.
-Each entry gives its purpose and the input or output interface available in the source.
-
-[s00_check_documentation.py](s00_check_documentation.py)
-
-The program checks folder-guide coverage without loading scientific data or model weights.
-
-The module defines these callable interfaces:
-
-```python
-
-def main()
-
-```
-
-These source constants locate inputs and outputs:
-
-```python
-
-ROOT = Path(__file__).resolve().parents[1]
-
-```
-
-The command accepts these parser options:
-
-- `'--tree'`: default='HEAD'; help='Git tree or commit to inspect.'.
-- `'--output'`: type=Path; help='Optional JSON output file.'.
-
-These calls show the stored input and output interface:
-
-```python
-
-args.output.write_text(json.dumps(result, indent=2) + '\n')
-
-```
-
-## Data and supporting files
-
-- [coverage.json](coverage.json): This file records folder and code documentation coverage.
+A directory link uses the guide at its destination. Files inside archives do not count as Git directories. The check establishes coverage, not the correctness or readability of every explanation; those require review of the guide and its code.

@@ -6,3 +6,5 @@ Training uses one timed repetition per action.
 The six records for a request use the same worker and input.
 Reference coefficients remain outside the timed application.
 Read the root study guide for the split and cost definition.
+
+These records belong to symbolic and finite-field coefficient arithmetic. Use matching case identifiers when combining files.

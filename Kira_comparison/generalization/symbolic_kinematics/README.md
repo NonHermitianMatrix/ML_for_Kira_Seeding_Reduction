@@ -1,10 +1,6 @@
-# symbolic kinematics
+# Symbolic kinematics: transfer to scattering structures and symbolic kinematics
 
-This folder supports the calculation described in the parent guide.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+This folder contains the code and records for transfer to scattering structures and symbolic kinematics.
 
 ## Data and supporting files
 
@@ -13,3 +9,5 @@ The producing and reading code is described in [the stage guide](../README.md).
 ## Child folders
 
 - [bases](bases/README.md).
+
+These records belong to transfer to scattering structures and symbolic kinematics. Use matching case identifiers when combining files.

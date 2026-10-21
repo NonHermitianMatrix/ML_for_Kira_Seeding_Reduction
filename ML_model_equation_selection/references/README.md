@@ -1,11 +1,6 @@
-# references
+# Selection of IBP equations
 
-This folder contains reference reductions or prescribed master bases.
-The corresponding calculation uses these records for exact checks.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+This folder stores reference reductions or master bases for selection of IBP equations. The experiment uses these records to check returned coefficients in a common basis.
 
 ## Data and supporting files
 

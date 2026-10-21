@@ -1,18 +1,15 @@
-# validation
+# Validation: exact recurrences for the restricted coupled-vacuum family
 
-This folder contains validation records.
-These records select a method before the reserved test.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These measurements select the model or fixed setting for exact recurrences for the restricted coupled-vacuum family. They are separate from the reserved test results.
 
 ## Data and supporting files
 
-- [complete.json](complete.json): This file contains structured records from the parent calculation.
+- [complete.json](complete.json): Completion status recorded by the experiment’s producer.
 
 ## Child folders
 
 - [inputs](inputs/README.md).
 
 - [results](results/README.md).
+
+These records belong to exact recurrences for the restricted coupled-vacuum family. Use matching case identifiers when combining files.

@@ -1,8 +1,6 @@
-# fast evaluation
+# Fast evaluation: integration of learned choices with native Kira calculations
 
-This folder supports the calculation described in the parent guide.
-
-Read [the parent guide](../README.md) for the stage and data flow.
+This folder contains the code and records for integration of learned choices with native Kira calculations.
 
 ## Code use
 
@@ -14,131 +12,42 @@ Keep each script's memory, time and storage limits.
 Keep existing model and test files before a new run.
 Scripts that write reports describe earlier document names; review their destinations before use.
 
-## Code files
+## Scripts
 
-The entries below follow file-name order.
-Each entry gives its purpose and the input or output interface available in the source.
-
-[reduction_shared.patch](reduction_shared.patch)
-
-This patch records changes to the native Kira source.
-
-The changed source paths are `b/src/kira/reduction.cpp`.
-
-Use the matching build script in the parent stage. Keep the required Kira source version.
-
-[s00_check_pairs.cpp](s00_check_pairs.cpp)
-
-The program compares all six modular features with the original ordered-pair calculation.
-
-The required headers are `string`, `vector`, `algorithm`, `iostream`, `random`, `stdexcept`, `s15_shared_modular.h`.
-
-The matching build script compiles this file into an executable.
-
-Use the parent stage guide for the build order and input records.
-
-[s01_check_seed.py](s01_check_seed.py)
-
-The program checks bitwise probabilities and masks against the preceding compiled network.
-
-The module defines these callable interfaces:
-
-```python
-
-def main()
-
-```
-
-The imported project modules are `s03_records`, `s04_compiled_seed`, `s07_seed`, `s12_shared_seed`.
-
-These source constants locate inputs and outputs:
-
-```python
-
-HERE = pathlib.Path(__file__).resolve().parent
-EXP = HERE.parent
-
-```
-
-This entry point uses the paths and options set in its source.
-
-These calls show the stored input and output interface:
-
-```python
-
-(HERE / 'seed_parity.json').write_text(json.dumps(data, indent=2) + '\n')
-(EXP / 'families.json').read_text()
-(ROOT / 'ML_model_seed_selection/runtime_inference/compiled_weights.bin').read_bytes()
-(ROOT / '.tools/kira-shared-inference/libseed.so').read_bytes()
-
-```
-
-[s02_initial_freeze_generator.py](s02_initial_freeze_generator.py)
-
-The program freezes implementation-only changes after exact and timing validation.
-
-The module defines these callable interfaces:
-
-```python
-
-def sha(p)
-def verify()
-def main()
-
-```
-
-These source constants locate inputs and outputs:
-
-```python
-
-HERE = pathlib.Path(__file__).resolve().parent
-ROOT = HERE.parents[1]
-EXP = HERE / 'fast_evaluation'
-
-```
-
-This entry point uses the paths and options set in its source.
-
-These calls show the stored input and output interface:
-
-```python
-
-(EXP / 'freeze.json').write_text(json.dumps(f, indent=2) + '\n')
-(EXP / 'freeze.json').read_text()
-(EXP / 'validation_summary.json').read_text()
-(EXP / 'row_feature_check.json').read_text()
-p.read_bytes()
-(EXP / 'seed_parity.json').read_text()
-
-```
+| File | Purpose |
+|---|---|
+| [reduction_shared.patch](reduction_shared.patch) | This patch records changes to the native Kira source. |
+| [s00_check_pairs.cpp](s00_check_pairs.cpp) | Compare all six modular features with the original ordered-pair calculation. |
+| [s01_check_seed.py](s01_check_seed.py) | Check bitwise probabilities and masks against the preceding compiled network. |
+| [s02_initial_freeze_generator.py](s02_initial_freeze_generator.py) | Freeze implementation-only changes after exact and timing validation. |
 
 ## Data and supporting files
 
-- [adoption.json](adoption.json): This file contains structured records from the parent calculation.
+- [adoption.json](adoption.json): Saved adoption.json record for integration of learned choices with native Kira calculations; the producer code defines its fields.
 
-- [adoption_initial.json](adoption_initial.json): This file contains structured records from the parent calculation.
+- [adoption_initial.json](adoption_initial.json): Saved adoption_initial.json record for integration of learned choices with native Kira calculations; the producer code defines its fields.
 
 - [application_verification.json](application_verification.json): This file records checks of the corresponding calculation.
 
-- [build.json](build.json): This file contains structured records from the parent calculation.
+- [build.json](build.json): Compiler, source, and executable information from the recorded build.
 
-- [confirmation_summary.json](confirmation_summary.json): This file contains structured records from the parent calculation.
+- [confirmation_summary.json](confirmation_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
 - [freeze.json](freeze.json): This file identifies the fixed inputs and method for the completed test.
 
-- [freeze_initial.json](freeze_initial.json): This file contains structured records from the parent calculation.
+- [freeze_initial.json](freeze_initial.json): Identifiers, file locations, or fixed settings used to reproduce this calculation.
 
-- [release.json](release.json): This file contains structured records from the parent calculation.
+- [release.json](release.json): Saved release.json record for integration of learned choices with native Kira calculations; the producer code defines its fields.
 
-- [report_values.json](report_values.json): This file contains structured records from the parent calculation.
+- [report_values.json](report_values.json): Saved report_values.json record for integration of learned choices with native Kira calculations; the producer code defines its fields.
 
 - [resource_plan.json](resource_plan.json): This file sets storage, memory and execution limits.
 
 - [row_feature_check.json](row_feature_check.json): This file records checks of the corresponding calculation.
 
-- [seed_parity.json](seed_parity.json): This file records seed information or seed checks.
+- [seed_parity.json](seed_parity.json): Saved seed_parity.json record for integration of learned choices with native Kira calculations; the producer code defines its fields.
 
-- [validation_summary.json](validation_summary.json): This file contains structured records from the parent calculation.
+- [validation_summary.json](validation_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
 - [verification.json](verification.json): This file records the independent checks.
 

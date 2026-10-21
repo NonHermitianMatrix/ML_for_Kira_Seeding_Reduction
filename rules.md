@@ -312,3 +312,7 @@ Retain independent tests, exact checks, previous evidence, resource limits, and 
 - Use unmodified Kira with its default reduction algorithms as the primary reference for final comparisons with our complete method. State the Kira version, required problem settings, seed bounds, master basis, arithmetic, resources, timing boundary, and exact checks. Default algorithms do not remove the need to specify the physical reduction job.
 - Give both elapsed times, the speed factor relative to default Kira, the percentage time saved, and completion counts for each matched workload. Keep failed or unmeasured default reductions visible; do not assign them a measured finite speedup.
 - Label fixed-strategy and ML-on/ML-off tests as component comparisons. Label comparisons with the preceding optimized application as incremental changes. Neither is a substitute for the primary default-Kira comparison, and ratios from different tests must not be combined.
+
+## Repository guides
+
+- Write the main README as an introduction to the scientific problem, methods, supported inputs, results, and repository layout. Write each folder README as a practical guide to its purpose, files, inputs, outputs, dependencies, and use. Remove editorial announcements, repeated update histories, and unexplained source-code inventories. Preserve necessary commands, comparison baselines, limitations, and the distinction between the deployed application and experimental methods.

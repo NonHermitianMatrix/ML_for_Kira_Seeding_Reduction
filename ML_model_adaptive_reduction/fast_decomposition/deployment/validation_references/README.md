@@ -3,3 +3,5 @@
 Exact recurrence references for validation. These coefficients never enter application decisions.
 
 Read ../../README.md for the code and controls.
+
+These records belong to exact recurrences, independent blocks, and retained seed choices. Use matching case identifiers when combining files.

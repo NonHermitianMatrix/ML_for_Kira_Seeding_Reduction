@@ -1,25 +1,20 @@
-# model test
+# Model test: equation filtering before expensive reduction work
 
-This folder contains reserved test inputs, outputs or checks.
-Keep these records outside model fitting and threshold selection.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These records contain inputs, outputs, or checks for equation filtering before expensive reduction work. Match the case identifiers before comparing coefficients or elapsed times.
 
 ## Data and supporting files
 
 - [audit.json](audit.json): This file records checks of the corresponding calculation.
 
-- [complete.json](complete.json): This file contains structured records from the parent calculation.
+- [complete.json](complete.json): Completion status recorded by the experiment’s producer.
 
-- [document_values.json](document_values.json): This file contains structured records from the parent calculation.
+- [document_values.json](document_values.json): Saved document_values.json record for equation filtering before expensive reduction work; the producer code defines its fields.
 
 - [release_check.json](release_check.json): This file records checks of the corresponding calculation.
 
 - [resume_metadata.json](resume_metadata.json): This file records the family, generation bounds and validation information.
 
-- [scheduler_accounting.json](scheduler_accounting.json): This file contains structured records from the parent calculation.
+- [scheduler_accounting.json](scheduler_accounting.json): Saved scheduler_accounting.json record for equation filtering before expensive reduction work; the producer code defines its fields.
 
 - [summary.json](summary.json): This file contains the result counts and summary measurements.
 

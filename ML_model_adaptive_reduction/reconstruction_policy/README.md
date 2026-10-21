@@ -1,6 +1,8 @@
 # Exact formulas, reconstruction, and measured-cost selection
 
-Use `s15_deploy.py` for the current application.
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
+Use `s15_deploy.py` for this experiment.
 It retains the preceding exact formulas, recurrences, and seed model.
 It adds a separately built Kira 3.1 executable with FireFly 2.0.3 and FLINT.
 The standard reconstruction algorithm supplies the algebra improvement.
@@ -178,7 +180,6 @@ Each native calculation uses one computational thread.
 The wrappers limit address space and output files.
 Keep other user jobs unchanged.
 
-<!-- BEGIN SHARED APPLICATION SETUP -->
 Use `s15_deploy.py` for one request. Use `s37_batch.py` for a bounded collection of 1 to 128 requests. The shared call retains loaded routines and policies. It receives no reference answers and computes each requested reduction.
 
 From the project root, run:
@@ -194,4 +195,3 @@ The optional `--method` selects `integrated`, `fixed`, `previous`, or `before_fo
 The frozen comparison uses the same 75 verified requests, four methods, and three repetitions. It reverses request order in the middle repetition and checks every coefficient against the saved independent references. It is an implementation regression test, not a new held-out physics sample. Current separate calls take 58.980439 s at the median; the shared call takes 37.246748 s. The earlier shared call takes 70.050574 s. All 900 executions pass 18132 coefficient checks. No reconstruction choices change.
 
 `s38_prepare_batch.py` freezes the inputs, code, weights, binary, and references. `s39_batch_test.py` times and verifies the applications. `s40_batch_test.sh` submits two bounded workers. `s41_analyze_batch.py` computes the summaries. `s42_write_batch.py` updates the documents and guides. `s43_validate_batch.py` verifies the final files. Read `batch_protocol.json.gz`, `batch_summary.json`, and `batch_resource_plan.json` for the protocol, complete results, and storage bounds. The `batch_test` folder contains all timed outputs. Training and all earlier experiments remain unchanged.
-<!-- END SHARED APPLICATION SETUP -->

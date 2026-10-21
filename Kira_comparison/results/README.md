@@ -1,10 +1,6 @@
-# results
+# Kira timing and correctness comparisons
 
-This folder supports the calculation described in the parent guide.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These records contain inputs, outputs, or checks for Kira timing and correctness comparisons. Match the case identifiers before comparing coefficients or elapsed times.
 
 ## Data and supporting files
 

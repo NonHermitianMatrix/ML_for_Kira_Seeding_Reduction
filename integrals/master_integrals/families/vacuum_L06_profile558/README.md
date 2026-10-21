@@ -1,27 +1,11 @@
-# vacuum_L06_profile558
+# Master basis for one integral family
 
-This folder contains the definition and master basis for family `vacuum_L06_profile558`.
+This folder defines the family and its retained master integrals. Its directory name is the family identifier used by the collection reader.
 
-The family has 6 loops and 4 distinct massive denominators.
+- [definition.json](definition.json): loop and external momenta, propagators, scalar products, and sectors.
+- [masters.json](masters.json): master identifiers and their integral index vectors.
+- [masters.txt](masters.txt): the master index list in plain text.
 
-The massless powers equal one. The massive denominators share the total loop momentum.
+Use the same family directory name in [target_integrals](../../../target_integrals/README.md) and [master_to_target](../../../master_to_target/README.md). The latter stores target coefficients and reduction steps.
 
-[Family definition and masters](README.md).
-
-[Target integrals](../../../target_integrals/families/vacuum_L06_profile558/README.md).
-
-[Relations and reduction steps](../../../master_to_target/families/vacuum_L06_profile558/README.md).
-
-The same family and target identifiers connect these records.
-
-Reference paths are sufficient. Their minimum cost is not established.
-
-A partial-fraction relation carries no IBP seed label.
-
-Read the data with [the integral reader guide](../../../README.md).
-
-- [definition.json](definition.json): This file defines loop momenta, external momenta, denominators and scalar products.
-
-- [masters.json](masters.json): This file gives master indices and their family information.
-
-- [masters.txt](masters.txt): This file gives the master index list in text form.
+[The collection reader](../../../README.md) accepts `--family FAMILY --kind masters` or `--kind definition`. Master identifiers are local to their family.

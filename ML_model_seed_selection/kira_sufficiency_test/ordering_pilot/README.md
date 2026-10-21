@@ -1,12 +1,10 @@
-# ordering pilot
+# Ordering pilot: exact sufficiency of the neural model’s selected seeds
+
+These records preserve development or earlier comparisons for exact sufficiency of the neural model’s selected seeds. They document the tested settings, including incomplete or rejected attempts.
 
 This folder retains an earlier stage, development check or saved comparison.
 Use its records to interpret that stage.
 Use the current parent application for a new calculation.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
 
 ## Data and supporting files
 
@@ -16,8 +14,8 @@ The producing and reading code is described in [the stage guide](../README.md).
 
 - [results_Tuserweight_masters.gz](results_Tuserweight_masters.gz): This file records the prescribed master basis or its checks.
 
-- [run.json](run.json): This file contains structured records from the parent calculation.
+- [run.json](run.json): Saved run.json record for exact sufficiency of the neural model’s selected seeds; the producer code defines its fields.
 
-- [run.log.gz](run.log.gz): This archive contains saved records for the parent calculation.
+- [run.log.gz](run.log.gz): Execution messages and diagnostics for the named run.
 
-- [system.kira.gz](system.kira.gz): This archive contains saved records for the parent calculation.
+- [system.kira.gz](system.kira.gz): Saved system.kira.gz record for exact sufficiency of the neural model’s selected seeds; the producer code defines its fields.

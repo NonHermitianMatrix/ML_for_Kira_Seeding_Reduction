@@ -1,10 +1,6 @@
-# results
+# Results: row selection inside Kira’s changing coefficient matrix
 
-This folder supports the calculation described in the parent guide.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These records contain inputs, outputs, or checks for row selection inside Kira’s changing coefficient matrix. Match the case identifiers before comparing coefficients or elapsed times.
 
 ## Data and supporting files
 

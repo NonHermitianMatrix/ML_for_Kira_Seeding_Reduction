@@ -1,17 +1,12 @@
-# training
+# Training: reuse of compatible equations across target batches
 
-This folder contains training inputs or saved training results.
-Keep the stored family division unchanged.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These records supply training inputs or measured labels for reuse of compatible equations across target batches. Keep their family assignments separate from validation and reserved tests.
 
 ## Data and supporting files
 
 - [compact_check.json](compact_check.json): This file records checks of the corresponding calculation.
 
-- [examples.json.gz](examples.json.gz): This file contains structured records from the parent calculation.
+- [examples.json.gz](examples.json.gz): Saved examples.json.gz record for reuse of compatible equations across target batches; the producer code defines its fields.
 
 - [native_check.json](native_check.json): This file records checks of the corresponding calculation.
 

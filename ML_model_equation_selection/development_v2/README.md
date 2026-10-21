@@ -1,10 +1,10 @@
-# development v2
+# Selection of IBP equations
+
+These records preserve development or earlier comparisons for selection of IBP equations. They document the tested settings, including incomplete or rejected attempts.
 
 This folder retains an earlier stage, development check or saved comparison.
 Use its records to interpret that stage.
 Use the current parent application for a new calculation.
-
-Read [the parent guide](../README.md) for the stage and data flow.
 
 ## Code use
 
@@ -16,24 +16,15 @@ Keep each script's memory, time and storage limits.
 Keep existing model and test files before a new run.
 Scripts that write reports describe earlier document names; review their destinations before use.
 
-## Code files
+## Scripts
 
-The entries below follow file-name order.
-Each entry gives its purpose and the input or output interface available in the source.
-
-[s00_equation_policy.h](s00_equation_policy.h)
-
-The file provides learned equation filter. Exact IBP construction and algebra stay in Kira.
-
-The required headers are `array`, `chrono`, `cmath`, `cstdlib`, `fstream`, `iomanip`, `map`, `mutex`, `set`, `sstream`, `unordered_map`, `vector`.
-
-The matching build script compiles this file with its caller.
-
-Use the parent stage guide for the build order and input records.
+| File | Purpose |
+|---|---|
+| [s00_equation_policy.h](s00_equation_policy.h) | Learned equation filter. Exact IBP construction and algebra stay in Kira. |
 
 ## Data and supporting files
 
-- [build.json](build.json): This file contains structured records from the parent calculation.
+- [build.json](build.json): Compiler, source, and executable information from the recorded build.
 
 - [training_00_sunrise_n21.json.gz](training_00_sunrise_n21.json.gz): This file records training progress or training inputs.
 

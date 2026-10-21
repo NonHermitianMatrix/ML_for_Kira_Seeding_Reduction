@@ -1,23 +1,18 @@
-# model test
+# Model test: reuse of symbolic coefficient polynomials
 
-This folder contains reserved test inputs, outputs or checks.
-Keep these records outside model fitting and threshold selection.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These records contain inputs, outputs, or checks for reuse of symbolic coefficient polynomials. Match the case identifiers before comparing coefficients or elapsed times.
 
 ## Data and supporting files
 
 - [audit.json](audit.json): This file records checks of the corresponding calculation.
 
-- [complete.json](complete.json): This file contains structured records from the parent calculation.
+- [complete.json](complete.json): Completion status recorded by the experiment’s producer.
 
-- [document_values.json](document_values.json): This file contains structured records from the parent calculation.
+- [document_values.json](document_values.json): Saved document_values.json record for reuse of symbolic coefficient polynomials; the producer code defines its fields.
 
 - [release_check.json](release_check.json): This file records checks of the corresponding calculation.
 
-- [streams_complete.json](streams_complete.json): This file contains structured records from the parent calculation.
+- [streams_complete.json](streams_complete.json): Saved streams_complete.json record for reuse of symbolic coefficient polynomials; the producer code defines its fields.
 
 - [summary.json](summary.json): This file contains the result counts and summary measurements.
 

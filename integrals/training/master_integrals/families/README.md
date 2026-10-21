@@ -1,11 +1,6 @@
-# families
+# Families: the constructed integral collection
 
-This folder contains training inputs or saved training results.
-Keep the stored family division unchanged.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../../../README.md).
+Each child folder identifies one integral family. Its README explains the stored records and their links to the calculation.
 
 ## Data and supporting files
 

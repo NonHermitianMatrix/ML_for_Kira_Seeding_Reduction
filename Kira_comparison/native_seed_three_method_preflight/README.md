@@ -1,13 +1,9 @@
-# native seed three method preflight
+# Initial comparisons of three seed choices
 
-This folder supports the calculation described in the parent guide.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These records preserve development or earlier comparisons for initial comparisons of three seed choices. They document the tested settings, including incomplete or rejected attempts.
 
 ## Data and supporting files
 
-- [frozen_inputs.json](frozen_inputs.json): This file contains structured records from the parent calculation.
+- [frozen_inputs.json](frozen_inputs.json): Saved frozen_inputs.json record for initial comparisons of three seed choices; the producer code defines its fields.
 
-- [plan.json](plan.json): This file contains structured records from the parent calculation.
+- [plan.json](plan.json): Saved plan.json record for initial comparisons of three seed choices; the producer code defines its fields.

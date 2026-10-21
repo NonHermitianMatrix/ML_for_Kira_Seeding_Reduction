@@ -1,10 +1,10 @@
-# plot compatibility
+# Plot compatibility: exact vacuum recurrence compared with supplied-equation Kira
+
+This folder contains the code and records for exact vacuum recurrence compared with supplied-equation Kira.
 
 This folder retains an earlier stage, development check or saved comparison.
 Use its records to interpret that stage.
 Use the current parent application for a new calculation.
-
-Read [the parent guide](../README.md) for the stage and data flow.
 
 ## Code use
 
@@ -16,26 +16,8 @@ Keep each script's memory, time and storage limits.
 Keep existing model and test files before a new run.
 Scripts that write reports describe earlier document names; review their destinations before use.
 
-## Code files
+## Scripts
 
-The entries below follow file-name order.
-Each entry gives its purpose and the input or output interface available in the source.
-
-[s07_plot.py](s07_plot.py)
-
-The program creates standalone scientific plots of the direct cumulative comparison.
-
-The module defines these callable interfaces:
-
-```python
-
-def main()
-
-```
-
-The imported external packages are `matplotlib`.
-
-The imported project modules are `s00_cumulative`.
-
-This entry point uses the paths and options set in its source.
-
+| File | Purpose |
+|---|---|
+| [s07_plot.py](s07_plot.py) | Create standalone scientific plots of the direct cumulative comparison. |

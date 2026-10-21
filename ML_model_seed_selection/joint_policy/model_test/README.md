@@ -7,3 +7,5 @@ Result reuse is disabled.
 Completion records require exact reference agreement for every output.
 
 Read [the parent guide](../README.md) for producers, readers, dependencies, and limits.
+
+These records belong to joint seed and Kira-configuration selection. Use matching case identifiers when combining files.

@@ -6,3 +6,5 @@ Both use the same reserved physical inputs and exact references as the main test
 No additional model fitting uses these outcomes.
 The times are measured together and are separate from the main four-method experiment.
 Do not multiply this ratio into the cumulative ratio.
+
+These records belong to symbolic and finite-field coefficient arithmetic. Use matching case identifiers when combining files.

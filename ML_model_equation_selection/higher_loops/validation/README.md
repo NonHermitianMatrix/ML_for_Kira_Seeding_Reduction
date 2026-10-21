@@ -1,11 +1,6 @@
-# validation
+# Validation: restricted vacuum reductions across loop orders
 
-This folder contains validation records.
-These records select a method before the reserved test.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These measurements select the model or fixed setting for restricted vacuum reductions across loop orders. They are separate from the reserved test results.
 
 ## Data and supporting files
 
@@ -13,7 +8,7 @@ The producing and reading code is described in [the stage guide](../README.md).
 
 - [reader_scheduler.log](reader_scheduler.log): This file contains saved program messages.
 
-- [validation_complete.json](validation_complete.json): This file contains structured records from the parent calculation.
+- [validation_complete.json](validation_complete.json): Recorded checks of the calculation, data, or selected settings.
 
 ## Child folders
 

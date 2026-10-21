@@ -12,3 +12,5 @@ import json
 with gzip.open("record.json.gz", "rt") as stream:
     record = json.load(stream)
 ```
+
+These records belong to cost models fitted to individual graph structures. Use matching case identifiers when combining files.

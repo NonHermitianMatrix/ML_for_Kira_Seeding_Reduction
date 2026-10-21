@@ -1,11 +1,6 @@
-# stream results
+# Stream results: reuse of symbolic coefficient polynomials
 
-This folder contains reserved test inputs, outputs or checks.
-Keep these records outside model fitting and threshold selection.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../../README.md).
+This folder contains the code and records for reuse of symbolic coefficient polynomials.
 
 ## Data and supporting files
 
@@ -17,3 +12,5 @@ The names identify the family, case, target or repetition used by the parent rea
 Use the local manifest or the parent case list to match identifiers.
 Keep compressed files in their stored format.
 Read one record at a time with the parent reader.
+
+These records belong to reuse of symbolic coefficient polynomials. Use matching case identifiers when combining files.

@@ -1,8 +1,10 @@
 # Exact vacuum reduction and trained seed choices
 
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
 Use this folder for the combined exact and learned application.
-The new exact rule reduces a connected massless bubble tree with one massive vacuum root.
-The new cost model chooses a sparse seed boundary for supported native box targets.
+The exact rule reduces a connected massless bubble tree with one massive vacuum root.
+The cost model chooses a sparse seed boundary for supported native box targets.
 The application retains the previous exact rules and native choices for other inputs.
 
 Run from the project root on a compute node:

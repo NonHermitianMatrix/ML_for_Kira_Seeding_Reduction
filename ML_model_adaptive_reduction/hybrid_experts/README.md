@@ -1,9 +1,12 @@
+# Selection among exact and native reduction procedures
+
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
+This folder contains the code and records for selection among exact and native reduction procedures.
+
 ## Historical document receipt
 
-The current application and paper are in the analytic_decomposition study.
 This folder preserves the earlier hybrid experiment and its model weights.
-Its PDF hashes identify that earlier document version.
-Use ../analytic_decomposition/validation.json for the current paper and notes.
 Keep earlier document writers separate from the current report build.
 
 # Integrated sparse-seed expert

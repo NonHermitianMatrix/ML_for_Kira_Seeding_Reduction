@@ -6,3 +6,5 @@ The repeat protocol was recorded before these measurements and before any nonpla
 The refit script copies these checked records into the active validation folder.
 
 Read [the parent guide](../README.md) for producers, readers, dependencies, and limits.
+
+These records belong to joint seed and Kira-configuration selection. Use matching case identifiers when combining files.

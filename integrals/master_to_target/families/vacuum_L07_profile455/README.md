@@ -1,39 +1,17 @@
-# vacuum_L07_profile455
+# Reference reductions and construction records
 
-This folder connects targets to their master integrals for family `vacuum_L07_profile455`.
+These records connect this family’s target expressions to its master basis. Match the target `id` across the input, reference, and elimination trace. Match each reference master ID to the family’s master list.
 
-The family has 7 loops and 3 distinct massive denominators.
+- [candidate_seeds.json](candidate_seeds.json): candidate integral indices from which IBP identities are generated.
+- [construction_proofs.jsonl.xz](construction_proofs.jsonl.xz): recorded identities used to construct targets from master expansions.
+- [elimination_traces.jsonl.xz](elimination_traces.jsonl.xz): allowed operations, selected pivots, coefficient changes, and operation counts.
+- [identities.jsonl.xz](identities.jsonl.xz): source equations between integrals.
+- [manifest.json](manifest.json): record locations and identifiers.
+- [metadata.json](metadata.json): family information, generation bounds, and validation metadata.
+- [references.jsonl.xz](references.jsonl.xz): target IDs, required master IDs, and exact coefficients.
+- [scalar_proofs.jsonl.xz](scalar_proofs.jsonl.xz): construction checks for individual target integrals.
+- [symmetries.json](symmetries.json): index mappings that preserve the family.
 
-The massless powers equal one. The massive denominators share the total loop momentum.
+The recorded path is a sufficient reduction. Its operation count is not a proof of minimum cost. Partial-fraction identities have no IBP seed label.
 
-[Family definition and masters](../../../master_integrals/families/vacuum_L07_profile455/README.md).
-
-[Target integrals](../../../target_integrals/families/vacuum_L07_profile455/README.md).
-
-[Relations and reduction steps](README.md).
-
-The same family and target identifiers connect these records.
-
-Reference paths are sufficient. Their minimum cost is not established.
-
-A partial-fraction relation carries no IBP seed label.
-
-Read the data with [the integral reader guide](../../../README.md).
-
-- [candidate_seeds.json](candidate_seeds.json): This file records seed information or seed checks.
-
-- [construction_proofs.jsonl.xz](construction_proofs.jsonl.xz): This file records the reverse construction from master integrals.
-
-- [elimination_traces.jsonl.xz](elimination_traces.jsonl.xz): This file records allowed row operations, chosen pivots, coefficient changes and operation counts.
-
-- [identities.jsonl.xz](identities.jsonl.xz): This file records the source equations or their checks.
-
-- [manifest.json](manifest.json): This file lists the records and their identifiers.
-
-- [metadata.json](metadata.json): This file records the family, generation bounds and validation information.
-
-- [references.jsonl.xz](references.jsonl.xz): This file records each target and its exact master coefficients.
-
-- [scalar_proofs.jsonl.xz](scalar_proofs.jsonl.xz): This file records mathematical checks for the stated system.
-
-- [symmetries.json](symmetries.json): This file records index mappings that leave the family integral unchanged.
+Use the same family directory name in [master_integrals](../../../master_integrals/README.md) and [target_integrals](../../../target_integrals/README.md). [The collection reader](../../../README.md) joins the records with `--target FAMILY:ID` and streams their compressed files.

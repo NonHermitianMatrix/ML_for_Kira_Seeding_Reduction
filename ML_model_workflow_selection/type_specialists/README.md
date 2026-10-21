@@ -146,8 +146,6 @@ The output records the selected strategy, exact coefficients, checks, retries, a
 An incomplete reduction returns a nonzero exit status.
 The output must stay inside `model_test/` to enforce the study storage limit.
 
-<!-- BEGIN GRAPH POLICY RESULTS -->
-
 ## Completed graph-policy results
 
 The final fit contains 70 candidates for seven graph types.
@@ -180,5 +178,3 @@ Final training and validation records contain 2798.5 seconds of measured reducti
 Fitting the final 70 candidates takes 0.86 seconds.
 The label total excludes development, reference construction, and replaced records.
 These offline costs remain outside the reserved time ratios.
-
-<!-- END GRAPH POLICY RESULTS -->

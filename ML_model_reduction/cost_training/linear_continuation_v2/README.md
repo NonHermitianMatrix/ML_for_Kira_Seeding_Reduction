@@ -1,10 +1,10 @@
-# linear continuation v2
+# Linear continuation v2: row policies trained on measured algebraic cost
+
+This folder contains the code and records for row policies trained on measured algebraic cost.
 
 This folder retains an earlier stage, development check or saved comparison.
 Use its records to interpret that stage.
 Use the current parent application for a new calculation.
-
-Read [the parent guide](../README.md) for the stage and data flow.
 
 ## Code use
 
@@ -16,22 +16,15 @@ Keep each script's memory, time and storage limits.
 Keep existing model and test files before a new run.
 Scripts that write reports describe earlier document names; review their destinations before use.
 
-## Code files
+## Scripts
 
-The entries below follow file-name order.
-Each entry gives its purpose and the input or output interface available in the source.
-
-[reduction_cost.patch](reduction_cost.patch)
-
-This patch records changes to the native Kira source.
-
-The changed source paths are `b/src/kira/reduction.cpp`.
-
-Use the matching build script in the parent stage. Keep the required Kira source version.
+| File | Purpose |
+|---|---|
+| [reduction_cost.patch](reduction_cost.patch) | This patch records changes to the native Kira source. |
 
 ## Data and supporting files
 
-- [build.json](build.json): This file contains structured records from the parent calculation.
+- [build.json](build.json): Compiler, source, and executable information from the recorded build.
 
 - [trained_model.json](trained_model.json): This file contains a saved model or its description.
 

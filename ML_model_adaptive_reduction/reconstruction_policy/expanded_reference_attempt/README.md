@@ -5,3 +5,5 @@ Increasing all seed bounds generated large equation systems and reached the refe
 The replacement uses a complete region at the successful application bounds and a different integral ordering.
 These are reference preparation outcomes. They are not model-selected reduction failures.
 Job 15221604 was stopped before training. No model was fitted to this attempt.
+
+These records belong to symbolic and finite-field coefficient arithmetic. Use matching case identifiers when combining files.

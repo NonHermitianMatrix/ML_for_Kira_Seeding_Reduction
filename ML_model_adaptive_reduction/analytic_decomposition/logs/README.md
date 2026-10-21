@@ -3,3 +3,5 @@
 Scheduler logs remain on Hoffman. Structured results and this guide are published.
 
 Read ../README.md for the procedure, controls, and resource limits.
+
+These records belong to one-loop power-lowering recurrences. Use matching case identifiers when combining files.

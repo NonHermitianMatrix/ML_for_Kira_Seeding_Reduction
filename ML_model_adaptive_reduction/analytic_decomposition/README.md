@@ -1,12 +1,16 @@
+# One-loop power-lowering recurrences
+
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
+This folder contains the code and records for one-loop power-lowering recurrences.
+
 ## Superseding fast decomposition study
 
-Use ../fast_decomposition/README.md for the current application.
 This folder preserves the preceding exact recurrence and its measurements.
-Its document receipts identify the earlier paper and notes.
 
 # Exact analytic decomposition and learned Kira selection
 
-This folder adds a scalar one-loop recurrence to the current learned application.
+This study implements a scalar one-loop recurrence to the current learned application.
 It reduces raised propagator powers with an exact matrix of masses and momentum invariants.
 The application uses a prepared master-index set. It stores no answer coefficients in that set.
 If the recurrence cannot complete within its domain, the preceding application handles the request.
@@ -88,3 +92,7 @@ The final nine-request test is a separate comparison. Do not add its times to th
 Cut propagators and symbolic indices are outside the existing application interface.
 
 The final rule passes all nine reserved requests. Its time ratio on the four symbolic requests is 0.144013 against the initial analytic variant.
+
+## Additional scripts
+
+- [sync_report.py](sync_report.py): Copy only published report files and guides; verify each Git blob locally.

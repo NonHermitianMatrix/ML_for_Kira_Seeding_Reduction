@@ -205,8 +205,6 @@ The public application selects a fitted model or a validation control and then c
 The new study preserves the preceding models and test records.
 Its native inputs use one through three loops and fresh rational parameter profiles.
 
-<!-- BEGIN GRAPH POLICY RESULTS -->
-
 ## Completed graph-policy results
 
 The final fit contains 70 candidates for seven graph types.
@@ -225,8 +223,6 @@ These results give no speed guarantee for other inputs.
 
 See the study guide for the graph results and limits.
 
-<!-- END GRAPH POLICY RESULTS -->
-
 ## Selective seed expansion
 
 The [basis-completion study](basis_completion/README.md) adds selective seed limits and tests exact conversion of a temporary basis. Its public entry point is `basis_completion/s07_reduce.py`. It uses the previous frozen route when a new strategy fails or the input is outside its trained domain. The earlier routes remain available for comparison. The new comparison includes complete reduction and exact checks.
@@ -239,19 +235,9 @@ The [ordering study](ordering_policy/README.md) selects native integral ordering
 
 The [worker-count study](thread_policy/README.md) chooses one, two, or four Kira workers before reduction. Its public entry point is `thread_policy/s07_reduce.py`. The experiment uses four slots for its controls. The retained policy needs at most two slots; use `thread_policy/s17_application.sh`. The previous learned seed strategy stays active. Unknown input structures use the previous one-worker route. This interface handles one application at a time because it scopes native settings for the duration of each application.
 
-<!-- BEGIN ADAPTIVE REDUCTION -->
+## Related application
 
-## Current reduction method
-
-The current application uses a [validated complete-cost portfolio](../ML_model_adaptive_reduction/selective_expansion/README.md).
-It compares selective seed expansion, earlier learned settings, and one or two workers.
-The final test uses fresh inputs and compares the previous workflow and fixed choices per graph.
-Exact preprocessing is common to these controls and has separate measured gains.
-Read `ML_model_adaptive_reduction/selective_expansion/summary.json` for checked results.
-
-<!-- END ADAPTIVE REDUCTION -->
-
-<!-- BEGIN HIGHER SCATTERING VERIFICATION -->
+The [combined reduction application](../ML_model_adaptive_reduction/triangle_reduction/README.md) integrates the retained exact and learned methods. The [selective-expansion experiment](../ML_model_adaptive_reduction/selective_expansion/README.md) compares candidate seed and worker settings.
 
 ## Independent component checks
 
@@ -259,5 +245,3 @@ The [component and higher-loop study](../Kira_comparison/higher_scattering/READM
 It preserves the earlier models and results.
 It also records connected scattering tests, initialization costs, and incomplete calculations.
 Read its summary for the measured contributions and tested domain.
-
-<!-- END HIGHER SCATTERING VERIFICATION -->

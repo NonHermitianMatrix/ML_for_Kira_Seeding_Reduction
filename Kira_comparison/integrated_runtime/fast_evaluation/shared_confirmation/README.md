@@ -1,11 +1,6 @@
-# shared confirmation
+# Shared confirmation: integration of learned choices with native Kira calculations
 
-This folder contains reserved test inputs, outputs or checks.
-Keep these records outside model fitting and threshold selection.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+This folder contains the code and records for integration of learned choices with native Kira calculations.
 
 ## Data and supporting files
 

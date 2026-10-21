@@ -1,7 +1,9 @@
 # Exact reductions and learned Kira seed choices
 
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
 This folder extends the preceding tensor reduction method.
-The new exact rule reduces a two-point sector when its external momentum has square zero.
+The exact rule reduces a two-point sector when its external momentum has square zero.
 It accepts unequal masses, equal masses, and zero masses.
 It also accepts polynomial numerators within the stated bounds.
 The runtime applies this rule to intermediate two-line sectors of a larger one-loop reduction.

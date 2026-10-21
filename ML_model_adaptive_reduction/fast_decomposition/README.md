@@ -1,5 +1,7 @@
 # Fast exact decomposition with learned decisions
 
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
 This folder contains the next application after analytic_decomposition.
 It uses exact formulas for supported integral families.
 It splits independent loop blocks before reduction.

@@ -1,6 +1,6 @@
 # Training for scattering integrals
 
-This study adds training examples from three scattering structures.
+This study uses training examples from three scattering structures.
 They are the massless nonplanar two-loop box, massless pentagon, and box with one external virtuality.
 The earlier equation tree had no training examples from these structures.
 Its earlier transfer tests remain in [generalization](../../Kira_comparison/generalization/README.md).
@@ -61,64 +61,12 @@ The first job saves each completed calculation before starting the next one.
 A restart reuses these files and repeats unfinished calculations.
 Keep the case definitions, model parameters and thresholds fixed during a reserved test.
 
-## Code files
+## Scripts
 
-[s00_scattering_study.py](s00_scattering_study.py) defines the full study.
-Its actions are `prepare`, `collect`, `train`, `validate`, `test`, and `all`.
-`prepare` writes the case definitions and checks symbolic target separation.
-`collect` obtains native reference reductions and labelled candidate equations.
-`train` fits the six trees from training records only.
-`validate` compares thresholds 0.001, 0.01 and 0.05 with three repetitions.
-It selects each threshold from full validation time and writes `freeze.json`.
-`test` uses five repetitions of native choices, the original equation tree and the two new trees.
-It also checks applications without supplying target reference coefficients.
-
-[s01_job.sh](s01_job.sh) submits this work with one CPU and explicit memory and time limits.
-It accepts one action argument and defaults to `all`.
-
-[s02_analyze.py](s02_analyze.py) checks all 180 reserved calculations and eighteen basis-only applications.
-It reads saved results and never trains a model.
-It writes test summaries and two paper figures.
-The descriptive timing intervals resample three graph groups 10,000 times.
-These intervals describe this small test and do not prove general performance.
-
-[s03_reduce.py](s03_reduce.py) applies a fixed selector to a case from `cases.json`.
-Its required options are `--case`, `--basis` and `--output`.
-The basis file must contain a JSON list of master index vectors.
-The output path must be inside this folder's `model_test` directory.
-The optional `--policy` accepts `native`, `seed`, `equation` or `auto`.
-The default is `native` because the reserved comparison gives no overall time saving.
-The experimental automatic choice uses validation results only.
-It requires no validation fallback and a time ratio below 0.98 before selecting a learned policy.
-Otherwise, it uses native choices.
-The application checks basis completion and retries with native equations when necessary.
-The caller must use a scheduled job, as the reduction uses node temporary storage.
-
-[s04_analyze_job.sh](s04_analyze_job.sh) runs the analysis with bounded resources.
-
-## Inputs, outputs and limits
-
-[references](references/README.md) stores native reductions from an enlarged seed region.
-[training](training/README.md) stores native labels and their exact reference checks.
-[validation](validation/README.md) stores threshold comparisons.
-[trained_model](trained_model/README.md) stores the equation trees.
-The [seed model folder](../../ML_model_seed_selection/scattering_training/README.md) stores the seed trees.
-[model_test](model_test/README.md) stores all test runs and the summary.
-[logs](logs/README.md) stores scheduler progress and completion records.
-`freeze.json` records the settings and file checks fixed before testing.
-`resource_plan.json` states the storage and memory budget.
-`storage_audit.json` records the storage correction made during this study.
-
-Keep new retained study files below 32 MiB across both model folders.
-Run one scientific job at a time.
-Each Kira attempt has a 150-second limit and a 32 MiB temporary-file limit.
-The driver stops a process tree above its memory limit.
-Project files, local report files and temporary files must remain below 10,000,000,000 bytes in total.
-A Git download cache was reduced without removing working files or published history.
-Avoid commands that download all historical data objects into the partial Git clone.
-
-The earlier job was stopped during validation for this storage correction.
-The replacement job reused completed records and repeated its unfinished calculation.
-The reserved timing tests start after this correction.
-Generated integral records and fitted model files stay on Hoffman and GitHub.
-Only paper sources, figures and compact paper evidence tables are copied locally.
+| File | Purpose |
+|---|---|
+| [s00_scattering_study.py](s00_scattering_study.py) | Train native seed and equation trees on three previously unsupported families. |
+| [s01_job.sh](s01_job.sh) | Scheduler wrapper for job; its header sets the resource limits. |
+| [s02_analyze.py](s02_analyze.py) | Check all reserved runs and make the scattering results table and figure. |
+| [s03_reduce.py](s03_reduce.py) | Apply a frozen scattering selector with a supplied master basis. |
+| [s04_analyze_job.sh](s04_analyze_job.sh) | Scheduler wrapper for analyze job; its header sets the resource limits. |

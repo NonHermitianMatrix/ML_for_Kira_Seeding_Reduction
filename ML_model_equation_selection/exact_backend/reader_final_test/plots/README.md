@@ -1,14 +1,11 @@
-# plots
+# Plots: exact recurrences for the restricted coupled-vacuum family
 
-This folder contains plots of saved results.
-The parent plotting script defines the inputs, axes and comparison method.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../../README.md).
+This folder contains the code and records for exact recurrences for the restricted coupled-vacuum family.
 
 ## Data and supporting files
 
 - [exact_backend_reader_streams.pdf](exact_backend_reader_streams.pdf): This file displays a recorded result or document.
 
 - [exact_backend_reader_times.pdf](exact_backend_reader_times.pdf): This file displays a recorded result or document.
+
+These records belong to exact recurrences for the restricted coupled-vacuum family. Use matching case identifiers when combining files.

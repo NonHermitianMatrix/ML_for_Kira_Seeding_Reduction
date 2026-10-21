@@ -46,8 +46,6 @@ The model files contain JSON arrays, not executable serialized objects.
 The original cost study remains unchanged and has its own reserved group.
 Three repetitions give descriptive timing ranges. They do not prove a universal or globally optimal speedup.
 
-<!-- BEGIN PORTFOLIO RESULTS -->
-
 ## Measured results
 
 All 390 timed test reductions and 26 further applications pass exact checks.
@@ -57,5 +55,3 @@ The selected/fixed-portfolio ratio is 0.984882.
 The all-repetition selected/fixed ratio is 1.003527.
 The added outer prediction has no stable aggregate saving over the fixed portfolio.
 Read `summary.json` for individual graphs, process CPU times, and failed references.
-
-<!-- END PORTFOLIO RESULTS -->

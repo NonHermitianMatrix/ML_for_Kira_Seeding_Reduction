@@ -1,6 +1,6 @@
 # Direct triangle reduction and native cost selection
 
-This folder adds an exact massless triangle formula to the preceding application.
+This application reduces supported massless triangles with an exact formula and sends other supported inputs to its retained analytic and native methods.
 The triangle has two lightlike external legs and one spacelike invariant.
 The formula gives a bubble decomposition and its Gamma-function value.
 Independent triangle products use the same identity through thirteen loops.
@@ -13,7 +13,7 @@ The additional model is disabled after validation.
 The preceding learned seed policy remains active for its supported requests.
 Fixed controls retain that seed policy. They isolate the added cost selector.
 
-Use `s32_deploy.py` for one request.
+Use `s32_deploy.py` for one request. Its output path must remain inside this `triangle_reduction/` directory.
 Use `s33_batch.py` for a list of requests.
 Both commands accept `--action integrated`, `--action fixed`, and `--action previous`.
 The previous action calls the published reconstruction application.
@@ -41,7 +41,7 @@ Each power must be between zero and four. Each triangle's total power is at most
 Cross-loop auxiliary powers must vanish. Cut and numerator cases use the preceding method.
 The dimension remains symbolic. Pole values require dimensional continuation.
 
-The new tests contain 40 requests and three repetitions per method.
+The tests contain 40 requests and three repetitions per method.
 They also contain 53 earlier analytic regression requests.
 The shared-call comparison uses all 93 requests in each collection.
 The final measured shared-call ratio is 0.912299 against the preceding published application.
@@ -95,7 +95,7 @@ The tests cover defined structures. They do not establish all integral types or 
 The new selector retains the preceding application for the three-loop vacuum structure.
 A development coefficient comparison failed before the collector saved its candidate output.
 The surviving log and independent diagnostics remain in this folder.
-The corrected collector now saves failed outputs before stopping.
+The collector saves failed outputs before stopping.
 
 Freeze inputs and models before reserved tests. Preserve failed checks and their resolution.
 Training and test data remain on Hoffman and GitHub. Keep only reports and authored support tools locally.

@@ -1,5 +1,7 @@
 # Shared structural cost model
 
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
 This folder trains and tests a shared model for Kira seed choices.
 The model uses the integral structure and target powers. It does not use family names or a per-family deployment rule.
 The model predicts complete cost for ten seed configurations. Kira performs exact algebra and retries incomplete choices.
@@ -73,3 +75,14 @@ The final matched set contains 43 requests. Learned/native time ratio: 0.900312.
 Read [preparation/README.md](preparation/README.md) for the cost-and-failure model and the complete preparation comparison. Scripts s14 through s19 implement this extension. Both models and the ML-off controls remain available.
 
 The current public command is `s22_reduce.py --case INPUT.json --output OUTPUT.json.gz`. Add `--basis BASIS.json` when a basis is available. It first checks the exact scalar formula. With a supplied basis, it uses the validation-approved shared model. Without a basis, it follows preparation/deployment.json and includes discovery and recovery. That deployment decision follows the completed candidate comparison; it has no separate timing claim. Use `--method learned` or `--method native` to set the decision explicitly. The alternative cost-and-risk model remains available through s20. `s23_check_optional_basis.py` checks this interface without giving it reference answers.
+
+## Additional scripts
+
+- [s14_prepare.py](s14_prepare.py): Reduce without repeated large reference preparation, using checked basis indices.
+- [s15_risk.py](s15_risk.py): Learn action cost and failure risk from completed and failed exact attempts.
+- [s16_test_preparation.py](s16_test_preparation.py): Compare completed preparation workflows, keeping failures and all controls.
+- [s17_analyze_preparation.py](s17_analyze_preparation.py): Compare full preparation workflows, including every failed first request.
+- [s18_document_preparation.py](s18_document_preparation.py): Document cost-aware training and the separately measured preparation change.
+- [s19_finish_preparation.py](s19_finish_preparation.py): Finish conclusions and readable guides from completed preparation evidence.
+- [s20_prepare_resilient.py](s20_prepare_resilient.py): Recover when a stored index basis is incomplete for new targets.
+- [s21_recovery.py](s21_recovery.py): Fresh verification of basis refresh, with frozen models and complete timers.

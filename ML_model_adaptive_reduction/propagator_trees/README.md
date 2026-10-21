@@ -1,6 +1,7 @@
 # Exact connected two-point reductions
 
-Use this folder for the current combined application.
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
 It reduces supported massless two-point trees with an exact formula.
 It then uses the preceding triangle formulas, other exact rules, and trained native Kira choices for other inputs.
 This extension does not fit a new ML model.

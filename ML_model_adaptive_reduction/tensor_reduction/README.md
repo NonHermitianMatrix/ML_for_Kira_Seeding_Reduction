@@ -1,6 +1,7 @@
 # Exact tensor reduction and learned identity order
 
-Use this folder for the final combined application.
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
 The new path reduces polynomial numerators in rational one-loop sectors.
 It also reduces independent products of those sectors.
 Other inputs use the preceding exact rules and native Kira seed model.

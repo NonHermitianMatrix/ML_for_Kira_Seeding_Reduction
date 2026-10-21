@@ -1,11 +1,6 @@
-# data
+# Selection of elimination steps
 
-This folder contains encoded model inputs or their manifest.
-The parent preparation code defines the array fields and ordering.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These files store model inputs for selection of elimination steps. The preparation scripts define feature order; the manifest connects arrays to family and target identifiers.
 
 ## Data and supporting files
 

@@ -1,35 +1,17 @@
-# box_profile_0597
+# Reference reductions and construction records
 
-This folder connects targets to their master integrals for family `box_profile_0597`.
+These records connect this family’s target expressions to its master basis. Match the target `id` across the input, reference, and elimination trace. Match each reference master ID to the family’s master list.
 
-[Family definition and masters](../../../master_integrals/families/box_profile_0597/README.md).
+- [candidate_seeds.json](candidate_seeds.json): candidate integral indices from which IBP identities are generated.
+- [construction_proofs.jsonl.gz](construction_proofs.jsonl.gz): recorded identities used to construct targets from master expansions.
+- [elimination_traces.jsonl.gz](elimination_traces.jsonl.gz): allowed operations, selected pivots, coefficient changes, and operation counts.
+- [generation_records.tar.gz](generation_records.tar.gz): archived records of the generation procedure.
+- [identities.jsonl.gz](identities.jsonl.gz): source equations between integrals.
+- [manifest.json](manifest.json): record locations and identifiers.
+- [metadata.json](metadata.json): family information, generation bounds, and validation metadata.
+- [references.jsonl.gz](references.jsonl.gz): target IDs, required master IDs, and exact coefficients.
+- [symmetries.json](symmetries.json): index mappings that preserve the family.
 
-[Target integrals](../../../target_integrals/families/box_profile_0597/README.md).
+The recorded path is a sufficient reduction. Its operation count is not a proof of minimum cost. Partial-fraction identities have no IBP seed label.
 
-[Relations and reduction steps](README.md).
-
-The same family and target identifiers connect these records.
-
-Reference paths are sufficient. Their minimum cost is not established.
-
-A partial-fraction relation carries no IBP seed label.
-
-Read the data with [the integral reader guide](../../../README.md).
-
-- [candidate_seeds.json](candidate_seeds.json): This file records seed information or seed checks.
-
-- [construction_proofs.jsonl.gz](construction_proofs.jsonl.gz): This file records the reverse construction from master integrals.
-
-- [elimination_traces.jsonl.gz](elimination_traces.jsonl.gz): This file records allowed row operations, chosen pivots, coefficient changes and operation counts.
-
-- [generation_records.tar.gz](generation_records.tar.gz): This archive contains saved records for the parent calculation.
-
-- [identities.jsonl.gz](identities.jsonl.gz): This file records the source equations or their checks.
-
-- [manifest.json](manifest.json): This file lists the records and their identifiers.
-
-- [metadata.json](metadata.json): This file records the family, generation bounds and validation information.
-
-- [references.jsonl.gz](references.jsonl.gz): This file records each target and its exact master coefficients.
-
-- [symmetries.json](symmetries.json): This file records index mappings that leave the family integral unchanged.
+Use the same family directory name in [master_integrals](../../../master_integrals/README.md) and [target_integrals](../../../target_integrals/README.md). [The collection reader](../../../README.md) joins the records with `--target FAMILY:ID` and streams their compressed files.

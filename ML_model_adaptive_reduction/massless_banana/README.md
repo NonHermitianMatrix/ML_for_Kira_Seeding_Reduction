@@ -1,6 +1,8 @@
 # Exact massless banana reduction
 
-This folder adds an exact formula for a defined massless two-point family.
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
+This study implements an exact formula for a defined massless two-point family.
 At L loops, the family has L loop denominators and one denominator for their sum minus the external momentum.
 All physical powers must be positive integers. Auxiliary powers must be zero.
 The external squared momentum must be nonzero.

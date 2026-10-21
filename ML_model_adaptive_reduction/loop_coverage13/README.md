@@ -1,5 +1,7 @@
 # Connected bubble-tree reductions through thirteen loops
 
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
 Use this application to reduce the supported connected massless bubble trees exactly.
 The method first checks the physical denominators and kinematics.
 It integrates each two-line subgraph, then integrates the root triangle.

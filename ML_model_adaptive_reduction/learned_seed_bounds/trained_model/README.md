@@ -8,3 +8,5 @@ Read [the parent guide](../README.md) for commands, limits, and the full method.
 `selection.json` contains all candidate validation scores and fit settings.
 The runtime reads these files with `s01_runtime.py`.
 Do not change them after the reserved test.
+
+These records belong to prediction of seed bounds from measured cost. Use matching case identifiers when combining files.

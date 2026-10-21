@@ -1,15 +1,10 @@
-# trained model
+# Trained model: equation selection before coefficient construction
 
-This folder contains saved model parameters or candidate methods.
-Use the parent validation record to identify the selected method.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+This folder stores the fitted models for equation selection before coefficient construction. Model files contain the parameters used for prediction; validation records identify the accepted choice.
 
 ## Data and supporting files
 
-- [deployment.json](deployment.json): This file contains structured records from the parent calculation.
+- [deployment.json](deployment.json): Saved deployment.json record for equation selection before coefficient construction; the producer code defines its fields.
 
 - [deployment_verification.json](deployment_verification.json): This file records checks of the corresponding calculation.
 

@@ -1,13 +1,9 @@
-# runtime checks
+# Runtime checks: native generation and reduction of multiloop IBP systems
 
-This folder supports the calculation described in the parent guide.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+This folder contains the code and records for native generation and reduction of multiloop IBP systems.
 
 ## Data and supporting files
 
-- [validation_00_sunrise_trace.json.gz](validation_00_sunrise_trace.json.gz): This file contains structured records from the parent calculation.
+- [validation_00_sunrise_trace.json.gz](validation_00_sunrise_trace.json.gz): Recorded checks of the calculation, data, or selected settings.
 
-- [validation_01_double_box_trace.json.gz](validation_01_double_box_trace.json.gz): This file contains structured records from the parent calculation.
+- [validation_01_double_box_trace.json.gz](validation_01_double_box_trace.json.gz): Recorded checks of the calculation, data, or selected settings.

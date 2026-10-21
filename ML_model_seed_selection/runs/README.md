@@ -1,14 +1,10 @@
-# runs
+# Selection of IBP seeds
 
-This folder supports the calculation described in the parent guide.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These logs and saved states record selection of IBP seeds. Use the run identifier to connect a log to its settings and outputs.
 
 ## Data and supporting files
 
-- [all_loops_first_allocation.txt](all_loops_first_allocation.txt): This file supports the calculation described in the parent guide.
+- [all_loops_first_allocation.txt](all_loops_first_allocation.txt): Saved all_loops_first_allocation.txt record for selection of IBP seeds; the producer code defines its fields.
 
 - [all_loops_history.json](all_loops_history.json): This file records training progress or training inputs.
 
@@ -18,9 +14,9 @@ The producing and reading code is described in [the stage guide](../README.md).
 
 - [all_loops_scheduler.log](all_loops_scheduler.log): This file contains saved program messages.
 
-- [batch_equivalence.json](batch_equivalence.json): This file contains structured records from the parent calculation.
+- [batch_equivalence.json](batch_equivalence.json): Saved batch_equivalence.json record for selection of IBP seeds; the producer code defines its fields.
 
-- [batch_pilot.json](batch_pilot.json): This file contains structured records from the parent calculation.
+- [batch_pilot.json](batch_pilot.json): Saved batch_pilot.json record for selection of IBP seeds; the producer code defines its fields.
 
 - [batch_pilot_scheduler.log](batch_pilot_scheduler.log): This file contains saved program messages.
 
@@ -32,17 +28,17 @@ The producing and reading code is described in [the stage guide](../README.md).
 
 - [latest.pt](latest.pt): This file contains a saved model or its description.
 
-- [launch.json](launch.json): This file contains structured records from the parent calculation.
+- [launch.json](launch.json): Saved launch.json record for selection of IBP seeds; the producer code defines its fields.
 
 - [mixed_batch_initial_selection.log](mixed_batch_initial_selection.log): This file contains saved program messages.
 
-- [mixed_batch_validation.json](mixed_batch_validation.json): This file contains structured records from the parent calculation.
+- [mixed_batch_validation.json](mixed_batch_validation.json): Recorded checks of the calculation, data, or selected settings.
 
 - [mixed_batch_validation.log](mixed_batch_validation.log): This file contains saved program messages.
 
 - [scheduler.log](scheduler.log): This file contains saved program messages.
 
-- [scheduler_resume.json](scheduler_resume.json): This file contains structured records from the parent calculation.
+- [scheduler_resume.json](scheduler_resume.json): Saved scheduler_resume.json record for selection of IBP seeds; the producer code defines its fields.
 
 - [storage_scan_resume_scheduler.log](storage_scan_resume_scheduler.log): This file contains saved program messages.
 

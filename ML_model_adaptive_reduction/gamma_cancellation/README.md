@@ -1,6 +1,7 @@
 # Exact Gamma cancellation
 
-Use this application for the current combined reduction method.
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
 It cancels common Gamma factors before it forms finite products for supported connected bubble trees.
 Other inputs use the preceding exact methods and trained native choices.
 This extension does not train or replace an ML model.

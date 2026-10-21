@@ -1,19 +1,17 @@
-# pilot v2
+# Pilot v2: native generation and reduction of multiloop IBP systems
+
+These records preserve development or earlier comparisons for native generation and reduction of multiloop IBP systems. They document the tested settings, including incomplete or rejected attempts.
 
 This folder retains an earlier stage, development check or saved comparison.
 Use its records to interpret that stage.
 Use the current parent application for a new calculation.
 
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
-
 ## Data and supporting files
 
-- [box_stock.json.gz](box_stock.json.gz): This file contains structured records from the parent calculation.
+- [box_stock.json.gz](box_stock.json.gz): Saved box_stock.json.gz record for native generation and reduction of multiloop IBP systems; the producer code defines its fields.
 
-- [sunrise_collect.json.gz](sunrise_collect.json.gz): This file contains structured records from the parent calculation.
+- [sunrise_collect.json.gz](sunrise_collect.json.gz): Saved sunrise_collect.json.gz record for native generation and reduction of multiloop IBP systems; the producer code defines its fields.
 
-- [sunrise_stock.json.gz](sunrise_stock.json.gz): This file contains structured records from the parent calculation.
+- [sunrise_stock.json.gz](sunrise_stock.json.gz): Saved sunrise_stock.json.gz record for native generation and reduction of multiloop IBP systems; the producer code defines its fields.
 
-- [vacuum_stock.json.gz](vacuum_stock.json.gz): This file contains structured records from the parent calculation.
+- [vacuum_stock.json.gz](vacuum_stock.json.gz): Saved vacuum_stock.json.gz record for native generation and reduction of multiloop IBP systems; the producer code defines its fields.

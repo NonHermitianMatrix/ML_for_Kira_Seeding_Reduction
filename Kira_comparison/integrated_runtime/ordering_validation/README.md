@@ -1,11 +1,6 @@
-# ordering validation
+# Ordering validation: integration of learned choices with native Kira calculations
 
-This folder contains validation records.
-These records select a method before the reserved test.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These measurements select the model or fixed setting for integration of learned choices with native Kira calculations. They are separate from the reserved test results.
 
 ## Data and supporting files
 

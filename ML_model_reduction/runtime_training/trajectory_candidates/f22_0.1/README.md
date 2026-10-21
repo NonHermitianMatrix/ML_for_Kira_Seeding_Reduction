@@ -1,12 +1,9 @@
-# f22 0.1
+# F22 0.1: row policies trained on complete runtime
 
-This folder contains training inputs or saved training results.
-Keep the stored family division unchanged.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../../README.md).
+This folder contains the code and records for row policies trained on complete runtime.
 
 ## Data and supporting files
 
 - [weights.txt](weights.txt): This file contains a saved model or its description.
+
+These records belong to row policies trained on complete runtime. Use matching case identifiers when combining files.

@@ -1,6 +1,7 @@
 # Exact triangles and learned target batches
 
-This is the current decomposition application.
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
 It extends fast_decomposition without changing that study's code or results.
 It applies an exact formula to one-scale massless triangles.
 It uses measured cost to choose how native Kira reduces related targets.

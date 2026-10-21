@@ -1,17 +1,15 @@
-# pilot
+# Pilot: integration of learned choices with native Kira calculations
+
+These records preserve development or earlier comparisons for integration of learned choices with native Kira calculations. They document the tested settings, including incomplete or rejected attempts.
 
 This folder retains an earlier stage, development check or saved comparison.
 Use its records to interpret that stage.
 Use the current parent application for a new calculation.
 
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
-
 ## Data and supporting files
 
-- [validation_01_double_box_native_c0_m0.json.gz](validation_01_double_box_native_c0_m0.json.gz): This file contains structured records from the parent calculation.
+- [validation_01_double_box_native_c0_m0.json.gz](validation_01_double_box_native_c0_m0.json.gz): Recorded checks of the calculation, data, or selected settings.
 
-- [validation_01_double_box_native_c1_m0.json.gz](validation_01_double_box_native_c1_m0.json.gz): This file contains structured records from the parent calculation.
+- [validation_01_double_box_native_c1_m0.json.gz](validation_01_double_box_native_c1_m0.json.gz): Recorded checks of the calculation, data, or selected settings.
 
-- [validation_01_double_box_native_c1_m1.json.gz](validation_01_double_box_native_c1_m1.json.gz): This file contains structured records from the parent calculation.
+- [validation_01_double_box_native_c1_m1.json.gz](validation_01_double_box_native_c1_m1.json.gz): Recorded checks of the calculation, data, or selected settings.

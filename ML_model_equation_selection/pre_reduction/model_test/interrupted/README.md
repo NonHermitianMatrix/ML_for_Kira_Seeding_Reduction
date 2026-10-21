@@ -1,12 +1,9 @@
-# interrupted
+# Interrupted: equation filtering before expensive reduction work
 
-This folder contains reserved test inputs, outputs or checks.
-Keep these records outside model fitting and threshold selection.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../../README.md).
+This folder contains the code and records for equation filtering before expensive reduction work.
 
 ## Data and supporting files
 
-- [group7_direct_analytic_0.json](group7_direct_analytic_0.json): This file contains structured records from the parent calculation.
+- [group7_direct_analytic_0.json](group7_direct_analytic_0.json): Saved group7_direct_analytic_0.json record for equation filtering before expensive reduction work; the producer code defines its fields.
+
+These records belong to equation filtering before expensive reduction work. Use matching case identifiers when combining files.

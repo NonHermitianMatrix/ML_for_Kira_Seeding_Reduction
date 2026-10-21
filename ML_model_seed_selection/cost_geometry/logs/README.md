@@ -7,3 +7,5 @@ The first finalization stopped because this guide was absent.
 The scientific timing records remain in the parent test folders.
 The repository keeps those records, summaries, and validation results.
 TeX and job logs remain on Hoffman.
+
+These records belong to target-dependent sparse seed regions. Use matching case identifiers when combining files.

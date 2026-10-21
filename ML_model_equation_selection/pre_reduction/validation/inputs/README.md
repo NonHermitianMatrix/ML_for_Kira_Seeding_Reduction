@@ -1,22 +1,17 @@
-# inputs
+# Inputs: equation filtering before expensive reduction work
 
-This folder contains validation records.
-These records select a method before the reserved test.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../../README.md).
+This folder contains the code and records for equation filtering before expensive reduction work.
 
 ## Data and supporting files
 
-- [group0.json](group0.json): This file contains structured records from the parent calculation.
+- [group0.json](group0.json): Saved group0.json record for equation filtering before expensive reduction work; the producer code defines its fields.
 
-- [group1.json](group1.json): This file contains structured records from the parent calculation.
+- [group1.json](group1.json): Saved group1.json record for equation filtering before expensive reduction work; the producer code defines its fields.
 
-- [group2.json](group2.json): This file contains structured records from the parent calculation.
+- [group2.json](group2.json): Saved group2.json record for equation filtering before expensive reduction work; the producer code defines its fields.
 
-- [group3.json](group3.json): This file contains structured records from the parent calculation.
+- [group3.json](group3.json): Saved group3.json record for equation filtering before expensive reduction work; the producer code defines its fields.
 
-- [group4.json](group4.json): This file contains structured records from the parent calculation.
+- [group4.json](group4.json): Saved group4.json record for equation filtering before expensive reduction work; the producer code defines its fields.
 
-- [group5.json](group5.json): This file contains structured records from the parent calculation.
+- [group5.json](group5.json): Saved group5.json record for equation filtering before expensive reduction work; the producer code defines its fields.

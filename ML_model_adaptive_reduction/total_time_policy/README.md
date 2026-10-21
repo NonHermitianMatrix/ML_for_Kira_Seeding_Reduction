@@ -1,5 +1,7 @@
 # Complete-time Kira selection
 
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
 This folder trains a model to choose a Kira seed setting from complete reduction time.
 The application first applies exact formulas and splits independent loop blocks.
 It uses the model only for the remaining native reductions within the trained feature ranges.
@@ -96,7 +98,7 @@ No measured result proves a globally fastest reduction or an optimal path.
 ## Later revision
 
 This folder preserves the seven-candidate comparison.
-Use ../hybrid_experts/ for the current application and its fresh comparison.
+The related hybrid selection experiment is in `../hybrid_experts/`.
 The intermediate broad comparison remains in ../refined_time_policy/.
 The PDF file checks in this folder describe the documents before that later revision.
 Use ../hybrid_experts/validation.json to check the current PDFs.

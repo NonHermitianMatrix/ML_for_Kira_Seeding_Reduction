@@ -1,11 +1,6 @@
-# figures
+# Figures: selection of IBP seeds
 
-This folder contains reserved test inputs, outputs or checks.
-Keep these records outside model fitting and threshold selection.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These plots show saved measurements of selection of IBP seeds. The plotting scripts define each comparison and its timing reference.
 
 ## Data and supporting files
 
@@ -21,13 +16,13 @@ The producing and reading code is described in [the stage guide](../README.md).
 
 - [precision_recall.png](precision_recall.png): This file displays a recorded result or document.
 
-- [ranked_seed_recovery.pdf](ranked_seed_recovery.pdf): This file records seed information or seed checks.
+- [ranked_seed_recovery.pdf](ranked_seed_recovery.pdf): Figure or document presenting the measurements identified by its filename.
 
-- [ranked_seed_recovery.png](ranked_seed_recovery.png): This file records seed information or seed checks.
+- [ranked_seed_recovery.png](ranked_seed_recovery.png): Figure or document presenting the measurements identified by its filename.
 
-- [seed_classification.pdf](seed_classification.pdf): This file records seed information or seed checks.
+- [seed_classification.pdf](seed_classification.pdf): Figure or document presenting the measurements identified by its filename.
 
-- [seed_classification.png](seed_classification.png): This file records seed information or seed checks.
+- [seed_classification.png](seed_classification.png): Figure or document presenting the measurements identified by its filename.
 
 - [training_loss.pdf](training_loss.pdf): This file records training progress or training inputs.
 

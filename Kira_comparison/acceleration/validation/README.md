@@ -1,11 +1,6 @@
-# validation
+# Validation: cost and implementation tests for learned reduction decisions
 
-This folder contains validation records.
-These records select a method before the reserved test.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These measurements select the model or fixed setting for cost and implementation tests for learned reduction decisions. They are separate from the reserved test results.
 
 ## Data and supporting files
 

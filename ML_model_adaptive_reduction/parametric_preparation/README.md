@@ -1,6 +1,6 @@
 # Exact preparation around the learned portfolio
 
-The current application uses the frozen models from `../selective_expansion/`.
+This experiment uses the frozen models from `../selective_expansion/`.
 It restricts sector polynomials before construction and reuses unchanged selected equations within one reduction.
 The models and their action choices stay unchanged in this comparison.
 The revised method takes 64.183 seconds against 79.784 seconds for the previous implementation.

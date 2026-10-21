@@ -1,14 +1,11 @@
-# plots
+# Plots: equation selection before coefficient construction
 
-This folder contains reserved test inputs, outputs or checks.
-Keep these records outside model fitting and threshold selection.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../../README.md).
+This folder contains the code and records for equation selection before coefficient construction.
 
 ## Data and supporting files
 
 - [early_equation_batches.pdf](early_equation_batches.pdf): This file records the source equations or their checks.
 
 - [early_equation_costs.pdf](early_equation_costs.pdf): This file records the source equations or their checks.
+
+These records belong to equation selection before coefficient construction. Use matching case identifiers when combining files.

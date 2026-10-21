@@ -1,18 +1,16 @@
-# runs
+# Runs: selection of elimination steps
+
+These logs and saved states record selection of elimination steps. Use the run identifier to connect a log to its settings and outputs.
 
 This folder retains an earlier stage, development check or saved comparison.
 Use its records to interpret that stage.
 Use the current parent application for a new calculation.
 
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
-
 ## Data and supporting files
 
-- [example_prediction.json](example_prediction.json): This file contains structured records from the parent calculation.
+- [example_prediction.json](example_prediction.json): Predicted labels, scores, or selected actions for the supplied examples.
 
-- [example_state.json](example_state.json): This file contains structured records from the parent calculation.
+- [example_state.json](example_state.json): Saved example_state.json record for selection of elimination steps; the producer code defines its fields.
 
 - [history.json](history.json): This file records training progress or training inputs.
 
@@ -22,7 +20,7 @@ The producing and reading code is described in [the stage guide](../README.md).
 
 - [report_build.log](report_build.log): This file contains saved program messages.
 
-- [report_values.json](report_values.json): This file contains structured records from the parent calculation.
+- [report_values.json](report_values.json): Saved report_values.json record for selection of elimination steps; the producer code defines its fields.
 
 - [scheduler.log](scheduler.log): This file contains saved program messages.
 

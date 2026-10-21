@@ -1,25 +1,20 @@
-# model test
+# Model test: reuse of compatible equations across target batches
 
-This folder contains reserved test inputs, outputs or checks.
-Keep these records outside model fitting and threshold selection.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These records contain inputs, outputs, or checks for reuse of compatible equations across target batches. Match the case identifiers before comparing coefficients or elapsed times.
 
 ## Data and supporting files
 
-- [document_values.json](document_values.json): This file contains structured records from the parent calculation.
+- [document_values.json](document_values.json): Saved document_values.json record for reuse of compatible equations across target batches; the producer code defines its fields.
 
-- [native_complete.json](native_complete.json): This file contains structured records from the parent calculation.
+- [native_complete.json](native_complete.json): Saved native_complete.json record for reuse of compatible equations across target batches; the producer code defines its fields.
 
 - [native_scheduler.log](native_scheduler.log): This file contains saved program messages.
 
-- [native_summary.json](native_summary.json): This file contains structured records from the parent calculation.
+- [native_summary.json](native_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
-- [pack_complete.json](pack_complete.json): This file contains structured records from the parent calculation.
+- [pack_complete.json](pack_complete.json): Saved pack_complete.json record for reuse of compatible equations across target batches; the producer code defines its fields.
 
-- [pack_summary.json](pack_summary.json): This file contains structured records from the parent calculation.
+- [pack_summary.json](pack_summary.json): Result counts and measured outcomes; interpret them with the stated comparison and limits.
 
 - [release_check.json](release_check.json): This file records checks of the corresponding calculation.
 
@@ -27,7 +22,7 @@ The producing and reading code is described in [the stage guide](../README.md).
 
 - [summary.json](summary.json): This file contains the result counts and summary measurements.
 
-- [test_complete.json](test_complete.json): This file contains structured records from the parent calculation.
+- [test_complete.json](test_complete.json): Saved test_complete.json record for reuse of compatible equations across target batches; the producer code defines its fields.
 
 ## Child folders
 

@@ -1,11 +1,6 @@
-# reserved test
+# Reserved test: integration of learned choices with native Kira calculations
 
-This folder contains reserved test inputs, outputs or checks.
-Keep these records outside model fitting and threshold selection.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These records contain inputs, outputs, or checks for integration of learned choices with native Kira calculations. Match the case identifiers before comparing coefficients or elapsed times.
 
 ## Data and supporting files
 

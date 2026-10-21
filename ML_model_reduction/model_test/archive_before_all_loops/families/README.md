@@ -1,12 +1,10 @@
-# families
+# Families: selection of elimination steps
+
+Each child folder identifies one integral family. Its README explains the stored records and their links to the calculation.
 
 This folder retains an earlier stage, development check or saved comparison.
 Use its records to interpret that stage.
 Use the current parent application for a new calculation.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
 
 ## Child folders
 

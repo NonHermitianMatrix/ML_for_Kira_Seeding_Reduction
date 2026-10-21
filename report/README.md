@@ -1,84 +1,64 @@
-# Optimizing Methods for Feynman Integral Reduction with Kira
+# Scientific paper, notes, and figures
 
-The primary final comparison uses original Kira 3.1 with its default algorithms for a specified reduction job.
-Read `paper_default_comparison.tex` for the common inputs, seed bounds, timing, and exact checks.
-Read `paper_default_rows.tex` for the measured times and completion counts.
-The comparison uses the 20 connected native requests from the final collection.
-The other 73 analytic requests have no matched default-Kira time in this test.
-Fixed-strategy tests and previous-application tests remain secondary comparisons.
-The earlier 8.8% figure measures an incremental change only.
-Run `s08_check_default_comparison.py` after the other document checks.
-Read `../Kira_comparison/default_kira_final/README.md` for the comparison code and retained setup failures.
+This folder contains the scientific explanation of the reduction method and its measured results. The paper introduces Feynman integrals and Kira, explains the analytic and learned methods, and states the scope of each comparison. The notes contain detailed experiments, including failures and rejected methods.
 
-The paper reports the full study. Its title page has no author or date. Read `report.pdf` for the methods, final formulas, physical uses, measured gains, and limitations. The tables compare exact methods, learned choices, all completed native physical classes, and the one-loop tensor mass classes. `notes.pdf` preserves the earlier experiment history.
+## Documents and sources
 
-- `paper_integral_results.tex` connects integral structures, QCD/QFT uses, formulas, and timings.
-- `s06_method_tables.py` reads saved summaries and writes `paper_native_type_rows.tex`, `paper_tensor_type_rows.tex`, and `method_table_data.json`. It does not run a scientific calculation.
-- `s07_check_method_tables.py` checks this revision after the existing three paper checks.
-- `writing_review.md` records the use of the user-supplied UVU scientific-writing guide and the claim checks.
+| File or group | Content |
+|---|---|
+| [report.pdf](report.pdf), [report.tex](report.tex) | Research paper and its main LaTeX source. |
+| [notes.pdf](notes.pdf), [notes.tex](notes.tex) | Detailed experiment notes and their main source. |
+| `paper_background.tex`, `paper_project_data.tex`, `paper_methods.tex` | Physical notation, training-data construction, and reduction methods. |
+| `paper_study_design.tex`, `paper_default_comparison.tex`, `paper_default_rows.tex` | Comparison definitions and the direct default-Kira results. |
+| `paper_project_results.tex`, `paper_integral_results.tex` | Component results, physical uses, loop ranges, and analytic domains. |
+| `paper_discussion.tex`, `paper_conclusion.tex` | Interpretation, limitations, and conclusions. |
+| `focused_derivations.tex` and the mathematical appendices | Derivations and conditions of the formulas used in the paper. |
+| [paper_references.bib](paper_references.bib) | External bibliography for the paper. |
+| `references.bib`, `notes_additional_references.bib`, `type_specialist_references.bib` | Bibliographies used by the notes and supporting sections. |
+| [paper_figures](paper_figures/README.md), [figures](figures/README.md) | Plots and instructions for their source measurements. |
 
-The main paper now explains the whole project. It covers the constructed integral data, the first seed and row models, their native Kira tests, equation selection, models trained on complete cost, exact recurrences, shared requests, and analytic extensions. Direct original-to-optimized comparisons appear in the main results. The final 93-request update is in a supporting appendix. Each gain has its own control and scope.
+The paper’s Section 3 defines the constructed data and its loop range. Section 6 compares the retained method with default Kira. Section 8 separates results by integral structure. Appendix K defines native families and loop-order limits. The direct default comparison covers specified two- and three-loop requests; restricted analytic tests extend through thirteen loops.
 
-# Feynman integral reduction with Kira
+## Render a document
 
-Read `report.pdf` for the whole-project paper. Read `notes.pdf` for the full study history.
-The paper starts with the physics problem and a worked integration-by-parts example.
-It then explains exact identities, learned choices, physical scope, tests, results, and limits.
+From this folder, use:
 
-The earlier incremental test uses 93 requests. Median collection time changes from 45.091 to 41.137 seconds.
-This is 8.8% less time than the preceding application. It is not a comparison with stock Kira.
-The paper reports slower groups and unsuccessful model trials as well as gains.
-The exact external coefficient audit is outside the application timers.
+```bash
+make report.pdf
+make notes.pdf
+```
 
-## Read the sources
+The Makefile uses `../.tools/tectonic/tectonic`. Set `TECTONIC` to another installed Tectonic executable if required. Rendering can fetch missing TeX assets into `.tools/cache`. The recipes limit address space to 1.5 GiB and runtime to 240 seconds. Render documents separately within the project’s storage budget. Native integral data and trained weights are not required merely to read the PDFs.
 
-- `report.tex` controls the paper.
-- `paper_abstract.tex` and `paper_conclusion.tex` state the purpose and measured outcome.
-- `paper_background.tex` defines the physics terms, integrals, seeds, and row operations.
-- `paper_methods.tex` explains the exact formulas and learned decisions.
-- `paper_study_design.tex` defines the physical scope, controls, and timers.
-- `paper_project_results.tex` reports the main project comparisons. The older `paper_results.tex` is retained as an editorial source.
-- `paper_discussion.tex` states what the results support and what remains unverified.
-- `focused_derivations.tex` derives the IBP operations, learning objective, and timing measures.
-- The tensor, lightlike, tree, vacuum, reconstruction, and triangle appendices give the detailed mathematics and inputs.
-- `paper_references.bib` contains the external references. The paper does not cite this repository.
-- `notes.tex` keeps the earlier experiments. `notes_paper_reading_guide.tex` relates them to the whole-project paper.
+## Reproduce plots and check the paper
 
-The current application remains `ML_model_adaptive_reduction/triangle_reduction/s32_deploy.py`.
-Use `s33_batch.py` in that folder to process a request list in one call.
-Read [the application guide](../ML_model_adaptive_reduction/triangle_reduction/README.md) for commands and input conditions.
-The default-Kira comparison adds measurements without changing the trained models or retained reduction method.
+`s04_project_figures.py` draws the four `project_*.pdf` figures from saved report evidence. `s02_rewrite_figures.py` draws the three `rewrite_*.pdf` figures. These plotting scripts use Matplotlib and perform no training or reduction. `s06_method_tables.py` creates the integral-type tables from saved summaries.
 
-## Reproduce the figures and PDFs
+After a scientific source or figure change, render the affected PDF and run these checks in order:
 
-Run `python s02_rewrite_figures.py` from this folder with Matplotlib available.
-The script reads the saved result summaries. It performs no training or reduction.
-On Hoffman, it reads the original cost-validation summary and saves compact report evidence.
-Other copies can use `rewrite_cost_evidence.json` to make the same plots.
-The three appendix `rewrite_*.pdf` figures show complete time, physical scope, and model-only controls.
-`rewrite_figure_data.json` records their values and source hashes.
+```bash
+python s01_check_paper.py
+python s03_check_rewrite.py
+python s05_check_project.py
+python s07_check_method_tables.py
+python s08_check_default_comparison.py
+```
 
-Run `make` in this folder to render both PDFs with Tectonic.
-The build uses a 1.5 GiB address-space limit. The checks require each PDF to stay below 32 MiB.
-Run `python s01_check_paper.py` to check references, citations, saved numerical evidence, and preserved notes.
-Run `python s03_check_rewrite.py` for the new paper's figure, timing, and equation checks.
-Read `rewrite_validation.json` for the result and `writing_review.md` for the evidence map.
-The historical `*_validation.json` files refer to their original experiment and document versions.
-Use `project_validation.json`, `rewrite_validation.json`, and `method_table_validation.json` for the present PDFs.
+The checks cover citations, internal references, measurements, source files, document hashes, and the preserved notes. Some numerical checks require the full Hoffman repository. Compact evidence files support local document checks where implemented. Historical validation files identify the document and experiment versions they checked.
 
-Keep this complete folder on Hoffman, GitHub, and the local machine.
-Keep integral data, trained weights, and native reduction outputs on Hoffman and GitHub only.
-Do not run an old experiment's report writer over the revised paper.
-Earlier source sections and figures remain available for the notes and evidence checks.
+`default_kira_data.json` contains the primary comparison summary. `default_comparison_validation.json`, `rewrite_validation.json`, `project_validation.json`, and `method_table_validation.json` record checks for the published paper. `writing_review.md` explains the claim and writing review. Older experiment writers can replace manuscript sections; inspect their destinations before running them.
 
-## Whole-project paper files
+## Scripts
 
-- `paper_project_data.tex` explains target construction and the first models.
-- `paper_project_results.tex` compares the main project outcomes and their controls.
-- `paper_project_appendix.tex` derives the target construction, vacuum recurrence, and earlier estimators.
-- `paper_project_structural.tex` defines the shared model and its native inputs.
-- `paper_latest_appendix.tex` keeps the final 93-request protocol and results.
-- `s04_project_figures.py` reads saved report evidence and creates four project-wide figures. It does not train models or run Kira.
-- `s05_check_project.py` checks these results against the saved evidence. Run it after the existing paper and rewrite checks.
-
-To refresh figures on Hoffman, use `.tools/seed-model/venv/bin/python report/s04_project_figures.py`. Then build both PDFs with the report Makefile and run `s01_check_paper.py`, `s03_check_rewrite.py`, and `s05_check_project.py`. Use a bounded single-core scheduler job for rendering. Keep older development writers separate; they can replace the manuscript.
+| File | Purpose |
+|---|---|
+| [Makefile](Makefile) | Build targets, dependencies, and compiler or rendering commands. |
+| [s00_make_paper_figures.py](s00_make_paper_figures.py) | Create paper figures from frozen result summaries; no training or reductions. |
+| [s01_check_paper.py](s01_check_paper.py) | Bounded checks of the paper and preserved notes, with no research reruns. |
+| [s02_rewrite_figures.py](s02_rewrite_figures.py) | Draw the paper figures from saved results. Do not run reductions or training. |
+| [s03_check_rewrite.py](s03_check_rewrite.py) | Check the rewritten paper against its saved evidence without new experiments. |
+| [s04_project_figures.py](s04_project_figures.py) | Make whole-project figures from saved evidence; run no new reductions. |
+| [s05_check_project.py](s05_check_project.py) | Verify the whole-project paper against existing evidence after PDF rendering. |
+| [s06_method_tables.py](s06_method_tables.py) | Create the study's type-by-type tables from saved measurements only. |
+| [s07_check_method_tables.py](s07_check_method_tables.py) | Check the editorial comparison against saved evidence; run after rendering. |
+| [s08_check_default_comparison.py](s08_check_default_comparison.py) | Check the primary default-Kira table against the saved measurements. |

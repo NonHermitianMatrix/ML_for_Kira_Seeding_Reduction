@@ -1,13 +1,9 @@
-# preparation profile
+# Preparation profile: integration of learned choices with native Kira calculations
 
-This folder supports the calculation described in the parent guide.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+This folder contains the code and records for integration of learned choices with native Kira calculations.
 
 ## Data and supporting files
 
-- [cpu.json.gz](cpu.json.gz): This file contains structured records from the parent calculation.
+- [cpu.json.gz](cpu.json.gz): Saved cpu.json.gz record for integration of learned choices with native Kira calculations; the producer code defines its fields.
 
-- [strace.json.gz](strace.json.gz): This file contains structured records from the parent calculation.
+- [strace.json.gz](strace.json.gz): Saved strace.json.gz record for integration of learned choices with native Kira calculations; the producer code defines its fields.

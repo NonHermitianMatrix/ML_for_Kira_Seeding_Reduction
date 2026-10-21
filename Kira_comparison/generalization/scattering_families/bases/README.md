@@ -1,18 +1,13 @@
-# bases
+# Bases: transfer to scattering structures and symbolic kinematics
 
-This folder contains reference reductions or prescribed master bases.
-The corresponding calculation uses these records for exact checks.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../../README.md).
+This folder stores reference reductions or master bases for transfer to scattering structures and symbolic kinematics. The experiment uses these records to check returned coefficients in a common basis.
 
 ## Data and supporting files
 
-- [nonplanar_box_point2.json](nonplanar_box_point2.json): This file contains structured records from the parent calculation.
+- [nonplanar_box_point2.json](nonplanar_box_point2.json): Saved nonplanar_box_point2.json record for transfer to scattering structures and symbolic kinematics; the producer code defines its fields.
 
-- [nonplanar_box_point3.json](nonplanar_box_point3.json): This file contains structured records from the parent calculation.
+- [nonplanar_box_point3.json](nonplanar_box_point3.json): Saved nonplanar_box_point3.json record for transfer to scattering structures and symbolic kinematics; the producer code defines its fields.
 
-- [pentagon_point2.json](pentagon_point2.json): This file contains structured records from the parent calculation.
+- [pentagon_point2.json](pentagon_point2.json): Saved pentagon_point2.json record for transfer to scattering structures and symbolic kinematics; the producer code defines its fields.
 
-- [pentagon_point3.json](pentagon_point3.json): This file contains structured records from the parent calculation.
+- [pentagon_point3.json](pentagon_point3.json): Saved pentagon_point3.json record for transfer to scattering structures and symbolic kinematics; the producer code defines its fields.

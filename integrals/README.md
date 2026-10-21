@@ -1,286 +1,48 @@
-# integrals
+# Integral data: families, masters, targets, and relations
 
-This folder contains the integral collection and its readers.
-The collection has 17,100 family instances, 57,979 family-local master entries and 2,301,272 targets.
-Training uses 1,610,890 targets from 11,963 families.
-Testing uses 690,382 targets from 5,137 families.
+This collection supplies exact reference reductions for training and testing. It contains 17,100 family instances, 57,979 family-local master entries, and 2,301,272 targets at one through twelve loops. Higher-loop additions mainly use a restricted coupled-vacuum structure. Mass variations count as separate family instances.
 
-`master_integrals/` contains family definitions and master bases.
-`target_integrals/` contains the targets.
-`master_to_target/` contains coefficients, identities, seeds and reduction steps.
-The family and target identifiers connect these records.
-`training/` and `testing/` contain links to the original data.
-Keep each family in its assigned group.
+## Connect the records
 
-The high-loop additions use restricted coupled vacuum integrals.
-Their massive denominators share one momentum sum.
-The collection does not cover every scattering topology.
-A recorded construction gives a sufficient reduction path.
-It does not prove a minimum number of operations.
+| Location | Stored information |
+|---|---|
+| [master_integrals](master_integrals/README.md) | Propagators, loop and external momenta, scalar products, and master index vectors. |
+| [target_integrals](target_integrals/README.md) | Target integral expressions before reduction. |
+| [master_to_target](master_to_target/README.md) | Exact master coefficients, source identities, candidate seeds, and recorded elimination steps. |
+| [training](training/README.md) | Linked views of 1,610,890 targets in 11,963 training families. |
+| [testing](testing/README.md) | Linked views of 690,382 targets in 5,137 reserved test families. |
 
-Use `s01_read_data.py` to read the collection.
-Use `s02_validate.py` to check the stored layout and links.
-The numbered expansion folders contain the generation procedures.
-Do not run an earlier expansion to replace the current collection.
+The same family folder name connects the three record types. The target `id` connects its input, reference coefficients, and elimination trace. Master identifiers select entries from that family’s basis. Training and testing use links to the original records; they do not duplicate the collection.
 
-## Code use
+The construction starts from known master coefficients and adds valid zero identities. It records a sufficient path back to the masters. That path does not establish the fewest possible operations. Partial-fraction identities have no IBP seed label.
 
-Run scientific calculations on Hoffman in a scheduled job.
-Load the Python 3.9.6 module and use the existing project environment.
-The usual interpreter is `.tools/seed-model/venv/bin/python` from the project root.
-Build scripts state their compiler and native Kira requirements.
-Keep each script's memory, time and storage limits.
-Keep existing model and test files before a new run.
-Scripts that write reports describe earlier document names; review their destinations before use.
+## Inspect a family or target
 
-## Code files
-
-The entries below follow file-name order.
-Each entry gives its purpose and the input or output interface available in the source.
-
-[s00_reorganize.py](s00_reorganize.py)
-
-The program reorganizes the existing checked collection without generating new integrals.
-
-The module defines these callable interfaces:
-
-```python
-
-def read(path)
-def encoded(value)
-def sha(data)
-def file_sha(path)
-def put(path, data)
-def write(path, value)
-def zipped(path, data)
-def archive(path, files)
-def rows(data)
-def guard()
-def source_catalog(source)
-def old_family(source, entry)
-def locations(name)
-def family_entry(old)
-def prepare(source)
-def convert(source, old)
-def main()
-
-```
-
-These source constants locate inputs and outputs:
-
-```python
-
-ROOT = Path(__file__).resolve().parent
-PROJECT = ROOT.parent
-
-```
-
-The command accepts these parser options:
-
-- `'--source'`: type=Path; default=PROJECT.
-- `'--prepare'`: action='store_true'.
-- `'--family'`: action='append'.
-- `'--batch-index'`: type=int; default=int(os.environ.get('SGE_TASK_ID', '1')) if os.environ.get('SGE_TASK_ID', '1').isdigit() else 1.
-- `'--batch-size'`: type=int; default=50.
-
-These calls show the stored input and output interface:
-
-```python
-
-tmp.write_bytes(data)
-Path(path).read_text(encoding='utf-8')
-(source / 'Expanded_Integrals/splits.json').read_bytes()
-(source / 'Expanded_Integrals/split_overlap_witnesses.json').read_bytes()
-p.read_bytes()
-
-```
-
-[s01_read_data.py](s01_read_data.py)
-
-The program reads the unified integral collection on Hoffman.
-
-The module defines these callable interfaces:
-
-```python
-
-def records(family, kind='inputs')
-def linked_target(identifier)
-def main()
-
-```
-
-These source constants locate inputs and outputs:
-
-```python
-
-ROOT = Path(__file__).resolve().parent
-
-```
-
-The command accepts these parser options:
-
-- `'--family'`: The parser accepts a value..
-- `'--kind'`: choices=list(FILES); default='inputs'.
-- `'--target'`: help='Return one target with its master coefficients, seeds and elimination trace.'.
-- `'--limit'`: type=int; default=1.
-
-[s02_validate.py](s02_validate.py)
-
-The program verifies the unified layout, all links and unchanged scientific records.
-
-The module defines these callable interfaces:
-
-```python
-
-def lines(path)
-def content(path)
-def link(value)
-def unchanged_fields(before, after, changed, added=())
-def compare_original(entry, raw, supp, inputs, refs, traces)
-def verify_family(entry, source=None, original=None)
-def main()
-
-```
-
-The imported project modules are `s00_reorganize`, `s01_read_data`, `s10_validate_collection`.
-
-These source constants locate inputs and outputs:
-
-```python
-
-ROOT = Path(__file__).resolve().parent
-
-```
-
-The command accepts these parser options:
-
-- `'--compare-source'`: type=Path.
-- `'--family'`: action='append'.
-
-These calls show the stored input and output interface:
-
-```python
-
-path.read_bytes()
-(ROOT / 'master_integrals/families' / name / filename).read_bytes()
-
-```
-
-[s03_run_reorganization.sh](s03_run_reorganization.sh)
-
-This shell script runs the recorded commands for this stage.
-
-This is a scheduler job script. Submit it with `qsub` from the project root.
-
-The exact command sequence is:
+The reader streams compressed records and accepts both gzip and xz files. These commands use only Python’s standard library and run from the repository root:
 
 ```bash
-
-#!/bin/bash
-#$ -cwd
-#$ -S /bin/bash
-#$ -N IntegralLayout
-#$ -l h_rt=00:20:00,h_data=2G
-#$ -j y
-#$ -o .tools/integrals-layout/logs
-set -euo pipefail
-export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
-export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
-ulimit -v 1572864
-ulimit -f 131072
-ulimit -c 0
-timeout 1100s python3 integrals/s00_reorganize.py "$@"
-
+python integrals/s01_read_data.py --family box_massless_four_offshell --kind definition
+python integrals/s01_read_data.py --family box_massless_four_offshell --kind inputs --limit 1
+python integrals/s01_read_data.py --target FAMILY:ID
 ```
 
-[s04_run_validation.sh](s04_run_validation.sh)
+Replace `FAMILY:ID` with an identifier returned by the input reader. The target command returns the input, reference coefficients, elimination trace, family definition, and required masters together. Supported `--kind` values are `inputs`, `references`, `traces`, `identities`, `proofs`, `seeds`, `symmetries`, `definition`, `masters`, and `metadata`.
 
-This shell script runs the recorded commands for this stage.
+`catalog.json` and the category catalogs index the stored families. `splits.json` assigns related mass profiles to training or testing across loop orders. `model_split_summary.json` gives split counts. `validation_summary.json` records collection checks.
 
-This is a scheduler job script. Submit it with `qsub` from the project root.
+## Generation and validation
 
-The exact command sequence is:
+[higher_loops](higher_loops/README.md), [expansion_250](expansion_250/README.md), and [expansion_1000](expansion_1000/README.md) contain the generation procedures for their respective additions. Their scripts write datasets and require scheduled jobs. Preserve the existing split when reproducing or extending the collection.
 
-```bash
+Use `s02_validate.py` to check layout, links, and stored records. `s04_run_validation.sh` supplies its scheduler limits. `s00_reorganize.py` and `s03_run_reorganization.sh` reproduce the original layout conversion. `s05_prepare_model_splits.py` creates the linked training and testing views.
 
-#!/bin/bash
-#$ -cwd
-#$ -S /bin/bash
-#$ -N CheckIntegralLayout
-#$ -l h_rt=00:25:00,h_data=2G
-#$ -j y
-#$ -o .tools/integrals-layout/logs
-set -euo pipefail
-export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
-ulimit -v 1572864
-ulimit -f 131072
-ulimit -c 0
-timeout 1400s python3 integrals/s02_validate.py "$@"
+## Scripts
 
-```
-
-[s05_prepare_model_splits.py](s05_prepare_model_splits.py)
-
-The program creates non-overlapping train/test directory views without copying integral data.
-
-The module defines these callable interfaces:
-
-```python
-
-def read(path)
-def write(path, obj)
-def original(path)
-def main()
-
-```
-
-These source constants locate inputs and outputs:
-
-```python
-
-ROOT = Path(__file__).resolve().parent
-MODEL = ROOT.parent / 'ML_model_seed_selection'
-
-```
-
-This entry point uses the paths and options set in its source.
-
-These calls show the stored input and output interface:
-
-```python
-
-path.write_text(json.dumps(obj, indent=2, sort_keys=True) + '\n', encoding='utf-8')
-path.read_text(encoding='utf-8')
-(ROOT / name / 'README.md').write_text(text, encoding='utf-8')
-
-```
-
-## Data and supporting files
-
-- [catalog.json](catalog.json): This file lists the integral collection.
-
-- [families.json](families.json): This file defines the families in this collection.
-
-- [model_split_summary.json](model_split_summary.json): This file gives the training and testing counts.
-
-- [splits.json](splits.json): This file contains structured records from the parent calculation.
-
-- [validation_summary.json](validation_summary.json): This file contains structured records from the parent calculation.
-
-## Child folders
-
-- [expansion_1000](expansion_1000/README.md).
-
-- [expansion_250](expansion_250/README.md).
-
-- [higher_loops](higher_loops/README.md).
-
-- [master_integrals](master_integrals/README.md).
-
-- [master_to_target](master_to_target/README.md).
-
-- [target_integrals](target_integrals/README.md).
-
-- [testing](testing/README.md).
-
-- [training](training/README.md).
+| File | Purpose |
+|---|---|
+| [s00_reorganize.py](s00_reorganize.py) | Reorganize the existing checked collection without generating new integrals. |
+| [s01_read_data.py](s01_read_data.py) | Read the unified integral collection on Hoffman. |
+| [s02_validate.py](s02_validate.py) | Verify the unified layout, all links and unchanged scientific records. |
+| [s03_run_reorganization.sh](s03_run_reorganization.sh) | Scheduler wrapper for run reorganization; its header sets the resource limits. |
+| [s04_run_validation.sh](s04_run_validation.sh) | Scheduler wrapper for run validation; its header sets the resource limits. |
+| [s05_prepare_model_splits.py](s05_prepare_model_splits.py) | Create non-overlapping train/test directory views without copying integral data. |

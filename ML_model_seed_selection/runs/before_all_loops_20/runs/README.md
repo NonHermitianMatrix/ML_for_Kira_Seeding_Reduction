@@ -1,12 +1,10 @@
-# runs
+# Runs: selection of IBP seeds
+
+These logs and saved states record selection of IBP seeds. Use the run identifier to connect a log to its settings and outputs.
 
 This folder retains an earlier stage, development check or saved comparison.
 Use its records to interpret that stage.
 Use the current parent application for a new calculation.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
 
 ## Data and supporting files
 
@@ -14,7 +12,7 @@ The producing and reading code is described in [the stage guide](../README.md).
 
 - [latest.pt](latest.pt): This file contains a saved model or its description.
 
-- [launch.json](launch.json): This file contains structured records from the parent calculation.
+- [launch.json](launch.json): Saved launch.json record for selection of IBP seeds; the producer code defines its fields.
 
 - [scheduler.log](scheduler.log): This file contains saved program messages.
 

@@ -1,17 +1,13 @@
-# build
+# Build: exact recurrences for the restricted coupled-vacuum family
 
-This folder supports the calculation described in the parent guide.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+This folder contains the code and records for exact recurrences for the restricted coupled-vacuum family.
 
 ## Data and supporting files
 
-- [build.json](build.json): This file contains structured records from the parent calculation.
+- [build.json](build.json): Compiler, source, and executable information from the recorded build.
 
-- [reader.so](reader.so): This file supports the calculation described in the parent guide.
+- [reader.so](reader.so): Saved reader.so record for exact recurrences for the restricted coupled-vacuum family; the producer code defines its fields.
 
-- [reader_build.json](reader_build.json): This file contains structured records from the parent calculation.
+- [reader_build.json](reader_build.json): Saved reader_build.json record for exact recurrences for the restricted coupled-vacuum family; the producer code defines its fields.
 
-- [transform.so](transform.so): This file supports the calculation described in the parent guide.
+- [transform.so](transform.so): Saved transform.so record for exact recurrences for the restricted coupled-vacuum family; the producer code defines its fields.

@@ -1,5 +1,7 @@
 # Learned seed bounds
 
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
 This study selects seed limits before Kira generates IBP equations.
 IBP means integration by parts.
 A seed is an integral index vector used to generate these identities.

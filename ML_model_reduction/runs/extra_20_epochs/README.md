@@ -1,8 +1,6 @@
-# extra 20 epochs
+# Extra 20 epochs: selection of elimination steps
 
-This folder supports the calculation described in the parent guide.
-
-Read [the parent guide](../README.md) for the stage and data flow.
+This folder contains the code and records for selection of elimination steps.
 
 ## Code use
 
@@ -14,124 +12,27 @@ Keep each script's memory, time and storage limits.
 Keep existing model and test files before a new run.
 Scripts that write reports describe earlier document names; review their destinations before use.
 
-## Code files
+## Scripts
 
-The entries below follow file-name order.
-Each entry gives its purpose and the input or output interface available in the source.
-
-[s00_continue.py](s00_continue.py)
-
-The program continues the published reduction weights and optimizer for twenty epochs.
-
-The module defines these callable interfaces:
-
-```python
-
-def main()
-
-```
-
-The imported external packages are `numpy`, `torch`.
-
-The imported project modules are `s00_common`, `s03_model`, `s04_train`.
-
-These source constants locate inputs and outputs:
-
-```python
-
-WORK = pathlib.Path(__file__).resolve().parent
-
-```
-
-The command accepts these parser options:
-
-- `'--resume'`: action='store_true'.
-- `'--epochs'`: type=int; default=30.
-
-These calls show the stored input and output interface:
-
-```python
-
-(HERE / 'README.md').read_text(encoding='utf-8')
-(HERE / 'README.md').write_text(text, encoding='utf-8')
-torch.load(latest, map_location='cpu', weights_only=False)
-torch.load(HERE / 'runs/epochs_10_snapshot/trained_model.pt', map_location='cpu', weights_only=False)
-
-```
-
-[s01_run.sh](s01_run.sh)
-
-This shell script runs the recorded commands for this stage.
-
-This is a scheduler job script. Submit it with `qsub` from the project root.
-
-The exact command sequence is:
-
-```bash
-
-#!/bin/bash
-#$ -cwd
-#$ -S /bin/bash
-#$ -N KiraReductionExtra20
-#$ -l h_rt=12:00:00,h_data=4G
-#$ -j y
-#$ -o ML_model_reduction/runs/extra_20_epochs/scheduler.log
-set -euo pipefail
-source /u/local/Modules/default/init/modules.sh
-module load python/3.9.6
-export LC_ALL=C PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1
-export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
-ulimit -v 3145728
-ulimit -f 131072
-ulimit -c 0
-TRAIN_PYTHON=.tools/seed-model/venv/bin/python
-"$TRAIN_PYTHON" - <<'PY'
-import json,os,pathlib,platform,shutil,time
-p=pathlib.Path("ML_model_reduction/runs/extra_20_epochs")
-plan=json.loads((p/"request.json").read_text())
-history=json.loads((p/"jobs.json").read_text()) if (p/"jobs.json").exists() else []
-assert len(history)<plan["max_attempts"],"Continuation attempt limit reached"
-assert shutil.disk_usage(".").free>2000000000,"Less than 2 GB free"
-history.append(dict(job_id=os.environ.get("JOB_ID"),host=platform.node(),started_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),cpu_slots=1,requested_memory_gib=4,virtual_memory_limit_kib=3145728))
-(p/"jobs.json").write_text(json.dumps(history,indent=2)+"\n")
-print(json.dumps(history[-1]),flush=True)
-PY
-if timeout --signal=TERM --kill-after=60s 39600s "$TRAIN_PYTHON" ML_model_reduction/runs/extra_20_epochs/s00_continue.py --resume --epochs 30; then
-  exit 0
-else
-  TRAIN_EXIT=$?
-fi
-if [[ "$TRAIN_EXIT" == 124 ]]; then
-  "$TRAIN_PYTHON" - <<'PY'
-import json,pathlib,subprocess,time
-p=pathlib.Path("ML_model_reduction/runs/extra_20_epochs")
-plan=json.loads((p/"request.json").read_text())
-history=json.loads((p/"jobs.json").read_text())
-assert len(history)<plan["max_attempts"],"Maximum automatic continuation attempts reached"
-reply=subprocess.check_output(["qsub","ML_model_reduction/runs/extra_20_epochs/s01_run.sh"],text=True)
-(p/"resubmission.json").write_text(json.dumps(dict(reason="bounded_walltime_reached",reply=reply,utc=time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime())),indent=2)+"\n")
-print(reply,flush=True)
-PY
-  exit 0
-fi
-exit "$TRAIN_EXIT"
-
-```
+| File | Purpose |
+|---|---|
+| [s00_continue.py](s00_continue.py) | Continues the published reduction weights and optimizer for twenty epochs. |
+| [s01_run.sh](s01_run.sh) | Scheduler wrapper for run; its header sets the resource limits. |
 
 ## Data and supporting files
 
-- [jobs.json](jobs.json): This file contains structured records from the parent calculation.
+- [jobs.json](jobs.json): Saved jobs.json record for selection of elimination steps; the producer code defines its fields.
 
-- [launch.json](launch.json): This file contains structured records from the parent calculation.
+- [launch.json](launch.json): Saved launch.json record for selection of elimination steps; the producer code defines its fields.
 
-- [preflight.json](preflight.json): This file contains structured records from the parent calculation.
+- [preflight.json](preflight.json): Saved preflight.json record for selection of elimination steps; the producer code defines its fields.
 
-- [request.json](request.json): This file contains structured records from the parent calculation.
+- [request.json](request.json): Physical inputs and target lists for the recorded experiment.
 
-- [run.lock](run.lock): This file supports the calculation described in the parent guide.
+- [run.lock](run.lock): Saved run.lock record for selection of elimination steps; the producer code defines its fields.
 
 - [scheduler.log](scheduler.log): This file contains saved program messages.
 
-- [setup_validation.json](setup_validation.json): This file contains structured records from the parent calculation.
+- [setup_validation.json](setup_validation.json): Recorded checks of the calculation, data, or selected settings.
 
 - [status.json](status.json): This file records the execution state.

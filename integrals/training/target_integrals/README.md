@@ -1,12 +1,9 @@
-# target integrals
+# Target integrals: the constructed integral collection
 
-This folder contains training inputs or saved training results.
-Keep the stored family division unchanged.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../../README.md).
+This folder contains the code and records for the constructed integral collection.
 
 ## Child folders
 
 - [families](families/README.md).
+
+These records belong to the constructed integral collection. Use matching case identifiers when combining files.

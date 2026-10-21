@@ -1,25 +1,12 @@
-# box_profile_0595
+# Master basis for one integral family
 
-This folder contains the definition and master basis for family `box_profile_0595`.
+This folder defines the family and its retained master integrals. Its directory name is the family identifier used by the collection reader.
 
-[Family definition and masters](README.md).
+- [definition.json](definition.json): loop and external momenta, propagators, scalar products, and sectors.
+- [masters.json](masters.json): master identifiers and their integral index vectors.
+- [masters.txt](masters.txt): the master index list in plain text.
+- [basis_checks.tar.gz](basis_checks.tar.gz): recorded checks of the selected basis.
 
-[Target integrals](../../../target_integrals/families/box_profile_0595/README.md).
+Use the same family directory name in [target_integrals](../../../target_integrals/README.md) and [master_to_target](../../../master_to_target/README.md). The latter stores target coefficients and reduction steps.
 
-[Relations and reduction steps](../../../master_to_target/families/box_profile_0595/README.md).
-
-The same family and target identifiers connect these records.
-
-Reference paths are sufficient. Their minimum cost is not established.
-
-A partial-fraction relation carries no IBP seed label.
-
-Read the data with [the integral reader guide](../../../README.md).
-
-- [basis_checks.tar.gz](basis_checks.tar.gz): This compressed archive contains the recorded basis checks.
-
-- [definition.json](definition.json): This file defines loop momenta, external momenta, denominators and scalar products.
-
-- [masters.json](masters.json): This file gives master indices and their family information.
-
-- [masters.txt](masters.txt): This file gives the master index list in text form.
+[The collection reader](../../../README.md) accepts `--family FAMILY --kind masters` or `--kind definition`. Master identifiers are local to their family.

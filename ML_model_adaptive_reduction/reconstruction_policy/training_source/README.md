@@ -7,3 +7,7 @@ That later audit change occurred before the reserved test.
 It changes no feature, loss, model setting, weight, or decision rule.
 The entry checks refit the same estimator and verify the exported predictions.
 Use the root script for reproduction; this copy preserves the fitting source.
+
+## Additional scripts
+
+- [s14_train.py](s14_train.py): Fit reduction costs and admit ML only after separate validation.

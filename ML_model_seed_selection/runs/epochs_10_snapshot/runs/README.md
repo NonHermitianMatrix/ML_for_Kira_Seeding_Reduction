@@ -1,10 +1,6 @@
-# runs
+# Runs: selection of IBP seeds
 
-This folder supports the calculation described in the parent guide.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../../../README.md).
+These logs and saved states record selection of IBP seeds. Use the run identifier to connect a log to its settings and outputs.
 
 ## Data and supporting files
 
@@ -13,3 +9,5 @@ The producing and reading code is described in [the stage guide](../../../README
 - [training.jsonl](training.jsonl): This file records training progress or training inputs.
 
 - [training_status.json](training_status.json): This file records training progress or training inputs.
+
+These records belong to selection of IBP seeds. Use matching case identifiers when combining files.

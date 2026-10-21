@@ -88,8 +88,6 @@ The existing Kira executable enforces memory and time limits.
 Data and trained models remain on Hoffman and GitHub.
 The report, notes, and PDFs also have a local copy.
 
-
-<!-- BEGIN MEASURED RESULTS -->
 The first evolved seed boundary uses 22.3% less time than tuned native Kira on eight planar requests.
 It uses 6.5% less time than the initial fixed-width control.
 The broader selected workflow uses 22.2% less time than tuned native Kira on 20 matched two-loop requests.
@@ -101,17 +99,9 @@ See `summary.json` for intervals, individual times, failures, and scope.
 double_box: Validation retains the fixed sparse boundary.
 nonplanar_box: Validation enables the cost predictor.
 
-<!-- END MEASURED RESULTS -->
-
-
-<!-- BEGIN FINISH SCRIPT -->
 Run `s14_finish.py` after both reserved test jobs and the validation helper finish.
 It checks the application, writes both documents, and checks their evidence.
 It does not publish files or change fitted models.
-<!-- END FINISH SCRIPT -->
 
-
-<!-- BEGIN FOLLOWUP APPLICATION -->
 The [joint-configuration study](../joint_policy/README.md) extends this application.
 This folder preserves its earlier fitted models and measurements unchanged.
-<!-- END FOLLOWUP APPLICATION -->

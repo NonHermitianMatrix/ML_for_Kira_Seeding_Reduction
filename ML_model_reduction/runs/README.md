@@ -1,10 +1,6 @@
-# runs
+# Selection of elimination steps
 
-This folder supports the calculation described in the parent guide.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These logs and saved states record selection of elimination steps. Use the run identifier to connect a log to its settings and outputs.
 
 ## Data and supporting files
 
@@ -14,9 +10,9 @@ The producing and reading code is described in [the stage guide](../README.md).
 
 - [all_loops_scheduler.log](all_loops_scheduler.log): This file contains saved program messages.
 
-- [example_prediction.json](example_prediction.json): This file contains structured records from the parent calculation.
+- [example_prediction.json](example_prediction.json): Predicted labels, scores, or selected actions for the supplied examples.
 
-- [example_state.json](example_state.json): This file contains structured records from the parent calculation.
+- [example_state.json](example_state.json): Saved example_state.json record for selection of elimination steps; the producer code defines its fields.
 
 - [expansion_1000_scheduler.log](expansion_1000_scheduler.log): This file contains saved program messages.
 
@@ -28,7 +24,7 @@ The producing and reading code is described in [the stage guide](../README.md).
 
 - [report_build.log](report_build.log): This file contains saved program messages.
 
-- [report_values.json](report_values.json): This file contains structured records from the parent calculation.
+- [report_values.json](report_values.json): Saved report_values.json record for selection of elimination steps; the producer code defines its fields.
 
 - [scheduler.log](scheduler.log): This file contains saved program messages.
 

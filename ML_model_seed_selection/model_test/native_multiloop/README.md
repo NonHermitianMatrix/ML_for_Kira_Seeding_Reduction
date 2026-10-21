@@ -1,12 +1,9 @@
-# native multiloop
+# Native multiloop: selection of IBP seeds
 
-This folder contains reserved test inputs, outputs or checks.
-Keep these records outside model fitting and threshold selection.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+This folder contains the code and records for selection of IBP seeds.
 
 ## Data and supporting files
 
-- [results.json](results.json): This file contains structured records from the parent calculation.
+- [results.json](results.json): Saved results.json record for selection of IBP seeds; the producer code defines its fields.
+
+These records belong to selection of IBP seeds. Use matching case identifiers when combining files.

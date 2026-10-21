@@ -1,11 +1,6 @@
-# training
+# Training: exact recurrences for the restricted coupled-vacuum family
 
-This folder contains training inputs or saved training results.
-Keep the stored family division unchanged.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These records supply training inputs or measured labels for exact recurrences for the restricted coupled-vacuum family. Keep their family assignments separate from validation and reserved tests.
 
 ## Data and supporting files
 
@@ -16,3 +11,5 @@ The producing and reading code is described in [the stage guide](../README.md).
 - [inputs](inputs/README.md).
 
 - [results](results/README.md).
+
+These records belong to exact recurrences for the restricted coupled-vacuum family. Use matching case identifiers when combining files.

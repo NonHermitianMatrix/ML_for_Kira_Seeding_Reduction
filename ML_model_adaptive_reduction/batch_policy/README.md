@@ -1,5 +1,7 @@
 # Target batch selection
 
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
 This study trains a model to choose which targets Kira reduces together.
 Each target is an integral index vector in one physical family.
 The five choices are one batch, equal numerator ranks, equal extra denominator

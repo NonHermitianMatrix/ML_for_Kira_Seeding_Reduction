@@ -1,11 +1,6 @@
-# attempts
+# Attempts: native generation and reduction of multiloop IBP systems
 
-This folder contains validation records.
-These records select a method before the reserved test.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../../README.md).
+This folder contains the code and records for native generation and reduction of multiloop IBP systems.
 
 ## Data and supporting files
 

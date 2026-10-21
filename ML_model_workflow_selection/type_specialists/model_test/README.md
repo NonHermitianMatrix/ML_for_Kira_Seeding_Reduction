@@ -13,8 +13,6 @@ with gzip.open("record.json.gz", "rt") as stream:
     record = json.load(stream)
 ```
 
-<!-- BEGIN GRAPH POLICY RESULTS -->
-
 ## Completed checks
 
 All 720 reserved timing trials pass.
@@ -22,5 +20,3 @@ All 36 basis-only applications and seven public applications pass.
 The checks cover 14,040 timing-trial coefficient entries and 945 application entries.
 The s08_validate.py script writes evidence_validation.json in the study folder.
 See summary.json and the [study guide](../README.md) for time ratios and limits.
-
-<!-- END GRAPH POLICY RESULTS -->

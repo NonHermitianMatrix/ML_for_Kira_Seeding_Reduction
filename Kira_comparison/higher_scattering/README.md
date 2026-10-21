@@ -139,3 +139,7 @@ The earlier saved probes remain unchanged.
 The report copies are `higher_scattering_data.json` and `higher_scattering_validation.json`.
 No speedup is assigned to an unfinished calculation.
 The experiments cover specified families and targets, not every higher-loop scattering integral.
+
+## Additional scripts
+
+- [sector_initialization.patch](sector_initialization.patch): Source changes for sector initialization; apply them only to the matching Kira source version.

@@ -1,14 +1,11 @@
-# plots
+# Plots: reuse of symbolic coefficient polynomials
 
-This folder contains reserved test inputs, outputs or checks.
-Keep these records outside model fitting and threshold selection.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../../README.md).
+This folder contains the code and records for reuse of symbolic coefficient polynomials.
 
 ## Data and supporting files
 
 - [polynomial_reuse_streams.pdf](polynomial_reuse_streams.pdf): This file displays a recorded result or document.
 
 - [polynomial_reuse_times.pdf](polynomial_reuse_times.pdf): This file displays a recorded result or document.
+
+These records belong to reuse of symbolic coefficient polynomials. Use matching case identifiers when combining files.

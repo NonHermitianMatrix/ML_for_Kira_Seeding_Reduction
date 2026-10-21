@@ -1,6 +1,7 @@
 # Direct analytic evaluation and native seed selection
 
-This is the current application. It first checks the integral structure.
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
 The final entry point is s23_deploy.py.
 If a replacement model fails validation, the final application retains the preceding native ML policy.
 It first returns zero for homogeneous massless vacuum families.

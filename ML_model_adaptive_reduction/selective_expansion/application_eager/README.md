@@ -6,3 +6,7 @@ The current interface loads it only if a request selects the previous workflow.
 The fitted models and policy choices remain unchanged.
 The archived source belongs at its original parent-folder path when reproducing the former interface.
 Read the [study guide](../README.md) for the current code and limits.
+
+## Additional scripts
+
+- [s17_reduce.py](s17_reduce.py): Use the validated portfolio with a target batch and a prescribed master basis.

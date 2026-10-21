@@ -1,13 +1,11 @@
-# archive output allowance v3
+# Archive output allowance v3: exact sufficiency of the neural model’s selected seeds
+
+These records preserve development or earlier comparisons for exact sufficiency of the neural model’s selected seeds. They document the tested settings, including incomplete or rejected attempts.
 
 This folder retains an earlier stage, development check or saved comparison.
 Use its records to interpret that stage.
 Use the current parent application for a new calculation.
 
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
-
 ## Data and supporting files
 
-- [worker_10.json](worker_10.json): This file contains structured records from the parent calculation.
+- [worker_10.json](worker_10.json): Saved worker_10.json record for exact sufficiency of the neural model’s selected seeds; the producer code defines its fields.

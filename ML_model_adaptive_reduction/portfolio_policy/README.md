@@ -1,5 +1,7 @@
 # Family-aware seed-cost model
 
+This directory contains a component or comparison experiment. The [combined application](../triangle_reduction/README.md) selects the retained methods.
+
 This study chooses seed bounds before Kira generates IBP equations.
 IBP means integration by parts.
 Kira performs the exact algebra. Failed choices trigger bounded recovery.

@@ -1,13 +1,7 @@
-# families
+# Exact coefficients, identities, and reduction traces by family
 
-This folder supports the calculation described in the parent guide.
+Each family folder connects target expressions to their master expansions. It stores candidate seeds, source identities, construction records, and elimination steps. Reference paths are sufficient reductions; they are not certificates of minimum cost.
 
-Read [the parent guide](../README.md) for the stage and data flow.
+The 17,100 child directories use the family identifiers listed in [the category catalog](../catalog.json). Open the family README for the exact filenames. The same family name connects masters, targets, and reduction records.
 
-The producing and reading code is described in [the stage guide](../../README.md).
-
-## Child folders
-
-Each of the 17100 child folders contains its own README.
-Each folder name identifies its family or saved case.
-Use the collection manifest to find a specific identifier.
+Use [the collection reader](../../README.md) to inspect one family or join one target to its reference without expanding the stored archives.

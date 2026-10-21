@@ -5,3 +5,5 @@ They are independent of the new finite-field reconstruction.
 Additional complete-region confirmation attempts can reach their bound.
 The preceding symbolic application supplies the exact coefficients for those cases.
 Reference preparation is outside the application timer.
+
+These records belong to symbolic and finite-field coefficient arithmetic. Use matching case identifiers when combining files.

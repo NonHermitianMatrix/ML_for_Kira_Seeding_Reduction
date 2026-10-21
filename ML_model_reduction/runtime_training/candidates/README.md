@@ -1,11 +1,6 @@
-# candidates
+# Candidates: row policies trained on complete runtime
 
-This folder contains training inputs or saved training results.
-Keep the stored family division unchanged.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+This folder contains the code and records for row policies trained on complete runtime.
 
 ## Child folders
 
@@ -14,3 +9,5 @@ The producing and reading code is described in [the stage guide](../README.md).
 - [output_bytes](output_bytes/README.md).
 
 - [time_and_bytes](time_and_bytes/README.md).
+
+These records belong to row policies trained on complete runtime. Use matching case identifiers when combining files.

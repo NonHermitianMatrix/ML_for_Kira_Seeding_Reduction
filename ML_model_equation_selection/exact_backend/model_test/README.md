@@ -1,19 +1,14 @@
-# model test
+# Model test: exact recurrences for the restricted coupled-vacuum family
 
-This folder contains reserved test inputs, outputs or checks.
-Keep these records outside model fitting and threshold selection.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+These records contain inputs, outputs, or checks for exact recurrences for the restricted coupled-vacuum family. Match the case identifiers before comparing coefficients or elapsed times.
 
 ## Data and supporting files
 
 - [audit.json](audit.json): This file records checks of the corresponding calculation.
 
-- [complete.json](complete.json): This file contains structured records from the parent calculation.
+- [complete.json](complete.json): Completion status recorded by the experiment’s producer.
 
-- [streams_complete.json](streams_complete.json): This file contains structured records from the parent calculation.
+- [streams_complete.json](streams_complete.json): Saved streams_complete.json record for exact recurrences for the restricted coupled-vacuum family; the producer code defines its fields.
 
 - [summary.json](summary.json): This file contains the result counts and summary measurements.
 

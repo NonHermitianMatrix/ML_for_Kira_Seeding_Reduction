@@ -1,26 +1,21 @@
-# inputs
+# Inputs: reuse of symbolic coefficient polynomials
 
-This folder contains reserved test inputs, outputs or checks.
-Keep these records outside model fitting and threshold selection.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../../README.md).
+This folder contains the code and records for reuse of symbolic coefficient polynomials.
 
 ## Data and supporting files
 
-- [group0.json](group0.json): This file contains structured records from the parent calculation.
+- [group0.json](group0.json): Saved group0.json record for reuse of symbolic coefficient polynomials; the producer code defines its fields.
 
-- [group1.json](group1.json): This file contains structured records from the parent calculation.
+- [group1.json](group1.json): Saved group1.json record for reuse of symbolic coefficient polynomials; the producer code defines its fields.
 
-- [group2.json](group2.json): This file contains structured records from the parent calculation.
+- [group2.json](group2.json): Saved group2.json record for reuse of symbolic coefficient polynomials; the producer code defines its fields.
 
-- [group3.json](group3.json): This file contains structured records from the parent calculation.
+- [group3.json](group3.json): Saved group3.json record for reuse of symbolic coefficient polynomials; the producer code defines its fields.
 
-- [group4.json](group4.json): This file contains structured records from the parent calculation.
+- [group4.json](group4.json): Saved group4.json record for reuse of symbolic coefficient polynomials; the producer code defines its fields.
 
-- [group5.json](group5.json): This file contains structured records from the parent calculation.
+- [group5.json](group5.json): Saved group5.json record for reuse of symbolic coefficient polynomials; the producer code defines its fields.
 
-- [group6.json](group6.json): This file contains structured records from the parent calculation.
+- [group6.json](group6.json): Saved group6.json record for reuse of symbolic coefficient polynomials; the producer code defines its fields.
 
-- [group7.json](group7.json): This file contains structured records from the parent calculation.
+- [group7.json](group7.json): Saved group7.json record for reuse of symbolic coefficient polynomials; the producer code defines its fields.

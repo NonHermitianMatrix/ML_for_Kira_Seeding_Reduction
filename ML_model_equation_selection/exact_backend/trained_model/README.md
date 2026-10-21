@@ -1,12 +1,9 @@
-# trained model
+# Trained model: exact recurrences for the restricted coupled-vacuum family
 
-This folder contains saved model parameters or candidate methods.
-Use the parent validation record to identify the selected method.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../README.md).
+This folder stores the fitted models for exact recurrences for the restricted coupled-vacuum family. Model files contain the parameters used for prediction; validation records identify the accepted choice.
 
 ## Data and supporting files
 
-- [cost_tree.json](cost_tree.json): This file contains structured records from the parent calculation.
+- [cost_tree.json](cost_tree.json): Saved cost_tree.json record for exact recurrences for the restricted coupled-vacuum family; the producer code defines its fields.
+
+These records belong to exact recurrences for the restricted coupled-vacuum family. Use matching case identifiers when combining files.

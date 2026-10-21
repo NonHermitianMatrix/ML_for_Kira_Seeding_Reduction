@@ -1,18 +1,13 @@
-# packs
+# Packs: reuse of compatible equations across target batches
 
-This folder contains validation records.
-These records select a method before the reserved test.
-
-Read [the parent guide](../README.md) for the stage and data flow.
-
-The producing and reading code is described in [the stage guide](../../README.md).
+This folder contains the code and records for reuse of compatible equations across target batches.
 
 ## Data and supporting files
 
-- [group0.json](group0.json): This file contains structured records from the parent calculation.
+- [group0.json](group0.json): Saved group0.json record for reuse of compatible equations across target batches; the producer code defines its fields.
 
-- [group1.json](group1.json): This file contains structured records from the parent calculation.
+- [group1.json](group1.json): Saved group1.json record for reuse of compatible equations across target batches; the producer code defines its fields.
 
-- [group2.json](group2.json): This file contains structured records from the parent calculation.
+- [group2.json](group2.json): Saved group2.json record for reuse of compatible equations across target batches; the producer code defines its fields.
 
-- [group3.json](group3.json): This file contains structured records from the parent calculation.
+- [group3.json](group3.json): Saved group3.json record for reuse of compatible equations across target batches; the producer code defines its fields.
