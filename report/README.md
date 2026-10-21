@@ -1,6 +1,16 @@
 # Optimizing Methods for Feynman Integral Reduction with Kira
 
-The paper reports the full study. Its title page has no author or date. Read `report.pdf` for the methods, final formulas, physical uses, measured gains, and limitations. The tables compare exact methods, learned choices, all completed native physical classes, and the one-loop tensor mass classes. `notes.pdf` keeps the historical experiments and remains unchanged in this editorial update.
+The primary final comparison uses original Kira 3.1 with its default algorithms for a specified reduction job.
+Read `paper_default_comparison.tex` for the common inputs, seed bounds, timing, and exact checks.
+Read `paper_default_rows.tex` for the measured times and completion counts.
+The comparison uses the 20 connected native requests from the final collection.
+The other 73 analytic requests have no matched default-Kira time in this test.
+Fixed-strategy tests and previous-application tests remain secondary comparisons.
+The earlier 8.8% figure measures an incremental change only.
+Run `s08_check_default_comparison.py` after the other document checks.
+Read `../Kira_comparison/default_kira_final/README.md` for the comparison code and retained setup failures.
+
+The paper reports the full study. Its title page has no author or date. Read `report.pdf` for the methods, final formulas, physical uses, measured gains, and limitations. The tables compare exact methods, learned choices, all completed native physical classes, and the one-loop tensor mass classes. `notes.pdf` preserves the earlier experiment history.
 
 - `paper_integral_results.tex` connects integral structures, QCD/QFT uses, formulas, and timings.
 - `s06_method_tables.py` reads saved summaries and writes `paper_native_type_rows.tex`, `paper_tensor_type_rows.tex`, and `method_table_data.json`. It does not run a scientific calculation.
@@ -15,7 +25,7 @@ Read `report.pdf` for the whole-project paper. Read `notes.pdf` for the full stu
 The paper starts with the physics problem and a worked integration-by-parts example.
 It then explains exact identities, learned choices, physical scope, tests, results, and limits.
 
-The final test uses 93 requests. Median collection time changes from 45.091 to 41.137 seconds.
+The earlier incremental test uses 93 requests. Median collection time changes from 45.091 to 41.137 seconds.
 This is 8.8% less time than the preceding application. It is not a comparison with stock Kira.
 The paper reports slower groups and unsuccessful model trials as well as gains.
 The exact external coefficient audit is outside the application timers.
@@ -37,7 +47,7 @@ The exact external coefficient audit is outside the application timers.
 The current application remains `ML_model_adaptive_reduction/triangle_reduction/s32_deploy.py`.
 Use `s33_batch.py` in that folder to process a request list in one call.
 Read [the application guide](../ML_model_adaptive_reduction/triangle_reduction/README.md) for commands and input conditions.
-This report revision changes no trained model, reduction code, or scientific measurement.
+The default-Kira comparison adds measurements without changing the trained models or retained reduction method.
 
 ## Reproduce the figures and PDFs
 

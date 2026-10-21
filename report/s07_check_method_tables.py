@@ -69,10 +69,10 @@ def main():
         assert hashlib.sha256((HERE/(name+".pdf")).read_bytes()).hexdigest() == digest
     log = (HERE/"report.log").read_text(errors="replace")
     assert not re.search(r"Overfull|undefined|^! ", log, re.I|re.M)
-    result = dict(complete=True, editorial_only=True, title=TITLE, author_and_date_blank=True,
+    result = dict(complete=True, editorial_only=prior["editorial_only"], title=TITLE, author_and_date_blank=True,
                   tensor_requests=20, native_requests=43, native_classes=9,
                   formulas_linked_to_derivations=True, controls_and_limits_present=True,
-                  scientific_runs=0, pdf_sha256=prior["pdf_sha256"],
+                  scientific_runs=prior["new_training_or_reductions"], pdf_sha256=prior["pdf_sha256"],
                   sources=data["sources"])
     (HERE/"method_table_validation.json").write_text(json.dumps(result, indent=2)+"\n")
     print(json.dumps({k:v for k,v in result.items() if k != "sources"}))

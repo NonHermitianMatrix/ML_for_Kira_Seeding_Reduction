@@ -1,14 +1,19 @@
-The research paper now reports the complete project and its measured gains. Read `report/report.pdf` for the study and `report/notes.pdf` for the full experiment history.
+The research paper now reports the complete project and its measured gains. Read `report/report.pdf` for the study and `report/notes.pdf` for the earlier experiment history.
+
+The primary final comparison now uses original Kira 3.1 with its default algorithms for a specified reduction job.
+Read [the comparison guide](Kira_comparison/default_kira_final/README.md) for the inputs, limits, exact checks, and recorded times.
+It compares the final method on twenty connected native requests.
+Previous-application and fixed-strategy results remain separate secondary comparisons.
 
 <!-- FOCUSED PAPER REVISION BEGIN -->
 # Current paper
 
 Read [the paper](report/report.pdf) for the method, physical scope, and measured results.
-Read [the notes](report/notes.pdf) for the full experiment history.
+Read [the notes](report/notes.pdf) for the earlier experiment history.
 The paper introduces the physics terms and gives a worked reduction example.
 It separates exact methods, learned decisions, complete-time gains, and slower cases.
 Read [the report guide](report/README.md) to rebuild the figures and documents.
-The editorial revision changes no reduction code, trained model, or benchmark data.
+The default-Kira comparison adds measurements. It leaves the retained reduction method and trained models unchanged.
 The application guides and earlier records follow below.
 <!-- FOCUSED PAPER REVISION END -->
 

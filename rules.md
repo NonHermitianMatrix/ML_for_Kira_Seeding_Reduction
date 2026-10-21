@@ -306,3 +306,9 @@ Retain independent tests, exact checks, previous evidence, resource limits, and 
 - Title the paper “Optimizing Methods for Feynman Integral Reduction with Kira”. Leave the author and date blank.
 - Write about the study and use active first-person descriptions such as “we developed” for our work. Follow the supplied Utah Valley University scientific-writing guide: establish the research objective, explain the methods, present measurements, then discuss their meaning and limits.
 - Connect integral structures, their QCD/QFT applications, final formulas, models, timing controls, and measured gains in readable tables. Compare advantages and disadvantages explicitly. Cite physical applications and derive or cite formulas. Keep exact-method gains separate from learned gains, and include slower and incomplete cases.
+
+## Default-Kira reference for final comparisons (October 20, 2026)
+
+- Use unmodified Kira with its default reduction algorithms as the primary reference for final comparisons with our complete method. State the Kira version, required problem settings, seed bounds, master basis, arithmetic, resources, timing boundary, and exact checks. Default algorithms do not remove the need to specify the physical reduction job.
+- Give both elapsed times, the speed factor relative to default Kira, the percentage time saved, and completion counts for each matched workload. Keep failed or unmeasured default reductions visible; do not assign them a measured finite speedup.
+- Label fixed-strategy and ML-on/ML-off tests as component comparisons. Label comparisons with the preceding optimized application as incremental changes. Neither is a substitute for the primary default-Kira comparison, and ratios from different tests must not be combined.

@@ -73,7 +73,8 @@ def main():
     assert len(figs)==7
     for n,h in prior["pdf_sha256"].items():
         assert sha(HERE/(n+".pdf"))==h
-    result=dict(complete=True,editorial_only=True,new_training_or_reductions=0,
+    result=dict(complete=True,editorial_only=prior["editorial_revision_only"],
+                new_training_or_reductions=prior["new_training_or_reductions"],
                 whole_project_main_text=True,latest_comparison_in_appendix=True,
                 source_count=len(data["sources"]),figures=len(figs),
                 native_requests=110,native_matched=43,

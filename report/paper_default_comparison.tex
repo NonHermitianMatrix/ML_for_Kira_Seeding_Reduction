@@ -1,0 +1,33 @@
+\section{Primary comparison with default Kira}
+\label{sec:default-kira-final}
+To measure the gain over default Kira, we compare the retained method directly with the original Kira 3.1 executable~\cite{Kira3}. We use the twenty connected native requests from the last collection: five planar double-box, five nonplanar double-box, five massive-sunrise, and five three-loop-vacuum requests. Their propagators and physical points are given in Appendices~\ref{app:families-new} and \ref{app:triangle-inputs}. The model weights and reduction choices remain fixed throughout this comparison. We repeat previously used test inputs to change the reference calculation; these are not new independent families.
+
+\subsection{What default Kira and our method each calculate}
+Both procedures receive the same family, target indices, rational kinematics, symbolic dimension, and preferred master indices. They receive no reference coefficients. The default control uses the saved original executable, generates its own IBP equations, and retains Kira's default seed handling, equation selection, integral ordering, symbolic elimination, and back substitution. It has no project seed filter, row policy, equation filter, analytic shortcut, or project arithmetic modification. The target export and preferred-master list specify the requested answer.
+
+This comparison measures reductions to a supplied master basis. Initial basis discovery, model training, and preparation of the independent reference answers remain outside the production times. A separately tuned Kira calculation would be a different reference.
+
+For the default control, we specify an outer seed region with one unit beyond each target maximum. For target list $\mathcal T$, let $p_{\max}$ be the largest number of positive lines in a supplied top sector. The input bounds are
+\begin{align}
+ r_{\max}&=\max\!\left\{p_{\max},1+\max_{\boldsymbol a\in\mathcal T}\sum_i\max(a_i,0)\right\},\nonumber\\
+ s_{\max}&=1+\max_{\boldsymbol a\in\mathcal T}\sum_i\max(-a_i,0),\qquad
+ \delta_{\max}=1+\max_{\boldsymbol a\in\mathcal T}\sum_i\max(a_i-1,0).
+ \label{eq:default-input-bounds}
+\end{align}
+These are definitions of the common reference protocol: $r_{\max}$ bounds positive powers, $s_{\max}$ bounds numerator powers, and $\delta_{\max}$ bounds extra denominator powers. They do not assert a sufficient or optimal seed region. Thus \emph{default Kira} means default algorithms for this explicitly specified reduction job. It does not mean that Kira receives no input settings.
+
+Our method uses its retained seed policy, fixed arithmetic choices, and recovery procedure. It may change the seed region and arithmetic because those choices form part of the method under test. The learned row policy and rejected additional equation filter remain disabled. The physical problem and required final basis remain the same.
+
+For the two box classes and the massive sunrise, the retained method uses finite-field reconstruction with batches of eight evaluations. The three-loop vacuum keeps the previously validated reduction procedure. The added learned arithmetic selector remains disabled. Thus the primary comparison includes the benefit or cost of changing the arithmetic as well as changing the seeds.
+
+The resulting time ratio measures the combined method, including its retained algebraic and execution changes. It does not isolate a gain from ML. The secondary learned-versus-fixed comparisons address that separate question.
+
+\subsection{Timing and exact checks}
+Each request starts a fresh process with one computational thread. Each default/method pair uses the same Intel Gold compute node. After an interrupted comparison, the remaining pairs can use another node of that class; the recorded times therefore include variation between allocations. We make three repetitions and reverse the method order and request order in the middle repetition. The timer includes process startup, input loading, preparation, model use where applicable, equation generation, exact algebra, output reading, cleanup, and actual recovery. Independent reference preparation and exact coefficient comparisons remain outside both timers. We allow sixty seconds and eight MiB of temporary reduction files per request under the same outer monitor. The job uses one worker with a four- to eight-GiB memory reservation and an eight-GiB virtual-memory limit. A limit or a basis mismatch remains an unsuccessful result and cannot supply a finite speed factor.
+
+We compare the returned coefficients with the same independent reference in the requested basis. A pair enters the timing summary only when both procedures pass in all three repetitions. For each such request, we take the median elapsed time, then sum these medians within each physical class. The speed factor is $T_{\rm default}/T_{\rm method}$ and the time saving is $100(1-T_{\rm method}/T_{\rm default})$; these follow from the timing definitions in Appendix~\ref{app:statistics}. This is a fresh-request comparison. It has a different timing boundary from the earlier shared-call experiment on all 93 requests.
+
+\input{paper_default_rows}
+
+\subsection{Scope of the primary result}
+This test compares the final method with default Kira for the stated twenty connected native requests. The remaining 73 analytic requests in the earlier collection have no matched default-Kira measurement in this test. Their historical formula and recurrence gains remain secondary comparisons with their explicitly named controls. In particular, the earlier 8.8\% result compares successive applications, and the 534.9-fold vacuum result compares an exact recurrence with Kira solving supplied identities. Neither number is the overall gain over default native Kira.

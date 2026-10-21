@@ -1,0 +1,20 @@
+\begin{table}[!htbp]\centering\small
+\caption{Primary comparison: the final method versus original Kira 3.1 with default algorithms for the stated job. Times sum request medians over pairs verified in all three repetitions. The completion column gives default/method counts; the pair column gives matched/requested counts. A factor above one and a positive saving mean less time with our method.}
+\label{tab:default-kira-final}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lrrrrrr@{}}\toprule
+Integral class & Completed & Pairs & Kira (s) & Method (s) & Factor & Saved (\%)\\\midrule
+Planar double box & 4/5 & 4/5 & 227.019 & 5.715 & 39.73 & 97.5\\
+Nonplanar double box & 0/5 & 0/5 & --- & --- & --- & ---\\
+Massive sunrise & 5/5 & 5/5 & 18.806 & 6.519 & 2.88 & 65.3\\
+Three-loop vacuum & 5/5 & 5/5 & 20.633 & 9.875 & 2.09 & 52.1\\
+\midrule
+Total & 14/20 & 14/20 & 266.458 & 22.109 & 12.05 & 91.7\\
+\bottomrule\end{tabular}
+\end{table}
+We obtain 14 matched requests out of 20. Default Kira completes 14 requests in all three repetitions, and our method completes 20. The coefficient audit performs 2,445 exact comparisons.
+The summed matched times are 266.458 seconds for default Kira and 22.109 seconds for our method. Their ratio gives a 12.05-fold speed factor and 91.7\% less elapsed time on these matched requests.
+Unmatched requests remain in the completion counts. Their elapsed times and failure reasons are retained, but they do not enter a finite speed factor.
+We exclude setup runs that did not complete the measurement procedure or could not launch either native reducer. Their records remain separate from the physical reduction comparison.
+Across all 20 requests, our method takes 34.674 seconds as a sum of request medians.
+Default Kira does not complete all requests under these limits, so we report no speed factor for the full 20-request workload. The finite factor above applies only to the 14 matched requests.

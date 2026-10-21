@@ -1,4 +1,4 @@
-\section{Results}
+\section{Component results and development comparisons}
 \label{sec:project-results}
 We obtained three kinds of result: learned reductions in native Kira cost, exact shortcuts for specified integral structures, and savings from sharing work between compatible requests. The following comparisons identify the control and workload for each result. Their ratios describe separate experiments and are not factors in a single universal speedup.
 
@@ -82,12 +82,12 @@ We also separated independent loop blocks, reused exact component reductions, an
 
 The development included compact basis preparation, failure-aware choices, basis-compatible seed bounds, symbolic factorization, cancellation of Gamma factors, and delayed model loading. Each change addressed a measured cost. For example, compact preparation without ML had ratio 0.305 to expanded discovery on thirteen matched requests, while the added neural choice had ratio 0.982 to the compact fixed procedure on 22 requests and did not resolve an additional gain. In another complete-cost experiment, the method completed 126 of 127 requests and saved 6.0\% against the preceding application, but gave no resolved extra gain against the matched fixed control. These outcomes prevented setup savings and successful recovery from being reported as model-only acceleration.
 
-\subsection{Later combined results and the final application}
+\subsection{Secondary combined results and application updates}
 \label{sec:project-combined}
 Table~\ref{tab:project-overall} collects complete-time results whose baselines were measured directly. They answer different practical questions: repeated reductions of an analytically reducible family, compatible requests that can share a system, a native model choosing a seed configuration, and mixed analytic/native workloads.
 
 \begin{table}[!htbp]\centering\small
-\caption{Measured gains with explicit controls. Each row is a separate matched experiment. Times are sums of request or group medians, except the final row, which uses the median time of a complete collection. No row combines percentages from different tests.}
+\caption{Secondary comparisons with explicit controls. These historical component and development tests do not replace the default-Kira comparison in Table~\ref{tab:default-kira-final}. Each row is a separate matched experiment. Times are sums of request or group medians, except the final row, which uses the median time of a complete collection. No row combines percentages from different tests.}
 \label{tab:project-overall}
 \begin{tabularx}{\linewidth}{@{}YrrY@{}}\toprule
 Workload and control & Control (s) & Method (s) & Measured gain\\\midrule

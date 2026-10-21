@@ -80,9 +80,13 @@ def main():
                                  blg.read_text(), re.I), name
         pdfs[name] = sha(pdf)
         assert pdfs[name] == audit["pdf_sha256"][name]
+    primary_path = HERE / "default_kira_data.json"
+    primary = json.loads(primary_path.read_text()) if primary_path.exists() else None
+    measured_runs = primary["requests"] * primary["repetitions"] * 2 if primary else 0
     result = {
-        "complete": True, "editorial_revision_only": True,
-        "new_training_or_reductions": 0, "pdf_sha256": pdfs,
+        "complete": True, "editorial_revision_only": primary is None,
+        "new_training_or_reductions": measured_runs, "pdf_sha256": pdfs,
+        "primary_default_kira_comparison": primary is not None,
         "figures": figures["figures"], "main_labels": len(labels),
         "main_references": len(refs), "source_citations_checked": True,
         "original_notes_reconstructable": True,
@@ -97,7 +101,8 @@ def main():
                                        "paper_project_results.tex", "paper_project_appendix.tex",
                                        "paper_project_structural.tex", "paper_latest_appendix.tex",
                                        "paper_integral_results.tex", "paper_native_type_rows.tex",
-                                       "paper_tensor_type_rows.tex"]},
+                                       "paper_tensor_type_rows.tex", "paper_default_comparison.tex",
+                                       "paper_default_rows.tex"]},
     }
     (HERE / "rewrite_validation.json").write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result))

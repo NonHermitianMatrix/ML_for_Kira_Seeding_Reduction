@@ -1,0 +1,1 @@
+These records used an incompatible scheduler file-size hard limit. The native processes could not start. They do not measure reduction speed. The final results use the corrected launch limit and remain separate.

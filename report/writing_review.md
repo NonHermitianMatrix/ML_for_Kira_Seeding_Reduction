@@ -65,6 +65,20 @@ The following saved records support them:
 - Earlier cumulative comparison: `reconstruction_data.json`.
 - Latest cost-selector validation: `rewrite_cost_evidence.json`, copied from the original training summary.
 
+## Primary comparison with default Kira
+
+The primary final comparison now uses the original Kira 3.1 executable and its default algorithms for the stated physical job.
+The report specifies the preferred basis, target-dependent outer bounds, one-thread resource limit, and timing boundary.
+The final method and original Kira receive the same physical targets and no reference coefficients.
+The primary table uses the 20 connected native requests from the final collection and three fresh-process repetitions.
+It gives completion counts and ratios only for pairs verified in all repetitions.
+The 73 analytic requests remain outside this new default-Kira measurement.
+The earlier native-choice controls can contain project code and therefore remain secondary evidence.
+The 8.8% and 39.1% figures retain their previous-application controls.
+The original supplied-equation vacuum control remains separate from native IBP generation.
+New evidence comes from `Kira_comparison/default_kira_final/summary.json` and `results/` on Hoffman.
+The report copy is `default_kira_data.json`; `s08_check_default_comparison.py` checks its table and source records.
+
 ## Interpretation checks
 
 The 8.8% result is the final incremental comparison on 93 requests. The paper also presents the original-to-optimized vacuum result and the independent native ML controls.
